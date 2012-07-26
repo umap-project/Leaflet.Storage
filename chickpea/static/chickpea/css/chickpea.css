@@ -22,9 +22,9 @@
     box-shadow: 0 1px 7px #999999;
 }
 .leaflet-control-edit a {
-    background-image: url("../img/toggle-edit-off.png");
-    height: 36px;
-    width: 36px;
+    background-image: url("../img/toggle-edit.png");
+    height: 46px;
+    width: 46px;
     background-position: 50% 50%;
     background-repeat: no-repeat;
     display: block;
@@ -33,4 +33,18 @@
     /*box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);*/
     box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.2) inset;
     background-color: #ddd;
+}
+
+/* *************************** */
+/* Overriding leaflet defaults */
+/* *************************** */
+
+.leaflet-control-layers a {
+    background-image: url("../img/layers.png");
+    height: 46px;
+    width: 46px;
+}
+.leaflet-control-zoom a {
+    height: 36px;
+    width: 36px;
 }
