@@ -13,7 +13,7 @@ L.ChickpeaMarker = L.Marker.extend({
 
     _retrievePopupContent: function() {
         if (this._popup && !this._map.editEnabled) return;
-        var template = this._map.editEnabled ? this._map.chickpea_options.urls.marker_update: this._map.chickpea_options.urls.marker;
+        var template = this._map.editEnabled ? this._map.options.urls.marker_update: this._map.options.urls.marker;
         var url = L.Util.template(template, {'pk': this.options.geojson.id});
         (function(self){L.Util.Xhr.get(url, {"callback": function(data){self._firePopup(data);}});})(this)
     },

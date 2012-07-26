@@ -1,33 +1,22 @@
-var ChickpeaMap = L.Class.extend({
+L.ChickpeaMap = L.Map.extend({
     initialize: function (/* DOM element or id*/ el, /* Object*/ options) {
-        this.options = defaults = {
+        defaults = {
             base_layers: null,
             overlay_layers: null,
             categories: [],
             zoom: null,
             lat: null,
             lng: null,
+            allowEdit: true
         };
-        L.Util.setOptions(this, options);
-
-        /* Create map object */
-        this.map = new L.Map('map', {"allowEdit": true});
-        this.map.chickpea_options = options;
-        
-        // var drawControl = new L.Control.Draw({
-        //     position: 'topleft',
-        //     polygon: null,
-        //     polyline: null,
-        //     rectangle: null,
-        //     circle: null
-        // });
-        // this.map.addControl(drawControl);
+        options = L.Util.extend({}, defaults, options)
+        L.Map.prototype.initialize.call(this, el, options);
 
         // var drawnItems = new L.LayerGroup();
-        // this.map.on('draw:marker-created', function (e) {
+        // this.on('draw:marker-created', function (e) {
         // drawnItems.addLayer(e.marker);
         // });
-        // this.map.addLayer(drawnItems);
+        // this.addLayer(drawnItems);
 
         var landscape = new L.TileLayer(
             'http://{s}.tile3.opencyclemap.org/landscape/{z}/{x}/{y}.png',
@@ -37,7 +26,7 @@ var ChickpeaMap = L.Class.extend({
             }
         );
         var center = new L.LatLng(this.options.lat, this.options.lng);
-        this.map.setView(center, 13).addLayer(landscape);
+        this.setView(center, 13).addLayer(landscape);
         this.baselayers = {"landscape": landscape};
         this.init_controls();
     },
@@ -69,12 +58,12 @@ var ChickpeaMap = L.Class.extend({
                 control_config_overlays[category.title] = geojsonLayer;
             })(this);
         }
-        // this.map.addLayer(geojsonLayer);
+        // this.addLayer(geojsonLayer);
         var layersControl = new L.Control.Layers(
             this.baselayers,
             control_config_overlays
         );
-        this.map.addControl(layersControl);
+        this.addControl(layersControl);
 
     },
 });
