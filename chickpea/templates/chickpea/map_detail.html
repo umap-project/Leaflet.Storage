@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}leaflet/dist/leaflet.css" />
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="{{ STATIC_URL }}leaflet/dist/leaflet.ie.css" />
+    <![endif]-->
+    <link rel="stylesheet" href="{{ STATIC_URL }}chickpea/css/chickpea.css" />
+
+    <script src="{{ STATIC_URL }}leaflet/dist/leaflet-src.js"></script>
+    <script src="{{ STATIC_URL }}chickpea/js/leaflet.simplexhr.js"></script>
+    <script src="{{ STATIC_URL }}chickpea/js/leaflet.extendmarker.js"></script>
+    <script src="{{ STATIC_URL }}chickpea/js/leaflet.lazygeojson.js"></script>
+    <script src="{{ STATIC_URL }}chickpea/js/leaflet.toggleeditcontrol.js"></script>
+    <script src="{{ STATIC_URL }}chickpea/js/leaflet.chickpea.js"></script>
+{% endblock %}
+
+{% block content %}
+    <div id="map"></div>
+    <script type="text/javascript">
+        map_settings = {
+            "lon": {{ map.center.x }},
+            "lat": {{ map.center.y }},
+            "categories": {{ categories|safe }},
+            "urls": {{ urls|safe }}
+        }
+        var MAP = new ChickpeaMap("map", map_settings);
+    </script>
+{% endblock %}

@@ -1,0 +1,3 @@
+[submodule "chickpea/static/leaflet"]
+	path = chickpea/static/leaflet
+	url = git://github.com/CloudMade/Leaflet.git
