@@ -18,7 +18,7 @@ class Map(models.Model):
 
 class Category(models.Model):
     """
-    Category of a POI.
+    Category of a Marker.
     """
     title = models.CharField(max_length=50)
     description = models.TextField(blank=True, null=True)
@@ -27,12 +27,12 @@ class Category(models.Model):
         return self.title
 
 
-class POI(models.Model):
+class Marker(models.Model):
     """
     Point of interest.
     """
     title = models.CharField(max_length=200)
-    position = models.PointField(geography=True)
+    latlng = models.PointField(geography=True)
     category = models.ForeignKey(Category)
 
     objects = models.GeoManager()

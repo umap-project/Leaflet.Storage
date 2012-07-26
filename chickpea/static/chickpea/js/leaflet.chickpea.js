@@ -6,7 +6,7 @@ var ChickpeaMap = L.Class.extend({
             categories: [],
             zoom: null,
             lat: null,
-            lon: null,
+            lng: null,
         };
         L.Util.setOptions(this, options);
 
@@ -35,13 +35,13 @@ var ChickpeaMap = L.Class.extend({
                 maxZoom: 18
             }
         );
-        var center = new L.LatLng(this.options.lat, this.options.lon);
+        var center = new L.LatLng(this.options.lat, this.options.lng);
         this.map.setView(center, 13).addLayer(landscape);
         this.baselayers = {"landscape": landscape};
         this.init_controls();
     },
     init_controls: function () {
-        var categories_url_template = this.options.urls.poi_geojson_list;
+        var categories_url_template = this.options.urls.marker_geojson_list;
         var geojson_getter = function (url) {
             var geojson;
             L.Util.Xhr.get(url, {
@@ -77,22 +77,22 @@ var ChickpeaMap = L.Class.extend({
     _pointToLayer: function(geojson, latlng) {
         var self = this;
         var marker = new L.Marker(latlng);
-        var get_poi_form = function (e) {
+        var get_marker_form = function (e) {
             if (marker._popup && !self.map.editEnabled) return; // Maybe we should not, in case
                                        // data has been modified in
                                        // db by another process
-            var template = self.map.editEnabled ? self.options.urls.poi_update: self.options.urls.poi;
+            var template = self.map.editEnabled ? self.options.urls.marker_update: self.options.urls.marker;
             var url = L.Util.template(template, {'pk': geojson.id});
             L.Util.Xhr.get(url, {"callback": function(data){self.bindPopup(marker, data);}});
         }
-        var update_poi_position = function (e) {
+        var update_marker_position = function (e) {
             // Get the lonlat and save it to db
-            get_poi_form(e);
-            var form = L.DomUtil.get('poi_edit');
+            get_marker_form(e);
+            var form = L.DomUtil.get('marker_edit');
         }
-        marker.on("dragend", update_poi_position);
+        marker.on("dragend", update_marker_position);
         // Only in edit mode
-        marker.on("click", get_poi_form);
+        marker.on("click", get_marker_form);
         var start = function (e) {
             // TODO: start dragging after 1 second on mouse down
             if(self.map.editEnabled) {
@@ -118,7 +118,7 @@ var ChickpeaMap = L.Class.extend({
         marker.openPopup();
         if(this.map.editEnabled) {
             // We are in edit mode, so we display a form
-            this.listenForm("poi_edit", marker);
+            this.listenForm("marker_edit", marker);
         }
     },
     listenForm: function(form_id, marker) {

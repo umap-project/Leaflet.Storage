@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse_lazy
 
 from vectorformats.Formats import Django, GeoJSON
 
-from chickpea.models import Map, POI, Category
+from chickpea.models import Map, Marker, Category
 from chickpea.utils import get_uri_template
 
 
@@ -18,9 +18,9 @@ def _urls_for_js(urls=None):
     """
     if urls is None:
         urls = [
-            'poi_update',
-            'poi_geojson_list',
-            'poi'
+            'marker_update',
+            'marker_geojson_list',
+            'marker'
         ]
     return dict(zip(urls, [get_uri_template(url) for url in urls]))
 
@@ -45,31 +45,31 @@ class GeoJSONResponseMixin(object):
     pass
 
 
-class POIGeoJSONListView(BaseListView):
+class MarkerGeoJSONListView(BaseListView):
 
-    model = POI
+    model = Marker
 
     def get_queryset(self):
-        return POI.objects.filter(category=self.kwargs['category_id'])
+        return Marker.objects.filter(category=self.kwargs['category_id'])
 
     def render_to_response(self, context):
         qs = self.get_queryset()
-        djf = Django.Django(geodjango="position", properties=['title'])
+        djf = Django.Django(geodjango="latlng", properties=['title'])
         geoj = GeoJSON.GeoJSON()
         output = geoj.encode(djf.decode(qs))
         return HttpResponse(output)
 
 
-class POIView(DetailView):
-    model = POI
+class MarkerView(DetailView):
+    model = Marker
 
 
-class POICreate(CreateView):
-    model = POI
+class MarkerCreate(CreateView):
+    model = Marker
 
 
-class POIUpdate(UpdateView):
-    model = POI
+class MarkerUpdate(UpdateView):
+    model = Marker
     success_url = reverse_lazy("success")
 
 

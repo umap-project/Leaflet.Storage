@@ -1,8 +1,0 @@
-<form method="post" action="{% url poi_update pk=poi.pk %}" id="poi_edit" onsubmit="return false;">
-    {% csrf_token %}
-    {{ form.errors }}
-    <p>{{ form.title }}</p>
-    <p>{{ form.category }}</p>
-    <input type="hidden" name="{{ form.position.html_name }}" value="{{ form.position.value }}" />
-    <input type="submit" />
-</form>
