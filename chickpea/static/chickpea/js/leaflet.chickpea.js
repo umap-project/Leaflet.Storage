@@ -12,6 +12,7 @@ var ChickpeaMap = L.Class.extend({
 
         /* Create map object */
         this.map = new L.Map('map', {"allowEdit": true});
+        this.map.chickpea_options = options;
         
         // var drawControl = new L.Control.Draw({
         //     position: 'topleft',
@@ -61,7 +62,9 @@ var ChickpeaMap = L.Class.extend({
                 var getter = function(){return geojson_getter(category_url);};
                 var geojsonLayer = new L.LazyGeoJSON(
                     getter, 
-                    {"pointToLayer": function (geojson, latlng) {return self._pointToLayer(geojson, latlng);}}
+                    {"pointToLayer": function (geojson, latlng) {
+                            return L.chickpea_marker(latlng, {"geojson": geojson});
+                        }}
                 );
                 control_config_overlays[category.title] = geojsonLayer;
             })(this);
@@ -74,73 +77,4 @@ var ChickpeaMap = L.Class.extend({
         this.map.addControl(layersControl);
 
     },
-    _pointToLayer: function(geojson, latlng) {
-        var self = this;
-        var marker = new L.Marker(latlng);
-        var get_marker_form = function (e) {
-            if (marker._popup && !self.map.editEnabled) return; // Maybe we should not, in case
-                                       // data has been modified in
-                                       // db by another process
-            var template = self.map.editEnabled ? self.options.urls.marker_update: self.options.urls.marker;
-            var url = L.Util.template(template, {'pk': geojson.id});
-            L.Util.Xhr.get(url, {"callback": function(data){self.bindPopup(marker, data);}});
-        }
-        var update_marker_position = function (e) {
-            // Get the lonlat and save it to db
-            get_marker_form(e);
-            var form = L.DomUtil.get('marker_edit');
-        }
-        marker.on("dragend", update_marker_position);
-        // Only in edit mode
-        marker.on("click", get_marker_form);
-        var start = function (e) {
-            // TODO: start dragging after 1 second on mouse down
-            if(self.map.editEnabled) {
-                marker.dragging.enable();
-            }
-            // clearTimeout(marker.downTimer);
-            //     marker.downTimer = setTimeout(function() {
-            //         marker.dragging.enable();
-            //     }, 1000);
-        }
-        var stop = function (e) {
-            //clearTimeout(marker.downTimer);
-            if(self.map.editEnabled) {
-                marker.dragging.disable();
-            }
-        }
-        marker.on("mouseover", start);
-        marker.on("mouseout", stop);
-        return marker;
-    },
-    bindPopup: function(marker, content) {
-        marker.bindPopup(content);
-        marker.openPopup();
-        if(this.map.editEnabled) {
-            // We are in edit mode, so we display a form
-            this.listenForm("marker_edit", marker);
-        }
-    },
-    listenForm: function(form_id, marker) {
-        var self = this;
-        var form = L.DomUtil.get(form_id);
-        var manage_return = function (data) {
-            if(data === "ok") {
-                console.log("ok") // FIXME make a little message system
-                marker.closePopup();
-            }
-            else {
-                self.bindPopup(marker, data)
-            }
-        }
-        var submit = function (e) {
-            // Always update field value with current position
-            // We use JSON, GEOSGeometry is aware of it
-            form.position.value = JSON.stringify(marker.geometry());
-            L.Util.Xhr.submit_form(form, {"callback": function(data) { manage_return(data);}});
-            L.DomEvent.stop(e);
-            return false;
-        }
-        L.DomEvent.on(form, 'submit', submit);
-    }
 });

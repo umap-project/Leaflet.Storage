@@ -1,4 +1,4 @@
-<form method="post" action="{% url marker_update pk=marker.pk %}" id="marker_edit" onsubmit="return false;">
+<form method="post" action="{% url marker_update pk=marker.pk %}" id="marker_form" onsubmit="return false;">
     {% csrf_token %}
     {{ form.errors }}
     <p>{{ form.title }}</p>
