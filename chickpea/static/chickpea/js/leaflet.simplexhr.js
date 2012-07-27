@@ -33,6 +33,7 @@ L.Util.Xhr = {
         if(typeof options == "undefined") {
             options = {}
         }
+        options['dataType'] = "json"
         var form = L.DomUtil.get(form_id);
         var formData = new FormData(form);
         if(options.extraFormData) {

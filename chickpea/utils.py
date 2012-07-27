@@ -1,5 +1,7 @@
 from django.core.urlresolvers import get_resolver
 
+from vectorformats.Formats import Django, GeoJSON
+
 
 def get_uri_template(urlname, args=None, prefix=""):
     '''
@@ -54,3 +56,12 @@ def get_uri_template(urlname, args=None, prefix=""):
                 if sorted(params) == expected_params:
                     return _convert(result, params)
     return None
+
+
+def instances_to_geojson(instances, geo_field, properties):
+    """
+    Return a FeatureCollection from Geo instances.
+    """
+    djf = Django.Django(geodjango=geo_field, properties=properties)
+    geoj = GeoJSON.GeoJSON()
+    return geoj.encode(djf.decode(instances))

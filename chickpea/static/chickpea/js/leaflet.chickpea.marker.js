@@ -43,7 +43,7 @@ L.ChickpeaMarker = L.Marker.extend({
         // FIXME: unbind popup when editEnable
         // Otherwise, when we disable editing, popup already openned
         // are not fetched again (and so we keep the edit one)
-        (function(self){L.Util.Xhr.get(url, {"callback": function(data){self._firePopup(data);}});})(this)
+        (function(self){L.Util.Xhr.get(url, {"dataType": "json", "callback": function(data){self._firePopup(data.html);}});})(this)
     },
 
     _firePopup: function(content) {
@@ -72,12 +72,19 @@ L.ChickpeaMarker = L.Marker.extend({
         var self = this;
         var form = L.DomUtil.get(form_id);
         var manage_ajax_return = function (data) {
-            if(data === "ok") {
-                console.log("ok") // FIXME make a little message system
-                self.closePopup();
+            if(data.html) {
+                // We have HTML, put it in the popup
+                self._firePopup(data)
             }
             else {
-                self.firePopup(data)
+                // Guess its a geojson here
+                // Update object, if it's new
+                var feature = data.features[0]
+                if (!self.chickpea_id) {
+                    self.chickpea_id = feature.id
+                }
+                console.log("ok") // FIXME make a little message system
+                self.closePopup();
             }
         }
         var submit = function (e) {
