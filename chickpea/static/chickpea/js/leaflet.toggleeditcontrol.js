@@ -41,6 +41,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
     _disableEdit: function(e, map, container) {
         L.DomUtil.removeClass(container, "control-enabled");                
         map.editEnabled = false;
+        this._disableInactiveModes();
     }
 });
 
