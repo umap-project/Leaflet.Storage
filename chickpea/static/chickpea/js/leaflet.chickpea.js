@@ -1,20 +1,21 @@
+L.Map.mergeOptions({
+    base_layers: null,
+    overlay_layers: null,
+    categories: [],
+    zoom: null,
+    lat: null,
+    lng: null,
+    allowEdit: true    
+});
+
 L.ChickpeaMap = L.Map.extend({
     initialize: function (/* DOM element or id*/ el, /* Object*/ options) {
-        defaults = {
-            base_layers: null,
-            overlay_layers: null,
-            categories: [],
-            zoom: null,
-            lat: null,
-            lng: null,
-            allowEdit: true
-        };
-        // You must provide a pk
-        if (typeof options.chickpea_id == "undefined") {
+        // Call the parent
+        L.Map.prototype.initialize.call(this, el, options);
+        // User must provide a pk
+        if (typeof this.options.chickpea_id == "undefined") {
             alert("InmplementationError: you must provide a chickpea_id for ChickpeaMap.")
         }
-        options = L.Util.extend({}, defaults, options)
-        L.Map.prototype.initialize.call(this, el, options);
 
         // var drawnItems = new L.LayerGroup();
         // this.on('draw:marker-created', function (e) {
