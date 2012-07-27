@@ -9,6 +9,10 @@ L.ChickpeaMap = L.Map.extend({
             lng: null,
             allowEdit: true
         };
+        // You must provide a pk
+        if (typeof options.chickpea_id == "undefined") {
+            alert("InmplementationError: you must provide a chickpea_id for ChickpeaMap.")
+        }
         options = L.Util.extend({}, defaults, options)
         L.Map.prototype.initialize.call(this, el, options);
 
