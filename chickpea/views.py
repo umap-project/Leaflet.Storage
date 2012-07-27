@@ -19,6 +19,7 @@ def _urls_for_js(urls=None):
     if urls is None:
         urls = [
             'marker_update',
+            'marker_add',
             'marker_geojson_list',
             'marker'
         ]
@@ -64,13 +65,24 @@ class MarkerView(DetailView):
     model = Marker
 
 
-class MarkerCreate(CreateView):
+class MarkerAdd(CreateView):
     model = Marker
+    success_url = reverse_lazy("success")
+
+    def get_context_data(self, **kwargs):
+        context = super(MarkerAdd, self).get_context_data(**kwargs)
+        context['action'] = reverse_lazy("marker_add")
+        return context
 
 
 class MarkerUpdate(UpdateView):
     model = Marker
     success_url = reverse_lazy("success")
+
+    def get_context_data(self, **kwargs):
+        context = super(MarkerUpdate, self).get_context_data(**kwargs)
+        context['action'] = reverse_lazy("marker_update", kwargs={"pk": self.kwargs['pk']})
+        return context
 
 
 class SuccessView(TemplateView):

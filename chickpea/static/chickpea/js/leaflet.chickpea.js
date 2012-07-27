@@ -5,7 +5,7 @@ L.Map.mergeOptions({
     zoom: null,
     lat: null,
     lng: null,
-    allowEdit: true    
+    allowEdit: true
 });
 
 L.ChickpeaMap = L.Map.extend({
@@ -14,14 +14,15 @@ L.ChickpeaMap = L.Map.extend({
         L.Map.prototype.initialize.call(this, el, options);
         // User must provide a pk
         if (typeof this.options.chickpea_id == "undefined") {
-            alert("InmplementationError: you must provide a chickpea_id for ChickpeaMap.")
+            alert("ImplementationError: you must provide a chickpea_id for ChickpeaMap.")
         }
 
-        // var drawnItems = new L.LayerGroup();
-        // this.on('draw:marker-created', function (e) {
-        // drawnItems.addLayer(e.marker);
-        // });
-        // this.addLayer(drawnItems);
+        var drawnItems = new L.LayerGroup();
+        this.on('draw:marker-created', function (e) {
+            drawnItems.addLayer(e.marker);
+            e.marker.edit();
+        });
+        this.addLayer(drawnItems);
 
         var landscape = new L.TileLayer(
             'http://{s}.tile3.opencyclemap.org/landscape/{z}/{x}/{y}.png',
@@ -57,7 +58,7 @@ L.ChickpeaMap = L.Map.extend({
                 var geojsonLayer = new L.LazyGeoJSON(
                     getter, 
                     {"pointToLayer": function (geojson, latlng) {
-                            return L.chickpea_marker(latlng, {"geojson": geojson});
+                            return L.chickpea_marker(geojson.id, latlng, {"geojson": geojson});
                         }}
                 );
                 control_config_overlays[category.title] = geojsonLayer;
