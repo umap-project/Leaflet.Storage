@@ -29,14 +29,14 @@ L.ChickpeaMarker = L.Marker.extend({
 
     edit: function() {
         if(!this._map.editEnabled) return;
-        var url;
-        if(this.chickpea_id) {
-            url = L.Util.template(this._map.options.urls.marker_update, {'pk': this.chickpea_id});
-        }
-        else {
-            url = this._map.options.urls.marker_add;
-        }
+        var url = this.getEditURl();
         this._retrievePopupContent(url);
+    },
+
+    getEditURl: function() {
+        return this.chickpea_id?
+            L.Util.template(this._map.options.urls.marker_update, {'pk': this.chickpea_id}):
+            this._map.options.urls.marker_add;     
     },
 
     _retrievePopupContent: function(url) {
@@ -85,7 +85,7 @@ L.ChickpeaMarker = L.Marker.extend({
             // We use JSON, GEOSGeometry is aware of it
             form.latlng.value = JSON.stringify(self.geometry());
             // Update action in case of creation (do it in python?)
-            form.action = self._map.options.urls.marker_add;
+            form.action = self.getEditURl();
             L.Util.Xhr.submit_form(form, {"callback": function(data) { manage_ajax_return(data);}});
             L.DomEvent.stop(e);
             return false;
