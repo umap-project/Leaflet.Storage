@@ -46,6 +46,35 @@
     background-color: #ddd;
 }
 
+/* ************* */
+/* Marker's Icon */
+/* ************* */
+.icon_container {
+    background-color: white;
+    border-radius: 4px 4px 4px 4px;
+    height: 32px;
+    width: 32px;
+    box-shadow: 7px 10px 8px -5px black;
+    opacity: 0.9;
+    background-color: #2470b5;
+    text-align: center;
+    line-height: 32px;
+}
+.icon_container img {
+    vertical-align: middle;
+}
+.icon_arrow {
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid #2270b5;
+    height: 0;
+    left: 8px;
+    position: relative;
+    width: 0;
+    opacity: 0.9;
+    /*box-shadow: 4px 8px 6px -3px black;*/
+}
+
 /* *************************** */
 /* Overriding leaflet defaults */
 /* *************************** */

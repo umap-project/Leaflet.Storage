@@ -39,6 +39,8 @@ L.ChickpeaMap = L.Map.extend({
         this.chickpea_layers_control = new L.Control.Layers()
         // this.addLayer(geojsonLayer);
         this.addControl(this.chickpea_layers_control);
+        // Global storage for retrieving overlays
+        this.chickpea_overlays = {};
         // create overlays
         for(var i in this.options.categories) {
             if(this.options.categories.hasOwnProperty(i)){
@@ -47,12 +49,6 @@ L.ChickpeaMap = L.Map.extend({
         }
     },
     _createOverlay: function(category) {
-        return new L.ChickpeaLayer(
-            category,
-            this,
-            {"pointToLayer": function (geojson, latlng) {
-                    return L.chickpea_marker(geojson.id, latlng, {"geojson": geojson});
-                }}
-        );
+        return new L.ChickpeaLayer(category, this);
     }
 });

@@ -1,9 +1,23 @@
 L.ChickpeaLayer = L.LazyGeoJSON.extend({
     initialize: function (/* Object from db */ category, map, options) {
-        L.LazyGeoJSON.prototype.initialize.call(this, this._dataGetter, options);
         this.chickpea_id = category.pk;
-        this.chickpea_name = category.title;
+        this.chickpea_name = category.name;
+        this.chickpea_color = category.color;
+        this.iconUrl = category.icon_url;
         this.map = map;
+        this.map.chickpea_overlays[this.chickpea_id] = this;
+        if(typeof options == "undefined") {
+            options = {};
+        }
+        if(!options.pointToLayer) {
+            options.pointToLayer = (function(self) {
+                    return function (geojson, latlng) {
+                        return L.chickpea_marker(map, geojson.id, latlng, {"geojson": geojson, "overlay": self});
+                    }
+                })(this);
+            }
+
+        L.LazyGeoJSON.prototype.initialize.call(this, this._dataGetter, options);
         this.map.chickpea_layers_control.addOverlay(this, this.chickpea_name);
     },
     _dataUrl: function() {

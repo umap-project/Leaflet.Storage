@@ -5,7 +5,14 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
         polygon: null,  // Later
         rectangle: null,  // Later
         circle: null,  // Later
-        marker: {}
+    },
+
+    initialize: function(map, options) {
+        this._map = map;
+        L.Control.Draw.prototype.initialize.call(this, options);
+        this.options.marker = {
+            icon: new L.ChickpeaIcon(this._map)
+        }
     },
 
     onAdd: function (map) {
@@ -47,7 +54,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
 
 L.Map.addInitHook(function () {
     if (this.options.allowEdit) {
-        this.toggleEditControl = new L.Control.ToggleEdit();
+        this.toggleEditControl = new L.Control.ToggleEdit(this);
         this.addControl(this.toggleEditControl);
     }
 });
@@ -59,7 +66,7 @@ L.Marker.Draw.include({
         // How to do it in a cleaner way? Asking upstream to add a hook?
         this._map.fire(
             'draw:marker-created',
-            { marker: new L.ChickpeaMarker(null, this._marker.getLatLng(), { icon: this.options.icon }) }
+            { marker: new L.ChickpeaMarker(this._map, null, this._marker.getLatLng(), { icon: this.options.icon }) }
         );
         this.disable();
     }

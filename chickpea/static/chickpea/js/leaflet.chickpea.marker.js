@@ -1,11 +1,21 @@
 L.ChickpeaMarker = L.Marker.extend({
 
-    initialize: function(chickpea_id, latlng, options) {
+    initialize: function(map, chickpea_id, latlng, options) {
+        this.map = map;
+        // Overlay the marker belongs to
+        if(options.overlay) {
+            this.chickpea_overlay = options.overlay;
+        }
+        else {
+            this.chickpea_overlay = null;
+        }
+        if(!options.icon) {
+            options.icon = new L.ChickpeaIcon(this.map, {"overlay": this.chickpea_overlay});
+        }
         L.Marker.prototype.initialize.call(this, latlng, options);
         this.form_id = "marker_form";
         // Use a null chickpea_id when you want to create a new Marker
         this.chickpea_id = chickpea_id;
-
         // Add events
         this.on("dragend", this.edit);
         this.on("click", this._onClick);
@@ -68,6 +78,15 @@ L.ChickpeaMarker = L.Marker.extend({
         }        
     },
 
+    _redrawIcon: function() {
+        var previous_overlay = this.options.icon.overlay;
+        this.options.icon.overlay = this.chickpea_overlay;
+        this._removeIcon();
+        this._initIcon();
+        this.update();
+        this.options.icon.overlay = previous_overlay;
+    },
+
     listenForm: function(form_id) {
         var self = this;
         var form = L.DomUtil.get(form_id);
@@ -83,6 +102,9 @@ L.ChickpeaMarker = L.Marker.extend({
                 if (!self.chickpea_id) {
                     self.chickpea_id = feature.id
                 }
+                // Redraw icon in case overlay has changed
+                self.chickpea_overlay = self.map.chickpea_overlays[feature.properties.category_id];
+                self._redrawIcon();
                 console.log("ok") // FIXME make a little message system
                 self.closePopup();
             }
@@ -101,6 +123,6 @@ L.ChickpeaMarker = L.Marker.extend({
     }
 });
 
-L.chickpea_marker = function (chickpea_id, latlng, options) {
-    return new L.ChickpeaMarker(chickpea_id, latlng, options);
+L.chickpea_marker = function (map, chickpea_id, latlng, options) {
+    return new L.ChickpeaMarker(map, chickpea_id, latlng, options);
 };
