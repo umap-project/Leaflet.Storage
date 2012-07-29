@@ -91,7 +91,6 @@ class MarkerView(DetailView):
 
 class MarkerAdd(CreateView):
     model = Marker
-    success_url = reverse_lazy("success")
 
     def get_context_data(self, **kwargs):
         context = super(MarkerAdd, self).get_context_data(**kwargs)
@@ -113,6 +112,9 @@ class MarkerUpdate(UpdateView):
         context = super(MarkerUpdate, self).get_context_data(**kwargs)
         context['action'] = reverse_lazy("marker_update", kwargs={"pk": self.kwargs['pk']})
         return context
+
+    def get_success_url(self):
+        return reverse_lazy('marker_geojson', kwargs={"pk": self.object.pk})
 
     def render_to_response(self, context, **response_kwargs):
         return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
