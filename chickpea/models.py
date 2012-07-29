@@ -1,5 +1,4 @@
 from django.contrib.gis.db import models
-from django.conf import settings
 
 
 class Map(models.Model):
@@ -10,6 +9,7 @@ class Map(models.Model):
     slug = models.SlugField(db_index=True)
     description = models.TextField(blank=True, null=True)
     center = models.PointField(geography=True)
+    zoom = models.IntegerField()
 
     objects = models.GeoManager()
 

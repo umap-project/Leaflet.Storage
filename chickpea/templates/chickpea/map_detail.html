@@ -29,7 +29,8 @@
             "lat": {{ map.center.y }},
             "categories": {{ categories|safe }},
             "urls": {{ urls|safe }},
-            "default_icon_url": "{{ STATIC_URL }}chickpea/img/marker.png"
+            "default_icon_url": "{{ STATIC_URL }}chickpea/img/marker.png",
+            "zoom": {{ map.zoom }}
         }
         var MAP = new L.ChickpeaMap("map", map_settings);
     </script>

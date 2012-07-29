@@ -2,7 +2,7 @@ L.Map.mergeOptions({
     base_layers: null,
     overlay_layers: null,
     categories: [],
-    zoom: null,
+    zoom: 10,
     lat: null,
     lng: null,
     allowEdit: true
@@ -32,7 +32,7 @@ L.ChickpeaMap = L.Map.extend({
             }
         );
         var center = new L.LatLng(this.options.lat, this.options.lng);
-        this.setView(center, 13).addLayer(landscape);
+        this.setView(center, this.options.zoom).addLayer(landscape);
         this.baselayers = {"landscape": landscape};
         // Init control layers
         // It will be populated while creating the overlays
