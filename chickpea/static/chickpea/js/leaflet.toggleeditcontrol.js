@@ -66,7 +66,7 @@ L.Marker.Draw.include({
         // How to do it in a cleaner way? Asking upstream to add a hook?
         this._map.fire(
             'draw:marker-created',
-            { marker: new L.ChickpeaMarker(this._map, null, this._marker.getLatLng(), { icon: this.options.icon }) }
+            { marker: new L.ChickpeaMarker(this._map, null, this._marker.getLatLng()) }
         );
         this.disable();
     }

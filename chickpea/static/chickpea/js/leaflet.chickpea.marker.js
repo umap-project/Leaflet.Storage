@@ -2,6 +2,9 @@ L.ChickpeaMarker = L.Marker.extend({
 
     initialize: function(map, chickpea_id, latlng, options) {
         this.map = map;
+        if(typeof options == "undefined") {
+            options = {};
+        }
         // Overlay the marker belongs to
         if(options.overlay) {
             this.chickpea_overlay = options.overlay;
@@ -10,7 +13,7 @@ L.ChickpeaMarker = L.Marker.extend({
             this.chickpea_overlay = null;
         }
         if(!options.icon) {
-            options.icon = new L.ChickpeaIcon(this.map, {"overlay": this.chickpea_overlay});
+            options.icon = new L.ChickpeaIcon(this.map);
         }
         L.Marker.prototype.initialize.call(this, latlng, options);
         this.form_id = "marker_form";
@@ -79,12 +82,17 @@ L.ChickpeaMarker = L.Marker.extend({
     },
 
     _redrawIcon: function() {
-        var previous_overlay = this.options.icon.overlay;
-        this.options.icon.overlay = this.chickpea_overlay;
         this._removeIcon();
         this._initIcon();
         this.update();
-        this.options.icon.overlay = previous_overlay;
+    },
+
+    changeOverlay: function(layer) {
+        if(this.chickpea_overlay) {
+            this.chickpea_overlay.removeLayer(this);
+        }
+        layer.addLayer(this);
+        this._redrawIcon();
     },
 
     listenForm: function(form_id) {
@@ -100,11 +108,13 @@ L.ChickpeaMarker = L.Marker.extend({
                 // Update object, if it's new
                 var feature = data.features[0]
                 if (!self.chickpea_id) {
-                    self.chickpea_id = feature.id
+                    self.chickpea_id = feature.id;
                 }
                 // Redraw icon in case overlay has changed
-                self.chickpea_overlay = self.map.chickpea_overlays[feature.properties.category_id];
-                self._redrawIcon();
+                var newOverlay = self.map.chickpea_overlays[feature.properties.category_id];
+                if(self.chickpea_overlay !== newOverlay) {
+                    self.changeOverlay(newOverlay);
+                }
                 console.log("ok") // FIXME make a little message system
                 self.closePopup();
             }

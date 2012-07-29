@@ -32,5 +32,21 @@ L.ChickpeaLayer = L.LazyGeoJSON.extend({
             "dataType": "json"
             });
         return geojson;
+    },
+    addLayer: function (layer) {
+        var id = L.Util.stamp(layer); // Id leaflet, not chickpea
+                                      // as new marker will be added to
+        layer.chickpea_overlay = this;
+        layer.options.icon.overlay = this;
+        this.map.marker_to_overlay[id] = this;
+        return L.LazyGeoJSON.prototype.addLayer.call(this, layer);
+    },
+    removeLayer: function (layer) {
+        var id = L.Util.stamp(layer); // Id leaflet, not chickpea
+                                      // as new marker will be added to
+        layer.chickpea_overlay = null;
+        layer.options.icon.overlay = null;
+        delete this.map.marker_to_overlay[id];
+        return L.LazyGeoJSON.prototype.removeLayer.call(this, layer);
     }
 });

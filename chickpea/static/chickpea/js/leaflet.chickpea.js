@@ -41,6 +41,7 @@ L.ChickpeaMap = L.Map.extend({
         this.addControl(this.chickpea_layers_control);
         // Global storage for retrieving overlays
         this.chickpea_overlays = {};
+        this.marker_to_overlay = {};
         // create overlays
         for(var i in this.options.categories) {
             if(this.options.categories.hasOwnProperty(i)){
