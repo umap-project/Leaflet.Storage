@@ -18,6 +18,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
     onAdd: function (map) {
         var container = L.Control.Draw.prototype.onAdd.call(this, map);
         // var container = L.DomUtil.create('div', "leaflet-control-edit");
+        // this._createNewOverlayButton(map, container);
         this._createToggleButton(map, container);
         return container
     },
@@ -41,6 +42,17 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
         .addListener(link, 'click', L.DomEvent.preventDefault)
         .addListener(link, 'click', fn);
     },
+
+    _createNewOverlayButton: function(map, container) {
+        this._createButton(
+            'Add an overlay',
+            'add-overlay',
+            container,
+            function() {},
+            {}
+        );
+    },
+
     _enableEdit: function(e, map, container) {
         L.DomUtil.addClass(container, "control-enabled");
         map.editEnabled = true;

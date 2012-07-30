@@ -4,6 +4,7 @@ L.ChickpeaLayer = L.LazyGeoJSON.extend({
         this.chickpea_name = category.name;
         this.chickpea_color = category.color;
         this.iconUrl = category.icon_url;
+        this.preset = category.preset;
         this.map = map;
         this.map.chickpea_overlays[this.chickpea_id] = this;
         if(typeof options == "undefined") {
@@ -18,6 +19,9 @@ L.ChickpeaLayer = L.LazyGeoJSON.extend({
             }
 
         L.LazyGeoJSON.prototype.initialize.call(this, this._dataGetter, options);
+        if(this.preset) {
+            this.map.addLayer(this);
+        }
         this.map.chickpea_layers_control.addOverlay(this, this.chickpea_name);
     },
     _dataUrl: function() {

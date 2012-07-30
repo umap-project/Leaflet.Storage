@@ -9,7 +9,8 @@ class Map(models.Model):
     slug = models.SlugField(db_index=True)
     description = models.TextField(blank=True, null=True)
     center = models.PointField(geography=True)
-    zoom = models.IntegerField()
+    zoom = models.IntegerField(default=8)
+    locate = models.BooleanField(default=False)
 
     objects = models.GeoManager()
 
@@ -37,6 +38,7 @@ class Category(models.Model):
     description = models.TextField(blank=True, null=True)
     color = models.CharField(max_length=32)
     icon = models.ForeignKey(Icon, null=True, blank=True)
+    preset = models.BooleanField(default=False, help_text="Display this category on load.")
 
     def __unicode__(self):
         return self.name
@@ -48,6 +50,7 @@ class Category(models.Model):
             "pk": self.pk,
             "color": self.color,
             "icon_url": self.icon.icon.url if self.icon else None,
+            "preset": self.preset,
         }
 
 

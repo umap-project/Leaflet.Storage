@@ -7,7 +7,10 @@
             "categories": {{ categories|safe }},
             "urls": {{ urls|safe }},
             "default_icon_url": "{{ STATIC_URL }}chickpea/img/marker.png",
-            "zoom": {{ map.zoom }}
+            "zoom": {{ map.zoom }},
         }
+        {% if map.locate %}
+            map_settings['locate'] = {"setView": true}
+        {% endif %}
         var MAP = new L.ChickpeaMap("map", map_settings);
     </script>

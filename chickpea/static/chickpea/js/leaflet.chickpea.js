@@ -31,8 +31,16 @@ L.ChickpeaMap = L.Map.extend({
                 maxZoom: 18
             }
         );
-        var center = new L.LatLng(this.options.lat, this.options.lng);
-        this.setView(center, this.options.zoom).addLayer(landscape);
+        this.addLayer(landscape);
+        if(options.locate && options.locate.setView) {
+            // Prevent from making two setViews at init
+            // which is not very fluid...
+            this.locate(options.locate);
+        }
+        else {
+            var center = new L.LatLng(this.options.lat, this.options.lng);
+            this.setView(center, this.options.zoom)
+        }
         this.baselayers = {"landscape": landscape};
         // Init control layers
         // It will be populated while creating the overlays

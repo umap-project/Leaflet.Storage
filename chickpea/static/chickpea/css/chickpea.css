@@ -75,6 +75,25 @@
     /*box-shadow: 4px 8px 6px -3px black;*/
 }
 
+/* ******** */
+/* Modalbox */
+/* ******** */
+
+.modalbox  {
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    display:none;
+    background-color:rgba(0,0,0,0.8);
+    text-align:center;
+    z-index:101;
+}
+.modalbox:target {
+    display: block;
+}
+
 /* *************************** */
 /* Overriding leaflet defaults */
 /* *************************** */
