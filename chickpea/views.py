@@ -50,7 +50,7 @@ class MapView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(MapView, self).get_context_data(**kwargs)
-        categories = Category.objects.all()  # TODO manage state
+        categories = Category.objects.filter(map=self.object)  # TODO manage state
         category_data = [c.json for c in categories]
         context['categories'] = simplejson.dumps(category_data)
         context['urls'] = simplejson.dumps(_urls_for_js())
@@ -61,7 +61,7 @@ class MarkerGeoJSONMixin(object):
 
     def render_to_response(self, context):
         qs = self.get_queryset()
-        djf = Django.Django(geodjango="latlng", properties=['title', 'category_id'])
+        djf = Django.Django(geodjango="latlng", properties=['name', 'category_id'])
         geoj = GeoJSON.GeoJSON()
         output = geoj.encode(djf.decode(qs))
         return HttpResponse(output)

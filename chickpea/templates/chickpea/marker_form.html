@@ -1,7 +1,8 @@
 <form method="post" action="{{ action }}" id="marker_form" onsubmit="return false;">
     {% csrf_token %}
     {{ form.errors }}
-    <p>{{ form.title }}</p>
+    <p>{{ form.name }}</p>
+    <p>{{ form.description }}</p>
     <p>{{ form.category }}</p>
     <input type="hidden" name="{{ form.latlng.html_name }}" value="{{ form.latlng.value }}" />
     <input type="submit" />
