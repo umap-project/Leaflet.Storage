@@ -4,8 +4,7 @@ L.Map.mergeOptions({
     categories: [],
     zoom: 10,
     lat: null,
-    lng: null,
-    allowEdit: true
+    lng: null
 });
 
 L.ChickpeaMap = L.Map.extend({
