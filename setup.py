@@ -10,7 +10,7 @@ import chickpea
 long_description = codecs.open('README.rst', "r", "utf-8").read()
 
 setup(
-    name="django-chickpea",
+    name="chickpea",
     version=chickpea.__version__,
     author=chickpea.__author__,
     author_email=chickpea.__contact__,
