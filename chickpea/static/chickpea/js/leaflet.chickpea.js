@@ -33,7 +33,11 @@ L.ChickpeaMap = L.Map.extend({
             }
         );
         this.addLayer(landscape);
-        if(options.locate && options.locate.setView) {
+        if(location.hash) {
+            // FIXME An invalid hash will cause the load to fail
+            this.hash.update();
+        }
+        else if(options.locate && options.locate.setView) {
             // Prevent from making two setViews at init
             // which is not very fluid...
             this.locate(options.locate);
