@@ -20,6 +20,7 @@ setup(
     download_url="https://github.com/yohanboniface/django-chickpea/downloads",
     packages=find_packages(),
     include_package_data=True,
+    package_data={'chickpea': ['static/*.*', 'templates/*.*']},
     platforms=["any"],
     zip_safe=True,
     install_requires=["vectorformats", ],
