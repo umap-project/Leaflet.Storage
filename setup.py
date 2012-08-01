@@ -22,7 +22,7 @@ setup(
     include_package_data=True,
     platforms=["any"],
     zip_safe=True,
-
+    install_requires=["vectorformats", ],
     long_description=long_description,
 
     classifiers=[
