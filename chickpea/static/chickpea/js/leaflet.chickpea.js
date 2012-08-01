@@ -16,6 +16,8 @@ L.ChickpeaMap = L.Map.extend({
             alert("ImplementationError: you must provide a chickpea_id for ChickpeaMap.")
         }
 
+        // Hash management (for permalink)
+        this.hash = new L.Hash(this);
         var drawnItems = new L.LayerGroup();
         this.on('draw:marker-created', function (e) {
             drawnItems.addLayer(e.marker);
