@@ -18,12 +18,25 @@ L.ChickpeaMap = L.Map.extend({
 
         // Hash management (for permalink)
         this.hash = new L.Hash(this);
-        var drawnItems = new L.LayerGroup();
-        this.on('draw:marker-created', function (e) {
-            drawnItems.addLayer(e.marker);
-            e.marker.edit();
-        });
-        this.addLayer(drawnItems);
+
+        if (this.options.allowEdit) {
+            // Layer for items added by users
+            var drawnItems = new L.LayerGroup();
+            this.on('draw:marker-created', function (e) {
+                drawnItems.addLayer(e.marker);
+                e.marker.edit();
+            });
+            this.on("popupclose", function(e) {
+                // remove source if it has not been created (no chickpea_id)
+                var layer = e.popup._source;
+                var id = L.Util.stamp(layer);
+                if(drawnItems._layers.hasOwnProperty(id)
+                    && !layer.chickpea_id) {
+                    drawnItems.removeLayer(layer);
+                }
+            });
+            this.addLayer(drawnItems);
+        }
 
         var landscape = new L.TileLayer(
             'http://{s}.tile3.opencyclemap.org/landscape/{z}/{x}/{y}.png',
