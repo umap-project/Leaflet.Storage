@@ -39,6 +39,7 @@ class Category(models.Model):
     color = models.CharField(max_length=32)
     icon = models.ForeignKey(Icon, null=True, blank=True)
     preset = models.BooleanField(default=False, help_text="Display this category on load.")
+    rank = models.IntegerField(null=True, blank=True)
 
     def __unicode__(self):
         return self.name
@@ -52,6 +53,9 @@ class Category(models.Model):
             "icon_url": self.icon.icon.url if self.icon else None,
             "preset": self.preset,
         }
+
+    class Meta:
+        ordering = ["rank"]
 
 
 class Marker(models.Model):
