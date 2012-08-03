@@ -38,14 +38,12 @@ L.ChickpeaMap = L.Map.extend({
             this.addLayer(drawnItems);
         }
 
-        var landscape = new L.TileLayer(
-            'http://{s}.tile3.opencyclemap.org/landscape/{z}/{x}/{y}.png',
-            {
-                attribution: 'test',
-                maxZoom: 18
+        this.tilelayers = {}
+        for(var i in this.options.tilelayers) {
+            if(this.options.tilelayers.hasOwnProperty(i)) {
+                this.addTileLayer(this.options.tilelayers[i]);
             }
-        );
-        this.addLayer(landscape);
+        }
         if(location.hash) {
             // FIXME An invalid hash will cause the load to fail
             this.hash.update();
@@ -59,10 +57,12 @@ L.ChickpeaMap = L.Map.extend({
             var center = new L.LatLng(this.options.lat, this.options.lng);
             this.setView(center, this.options.zoom)
         }
-        this.baselayers = {"landscape": landscape};
+
         // Init control layers
         // It will be populated while creating the overlays
-        this.chickpea_layers_control = new L.Control.Layers()
+        this.chickpea_layers_control = new L.Control.Layers(
+            this.options.tilelayers.length > 1? this.tilelayers: {}
+        );
         // this.addLayer(geojsonLayer);
         this.addControl(this.chickpea_layers_control);
         // Global storage for retrieving overlays
@@ -74,6 +74,22 @@ L.ChickpeaMap = L.Map.extend({
                 this._createOverlay(this.options.categories[i]);
             }
         }
+    },
+    addTileLayer: function (options) {
+        var tilelayer = new L.TileLayer(
+            options.tilelayer.url_template,
+            {
+                attribution: options.tilelayer.attribution,
+                minZoom: options.tilelayer.minZoom,
+                maxZoom: options.tilelayer.maxZoom,
+            }
+        );
+        // Add only the firs to the map, to make it visible,
+        // and the other only when user click on them
+        if(options.rank == 1) {
+            this.addLayer(tilelayer);
+        }
+        this.tilelayers[options.tilelayer.name] = tilelayer;
     },
     _createOverlay: function(category) {
         return new L.ChickpeaLayer(category, this);

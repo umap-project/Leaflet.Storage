@@ -54,6 +54,8 @@ class MapView(DetailView):
         category_data = [c.json for c in categories]
         context['categories'] = simplejson.dumps(category_data)
         context['urls'] = simplejson.dumps(_urls_for_js())
+        tilelayers_data = self.object.tilelayers_data
+        context['tilelayers'] = simplejson.dumps(tilelayers_data)
         return context
 
 

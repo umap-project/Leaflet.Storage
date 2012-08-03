@@ -1,6 +1,24 @@
 from django.contrib.gis.db import models
 
 
+class TileLayer(models.Model):
+    name = models.CharField(max_length=50)
+    url_template = models.CharField(
+        max_length=200,
+        help_text="URL template using OSM tile format"
+    )
+    minZoom = models.IntegerField(default=0)
+    maxZoom = models.IntegerField(default=18)
+    attribution = models.CharField(max_length=300)
+
+    def __unicode__(self):
+        return self.name
+
+    @property
+    def json(self):
+        return dict((field.name, getattr(self, field.name)) for field in self._meta.fields)
+
+
 class Map(models.Model):
     """
     A single thematical map.
@@ -11,11 +29,31 @@ class Map(models.Model):
     center = models.PointField(geography=True)
     zoom = models.IntegerField(default=8)
     locate = models.BooleanField(default=False)
+    tilelayers = models.ManyToManyField(TileLayer, through="MapToTileLayer")
 
     objects = models.GeoManager()
 
     def __unicode__(self):
         return self.name
+
+    @property
+    def tilelayers_data(self):
+        tilelayers_data = []
+        for m2t in MapToTileLayer.objects.filter(map=self):
+            tilelayers_data.append({
+                "tilelayer": m2t.tilelayer.json,
+                "rank": m2t.rank or 1  # default rank
+            })
+        return tilelayers_data
+
+
+class MapToTileLayer(models.Model):
+    tilelayer = models.ForeignKey(TileLayer)
+    map = models.ForeignKey(Map)
+    rank = models.IntegerField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['rank']
 
 
 class Icon(models.Model):
