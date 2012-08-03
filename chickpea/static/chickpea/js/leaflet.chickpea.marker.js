@@ -31,7 +31,9 @@ L.ChickpeaMarker = L.Marker.extend({
             this.edit();
         }
         else {
-            this.view();
+            if(!this._popup) {
+                this.view();
+            }
         }
     },
 

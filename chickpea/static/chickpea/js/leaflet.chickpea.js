@@ -30,6 +30,10 @@ L.ChickpeaMap = L.Map.extend({
                 // remove source if it has not been created (no chickpea_id)
                 var layer = e.popup._source;
                 var id = L.Util.stamp(layer);
+                // Prevent from caching popup in edit mode
+                if(this.editEnabled) {
+                    layer._popup = null;
+                }
                 if(drawnItems._layers.hasOwnProperty(id)
                     && !layer.chickpea_id) {
                     drawnItems.removeLayer(layer);
