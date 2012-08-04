@@ -49,7 +49,11 @@
 /* ************* */
 /* Marker's Icon */
 /* ************* */
-.icon_container {
+.leaflet-div-icon {
+    background: none;
+    border: none;
+}
+.leaflet-div-icon .icon_container {
     background-color: white;
     border-radius: 4px 4px 4px 4px;
     height: 32px;
@@ -60,10 +64,10 @@
     text-align: center;
     line-height: 32px;
 }
-.icon_container img {
+.leaflet-div-icon .icon_container img {
     vertical-align: middle;
 }
-.icon_arrow {
+.leaflet-div-icon .icon_arrow {
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
     border-top: 8px solid #2270b5;

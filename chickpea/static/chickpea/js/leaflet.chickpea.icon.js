@@ -1,11 +1,10 @@
-L.ChickpeaIcon = L.Icon.extend({
+L.ChickpeaIcon = L.DivIcon.extend({
     initialize: function(map, options) {
         this.map = map;
         var default_options = {
-            iconSize: new L.Point(32, 40),
-            iconAnchor: new L.Point(16, 40),
-            popupAnchor: new L.Point(-1, -40),
-            shadowSize: new L.Point(40, 40),
+            iconSize: null,  // Made in css
+            iconAnchor: new L.Point(16, 20),
+            popupAnchor: new L.Point(0, -20),
             iconUrl: this.map.options.default_icon_url,
             overlay: {}
         };
@@ -13,14 +12,18 @@ L.ChickpeaIcon = L.Icon.extend({
         L.Icon.prototype.initialize.call(this, options);
         this.overlay = this.options.overlay;
     },
-    _createImg: function(src) {
+    createIcon: function() {
         this.elements = {}
         this.elements.main = L.DomUtil.create('div');
         this.elements.container = L.DomUtil.create('div', 'icon_container', this.elements.main);
         this.elements.arrow = L.DomUtil.create('div', 'icon_arrow', this.elements.main);
         this.elements.img = L.DomUtil.create('img', null, this.elements.container);
-        this.elements.img.src = src;
+        var src = this._getIconUrl('icon');
+        if(src) {
+            this.elements.img.src = src;
+        }
         this._setColor();
+        this._setIconStyles(this.elements.main, 'icon');
         return this.elements.main;
     },
     _setColor: function() {
