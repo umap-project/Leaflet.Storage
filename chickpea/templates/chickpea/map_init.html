@@ -8,7 +8,8 @@
             "urls": {{ urls|safe }},
             "default_icon_url": "{{ STATIC_URL }}chickpea/img/marker.png",
             "zoom": {{ map.zoom }},
-            "tilelayers": {{ tilelayers|safe }}
+            "tilelayers": {{ tilelayers|safe }},
+            "allowEdit": true
         }
         {% if map.locate %}
             map_settings['locate'] = {"setView": true}
