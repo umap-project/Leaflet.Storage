@@ -5,3 +5,4 @@ from chickpea.base_models import Category, Map, TileLayer, Icon, MapToTileLayer
 
 # Marker is the only model configurable for now
 Marker = get_model("Marker")
+Polyline = get_model("Polyline")

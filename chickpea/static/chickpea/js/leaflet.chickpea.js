@@ -26,6 +26,10 @@ L.ChickpeaMap = L.Map.extend({
                 drawnItems.addLayer(e.marker);
                 e.marker.edit();
             });
+            this.on('draw:poly-created', function (e) {
+                drawnItems.addLayer(e.poly);
+                e.poly.edit();
+            });
             this.on("popupclose", function(e) {
                 // remove source if it has not been created (no chickpea_id)
                 var layer = e.popup._source;

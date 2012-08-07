@@ -3,10 +3,11 @@ L.ChickpeaIcon = L.DivIcon.extend({
         this.map = map;
         var default_options = {
             iconSize: null,  // Made in css
-            iconAnchor: new L.Point(16, 20),
-            popupAnchor: new L.Point(0, -20),
+            iconAnchor: new L.Point(16, 40),
+            popupAnchor: new L.Point(0, -40),
             iconUrl: this.map.options.default_icon_url,
-            overlay: {}
+            overlay: {},
+            className: "chickpea-div-icon"
         };
         options = L.Util.extend({}, default_options, options);
         L.Icon.prototype.initialize.call(this, options);

@@ -11,7 +11,7 @@ from django.template import RequestContext
 
 from vectorformats.Formats import Django, GeoJSON
 
-from chickpea.models import Map, Marker, Category
+from chickpea.models import Map, Marker, Category, Polyline
 from chickpea.utils import get_uri_template
 
 
@@ -24,7 +24,10 @@ def _urls_for_js(urls=None):
             'marker_update',
             'marker_add',
             'marker_geojson_list',
-            'marker'
+            'marker',
+            'polyline',
+            'polyline_add',
+            'polyline_update',
         ]
     return dict(zip(urls, [get_uri_template(url) for url in urls]))
 
@@ -59,7 +62,7 @@ class MapView(DetailView):
         return context
 
 
-class MarkerGeoJSONMixin(object):
+class GeoJSONMixin(object):
 
     def render_to_response(self, context):
         qs = self.get_queryset()
@@ -69,14 +72,19 @@ class MarkerGeoJSONMixin(object):
         return HttpResponse(output)
 
 
-class MarkerGeoJSONListView(BaseListView, MarkerGeoJSONMixin):
+class MarkerGeoJSONListView(BaseListView, GeoJSONMixin):
     model = Marker
 
     def get_queryset(self):
-        return Marker.objects.filter(category=self.kwargs['category_id'])
+        filters = {
+            "category": self.kwargs['category_id']
+        }
+        markers = Marker.objects.filter(**filters)
+        polylines = Polyline.objects.filter(**filters)
+        return list(markers) + list(polylines)
 
 
-class MarkerGeoJSONView(BaseDetailView, MarkerGeoJSONMixin):
+class MarkerGeoJSONView(BaseDetailView, GeoJSONMixin):
     model = Marker
 
     def get_queryset(self):
@@ -94,11 +102,6 @@ class MarkerView(DetailView):
 class MarkerAdd(CreateView):
     model = Marker
 
-    def get_context_data(self, **kwargs):
-        context = super(MarkerAdd, self).get_context_data(**kwargs)
-        context['action'] = reverse_lazy("marker_add")
-        return context
-
     def get_success_url(self):
         return reverse_lazy('marker_geojson', kwargs={"pk": self.object.pk})
 
@@ -108,18 +111,47 @@ class MarkerAdd(CreateView):
 
 class MarkerUpdate(UpdateView):
     model = Marker
-    success_url = reverse_lazy("success")
-
-    def get_context_data(self, **kwargs):
-        context = super(MarkerUpdate, self).get_context_data(**kwargs)
-        context['action'] = reverse_lazy("marker_update", kwargs={"pk": self.kwargs['pk']})
-        return context
 
     def get_success_url(self):
         return reverse_lazy('marker_geojson', kwargs={"pk": self.object.pk})
 
     def render_to_response(self, context, **response_kwargs):
         return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
+
+
+class PolylineView(DetailView):
+    model = Polyline
+
+    def render_to_response(self, context, **response_kwargs):
+        return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
+
+
+class PolylineAdd(CreateView):
+    model = Polyline
+
+    def get_success_url(self):
+        return reverse_lazy('polyline_geojson', kwargs={"pk": self.object.pk})
+
+    def render_to_response(self, context, **response_kwargs):
+        return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
+
+
+class PolylineUpdate(UpdateView):
+    model = Polyline
+
+    def get_success_url(self):
+        return reverse_lazy('polyline_geojson', kwargs={"pk": self.object.pk})
+
+    def render_to_response(self, context, **response_kwargs):
+        return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
+
+
+class PolylineGeoJSONView(BaseDetailView, GeoJSONMixin):
+    model = Polyline
+
+    def get_queryset(self):
+        # GeoJSON expects an iterable
+        return Polyline.objects.filter(pk=self.kwargs['pk'])
 
 
 class SuccessView(TemplateView):

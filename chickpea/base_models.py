@@ -98,13 +98,9 @@ class Category(models.Model):
         ordering = ["rank"]
 
 
-class AbstractMarker(models.Model):
-    """
-    Point of interest.
-    """
+class BaseFeature(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
-    latlng = models.PointField(geography=True)
     category = models.ForeignKey(Category)
 
     objects = models.GeoManager()
@@ -116,9 +112,33 @@ class AbstractMarker(models.Model):
         abstract = True
 
 
+class AbstractMarker(BaseFeature):
+    """
+    Point of interest.
+    """
+    latlng = models.PointField(geography=True)
+
+    class Meta:
+        abstract = True
+
+
+class AbstractPolyline(BaseFeature):
+    """
+    Point of interest.
+    """
+    latlng = models.LineStringField(geography=True)
+
+    class Meta:
+        abstract = True
+
+
 # ############## #
 # Default Models #
 # ############## #
 
 class Marker(AbstractMarker):
+    pass
+
+
+class Polyline(AbstractPolyline):
     pass

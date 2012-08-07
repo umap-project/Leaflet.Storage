@@ -1,5 +1,5 @@
 from django.contrib.gis import admin
-from chickpea.models import Map, Marker, Category, Icon, TileLayer
+from chickpea.models import Map, Marker, Category, Icon, TileLayer, Polyline
 
 
 class MapToTileLayerAdmin(admin.TabularInline):
@@ -13,6 +13,7 @@ class MapAdmin(admin.OSMGeoAdmin):
 
 admin.site.register(Map, MapAdmin)
 admin.site.register(Marker, admin.OSMGeoAdmin)
+admin.site.register(Polyline, admin.OSMGeoAdmin)
 admin.site.register(Category)
 admin.site.register(Icon)
 admin.site.register(TileLayer)
