@@ -65,7 +65,8 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
 
 L.Map.addInitHook(function () {
     if (this.options.allowEdit) {
-        this.toggleEditControl = new L.Control.ToggleEdit(this);
+        var options = this.options.editOptions ? this.options.editOptions : {};
+        this.toggleEditControl = new L.Control.ToggleEdit(this, options);
         this.addControl(this.toggleEditControl);
     }
 });
