@@ -52,7 +52,7 @@ L.ChickpeaMap = L.Map.extend({
                 this.addTileLayer(this.options.tilelayers[i]);
             }
         }
-        if(location.hash && this.hash.parseHash(location.hash.substr(1))) {
+        if(this.hash.parseHash(location.hash)) {
             // FIXME An invalid hash will cause the load to fail
             this.hash.update();
         }
