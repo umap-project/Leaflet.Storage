@@ -153,7 +153,7 @@ L.ChickpeaMarker = L.Marker.extend({
     },
 
     changeOverlay: function(layer) {
-        L.Mixin.ChickpeaFeature.prototype.changeOverlay.call(this, layer);
+        L.Mixin.ChickpeaFeature.changeOverlay.call(this, layer);
         // Icon look depends on overlay
         this._redrawIcon();
     },
