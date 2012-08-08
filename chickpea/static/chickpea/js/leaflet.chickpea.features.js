@@ -71,7 +71,7 @@ L.Mixin.ChickpeaFeature = {
                 if(self.chickpea_overlay !== newOverlay) {
                     self.changeOverlay(newOverlay);
                 }
-                console.log("ok") // FIXME make a little message system
+                // FIXME make a little message system
                 self.closePopup();
             }
         }
