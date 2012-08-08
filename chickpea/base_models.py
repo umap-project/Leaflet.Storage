@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from django.contrib.gis.db import models
+from django.db.models import get_model as dj_get_model
+from django.conf import settings
 
 
 class TileLayer(models.Model):
@@ -142,3 +144,23 @@ class Marker(AbstractMarker):
 
 class Polyline(AbstractPolyline):
     pass
+
+
+# ###### #
+# Getter #
+# ###### #
+
+
+def get_model(name):
+    """
+    Example of settings:
+    CHICKPEA_MODELS = {
+        "Marker": ('app_name', 'ModelName'),
+    }
+    """
+    CHICKPEA_MODELS = getattr(settings, "CHICKPEA_MODELS", {})
+    if not name in CHICKPEA_MODELS:
+        model = globals()[name]
+    else:
+        model = dj_get_model(*CHICKPEA_MODELS[name])
+    return model
