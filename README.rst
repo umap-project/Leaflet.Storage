@@ -134,3 +134,4 @@ Again, this have to be done in JavaScript::
 - manage deleting feature inplace
 - inplace editing of Overlays (CRUD)
 - inplace management of TileLayers (CRUD)
+- light "per map" edit permission management
