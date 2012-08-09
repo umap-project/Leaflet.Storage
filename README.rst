@@ -4,13 +4,14 @@ Django-Chickpea
 
 Provide collaborative maps for your Django project.
 Built on top of Geodjango and Leaflet.
+It's in "molto alpha" stage, but already usable for proof-of-concept projects.
 
 Goals:
 
 - plugable
+- extendable
 - light
 - edit in place
-- extendable
 
 
 Supported features (others are planned: Polygon, Circle, etc.):
@@ -118,3 +119,17 @@ Again, this have to be done in JavaScript::
     <script>
         map_settings.allowEdit = true;
     </script>
+
+
+-----
+#TODO
+-----
+
+- unittests! (Javascript side also)
+- support of Polygon
+- support of Circle
+- batch import of features, from standards geoformats (geojson, kml...)
+- export of features to standards geoformats
+- manage deleting feature inplace
+- inplace editing of Overlays (CRUD)
+- inplace management of TileLayers (CRUD)
