@@ -13,6 +13,10 @@ Goals:
 - extendable
 
 
+Supported features (others are planned: Polygon, Circle, etc.):
+- Marker
+- Polyline
+
 Screenshot:
 
 .. image:: http://i.imgur.com/IL1I7.jpg
@@ -86,3 +90,29 @@ Then, in your settings, add::
 
 .. warning::
    Of course, you will need to do this *before* running the initial syncdb.
+
+
+Decide which features are editable
+----------------------------------
+
+For now, only the Marker and Polyline features are supported.
+Maybe you just want for example the Marker to be editable.
+For this, you will need to override the map configuration in JavaScript.
+You will have to explicity prevent the Polyline editing, doing so::
+
+    <script>
+        // create map_settings like the default template does
+        map_settings.editOptions = {
+                "polyline": null
+            }
+        // Create the map like the default template does
+    </script>
+
+
+Disabling totally inplace editing
+---------------------------------
+Again, this have to be done in JavaScript::
+
+    <script>
+        map_settings.allowEdit = true;
+    </script>
