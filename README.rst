@@ -14,12 +14,14 @@ Goals:
 
 
 Supported features (others are planned: Polygon, Circle, etc.):
+
 - Marker
 - Polyline
 
-Screenshot:
+Screenshots:
 
 .. image:: http://i.imgur.com/IL1I7.jpg
+.. image:: http://i.imgur.com/cSJmN.jpg
 
 
 ------------
