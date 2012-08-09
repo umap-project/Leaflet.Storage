@@ -23,13 +23,11 @@ Installation
 ------------
 
 .. note::
-
-    You will need a geo aware database. See `Geodjango doc <https://docs.djangoproject.com/en/dev/ref/contrib/gis/install/>`_ for backend installation.
+   You will need a geo aware database. See `Geodjango doc <https://docs.djangoproject.com/en/dev/ref/contrib/gis/install/>`_ for backend installation.
 
 .. note::
-
-    You will need Leaflet, Leaflet.Draw and Leaflet.Hash.
-    They are submodules of this module, but pip will not fetch them automatically (will the case in future version of pip).
+   You will need Leaflet, Leaflet.Draw and Leaflet.Hash.
+   They are submodules of this module, but pip will not fetch them automatically (will the case in future version of pip).
 
 Then you can pip install the rep, only from its repo for now::
 
@@ -50,3 +48,41 @@ Create tables::
 
     python manage.py syncdb
 
+
+-----------
+Basic usage
+-----------
+
+From the Django admin (for now), you need to create at least:
+- one TileLayer instance
+- one Map instance
+- one Category instance
+
+Then, go to the map front page (something like http://localhost:8017/map/my-map-slug), and you will be able to add Markers and Polylines.
+
+
+----------------------
+Advanced configuration
+----------------------
+
+Use your own Marker and Polyline models
+---------------------------------------
+
+Sometimes, you will need to add specific properties to the Marker or the Polyline. Its easy to do so with `chickpea`.
+
+Create a model that inherit from AbstractMarker (for Marker example)::
+
+    from chickpea.base_models import AbstractMarker
+
+
+    class MyMarker(AbstractMarker):
+        # your fields here
+
+Then, in your settings, add::
+
+    CHICKPEA_MODELS = {
+        "Marker": ('my_app', 'MyModel'),
+    }
+
+.. warning::
+   Of course, you will need to do this *before* running the initial syncdb.
