@@ -3,7 +3,7 @@ Django-Chickpea
 ===============
 
 Provide collaborative maps for your Django project.
-Built on top of Geodjango and Leaflet.
+Built on top of `Geodjango <http://geodjango.org/>`_ and `Leaflet <http://leaflet.cloudmade.com/>`_.
 It's in "molto alpha" stage, but already usable for proof-of-concept projects.
 
 Goals:
@@ -61,6 +61,7 @@ Basic usage
 -----------
 
 From the Django admin (for now), you need to create at least:
+
 - one TileLayer instance
 - one Map instance
 - one Category instance
