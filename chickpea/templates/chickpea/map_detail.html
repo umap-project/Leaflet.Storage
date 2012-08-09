@@ -1,24 +1,10 @@
 {% extends "base.html" %}
+{% load chickpea_tags %}
 {% block title %}{{ map.name }}{% endblock %}
 
 {% block extra_head %}
-    <link rel="stylesheet" href="{{ STATIC_URL }}leaflet/dist/leaflet.css" />
-    <!--[if lte IE 8]>
-        <link rel="stylesheet" href="{{ STATIC_URL }}leaflet/dist/leaflet.ie.css" />
-    <![endif]-->
-    <link rel="stylesheet" href="{{ STATIC_URL }}draw/dist/leaflet.draw.css" />
-    <link rel="stylesheet" href="{{ STATIC_URL }}chickpea/css/chickpea.css" />
-
-    <script src="{{ STATIC_URL }}leaflet/dist/leaflet-src.js"></script>
-    <script src="{{ STATIC_URL }}draw/dist/leaflet.draw-src.js"></script>
-    <script src="{{ STATIC_URL }}hash/leaflet-hash.js"></script>
-    <script src="{{ STATIC_URL }}chickpea/js/leaflet.simplexhr.js"></script>
-    <script src="{{ STATIC_URL }}chickpea/js/leaflet.lazygeojson.js"></script>
-    <script src="{{ STATIC_URL }}chickpea/js/leaflet.chickpea.icon.js"></script>
-    <script src="{{ STATIC_URL }}chickpea/js/leaflet.chickpea.features.js"></script>
-    <script src="{{ STATIC_URL }}chickpea/js/leaflet.chickpea.layer.js"></script>
-    <script src="{{ STATIC_URL }}chickpea/js/leaflet.toggleeditcontrol.js"></script>
-    <script src="{{ STATIC_URL }}chickpea/js/leaflet.chickpea.js"></script>
+    {% chickpea_css %}
+    {% chickpea_js %}
 {% endblock %}
 
 {% block content %}
