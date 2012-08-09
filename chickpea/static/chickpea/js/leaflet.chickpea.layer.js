@@ -18,7 +18,7 @@ L.ChickpeaLayer = L.LazyGeoJSON.extend({
         this.map.chickpea_layers_control.addOverlay(this, this.chickpea_name);
     },
     _dataUrl: function() {
-        var template = this.map.options.urls.marker_geojson_list;
+        var template = this.map.options.urls.feature_geojson_list;
         return L.Util.template(template, {"category_id": this.chickpea_id});
     },
     _dataGetter: function () {

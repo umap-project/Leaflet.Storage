@@ -23,8 +23,8 @@ def _urls_for_js(urls=None):
         urls = [
             'marker_update',
             'marker_add',
-            'marker_geojson_list',
             'marker',
+            'feature_geojson_list',
             'polyline',
             'polyline_add',
             'polyline_update',
@@ -72,8 +72,7 @@ class GeoJSONMixin(object):
         return HttpResponse(output)
 
 
-class MarkerGeoJSONListView(BaseListView, GeoJSONMixin):
-    model = Marker
+class FeatureGeoJSONListView(BaseListView, GeoJSONMixin):
 
     def get_queryset(self):
         filters = {
