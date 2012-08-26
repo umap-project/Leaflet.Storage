@@ -113,8 +113,13 @@
 /* ****** */
 
 @media all and (max-width: 480px) {
+
     .leaflet-control-layers-expanded label {
         display: inline-block;
         margin-right: 10px;
+    }
+
+    .leaflet-control-layers-expanded {
+        margin-left: 10px;
     }
 }
