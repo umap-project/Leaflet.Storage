@@ -107,3 +107,14 @@
     height: 36px;
     width: 36px;
 }
+
+/* ****** */
+/* Mobile */
+/* ****** */
+
+@media all and (max-width: 480px) {
+    .leaflet-control-layers-expanded label {
+        display: inline-block;
+        margin-right: 10px;
+    }
+}
