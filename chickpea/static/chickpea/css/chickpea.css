@@ -75,6 +75,14 @@
     /*box-shadow: 4px 8px 6px -3px black;*/
 }
 
+/* ***** */
+/* Popup */
+/* ***** */
+.leaflet-popup-content textarea {
+    width: 100%;
+    min-width: 300px;
+}
+
 /* ******** */
 /* Modalbox */
 /* ******** */
