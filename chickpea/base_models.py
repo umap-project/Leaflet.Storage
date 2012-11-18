@@ -3,6 +3,7 @@
 from django.contrib.gis.db import models
 from django.db.models import get_model as dj_get_model
 from django.conf import settings
+from django.core.urlresolvers import reverse
 
 
 class TileLayer(models.Model):
@@ -21,6 +22,13 @@ class TileLayer(models.Model):
     @property
     def json(self):
         return dict((field.name, getattr(self, field.name)) for field in self._meta.fields)
+
+    @classmethod
+    def get_default(cls):
+        """
+        Returns the default tile layer (used for a map when no layer is set).
+        """
+        return cls.objects.order_by('pk')[0]  # FIXME, make it administrable
 
 
 class Map(models.Model):
@@ -49,6 +57,9 @@ class Map(models.Model):
                 "rank": m2t.rank or 1  # default rank
             })
         return tilelayers_data
+
+    def get_absolute_url(self):
+        return reverse("map", kwargs={'slug': self.slug})
 
 
 class MapToTileLayer(models.Model):

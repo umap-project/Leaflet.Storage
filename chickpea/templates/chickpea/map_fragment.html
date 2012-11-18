@@ -1,0 +1,13 @@
+    <div id="map_{{ map.slug }}" class="map_fragment"></div>
+    <script type="text/javascript">
+        map_fragment_settings = {
+            "chickpea_id": {{ map.pk }},
+            "lng": {{ map.center.x }},
+            "lat": {{ map.center.y }},
+            "zoom": {{ map.zoom }},
+            "tilelayers": [{{ tilelayer|safe }}],
+            "allowEdit": false,
+            'hash': false
+        }
+        new L.ChickpeaMap("map_{{ map.slug }}", map_fragment_settings);
+    </script>

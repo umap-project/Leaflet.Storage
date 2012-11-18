@@ -1,18 +1,19 @@
+from django.utils import simplejson
+from django.http import HttpResponse
+from django.template import RequestContext
 from django.views.generic import DetailView
+from django.core.urlresolvers import reverse_lazy
 from django.views.generic.list import BaseListView
 from django.views.generic.base import TemplateView
+from django.template.loader import render_to_string
 from django.views.generic.detail import BaseDetailView
 from django.views.generic.edit import CreateView, UpdateView
-from django.http import HttpResponse
-from django.utils import simplejson
-from django.core.urlresolvers import reverse_lazy
-from django.template.loader import render_to_string
-from django.template import RequestContext
 
 from vectorformats.Formats import Django, GeoJSON
 
-from chickpea.models import Map, Marker, Category, Polyline
+from chickpea.models import Map, Marker, Category, Polyline, TileLayer, MapToTileLayer
 from chickpea.utils import get_uri_template
+from chickpea.forms import QuickMapCreateForm
 
 
 def _urls_for_js(urls=None):
@@ -60,6 +61,20 @@ class MapView(DetailView):
         tilelayers_data = self.object.tilelayers_data
         context['tilelayers'] = simplejson.dumps(tilelayers_data)
         return context
+
+
+class QuickMapCreate(CreateView):
+    model = Map
+    form_class = QuickMapCreateForm
+
+    def form_valid(self, form):
+        """
+        Provide default values, to keep form simple.
+        """
+        self.object = form.save()
+        layer = TileLayer.get_default()
+        MapToTileLayer.objects.create(map=self.object, tilelayer=layer, rank=1)
+        return super(QuickMapCreate, self).form_valid(form)
 
 
 class GeoJSONMixin(object):

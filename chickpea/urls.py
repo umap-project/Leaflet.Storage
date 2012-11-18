@@ -3,6 +3,7 @@ from django.conf.urls import patterns, url
 from chickpea import views
 
 urlpatterns = patterns('',
+    url(r'^map/add/$', views.QuickMapCreate.as_view(), name='map_add'),
     url(r'^map/(?P<slug>[-_\w]+)/$', views.MapView.as_view(), name='map'),
     url(r'^feature/json/category/(?P<category_id>[\d]+)/$', views.FeatureGeoJSONListView.as_view(), name='feature_geojson_list'),
     url(r'^marker/json/(?P<pk>[\d]+)/$', views.MarkerGeoJSONView.as_view(), name='marker_geojson'),
