@@ -4,7 +4,8 @@ L.Map.mergeOptions({
     categories: [],
     zoom: 10,
     lat: null,
-    lng: null
+    lng: null,
+    hash: true
 });
 
 L.ChickpeaMap = L.Map.extend({
@@ -15,9 +16,6 @@ L.ChickpeaMap = L.Map.extend({
         if (typeof this.options.chickpea_id == "undefined") {
             alert("ImplementationError: you must provide a chickpea_id for ChickpeaMap.")
         }
-
-        // Hash management (for permalink)
-        this.hash = new L.Hash(this);
 
         if (this.options.allowEdit) {
             // Layer for items added by users
@@ -46,13 +44,19 @@ L.ChickpeaMap = L.Map.extend({
             this.addLayer(drawnItems);
         }
 
-        this.tilelayers = {}
+        this.tilelayers = {};
         for(var i in this.options.tilelayers) {
             if(this.options.tilelayers.hasOwnProperty(i)) {
                 this.addTileLayer(this.options.tilelayers[i]);
             }
         }
-        if(this.hash.parseHash(location.hash)) {
+
+        if (this.options.hash) {
+            // Hash management (for permalink)
+            this.hash = new L.Hash(this);
+        }
+
+        if (this.options.hash && this.hash.parseHash(location.hash)) {
             // FIXME An invalid hash will cause the load to fail
             this.hash.update();
         }
