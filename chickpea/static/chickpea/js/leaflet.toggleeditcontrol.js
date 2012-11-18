@@ -3,7 +3,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
         position: 'topright',
         polygon: null,  // Later
         rectangle: null,  // Later
-        circle: null,  // Later
+        circle: null  // Later
     },
 
     initialize: function(map, options) {
@@ -11,7 +11,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
         L.Control.Draw.prototype.initialize.call(this, options);
         this.options.marker = {
             icon: new L.ChickpeaIcon(this._map)
-        }
+        };
     },
 
     onAdd: function (map) {
@@ -19,7 +19,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
         // var container = L.DomUtil.create('div', "leaflet-control-edit");
         // this._createNewOverlayButton(map, container);
         this._createToggleButton(map, container);
-        return container
+        return container;
     },
 
     _createToggleButton: function (map, container) {
@@ -35,7 +35,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
             else {
                 self._enableEdit(e, map, container);
             }
-        }
+        };
         L.DomEvent
         .addListener(link, 'click', L.DomEvent.stopPropagation)
         .addListener(link, 'click', L.DomEvent.preventDefault)
@@ -57,7 +57,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
         map.editEnabled = true;
     },
     _disableEdit: function(e, map, container) {
-        L.DomUtil.removeClass(container, "control-enabled");                
+        L.DomUtil.removeClass(container, "control-enabled");
         map.editEnabled = false;
         this._disableInactiveModes();
     }

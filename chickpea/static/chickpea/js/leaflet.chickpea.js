@@ -67,7 +67,7 @@ L.ChickpeaMap = L.Map.extend({
         }
         else {
             var center = new L.LatLng(this.options.lat, this.options.lng);
-            this.setView(center, this.options.zoom)
+            this.setView(center, this.options.zoom);
         }
 
         // Init control layers
