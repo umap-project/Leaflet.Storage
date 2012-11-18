@@ -13,7 +13,7 @@ from vectorformats.Formats import Django, GeoJSON
 
 from chickpea.models import Map, Marker, Category, Polyline, TileLayer, MapToTileLayer
 from chickpea.utils import get_uri_template
-from chickpea.forms import QuickMapCreateForm
+from chickpea.forms import QuickMapCreateForm, UpdateMapExtentForm
 
 
 def _urls_for_js(urls=None):
@@ -29,6 +29,7 @@ def _urls_for_js(urls=None):
             'polyline',
             'polyline_add',
             'polyline_update',
+            'map_update_extent',
         ]
     return dict(zip(urls, [get_uri_template(url) for url in urls]))
 
@@ -75,6 +76,18 @@ class QuickMapCreate(CreateView):
         layer = TileLayer.get_default()
         MapToTileLayer.objects.create(map=self.object, tilelayer=layer, rank=1)
         return super(QuickMapCreate, self).form_valid(form)
+
+
+class UpdateMapExtent(UpdateView):
+    model = Map
+    form_class = UpdateMapExtentForm
+
+    def form_invalid(self, form):
+        return HttpResponse(form.errors)
+
+    def form_valid(self, form):
+        self.object = form.save()
+        return HttpResponse("ok")
 
 
 class GeoJSONMixin(object):

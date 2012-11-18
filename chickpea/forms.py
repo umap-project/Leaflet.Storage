@@ -30,3 +30,10 @@ class QuickMapCreateForm(forms.ModelForm):
         point = Point(5, 45)
         self.cleaned_data['center'] = point
         return self.cleaned_data['center']
+
+
+class UpdateMapExtentForm(forms.ModelForm):
+
+    class Meta:
+        model = Map
+        fields = ('zoom', 'center')

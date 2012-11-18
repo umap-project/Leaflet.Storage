@@ -1,9 +1,11 @@
 from django.conf.urls import patterns, url
+from django.views.decorators.csrf import csrf_exempt
 
 from chickpea import views
 
 urlpatterns = patterns('',
     url(r'^map/add/$', views.QuickMapCreate.as_view(), name='map_add'),
+    url(r'^map/update-extent/(?P<pk>[\d]+)/$', csrf_exempt(views.UpdateMapExtent.as_view()), name='map_update_extent'),
     url(r'^map/(?P<slug>[-_\w]+)/$', views.MapView.as_view(), name='map'),
     url(r'^feature/json/category/(?P<category_id>[\d]+)/$', views.FeatureGeoJSONListView.as_view(), name='feature_geojson_list'),
     url(r'^marker/json/(?P<pk>[\d]+)/$', views.MarkerGeoJSONView.as_view(), name='marker_geojson'),

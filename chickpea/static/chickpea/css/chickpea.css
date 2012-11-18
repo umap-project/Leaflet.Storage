@@ -28,6 +28,12 @@
     margin-top: 0;
     margin-bottom: -4px; /* inline-blocks show spaces */
 }
+a.update-map-extent {
+    background-image: url("../img/update-extent.png");
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    display: none;
+}
 .leaflet-control-draw.control-enabled a + a {
     margin-left: 5px;
 }

@@ -29,18 +29,21 @@ L.Util.Xhr = {
     get: function(uri, options) {
         L.Util.Xhr._ajax("GET", uri, options);
     },
+    post: function(uri, options) {
+        L.Util.Xhr._ajax("POST", uri, options);
+    },
     submit_form: function(form_id, options) {
         if(typeof options == "undefined") {
-            options = {}
+            options = {};
         }
-        options['dataType'] = "json"
+        options['dataType'] = "json";
         var form = L.DomUtil.get(form_id);
         var formData = new FormData(form);
         if(options.extraFormData) {
             formData.append(options.extraFormData);
         }
         options.data = formData;
-        L.Util.Xhr._ajax("POST", form.action, options);
+        L.Util.Xhr.post(form.action, options);
         return false;
     }
 };

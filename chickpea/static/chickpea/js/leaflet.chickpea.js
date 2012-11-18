@@ -103,7 +103,26 @@ L.ChickpeaMap = L.Map.extend({
         }
         this.tilelayers[options.tilelayer.name] = tilelayer;
     },
+
     _createOverlay: function(category) {
         return new L.ChickpeaLayer(category, this);
+    },
+
+    updateExtent: function() {
+        // Save in db the current center and zoom
+        var latlng = this.getCenter(),
+            zoom = this.getZoom();
+            center = {
+                type: "Point",
+                coordinates: [
+                    latlng.lng,
+                    latlng.lat
+                ]
+            },
+            url = L.Util.template(this.options.urls.map_update_extent, {'pk': this.options.chickpea_id}),
+            formData = new FormData();
+            formData.append('center', JSON.stringify(center));
+            formData.append('zoom', zoom);
+        L.Util.Xhr.post(url, {'data': formData});
     }
 });
