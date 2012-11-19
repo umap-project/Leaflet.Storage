@@ -34,6 +34,12 @@ a.update-map-extent {
     background-repeat: no-repeat;
     display: none;
 }
+a.update-map-tilelayers {
+    background-image: url("../img/layers.png");
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    display: none;
+}
 a.update-map-infos {
     background-image: url("../img/update-infos.png");
     background-position: 50% 50%;

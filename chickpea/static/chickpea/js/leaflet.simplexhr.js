@@ -14,12 +14,25 @@ L.Util.Xhr = {
 
         xhr.onload = function(e) {
             if (this.status == 200) {
+                var raw = this.response;
+                if (settings.dataType == "json") {
+                    raw = JSON.parse(raw);
+                }
                 if (settings.callback) {
-                    var raw = this.response;
-                    if (settings.dataType == "json") {
-                        raw = JSON.parse(raw);
-                    }
                     settings.callback(raw);
+                } else {
+                    // Default JSON callback
+                    if (settings.dataType == "json") {
+                        if (raw.redirect) {
+                            window.location = raw.redirect;
+                        }
+                        else if (raw.info) {
+                            L.Util.chickpea_alert(raw.info, "info");
+                        }
+                        else if (raw.html) {
+                            L.Util.chickpea_modal(raw.html);
+                        }
+                    }
                 }
             }
         };

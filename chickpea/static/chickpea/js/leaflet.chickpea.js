@@ -123,7 +123,20 @@ L.ChickpeaMap = L.Map.extend({
             formData = new FormData();
             formData.append('center', JSON.stringify(center));
             formData.append('zoom', zoom);
-        L.Util.Xhr.post(url, {'data': formData});
+        L.Util.Xhr.post(url, {
+            'dataType': 'json',
+            'data': formData
+        });
+    },
+
+    updateTileLayers: function () {
+        var url = L.Util.template(this.options.urls.map_update_tilelayers, {'pk': this.options.chickpea_id});
+        L.Util.Xhr.get(url, {
+            'dataType': 'json',
+            'callback': function (data) {
+                L.Util.chickpea_modal(data.html, {"class": "update-tilelayers"});
+            }
+        });
     },
 
     updateInfos: function () {
@@ -131,12 +144,16 @@ L.ChickpeaMap = L.Map.extend({
         L.Util.Xhr.get(url, {
             'dataType': 'json',
             'callback': function (data) {
-                L.Util.chickpea_modal(data.html);
+                L.Util.chickpea_modal(data.html, {"class": "update-infos"});
             }
         });
     }
 });
-L.Util.chickpea_modal = function (content) {
+L.Util.chickpea_modal = function (content, context) {
+    console.log('Override me');
+    console.log(content);
+};
+L.Util.chickpea_alert = function (content, level, context) {
     console.log('Override me');
     console.log(content);
 };

@@ -2,6 +2,7 @@ from django.utils import simplejson
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.views.generic import DetailView
+from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic.list import BaseListView
 from django.views.generic.base import TemplateView
@@ -30,6 +31,7 @@ def _urls_for_js(urls=None):
             'polyline_add',
             'polyline_update',
             'map_update_extent',
+            'map_update_tilelayers',
             'map_update',
         ]
     return dict(zip(urls, [get_uri_template(url) for url in urls]))
@@ -48,6 +50,10 @@ def render_to_json(templates, response_kwargs, context, request):
         "html": html
         })
     return HttpResponse(_json)
+
+
+def simple_json_response(**kwargs):
+    return HttpResponse(simplejson.dumps(kwargs))
 
 
 class MapView(DetailView):
@@ -77,10 +83,7 @@ class QuickMapCreate(CreateView):
         layer = TileLayer.get_default()
         MapToTileLayer.objects.create(map=self.object, tilelayer=layer, rank=1)
         Category.objects.create(map=self.object, name="POIs", preset=True)
-        response = {
-            "redirect": self.get_success_url()
-        }
-        return HttpResponse(simplejson.dumps(response))
+        return simple_json_response(redirect=self.get_success_url())
 
     def render_to_response(self, context, **response_kwargs):
         return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
@@ -99,10 +102,7 @@ class QuickMapUpdate(UpdateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        response = {
-            "redirect": self.get_success_url()
-        }
-        return HttpResponse(simplejson.dumps(response))
+        return simple_json_response(redirect=self.get_success_url())
 
     def render_to_response(self, context, **response_kwargs):
         return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
@@ -123,7 +123,40 @@ class UpdateMapExtent(UpdateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        return HttpResponse("ok")
+        return simple_json_response(info="Zoom and center updated with success!")
+
+
+class UpdateMapTileLayers(TemplateView):
+    template_name = "chickpea/map_update_tilelayers.html"
+
+    def get_context_data(self, **kwargs):
+        map_inst = get_object_or_404(Map, pk=kwargs['pk'])
+        return {
+            "tilelayers": TileLayer.objects.all(),
+            'map': map_inst
+        }
+
+    def post(self, request, *args, **kwargs):
+        # TODO: manage with a proper form
+        map_inst = get_object_or_404(Map, pk=kwargs['pk'])
+        # Empty relations (we don't keep trace of unchecked box for now)
+        MapToTileLayer.objects.filter(map=map_inst).delete()
+        for key, value in request.POST.iteritems():
+            if key.startswith('tilelayer_'):
+                try:
+                    pk = int(value)
+                except ValueError:
+                    pass
+                else:
+                    # TODO manage rank
+                    MapToTileLayer.objects.create(map=map_inst, tilelayer_id=pk)
+        response = {
+            "redirect": map_inst.get_absolute_url()
+        }
+        return HttpResponse(simplejson.dumps(response))
+
+    def render_to_response(self, context, **response_kwargs):
+        return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
 
 
 class GeoJSONMixin(object):
