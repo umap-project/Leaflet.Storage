@@ -89,7 +89,7 @@ class Category(models.Model):
     map = models.ForeignKey(Map)
     name = models.CharField(max_length=50)
     description = models.TextField(blank=True, null=True)
-    color = models.CharField(max_length=32)
+    color = models.CharField(max_length=32, default="DarkBlue")
     icon = models.ForeignKey(Icon, null=True, blank=True)
     preset = models.BooleanField(default=False, help_text="Display this category on load.")
     rank = models.IntegerField(null=True, blank=True)
