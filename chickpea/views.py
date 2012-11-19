@@ -75,7 +75,13 @@ class QuickMapCreate(CreateView):
         self.object = form.save()
         layer = TileLayer.get_default()
         MapToTileLayer.objects.create(map=self.object, tilelayer=layer, rank=1)
-        return super(QuickMapCreate, self).form_valid(form)
+        response = {
+            "redirect": self.get_success_url()
+        }
+        return HttpResponse(simplejson.dumps(response))
+
+    def render_to_response(self, context, **response_kwargs):
+        return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
 
 
 class UpdateMapExtent(UpdateView):
