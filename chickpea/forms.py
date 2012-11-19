@@ -27,8 +27,9 @@ class QuickMapCreateForm(forms.ModelForm):
             return ""
 
     def clean_center(self):
-        point = Point(5, 45)
-        self.cleaned_data['center'] = point
+        if not self.cleaned_data['center']:
+            point = Point(5, 45)
+            self.cleaned_data['center'] = point
         return self.cleaned_data['center']
 
 

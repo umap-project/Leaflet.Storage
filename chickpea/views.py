@@ -30,6 +30,7 @@ def _urls_for_js(urls=None):
             'polyline_add',
             'polyline_update',
             'map_update_extent',
+            'map_update',
         ]
     return dict(zip(urls, [get_uri_template(url) for url in urls]))
 
@@ -82,6 +83,34 @@ class QuickMapCreate(CreateView):
 
     def render_to_response(self, context, **response_kwargs):
         return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
+
+    def get_context_data(self, **kwargs):
+        kwargs.update({
+            'action_url': reverse_lazy('map_add')
+        })
+        return super(QuickMapCreate, self).get_context_data(**kwargs)
+
+
+# TODO: factorize with QuickCreate!
+class QuickMapUpdate(UpdateView):
+    model = Map
+    form_class = QuickMapCreateForm
+
+    def form_valid(self, form):
+        self.object = form.save()
+        response = {
+            "redirect": self.get_success_url()
+        }
+        return HttpResponse(simplejson.dumps(response))
+
+    def render_to_response(self, context, **response_kwargs):
+        return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
+
+    def get_context_data(self, **kwargs):
+        kwargs.update({
+            'action_url': reverse_lazy('map_update', args=[self.object.pk])
+        })
+        return super(QuickMapUpdate, self).get_context_data(**kwargs)
 
 
 class UpdateMapExtent(UpdateView):

@@ -124,5 +124,19 @@ L.ChickpeaMap = L.Map.extend({
             formData.append('center', JSON.stringify(center));
             formData.append('zoom', zoom);
         L.Util.Xhr.post(url, {'data': formData});
+    },
+
+    updateInfos: function () {
+        var url = L.Util.template(this.options.urls.map_update, {'pk': this.options.chickpea_id});
+        L.Util.Xhr.get(url, {
+            'dataType': 'json',
+            'callback': function (data) {
+                L.Util.chickpea_modal(data.html);
+            }
+        });
     }
 });
+L.Util.chickpea_modal = function (content) {
+    console.log('Override me');
+    console.log(content);
+};
