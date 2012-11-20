@@ -13,7 +13,7 @@ class QuickMapCreateForm(forms.ModelForm):
 
     class Meta:
         model = Map
-        fields = ('name', 'description', 'slug', 'center')
+        fields = ('name', 'description', 'licence', 'slug', 'center')
 
     def clean_slug(self):
         slug = self.cleaned_data.get('slug', None)

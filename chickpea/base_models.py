@@ -6,6 +6,16 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 
 
+class Licence(models.Model):
+    """
+    The licence one map is published on.
+    """
+    name = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return self.name
+
+
 class TileLayer(models.Model):
     name = models.CharField(max_length=50)
     url_template = models.CharField(
@@ -41,6 +51,7 @@ class Map(models.Model):
     center = models.PointField(geography=True)
     zoom = models.IntegerField(default=7)
     locate = models.BooleanField(default=False)
+    licence = models.ForeignKey(Licence)
     tilelayers = models.ManyToManyField(TileLayer, through="MapToTileLayer")
 
     objects = models.GeoManager()
