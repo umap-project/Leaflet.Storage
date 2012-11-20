@@ -128,3 +128,36 @@ L.Polyline.Draw.include({
     }
 
 });
+
+/* Share control */
+L.Control.Embed = L.Control.extend({
+
+    onAdd: function (map) {
+        var className = 'leaflet-control-embed',
+            container = L.DomUtil.create('div', className);
+
+        var link = L.DomUtil.create('a', "", container);
+        link.href = '#';
+        link.title = "Embed this map";
+        var fn = function (e) {
+            var url = L.Util.template(this.options.urls.map_embed, {'pk': map.options.chickpea_id});
+            L.Util.Xhr.get(url, {'dataType':'json'});
+        };
+
+        L.DomEvent
+            .on(link, 'click', L.DomEvent.stopPropagation)
+            .on(link, 'click', L.DomEvent.preventDefault)
+            .on(link, 'click', fn, map)
+            .on(link, 'dblclick', L.DomEvent.stopPropagation);
+
+        return container;
+    }
+});
+
+L.Map.addInitHook(function () {
+    if (this.options.embedControl) {
+        var options = this.options.embedOptions ? this.options.embedOptions : {};
+        this.embedControl = new L.Control.Embed(this, options);
+        this.addControl(this.embedControl);
+    }
+});

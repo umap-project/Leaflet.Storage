@@ -6,6 +6,7 @@ from chickpea import views
 urlpatterns = patterns('',
     url(r'^map/add/$', views.QuickMapCreate.as_view(), name='map_add'),
     url(r'^map/update/(?P<pk>[\d]+)/$', views.QuickMapUpdate.as_view(), name='map_update'),
+    url(r'^map/embed/(?P<pk>[\d]+)/$', views.EmbedMap.as_view(), name='map_embed'),
     url(r'^map/update-extent/(?P<pk>[\d]+)/$', csrf_exempt(views.UpdateMapExtent.as_view()), name='map_update_extent'),
     url(r'^map/update-tilelayers/(?P<pk>[\d]+)/$', csrf_exempt(views.UpdateMapTileLayers.as_view()), name='map_update_tilelayers'),
     url(r'^map/(?P<slug>[-_\w]+)/$', views.MapView.as_view(), name='map'),

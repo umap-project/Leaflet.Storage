@@ -16,7 +16,7 @@
 /* Controls    */
 /* *********** */
 
-.leaflet-control-draw {
+.leaflet-control-draw, .leaflet-control-embed {
     background: none repeat scroll 0 0 #F8F8F9;
     border-radius: 8px 8px 8px 8px;
     box-shadow: 0 1px 7px #999999;
@@ -27,6 +27,14 @@
     display: none;
     margin-top: 0;
     margin-bottom: -4px; /* inline-blocks show spaces */
+}
+.leaflet-control-embed a {
+    background-image: url("../img/embed.png");
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    height: 46px;
+    width: 46px;
+    display: block;
 }
 a.update-map-extent {
     background-image: url("../img/update-extent.png");

@@ -33,6 +33,7 @@ def _urls_for_js(urls=None):
             'map_update_extent',
             'map_update_tilelayers',
             'map_update',
+            'map_embed',
         ]
     return dict(zip(urls, [get_uri_template(url) for url in urls]))
 
@@ -154,6 +155,22 @@ class UpdateMapTileLayers(TemplateView):
             "redirect": map_inst.get_absolute_url()
         }
         return HttpResponse(simplejson.dumps(response))
+
+    def render_to_response(self, context, **response_kwargs):
+        return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
+
+
+class EmbedMap(DetailView):
+    model = Map
+    template_name = "chickpea/map_embed.html"
+
+    def get_context_data(self, **kwargs):
+        # FIXME use settings for SITE_URL?
+        iframe_url = 'http://%s%s' % (self.request.META['HTTP_HOST'], self.object.get_absolute_url())
+        kwargs.update({
+            'iframe_url': iframe_url
+        })
+        return super(EmbedMap, self).get_context_data(**kwargs)
 
     def render_to_response(self, context, **response_kwargs):
         return render_to_json(self.get_template_names(), response_kwargs, context, self.request)

@@ -5,7 +5,8 @@ L.Map.mergeOptions({
     zoom: 10,
     lat: null,
     lng: null,
-    hash: true
+    hash: true,
+    embedControl: true
 });
 
 L.ChickpeaMap = L.Map.extend({
