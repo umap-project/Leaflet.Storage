@@ -161,3 +161,56 @@ L.Map.addInitHook(function () {
         this.addControl(this.embedControl);
     }
 });
+
+L.Control.ChickpeaLayers = L.Control.Layers.extend({
+    options: {},
+
+    onAdd: function (map) {
+        var container = L.Control.Layers.prototype.onAdd.call(this, map);
+        this._createNewOverlayButton(map, container);
+        return container;
+    },
+
+    _createNewOverlayButton: function (map, container) {
+        var link = L.DomUtil.create('a', "add-overlay", container);
+        link.innerHTML = link.title = 'Add a category';
+        link.href = '#';
+        var handle_response = function (data) {
+            L.Util.chickpea_modal(data.html);
+            var form_id = "category_edit";
+            var submit_form = function (e) {
+                L.Util.Xhr.submit_form(form_id, {
+                    'callback': function (data) {
+                        if (data.category) {
+                            /* Means success */
+                            map._createOverlay(data.category);
+                            L.Util.chickpea_alert("Category successfuly created", "info");
+                        }
+                        else {
+                            // Let's start again
+                            handle_response(data);
+                        }
+                    },
+                    'dataType': 'json'
+                });
+            };
+            var form = L.DomUtil.get(form_id);
+        L.DomEvent
+            .on(form, 'submit', L.DomEvent.stopPropagation)
+            .on(form, 'submit', L.DomEvent.preventDefault)
+            .on(form, 'submit', submit_form);
+        };
+        var fn = function (e) {
+            var url = L.Util.template(this.options.urls.category_add, {'map_id': map.options.chickpea_id});
+            L.Util.Xhr.get(url, {
+                'dataType':'json',
+                'callback': handle_response
+            });
+        };
+        L.DomEvent
+            .on(link, 'click', L.DomEvent.stopPropagation)
+            .on(link, 'click', L.DomEvent.preventDefault)
+            .on(link, 'click', fn, map)
+            .on(link, 'dblclick', L.DomEvent.stopPropagation);
+    }
+});

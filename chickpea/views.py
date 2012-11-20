@@ -14,7 +14,7 @@ from vectorformats.Formats import Django, GeoJSON
 
 from chickpea.models import Map, Marker, Category, Polyline, TileLayer, MapToTileLayer
 from chickpea.utils import get_uri_template
-from chickpea.forms import QuickMapCreateForm, UpdateMapExtentForm
+from chickpea.forms import QuickMapCreateForm, UpdateMapExtentForm, CategoryForm
 
 
 def _urls_for_js(urls=None):
@@ -34,6 +34,7 @@ def _urls_for_js(urls=None):
             'map_update_tilelayers',
             'map_update',
             'map_embed',
+            'category_add',
         ]
     return dict(zip(urls, [get_uri_template(url) for url in urls]))
 
@@ -273,3 +274,29 @@ class SuccessView(TemplateView):
     Should be splitted in the future.
     """
     template_name = "chickpea/success.html"
+
+
+class CategoryCreate(CreateView):
+    model = Category
+    form_class = CategoryForm
+
+    def render_to_response(self, context, **response_kwargs):
+        return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
+
+    def get_context_data(self, **kwargs):
+        kwargs.update({
+            'action_url': reverse_lazy('category_add', kwargs={'map_id': self.kwargs['map_id']})
+        })
+        return super(CategoryCreate, self).get_context_data(**kwargs)
+
+    def get_initial(self):
+        initial = super(CategoryCreate, self).get_initial()
+        map_inst = get_object_or_404(Map, pk=self.kwargs['map_id'])
+        initial.update({
+            "map": map_inst
+        })
+        return initial
+
+    def form_valid(self, form):
+        self.object = form.save()
+        return simple_json_response(category=self.object.json)

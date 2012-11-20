@@ -2,7 +2,7 @@ from django import forms
 from django.template.defaultfilters import slugify
 from django.contrib.gis.geos import Point
 
-from chickpea.models import Map
+from chickpea.models import Map, Category
 
 
 class QuickMapCreateForm(forms.ModelForm):
@@ -38,3 +38,12 @@ class UpdateMapExtentForm(forms.ModelForm):
     class Meta:
         model = Map
         fields = ('zoom', 'center')
+
+
+class CategoryForm(forms.ModelForm):
+
+    class Meta:
+        model = Category
+        widgets = {
+            "map": forms.HiddenInput()
+        }

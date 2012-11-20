@@ -6,7 +6,8 @@ L.Map.mergeOptions({
     lat: null,
     lng: null,
     hash: true,
-    embedControl: true
+    embedControl: true,
+    layersControl: true,
 });
 
 L.ChickpeaMap = L.Map.extend({
@@ -73,11 +74,13 @@ L.ChickpeaMap = L.Map.extend({
 
         // Init control layers
         // It will be populated while creating the overlays
-        this.chickpea_layers_control = new L.Control.Layers(
+        this.chickpea_layers_control = new L.Control.ChickpeaLayers(
             this.options.tilelayers.length > 1? this.tilelayers: {}
         );
-        // this.addLayer(geojsonLayer);
-        this.addControl(this.chickpea_layers_control);
+        if (this.options.layersControl) {
+            this.addControl(this.chickpea_layers_control);
+        }
+
         // Global storage for retrieving overlays
         this.chickpea_overlays = {};
         this.marker_to_overlay = {};

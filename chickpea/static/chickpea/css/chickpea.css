@@ -71,6 +71,13 @@ a.update-map-infos {
     box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.2) inset;
     background-color: #ddd;
 }
+.add-overlay {
+    display: none;
+}
+.leaflet-control-layers-expanded .add-overlay {
+    display: block;
+    position: relative;
+}
 
 /* ************* */
 /* Marker's Icon */
@@ -132,7 +139,7 @@ a.update-map-infos {
 /* Overriding leaflet defaults */
 /* *************************** */
 
-.leaflet-control-layers a {
+.leaflet-control-layers a.leaflet-control-layers-toggle {
     background-image: url("../img/layers.png");
     height: 46px;
     width: 46px;
