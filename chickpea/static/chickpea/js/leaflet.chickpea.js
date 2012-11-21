@@ -138,7 +138,7 @@ L.ChickpeaMap = L.Map.extend({
         L.Util.Xhr.get(url, {
             'dataType': 'json',
             'callback': function (data) {
-                L.Util.chickpea_modal(data.html, {"class": "update-tilelayers"});
+                L.Chickpea.fire("modal_ready", {'data': data, "cssClass": "update-tilelayers"});
             }
         });
     },
@@ -148,16 +148,8 @@ L.ChickpeaMap = L.Map.extend({
         L.Util.Xhr.get(url, {
             'dataType': 'json',
             'callback': function (data) {
-                L.Util.chickpea_modal(data.html, {"class": "update-infos"});
+                L.Chickpea.fire("modal_ready", {'data': data, "cssClass": "update-infos"});
             }
         });
     }
 });
-L.Util.chickpea_modal = function (content, context) {
-    console.log('Override me');
-    console.log(content);
-};
-L.Util.chickpea_alert = function (content, level, context) {
-    console.log('Override me');
-    console.log(content);
-};

@@ -176,7 +176,7 @@ L.Control.ChickpeaLayers = L.Control.Layers.extend({
         link.innerHTML = link.title = 'Add a category';
         link.href = '#';
         var handle_response = function (data) {
-            L.Util.chickpea_modal(data.html);
+            L.Chickpea.fire('modal_ready', {'data': data});
             var form_id = "category_edit";
             var submit_form = function (e) {
                 L.Util.Xhr.submit_form(form_id, {
@@ -184,7 +184,8 @@ L.Control.ChickpeaLayers = L.Control.Layers.extend({
                         if (data.category) {
                             /* Means success */
                             map._createOverlay(data.category);
-                            L.Util.chickpea_alert("Category successfuly created", "info");
+                            L.Chickpea.fire('alert', {'content':"Category successfuly created", 'level': 'info'});
+                            L.Chickpea.fire('modal_close');
                         }
                         else {
                             // Let's start again

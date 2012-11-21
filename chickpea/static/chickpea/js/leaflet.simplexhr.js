@@ -27,10 +27,10 @@ L.Util.Xhr = {
                             window.location = raw.redirect;
                         }
                         else if (raw.info) {
-                            L.Util.chickpea_alert(raw.info, "info");
+                            L.Chickpea.fire("alert", {"content": raw.info, "level": "info"});
                         }
                         else if (raw.html) {
-                            L.Util.chickpea_modal(raw.html);
+                            L.Chickpea.fire('modal_ready', {'data': raw});
                         }
                     }
                 }
