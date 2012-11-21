@@ -54,10 +54,10 @@ a.update-map-infos {
     background-repeat: no-repeat;
     display: none;
 }
-.leaflet-control-draw.control-enabled a + a {
+.chickpea-edit-enabled .leaflet-control-draw a + a {
     margin-left: 5px;
 }
-.leaflet-control-draw.control-enabled a {
+.chickpea-edit-enabled .leaflet-control-draw a {
     display: inline-block;
 }
 .leaflet-control-draw a.leaflet-control-edit-toggle {
@@ -66,7 +66,7 @@ a.update-map-infos {
     background-repeat: no-repeat;
     display: inline-block;
 }
-.control-enabled {
+.chickpea-edit-enabled .leaflet-control-draw {
     /*box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);*/
     box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.2) inset;
     background-color: #ddd;
@@ -74,7 +74,7 @@ a.update-map-infos {
 .add-overlay {
     display: none;
 }
-.leaflet-control-layers-expanded .add-overlay {
+.chickpea-edit-enabled .leaflet-control-layers-expanded .add-overlay {
     display: block;
     position: relative;
 }

@@ -33,10 +33,10 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
 
         var fn = function (e) {
             if(map.editEnabled) {
-                self._disableEdit(e, map, container);
+                self._disableEdit(e, map);
             }
             else {
-                self._enableEdit(e, map, container);
+                self._enableEdit(e, map);
             }
         };
         L.DomEvent
@@ -85,12 +85,12 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
         );
     },
 
-    _enableEdit: function(e, map, container) {
-        L.DomUtil.addClass(container, "control-enabled");
+    _enableEdit: function(e, map) {
+        L.DomUtil.addClass(map._container, "chickpea-edit-enabled");
         map.editEnabled = true;
     },
     _disableEdit: function(e, map, container) {
-        L.DomUtil.removeClass(container, "control-enabled");
+        L.DomUtil.removeClass(map._container, "chickpea-edit-enabled");
         map.editEnabled = false;
         this._disableInactiveModes();
     }
