@@ -2,6 +2,9 @@ from django.utils import simplejson
 from django import template
 from django.conf import settings
 
+from chickpea.models import Category
+from chickpea.views import _urls_for_js
+
 register = template.Library()
 
 
@@ -25,9 +28,14 @@ def map_fragment(map_instance):
         'tilelayer': map_instance.tilelayers.all()[0].json,
         "rank": 1
     }
+    categories = Category.objects.filter(map=map_instance, preset=True)
+    category_data = [c.json for c in categories]
     return {
         'map': map_instance,
         'tilelayer': simplejson.dumps(tilelayer_data),
+        'categories': simplejson.dumps(category_data),
+        'urls': simplejson.dumps(_urls_for_js()),
+        'STATIC_URL': settings.STATIC_URL,
     }
 
 
