@@ -14,7 +14,7 @@ L.ChickpeaIcon = L.DivIcon.extend({
         this.overlay = this.options.overlay;
     },
     createIcon: function() {
-        this.elements = {}
+        this.elements = {};
         this.elements.main = L.DomUtil.create('div');
         this.elements.container = L.DomUtil.create('div', 'icon_container', this.elements.main);
         this.elements.arrow = L.DomUtil.create('div', 'icon_arrow', this.elements.main);
