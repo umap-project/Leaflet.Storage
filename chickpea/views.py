@@ -222,6 +222,12 @@ class MarkerAdd(CreateView):
     def render_to_response(self, context, **response_kwargs):
         return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
 
+    def get_form(self, form_class):
+        form = super(MarkerAdd, self).get_form(form_class)
+        map_inst = get_object_or_404(Map, pk=self.kwargs['map_id'])
+        form.fields['category'].queryset = Category.objects.filter(map=map_inst)
+        return form
+
 
 class MarkerUpdate(UpdateView):
     model = Marker
@@ -231,6 +237,13 @@ class MarkerUpdate(UpdateView):
 
     def render_to_response(self, context, **response_kwargs):
         return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
+
+    # TODO: factorize with MarkerAdd!
+    def get_form(self, form_class):
+        form = super(MarkerUpdate, self).get_form(form_class)
+        map_inst = get_object_or_404(Map, pk=self.kwargs['map_id'])
+        form.fields['category'].queryset = Category.objects.filter(map=map_inst)
+        return form
 
 
 class PolylineView(DetailView):
