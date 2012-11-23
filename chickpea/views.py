@@ -35,6 +35,7 @@ def _urls_for_js(urls=None):
             'map_update',
             'map_embed',
             'category_add',
+            'category_update',
         ]
     return dict(zip(urls, [get_uri_template(url) for url in urls]))
 
@@ -307,6 +308,24 @@ class CategoryCreate(CreateView):
             "map": map_inst
         })
         return initial
+
+    def form_valid(self, form):
+        self.object = form.save()
+        return simple_json_response(category=self.object.json)
+
+
+class CategoryUpdate(UpdateView):
+    model = Category
+    form_class = CategoryForm
+
+    def render_to_response(self, context, **response_kwargs):
+        return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
+
+    def get_context_data(self, **kwargs):
+        kwargs.update({
+            'action_url': reverse_lazy('category_update', kwargs={'map_id': self.kwargs['map_id'], 'pk': self.object.pk})
+        })
+        return super(CategoryUpdate, self).get_context_data(**kwargs)
 
     def form_valid(self, form):
         self.object = form.save()

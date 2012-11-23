@@ -89,5 +89,9 @@ L.ChickpeaLayer = L.LazyGeoJSON.extend({
             latlngs,
             {"geojson": geojson, "overlay": this}
         );
+    },
+
+    getEditUrl: function(){
+        return L.Util.template(this.map.options.urls.category_update, {'map_id': this.map.options.chickpea_id, 'pk': this.chickpea_id});
     }
 });

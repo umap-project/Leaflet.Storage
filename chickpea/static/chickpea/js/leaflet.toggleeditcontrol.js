@@ -171,41 +171,96 @@ L.Control.ChickpeaLayers = L.Control.Layers.extend({
         return container;
     },
 
-    _createNewOverlayButton: function (map, container) {
-        var link = L.DomUtil.create('a', "add-overlay", container);
-        link.innerHTML = link.title = 'Add a category';
-        link.href = '#';
-        var handle_response = function (data) {
-            L.Chickpea.fire('modal_ready', {'data': data});
-            var form_id = "category_edit";
-            var submit_form = function (e) {
-                L.Util.Xhr.submit_form(form_id, {
-                    'callback': function (data) {
-                        if (data.category) {
-                            /* Means success */
-                            map._createOverlay(data.category);
-                            L.Chickpea.fire('alert', {'content':"Category successfuly created", 'level': 'info'});
-                            L.Chickpea.fire('modal_close');
-                        }
-                        else {
-                            // Let's start again
-                            handle_response(data);
-                        }
-                    },
-                    'dataType': 'json'
+    _addItem: function (obj) {
+        // Obj is and object {chickpea_layer, name, (bool)overlay}
+        // TODO: DRYME when leaflet #1167 is in dist
+        var label = document.createElement('label'),
+            input,
+            map = this._map,
+            self = this,
+            checked = map.hasLayer(obj.layer);
+
+        if (obj.overlay) {
+            input = document.createElement('input');
+            input.type = 'checkbox';
+            input.className = 'leaflet-control-layers-selector';
+            input.defaultChecked = checked;
+        } else {
+            input = this._createRadioElement('leaflet-base-layers', checked);
+        }
+
+        input.layerId = L.stamp(obj.layer);
+
+        L.DomEvent.on(input, 'click', this._onInputClick, this);
+
+        var name = document.createElement('span');
+        name.innerHTML = ' ' + obj.name;
+
+        label.appendChild(input);
+        label.appendChild(name);
+
+        if (obj.overlay) {
+            var link = L.DomUtil.create('a', "edit-overlay", label);
+            link.innerHTML = link.title = 'Edit';
+            link.href = '#';
+            var fn = function (e) {
+                var url = obj.layer.getEditUrl();
+                L.Util.Xhr.get(url, {
+                    'dataType':'json',
+                    'callback': function (data) {return self._handleEditResponse(data);}
                 });
             };
-            var form = L.DomUtil.get(form_id);
+            L.DomEvent
+                .on(link, 'click', L.DomEvent.stopPropagation)
+                .on(link, 'click', L.DomEvent.preventDefault)
+                .on(link, 'click', fn, map);
+        }
+
+        var container = obj.overlay ? this._overlaysList : this._baseLayersList;
+        container.appendChild(label);
+    },
+
+    _handleEditResponse: function(data) {
+        L.Chickpea.fire('modal_ready', {'data': data});
+        var map = this._map,
+            form_id = "category_edit",
+            self = this;
+        var submit_form = function (e) {
+            L.Util.Xhr.submit_form(form_id, {
+                'callback': function (data) {
+                    if (data.category) {
+                        /* Means success */
+                        map._createOverlay(data.category);
+                        L.Chickpea.fire('alert', {'content':"Category successfuly edited", 'level': 'info'});
+                        L.Chickpea.fire('modal_close');
+                    }
+                    else {
+                        // Let's start again
+                        self._handleEditResponse(data);
+                    }
+                },
+                'dataType': 'json'
+            });
+        };
+        var form = L.DomUtil.get(form_id);
+        FORM = form;
         L.DomEvent
             .on(form, 'submit', L.DomEvent.stopPropagation)
             .on(form, 'submit', L.DomEvent.preventDefault)
             .on(form, 'submit', submit_form);
-        };
+
+    },
+
+    _createNewOverlayButton: function (map, container) {
+        var link = L.DomUtil.create('a', "edit-overlay add-overlay", container);
+        link.innerHTML = link.title = 'Add a category';
+        link.href = '#';
+        var self = this;
         var fn = function (e) {
             var url = L.Util.template(this.options.urls.category_add, {'map_id': map.options.chickpea_id});
             L.Util.Xhr.get(url, {
                 'dataType':'json',
-                'callback': handle_response
+                    'callback': function (data) {return self._handleEditResponse(data);}
             });
         };
         L.DomEvent
