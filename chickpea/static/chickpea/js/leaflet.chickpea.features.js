@@ -25,7 +25,7 @@ L.Mixin.ChickpeaFeature = {
         // FIXME: unbind popup when editEnable
         // Otherwise, when we disable editing, popup already openned
         // are not fetched again (and so we keep the edit one)
-        (function(self){L.Util.Xhr.get(url, {"dataType": "json", "callback": function(data){self._firePopup(data.html);}});})(this)
+        (function(self){L.Util.Xhr.get(url, {"dataType": "json", "callback": function(data){self._firePopup(data.html);}});})(this);
     },
 
     _firePopup: function(content) {
@@ -57,12 +57,12 @@ L.Mixin.ChickpeaFeature = {
         var manage_ajax_return = function (data) {
             if(data.html) {
                 // We have HTML, put it in the popup
-                self._firePopup(data.html)
+                self._firePopup(data.html);
             }
             else {
                 // Guess its a geojson here
                 // Update object, if it's new
-                var feature = data.features[0]
+                var feature = data.features[0];
                 if (!self.chickpea_id) {
                     self.chickpea_id = feature.id;
                 }
@@ -74,7 +74,7 @@ L.Mixin.ChickpeaFeature = {
                 // FIXME make a little message system
                 self.closePopup();
             }
-        }
+        };
         var submit = function (e) {
             // Always update field value with current position
             // We use JSON, GEOSGeometry is aware of it
@@ -84,7 +84,7 @@ L.Mixin.ChickpeaFeature = {
             L.Util.Xhr.submit_form(form, {"callback": function(data) { manage_ajax_return(data);}});
             L.DomEvent.stop(e);
             return false;
-        }
+        };
         L.DomEvent.on(form, 'submit', submit);
     },
 
@@ -187,7 +187,7 @@ L.ChickpeaMarker = L.Marker.extend({
                 latlng.lng,
                 latlng.lat
             ]
-        }
+        };
     }
 });
 
@@ -262,7 +262,7 @@ L.ChickpeaPolyline = L.Polyline.extend({
 
     _updateStyle: function () {
         this._setColor();
-        L.Polyline.prototype._updateStyle.call(this)
+        L.Polyline.prototype._updateStyle.call(this);
     },
 
     geometry: function() {
@@ -271,12 +271,12 @@ L.ChickpeaPolyline = L.Polyline.extend({
         for(var i = 0, len = latlngs.length; i < len; i++) {
             coords.push([
                 latlngs[i].lng,
-                latlngs[i].lat,
+                latlngs[i].lat
             ]);
         }
         return {
             type: "LineString",
             coordinates: coords
-        }
+        };
     }
 });
