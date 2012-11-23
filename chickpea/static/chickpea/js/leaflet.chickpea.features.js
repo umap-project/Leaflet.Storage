@@ -230,7 +230,7 @@ L.ChickpeaPolyline = L.Polyline.extend({
     },
 
   _onClick: function(e){
-        this._openPopupAdded = true;  // Prevent leaflet from managing event
+        this._popupHandlersAdded = true;  // Prevent leaflet from managing event
         if(!this.map.editEnabled) {
             this.view(e);
         }
