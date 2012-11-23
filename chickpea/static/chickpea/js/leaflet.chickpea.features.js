@@ -242,8 +242,8 @@ L.ChickpeaPolyline = L.Polyline.extend({
 
     getEditURL: function() {
         return this.chickpea_id?
-            L.Util.template(this.map.options.urls.polyline_update, {'pk': this.chickpea_id}):
-            this.map.options.urls.polyline_add;
+            L.Util.template(this.map.options.urls.polyline_update, {'pk': this.chickpea_id, 'map_id': this.map.options.chickpea_id}):
+            L.Util.template(this.map.options.urls.polyline_add, {'map_id': this.map.options.chickpea_id});
     },
 
     closePopup: function() {

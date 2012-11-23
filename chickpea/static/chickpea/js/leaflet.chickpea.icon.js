@@ -19,7 +19,7 @@ L.ChickpeaIcon = L.DivIcon.extend({
         this.elements.container = L.DomUtil.create('div', 'icon_container', this.elements.main);
         this.elements.arrow = L.DomUtil.create('div', 'icon_arrow', this.elements.main);
         this.elements.img = L.DomUtil.create('img', null, this.elements.container);
-        var src = this._getIconUrl('icon');
+        var src = this._getIconUrl('icon')
         if(src) {
             this.elements.img.src = src;
         }

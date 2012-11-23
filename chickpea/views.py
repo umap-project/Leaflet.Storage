@@ -213,37 +213,45 @@ class MarkerView(DetailView):
         return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
 
 
-class MarkerAdd(CreateView):
-    model = Marker
+class FeatureAdd(CreateView):
 
     def get_success_url(self):
-        return reverse_lazy('marker_geojson', kwargs={"pk": self.object.pk})
+        return reverse_lazy(self.geojson_url, kwargs={"pk": self.object.pk})
 
     def render_to_response(self, context, **response_kwargs):
         return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
 
     def get_form(self, form_class):
-        form = super(MarkerAdd, self).get_form(form_class)
+        form = super(FeatureAdd, self).get_form(form_class)
         map_inst = get_object_or_404(Map, pk=self.kwargs['map_id'])
         form.fields['category'].queryset = Category.objects.filter(map=map_inst)
         return form
 
 
-class MarkerUpdate(UpdateView):
-    model = Marker
+class FeatureUpdate(UpdateView):
 
     def get_success_url(self):
-        return reverse_lazy('marker_geojson', kwargs={"pk": self.object.pk})
+        return reverse_lazy(self.geojson_url, kwargs={"pk": self.object.pk})
 
     def render_to_response(self, context, **response_kwargs):
         return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
 
-    # TODO: factorize with MarkerAdd!
+    # TODO: factorize with FeatureAdd!
     def get_form(self, form_class):
-        form = super(MarkerUpdate, self).get_form(form_class)
+        form = super(FeatureUpdate, self).get_form(form_class)
         map_inst = get_object_or_404(Map, pk=self.kwargs['map_id'])
         form.fields['category'].queryset = Category.objects.filter(map=map_inst)
         return form
+
+
+class MarkerUpdate(FeatureUpdate):
+    model = Marker
+    geojson_url = 'marker_geojson'
+
+
+class MarkerAdd(FeatureAdd):
+    model = Marker
+    geojson_url = 'marker_geojson'
 
 
 class PolylineView(DetailView):
@@ -253,24 +261,14 @@ class PolylineView(DetailView):
         return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
 
 
-class PolylineAdd(CreateView):
+class PolylineAdd(FeatureAdd):
     model = Polyline
-
-    def get_success_url(self):
-        return reverse_lazy('polyline_geojson', kwargs={"pk": self.object.pk})
-
-    def render_to_response(self, context, **response_kwargs):
-        return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
+    geojson_url = 'polyline_geojson'
 
 
-class PolylineUpdate(UpdateView):
+class PolylineUpdate(FeatureUpdate):
     model = Polyline
-
-    def get_success_url(self):
-        return reverse_lazy('polyline_geojson', kwargs={"pk": self.object.pk})
-
-    def render_to_response(self, context, **response_kwargs):
-        return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
+    geojson_url = 'polyline_geojson'
 
 
 class PolylineGeoJSONView(BaseDetailView, GeoJSONMixin):
