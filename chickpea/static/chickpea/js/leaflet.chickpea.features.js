@@ -278,5 +278,11 @@ L.ChickpeaPolyline = L.Polyline.extend({
             type: "LineString",
             coordinates: coords
         };
+    },
+
+    changeOverlay: function(layer) {
+        L.Mixin.ChickpeaFeature.changeOverlay.call(this, layer);
+        // path color depends on overlay
+        this._updateStyle();
     }
 });
