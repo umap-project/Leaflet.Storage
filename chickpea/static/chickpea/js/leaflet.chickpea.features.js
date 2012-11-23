@@ -93,7 +93,18 @@ L.Mixin.ChickpeaFeature = {
             this.chickpea_overlay.removeLayer(this);
         }
         layer.addLayer(this);
+    },
+
+    getViewURL: function () {
+        return L.Util.template(this.view_url_template, {'pk': this.chickpea_id});
+    },
+
+    getEditURL: function() {
+        return this.chickpea_id?
+            L.Util.template(this.update_url_template, {'pk': this.chickpea_id, 'map_id': this.map.options.chickpea_id}):
+            L.Util.template(this.add_url_template, {'map_id': this.map.options.chickpea_id});
     }
+
 };
 
 L.ChickpeaMarker = L.Marker.extend({
@@ -120,17 +131,16 @@ L.ChickpeaMarker = L.Marker.extend({
         // Use a null chickpea_id when you want to create a new Marker
         this.chickpea_id = chickpea_id;
 
+        // URL templates
+        this.view_url_template = this.map.options.urls.marker;
+        this.update_url_template = this.map.options.urls.marker_update;
+        this.add_url_template = this.map.options.urls.marker_add;
+
         // Events
         this.on("dragend", this.edit);
         this.on("click", this._onClick);
         this.on("mouseover", this._enableDragging);
         this.on("mouseout", this._disableDragging);
-    },
-
-    getEditURL: function() {
-        return this.chickpea_id?
-            L.Util.template(this.map.options.urls.marker_update, {'pk': this.chickpea_id, 'map_id': this.map.options.chickpea_id}):
-            L.Util.template(this.map.options.urls.marker_add, {'map_id': this.map.options.chickpea_id});
     },
 
     _enableDragging: function() {
@@ -168,10 +178,6 @@ L.ChickpeaMarker = L.Marker.extend({
         L.Mixin.ChickpeaFeature.disconnectFromOverlay.call(this, overlay);
     },
 
-    getViewURL: function () {
-        return L.Util.template(this.map.options.urls.marker, {'pk': this.chickpea_id});
-    },
-
     geometry: function() {
         /* Return a GeoJSON geometry Object */
         var latlng = this.getLatLng();
@@ -207,8 +213,16 @@ L.ChickpeaPolyline = L.Polyline.extend({
         }
         L.Polyline.prototype.initialize.call(this, latlngs, options);
         this.form_id = "polyline_form";
+
         // Use a null chickpea_id when you want to create a new Marker
         this.chickpea_id = chickpea_id;
+
+
+        // URL templates
+        this.view_url_template = this.map.options.urls.polyline;
+        this.update_url_template = this.map.options.urls.polyline_update;
+        this.add_url_template = this.map.options.urls.polyline_add;
+
         // Add events
         this.on("dragend", this.edit);
         this.on("click", this._onClick);
@@ -234,16 +248,6 @@ L.ChickpeaPolyline = L.Polyline.extend({
         }
         // FIXME: disable when disabling global edit
         L.DomEvent.stop(e.originalEvent);
-    },
-
-    getViewURL: function () {
-        return L.Util.template(this.map.options.urls.polyline, {'pk': this.chickpea_id});
-    },
-
-    getEditURL: function() {
-        return this.chickpea_id?
-            L.Util.template(this.map.options.urls.polyline_update, {'pk': this.chickpea_id, 'map_id': this.map.options.chickpea_id}):
-            L.Util.template(this.map.options.urls.polyline_add, {'map_id': this.map.options.chickpea_id});
     },
 
     closePopup: function() {
