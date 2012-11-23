@@ -230,6 +230,10 @@ L.Control.ChickpeaLayers = L.Control.Layers.extend({
                 'callback': function (data) {
                     if (data.category) {
                         /* Means success */
+                        if (map.chickpea_overlays[data.category.pk] !== "undefined") {
+                            // TODO update instead of removing/recreating
+                            map.removeLayer(map.chickpea_overlays[data.category.pk]);
+                        }
                         map._createOverlay(data.category);
                         L.Chickpea.fire('alert', {'content':"Category successfuly edited", 'level': 'info'});
                         L.Chickpea.fire('modal_close');
