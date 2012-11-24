@@ -232,7 +232,9 @@ L.Control.ChickpeaLayers = L.Control.Layers.extend({
                         /* Means success */
                         if (map.chickpea_overlays[data.category.pk] !== "undefined") {
                             // TODO update instead of removing/recreating
-                            map.removeLayer(map.chickpea_overlays[data.category.pk]);
+                            var layer = map.chickpea_overlays[data.category.pk];
+                            map.removeLayer(layer);
+                            self.removeLayer(layer);
                         }
                         map._createOverlay(data.category);
                         L.Chickpea.fire('alert', {'content':"Category successfuly edited", 'level': 'info'});
@@ -247,7 +249,6 @@ L.Control.ChickpeaLayers = L.Control.Layers.extend({
             });
         };
         var form = L.DomUtil.get(form_id);
-        FORM = form;
         L.DomEvent
             .on(form, 'submit', L.DomEvent.stopPropagation)
             .on(form, 'submit', L.DomEvent.preventDefault)
