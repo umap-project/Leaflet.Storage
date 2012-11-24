@@ -7,7 +7,7 @@ L.Map.mergeOptions({
     lng: null,
     hash: true,
     embedControl: true,
-    layersControl: true,
+    layersControl: true
 });
 
 L.ChickpeaMap = L.Map.extend({
@@ -16,7 +16,7 @@ L.ChickpeaMap = L.Map.extend({
         L.Map.prototype.initialize.call(this, el, options);
         // User must provide a pk
         if (typeof this.options.chickpea_id == "undefined") {
-            alert("ImplementationError: you must provide a chickpea_id for ChickpeaMap.")
+            alert("ImplementationError: you must provide a chickpea_id for ChickpeaMap.");
         }
 
         if (this.options.allowEdit) {
@@ -85,9 +85,9 @@ L.ChickpeaMap = L.Map.extend({
         this.chickpea_overlays = {};
         this.marker_to_overlay = {};
         // create overlays
-        for(var i in this.options.categories) {
-            if(this.options.categories.hasOwnProperty(i)){
-                this._createOverlay(this.options.categories[i]);
+        for(var j in this.options.categories) {
+            if(this.options.categories.hasOwnProperty(j)){
+                this._createOverlay(this.options.categories[j]);
             }
         }
     },
@@ -97,7 +97,7 @@ L.ChickpeaMap = L.Map.extend({
             {
                 attribution: options.tilelayer.attribution,
                 minZoom: options.tilelayer.minZoom,
-                maxZoom: options.tilelayer.maxZoom,
+                maxZoom: options.tilelayer.maxZoom
             }
         );
         // Add only the firs to the map, to make it visible,
