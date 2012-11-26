@@ -14,6 +14,10 @@ class QuickMapCreateForm(forms.ModelForm):
     class Meta:
         model = Map
         fields = ('name', 'description', 'licence', 'slug', 'center')
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Type here the map name'}),
+            'description': forms.Textarea(attrs={'placeholder': 'Type here the map caption'})
+        }
 
     def clean_slug(self):
         slug = self.cleaned_data.get('slug', None)
