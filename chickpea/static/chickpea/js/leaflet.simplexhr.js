@@ -5,7 +5,7 @@ L.Util.Xhr = {
             'callback': null,
             'responseType': "text",
             'data': null
-        }
+        };
         settings = L.Util.extend({}, default_options, options);
 
         var xhr = new XMLHttpRequest();
@@ -39,12 +39,15 @@ L.Util.Xhr = {
 
         xhr.send(settings.data);
     },
+
     get: function(uri, options) {
         L.Util.Xhr._ajax("GET", uri, options);
     },
+
     post: function(uri, options) {
         L.Util.Xhr._ajax("POST", uri, options);
     },
+
     submit_form: function(form_id, options) {
         if(typeof options == "undefined") {
             options = {};
@@ -58,5 +61,20 @@ L.Util.Xhr = {
         options.data = formData;
         L.Util.Xhr.post(form.action, options);
         return false;
+    },
+
+    listen_form: function (form_id, options) {
+        default_options = {
+            'dataType': 'json'
+        };
+        settings = L.Util.extend({}, default_options, options);
+        var form = L.DomUtil.get(form_id);
+        L.DomEvent
+            .on(form, 'submit', L.DomEvent.stopPropagation)
+            .on(form, 'submit', L.DomEvent.preventDefault)
+            .on(form, 'submit', function (e) {
+                L.Util.Xhr.submit_form(form_id, settings);
+            });
     }
+
 };

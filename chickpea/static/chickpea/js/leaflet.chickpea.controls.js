@@ -221,39 +221,30 @@ L.Control.ChickpeaLayers = L.Control.Layers.extend({
     },
 
     _handleEditResponse: function(data) {
-        L.Chickpea.fire('modal_ready', {'data': data});
         var map = this._map,
             form_id = "category_edit",
             self = this;
-        var submit_form = function (e) {
-            L.Util.Xhr.submit_form(form_id, {
-                'callback': function (data) {
-                    if (data.category) {
-                        /* Means success */
-                        if (map.chickpea_overlays[data.category.pk] !== "undefined") {
-                            // TODO update instead of removing/recreating
-                            var layer = map.chickpea_overlays[data.category.pk];
-                            map.removeLayer(layer);
-                            self.removeLayer(layer);
-                        }
-                        map._createOverlay(data.category);
-                        L.Chickpea.fire('alert', {'content':"Category successfuly edited", 'level': 'info'});
-                        L.Chickpea.fire('modal_close');
+        L.Chickpea.fire('modal_ready', {'data': data});
+        L.Util.Xhr.listen_form(form_id, {
+            'callback': function (data) {
+                if (data.category) {
+                    /* Means success */
+                    if (typeof map.chickpea_overlays[data.category.pk] !== "undefined") {
+                        // TODO update instead of removing/recreating
+                        var layer = map.chickpea_overlays[data.category.pk];
+                        map.removeLayer(layer);
+                        self.removeLayer(layer);
                     }
-                    else {
-                        // Let's start again
-                        self._handleEditResponse(data);
-                    }
-                },
-                'dataType': 'json'
-            });
-        };
-        var form = L.DomUtil.get(form_id);
-        L.DomEvent
-            .on(form, 'submit', L.DomEvent.stopPropagation)
-            .on(form, 'submit', L.DomEvent.preventDefault)
-            .on(form, 'submit', submit_form);
-
+                    map._createOverlay(data.category);
+                    L.Chickpea.fire('alert', {'content':"Category successfuly edited", 'level': 'info'});
+                    L.Chickpea.fire('modal_close');
+                }
+                else {
+                    // Let's start again
+                    self._handleEditResponse(data);
+                }
+            }
+        });
     },
 
     _createNewOverlayButton: function (map, container) {
