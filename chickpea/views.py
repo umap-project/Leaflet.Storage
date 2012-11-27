@@ -12,7 +12,8 @@ from django.views.generic.edit import CreateView, UpdateView
 
 from vectorformats.Formats import Django, GeoJSON
 
-from chickpea.models import Map, Marker, Category, Polyline, TileLayer, MapToTileLayer
+from chickpea.models import (Map, Marker, Category, Polyline, TileLayer,
+                             MapToTileLayer, Polygon)
 from chickpea.utils import get_uri_template
 from chickpea.forms import QuickMapCreateForm, UpdateMapExtentForm, CategoryForm
 
@@ -30,6 +31,9 @@ def _urls_for_js(urls=None):
             'polyline',
             'polyline_add',
             'polyline_update',
+            'polygon',
+            'polygon_add',
+            'polygon_update',
             'map_update_extent',
             'map_update_tilelayers',
             'map_update',
@@ -196,7 +200,8 @@ class FeatureGeoJSONListView(BaseListView, GeoJSONMixin):
         }
         markers = Marker.objects.filter(**filters)
         polylines = Polyline.objects.filter(**filters)
-        return list(markers) + list(polylines)
+        polygons = Polygon.objects.filter(**filters)
+        return list(markers) + list(polylines) + list(polygons)
 
 
 class MarkerGeoJSONView(BaseDetailView, GeoJSONMixin):
@@ -278,6 +283,31 @@ class PolylineGeoJSONView(BaseDetailView, GeoJSONMixin):
     def get_queryset(self):
         # GeoJSON expects an iterable
         return Polyline.objects.filter(pk=self.kwargs['pk'])
+
+
+class PolygonView(DetailView):
+    model = Polygon
+
+    def render_to_response(self, context, **response_kwargs):
+        return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
+
+
+class PolygonAdd(FeatureAdd):
+    model = Polygon
+    geojson_url = 'polygon_geojson'
+
+
+class PolygonUpdate(FeatureUpdate):
+    model = Polygon
+    geojson_url = 'polygon_geojson'
+
+
+class PolygonGeoJSONView(BaseDetailView, GeoJSONMixin):
+    model = Polygon
+
+    def get_queryset(self):
+        # GeoJSON expects an iterable
+        return Polygon.objects.filter(pk=self.kwargs['pk'])
 
 
 class SuccessView(TemplateView):

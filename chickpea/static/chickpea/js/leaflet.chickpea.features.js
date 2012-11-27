@@ -196,8 +196,54 @@ L.chickpea_marker = function (map, chickpea_id, latlng, options) {
     return new L.ChickpeaMarker(map, chickpea_id, latlng, options);
 };
 
+L.Mixin.ChickpeaPath = {
+
+  _onClick: function(e){
+        this._popupHandlersAdded = true;  // Prevent leaflet from managing event
+        if(!this.map.editEnabled) {
+            this.view(e);
+        }
+    },
+
+    _toggleEditing: function(e) {
+        if(this.map.editEnabled) {
+            if(this.editing._enabled) {
+                this.editing.disable();
+                this.edit();
+            }
+            else {
+                this.editing.enable();
+            }
+        }
+        // FIXME: disable when disabling global edit
+        L.DomEvent.stop(e.originalEvent);
+    },
+
+    closePopup: function() {
+        this.map.closePopup(this._popup);
+    },
+
+    _setColor: function () {
+        if(this.chickpea_overlay) {
+            this.options.color = this.chickpea_overlay.chickpea_color;
+        }
+    },
+
+    _updateStyle: function () {
+        this._setColor();
+        L.Polyline.prototype._updateStyle.call(this);
+    },
+
+    changeOverlay: function(layer) {
+        L.Mixin.ChickpeaFeature.changeOverlay.call(this, layer);
+        // path color depends on overlay
+        this._updateStyle();
+    }
+};
+
+
 L.ChickpeaPolyline = L.Polyline.extend({
-    includes: [L.Mixin.ChickpeaFeature, L.Mixin.Events],
+    includes: [L.Mixin.ChickpeaFeature, L.Mixin.ChickpeaPath, L.Mixin.Events],
 
     initialize: function(map, chickpea_id, latlngs, options) {
         this.map = map;
@@ -229,42 +275,6 @@ L.ChickpeaPolyline = L.Polyline.extend({
         this.on("dblclick", this._toggleEditing);
     },
 
-  _onClick: function(e){
-        this._popupHandlersAdded = true;  // Prevent leaflet from managing event
-        if(!this.map.editEnabled) {
-            this.view(e);
-        }
-    },
-
-    _toggleEditing: function(e) {
-        if(this.map.editEnabled) {
-            if(this.editing._enabled) {
-                this.editing.disable();
-                this.edit();
-            }
-            else {
-                this.editing.enable();
-            }
-        }
-        // FIXME: disable when disabling global edit
-        L.DomEvent.stop(e.originalEvent);
-    },
-
-    closePopup: function() {
-        this._map.closePopup(this._popup);
-    },
-
-    _setColor: function () {
-        if(this.chickpea_overlay) {
-            this.options.color = this.chickpea_overlay.chickpea_color;
-        }
-    },
-
-    _updateStyle: function () {
-        this._setColor();
-        L.Polyline.prototype._updateStyle.call(this);
-    },
-
     geometry: function() {
         /* Return a GeoJSON geometry Object */
         var latlngs = this.getLatLngs(), coords = [];
@@ -278,11 +288,59 @@ L.ChickpeaPolyline = L.Polyline.extend({
             type: "LineString",
             coordinates: coords
         };
+    }
+
+});
+
+L.ChickpeaPolygon = L.Polygon.extend({
+    includes: [L.Mixin.ChickpeaFeature, L.Mixin.ChickpeaPath, L.Mixin.Events],
+
+    initialize: function(map, chickpea_id, latlngs, options) {
+        console.log("latlngs in initialize", latlngs)
+        this.map = map;
+        if(typeof options == "undefined") {
+            options = {};
+        }
+        // Overlay the marker belongs to
+        if(options.overlay) {
+            this.chickpea_overlay = options.overlay;
+        }
+        else {
+            this.chickpea_overlay = null;
+        }
+        L.Polygon.prototype.initialize.call(this, latlngs, options);
+        this.form_id = "polygon_form";
+
+        // Use a null chickpea_id when you want to create a new Marker
+        this.chickpea_id = chickpea_id;
+
+        // URL templates
+        this.view_url_template = this.map.options.urls.polygon;
+        this.update_url_template = this.map.options.urls.polygon_update;
+        this.add_url_template = this.map.options.urls.polygon_add;
+
+        // Add events
+        this.on("dragend", this.edit);
+        this.on("click", this._onClick);
+        this.on("dblclick", this._toggleEditing);
     },
 
-    changeOverlay: function(layer) {
-        L.Mixin.ChickpeaFeature.changeOverlay.call(this, layer);
-        // path color depends on overlay
-        this._updateStyle();
+    geometry: function() {
+        /* Return a GeoJSON geometry Object */
+        /* see: https://github.com/CloudMade/Leaflet/issues/1135 */
+        /* and: https://github.com/CloudMade/Leaflet/issues/712 */
+        var latlngs = this.getLatLngs(), coords = [], closingPoint = latlngs[0];
+        latlngs.push(closingPoint);  // Artificially create a LinearRing
+        for(var i = 0, len = latlngs.length; i < len; i++) {
+            coords.push([
+                latlngs[i].lng,
+                latlngs[i].lat
+            ]);
+        }
+        return {
+            type: "Polygon",
+            coordinates: [coords]
+        };
     }
+
 });

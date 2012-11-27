@@ -147,10 +147,14 @@ class AbstractMarker(BaseFeature):
 
 
 class AbstractPolyline(BaseFeature):
-    """
-    Point of interest.
-    """
     latlng = models.LineStringField(geography=True)
+
+    class Meta:
+        abstract = True
+
+
+class AbstractPolygon(BaseFeature):
+    latlng = models.PolygonField(geography=True)
 
     class Meta:
         abstract = True
@@ -165,6 +169,10 @@ class Marker(AbstractMarker):
 
 
 class Polyline(AbstractPolyline):
+    pass
+
+
+class Polygon(AbstractPolygon):
     pass
 
 

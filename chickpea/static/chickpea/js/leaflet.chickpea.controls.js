@@ -1,7 +1,6 @@
 L.Control.ToggleEdit = L.Control.Draw.extend({
     options: {
         position: 'topright',
-        polygon: null,  // Later
         rectangle: null,  // Later
         circle: null  // Later
     },
@@ -123,6 +122,18 @@ L.Polyline.Draw.include({
         this._map.fire(
             'draw:poly-created',
             { poly: new L.ChickpeaPolyline(this._map, null, this._poly.getLatLngs(), this.options.shapeOptions) }
+        );
+        this.disable();
+    }
+
+});
+
+L.Polygon.Draw.include({
+
+    _finishShape: function () {
+        this._map.fire(
+            'draw:poly-created',
+            { poly: new L.ChickpeaPolygon(this._map, null, this._poly.getLatLngs(), this.options.shapeOptions) }
         );
         this.disable();
     }

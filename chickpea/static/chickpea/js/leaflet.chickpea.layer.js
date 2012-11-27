@@ -66,6 +66,12 @@ L.ChickpeaLayer = L.LazyGeoJSON.extend({
                 latlngs = L.GeoJSON.coordsToLatLngs(coords);
                 layer = this._lineToLayer(geojson, latlngs);
                 break;
+            case 'Polygon':
+                latlngs = L.GeoJSON.coordsToLatLngs(coords, 1);
+                console.log("latlngs in switch", latlngs)
+                layer = this._polygonToLayer(geojson, latlngs);
+                console.log(layer);
+                break;
             default:
                 console.log("Unkown geometry.type: " + geometry.type);
         }
@@ -84,6 +90,15 @@ L.ChickpeaLayer = L.LazyGeoJSON.extend({
     },
     _lineToLayer: function(geojson, latlngs) {
         return new L.ChickpeaPolyline(
+            this.map,
+            geojson.id,
+            latlngs,
+            {"geojson": geojson, "overlay": this}
+        );
+    },
+
+    _polygonToLayer: function(geojson, latlngs) {
+        return new L.ChickpeaPolygon(
             this.map,
             geojson.id,
             latlngs,
