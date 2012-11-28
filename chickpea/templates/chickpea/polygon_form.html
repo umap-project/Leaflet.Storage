@@ -1,0 +1,9 @@
+<form method="post" action="{{ action }}" id="polygon_form" onsubmit="return false;">
+    {% csrf_token %}
+    {{ form.errors }}
+    <p>{{ form.name }}</p>
+    <p>{{ form.description }}</p>
+    <p>{{ form.category }}</p>
+    <input type="hidden" name="{{ form.latlng.html_name }}" value="{{ form.latlng.value }}" />
+    <input type="submit" />
+</form>
