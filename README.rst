@@ -14,10 +14,11 @@ Goals:
 - edit in place
 
 
-Supported features (others are planned: Polygon, Circle, etc.):
+Supported features (others are planned: Circle, etc.):
 
 - Marker
 - Polyline
+- Polygon
 
 Screenshots:
 
@@ -34,7 +35,7 @@ Installation
 
 .. note::
    You will need Leaflet, Leaflet.Draw and Leaflet.Hash.
-   They are submodules of this module, but pip will not fetch them automatically (will the case in future version of pip).
+   They are submodules of this module, but pip will not fetch them automatically (will be the case in future version of pip).
 
 Then you can pip install the rep, only from its repo for now::
 
@@ -66,19 +67,19 @@ From the Django admin (for now), you need to create at least:
 - one Map instance
 - one Category instance
 
-Then, go to the map front page (something like http://localhost:8017/map/my-map-slug), and you will be able to add Markers and Polylines.
+Then, go to the map front page (something like http://localhost:8017/map/my-map-slug), and you will be able to add features (Marker, Polygon...).
 
 
 ----------------------
 Advanced configuration
 ----------------------
 
-Use your own Marker and Polyline models
----------------------------------------
+Use your own models
+-------------------
 
-Sometimes, you will need to add specific properties to the Marker or the Polyline. Its easy to do so with `chickpea`.
+Sometimes, you will need to add specific properties to the Marker, Polyline or Polygon. Its easy to do so with `chickpea`.
 
-Create a model that inherit from AbstractMarker (for Marker example)::
+Create a model that inherit from `AbstractMarker` (for Marker example)::
 
     from chickpea.base_models import AbstractMarker
 
@@ -99,15 +100,17 @@ Then, in your settings, add::
 Decide which features are editable
 ----------------------------------
 
-For now, only the Marker and Polyline features are supported.
+For now, only Marker, Polyline and Poygon features are supported.
 Maybe you just want for example the Marker to be editable.
 For this, you will need to override the map configuration in JavaScript.
-You will have to explicity prevent the Polyline editing, doing so::
+You will have to explicity prevent the Polyline and Polygon editing,
+doing so::
 
     <script>
         // create map_settings like the default template does
         map_settings.editOptions = {
-                "polyline": null
+                "polyline": null,
+                "polygon": null
             }
         // Create the map like the default template does
     </script>
@@ -118,7 +121,7 @@ Disabling totally inplace editing
 Again, this have to be done in JavaScript::
 
     <script>
-        map_settings.allowEdit = true;
+        map_settings.allowEdit = false;
     </script>
 
 
@@ -127,11 +130,8 @@ Again, this have to be done in JavaScript::
 -----
 
 - unittests! (Javascript side also)
-- support of Polygon
 - support of Circle
 - batch import of features, from standards geoformats (geojson, kml...)
 - export of features to standards geoformats
 - manage deleting feature inplace
-- inplace editing of Overlays (CRUD)
-- inplace management of TileLayers (CRUD)
 - light "per map" edit permission management
