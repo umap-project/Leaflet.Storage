@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 
 from chickpea.models import Map, Category
 
-from .base import TileLayerFactory, LicenceFactory
+from .base import TileLayerFactory, LicenceFactory, MapFactory
 
 
 class MapViews(TestCase):
@@ -36,3 +36,12 @@ class MapViews(TestCase):
         # Default tilelayer must have been linked to the map
         self.assertEqual(created_map.tilelayers.count(), 1)
         self.assertEqual(created_map.tilelayers.all()[0], self.default_tilelayer)
+
+    def test_quick_update_GET(self):
+        map_inst = MapFactory()
+        url = reverse('map_update', kwargs={'pk': map_inst.pk})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        json = simplejson.loads(response.content)
+        self.assertIn("html", json)
+        self.assertIn(map_inst.name, json['html'])
