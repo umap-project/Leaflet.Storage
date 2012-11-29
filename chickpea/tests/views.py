@@ -15,10 +15,16 @@ class MapViews(TestCase):
         # We need a default licence
         self.licence = LicenceFactory()
 
-    def test_quick_create(self):
+    def test_quick_create_GET(self):
         url = reverse('map_add')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+        json = simplejson.loads(response.content)
+        self.assertIn("html", json)
+        self.assertIn("form", json['html'])
+
+    def test_quick_create_POST(self):
+        url = reverse('map_add')
         # POST only mendatory fields
         name = 'test-map'
         post_data = {
