@@ -51,3 +51,20 @@ class MapViews(TestCase):
         json = simplejson.loads(response.content)
         self.assertIn("html", json)
         self.assertIn(map_inst.name, json['html'])
+
+    def test_quick_update_POST(self):
+        map_inst = MapFactory()
+        url = reverse('map_update', kwargs={'pk': map_inst.pk})
+        # POST only mendatory fields
+        new_name = 'new map name'
+        post_data = {
+            'name': new_name,
+            'licence': map_inst.licence.pk
+        }
+        response = self.client.post(url, post_data)
+        self.assertEqual(response.status_code, 200)
+        json = simplejson.loads(response.content)
+        self.assertNotIn("html", json)
+        updated_map = Map.objects.get(pk=map_inst.pk)
+        self.assertEqual(json['redirect'], updated_map.get_absolute_url())
+        self.assertEqual(updated_map.name, new_name)
