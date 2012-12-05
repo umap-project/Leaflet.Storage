@@ -1,10 +1,12 @@
+import os
+
 from django.test import TestCase
 from django.utils import simplejson
 from django.core.urlresolvers import reverse
 
-from chickpea.models import Map, Category
+from chickpea.models import Map, Category, Marker, Polygon, Polyline
 
-from .base import TileLayerFactory, LicenceFactory, MapFactory
+from .base import TileLayerFactory, LicenceFactory, MapFactory, CategoryFactory
 
 
 class MapViews(TestCase):
@@ -68,3 +70,28 @@ class MapViews(TestCase):
         updated_map = Map.objects.get(pk=map_inst.pk)
         self.assertEqual(json['redirect'], updated_map.get_absolute_url())
         self.assertEqual(updated_map.name, new_name)
+
+
+class UploadData(TestCase):
+
+    def test_generic(self):
+        map_inst = MapFactory()
+        category = CategoryFactory(map=map_inst)
+        url = reverse('upload_data', kwargs={'map_id': map_inst.pk})
+        current_path = os.path.dirname(os.path.realpath(__file__))
+        fixture_path = os.path.join(
+            current_path,
+            'fixtures',
+            'test_upload_data.json'
+        )
+        # Contains tow Point, two Polygons and one Polyline
+        f = open(fixture_path)
+        post_data = {
+            'category': category.pk,
+            'data_file': f
+        }
+        response = self.client.post(url, post_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Marker.objects.filter(category=category).count(), 2)
+        self.assertEqual(Polygon.objects.filter(category=category).count(), 2)
+        self.assertEqual(Polyline.objects.filter(category=category).count(), 1)
