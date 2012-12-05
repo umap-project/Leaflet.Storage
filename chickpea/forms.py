@@ -72,7 +72,7 @@ class UploadDataForm(forms.Form):
             try:
                 features = geoj.decode(f.read())
             except:
-                raise forms.ValidationError('Unvalid geojson')
+                raise forms.ValidationError('Invalid geojson')
         else:
-            raise forms.ValidationError('Unvalid content_type: %s' % f.content_type)
+            raise forms.ValidationError('Invalid content_type: %s' % f.content_type)
         return features

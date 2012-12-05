@@ -168,6 +168,9 @@ L.ChickpeaMap = L.Map.extend({
                             L.Chickpea.fire("alert", {"content": data.info, "level": "info"});
                         }
                     }
+                    else if (data.error) {
+                        L.Chickpea.fire("alert", {"content": raw.error, "level": "error"});
+                    }
                     else {
                         // start again
                         handle_response(data);

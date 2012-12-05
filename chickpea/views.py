@@ -199,8 +199,12 @@ class UploadData(FormView):
             klass = FEATURE_TO_MODEL.get(feature.geometry['type'], None)
             if not klass:
                 continue  # TODO notify user
+            try:
+                latlng = GEOSGeometry(str(feature.geometry))
+            except Exception:
+                continue  # TODO notify user
             kwargs = {
-                'latlng': GEOSGeometry(str(feature.geometry)),
+                'latlng': latlng,
                 'category': category
             }
             for field in FIELDS:
@@ -211,10 +215,11 @@ class UploadData(FormView):
             except:
                 continue  # TODO notify user
             counter += 1
-        return simple_json_response(
-            info="%d features uploaded with success!" % counter,
-            category=category.json
-        )
+        kwargs = {
+            'category': category.json,
+            'info': "%d features created!" % counter,
+        }
+        return simple_json_response(**kwargs)
 
     def render_to_response(self, context, **response_kwargs):
         return render_to_json(self.get_template_names(), response_kwargs, context, self.request)

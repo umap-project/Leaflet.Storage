@@ -29,6 +29,9 @@ L.Util.Xhr = {
                         else if (raw.info) {
                             L.Chickpea.fire("alert", {"content": raw.info, "level": "info"});
                         }
+                        else if (raw.error) {
+                            L.Chickpea.fire("alert", {"content": raw.error, "level": "error"});
+                        }
                         else if (raw.html) {
                             L.Chickpea.fire('modal_ready', {'data': raw});
                         }
