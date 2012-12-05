@@ -11,12 +11,16 @@ L.LazyGeoJSON = L.GeoJSON.extend({
     onAdd: function (map, insertAtTheBottom) {
         // Fetch geojson only at first call
         if(this._geojson === null) {
-            var geojson = this.geojson_getter();
-            this.addData(geojson);
-            this._geojson = geojson;
+            this.fetchData();
         }
 
         // Call parent
         L.FeatureGroup.prototype.onAdd.call(this, map, insertAtTheBottom);
+    },
+
+    fetchData: function () {
+        var geojson = this.geojson_getter();
+        this.addData(geojson);
+        this._geojson = geojson;
     }
 });

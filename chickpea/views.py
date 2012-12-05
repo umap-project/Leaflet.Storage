@@ -8,14 +8,16 @@ from django.views.generic.list import BaseListView
 from django.views.generic.base import TemplateView
 from django.template.loader import render_to_string
 from django.views.generic.detail import BaseDetailView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, FormView
+from django.contrib.gis.geos import GEOSGeometry
 
 from vectorformats.Formats import Django, GeoJSON
 
-from chickpea.models import (Map, Marker, Category, Polyline, TileLayer,
-                             MapToTileLayer, Polygon)
-from chickpea.utils import get_uri_template
-from chickpea.forms import QuickMapCreateForm, UpdateMapExtentForm, CategoryForm
+from .models import (Map, Marker, Category, Polyline, TileLayer,
+                     MapToTileLayer, Polygon)
+from .utils import get_uri_template
+from .forms import (QuickMapCreateForm, UpdateMapExtentForm, CategoryForm,
+                    UploadDataForm)
 
 
 def _urls_for_js(urls=None):
@@ -37,6 +39,7 @@ def _urls_for_js(urls=None):
             'map_update_extent',
             'map_update_tilelayers',
             'map_update',
+            'upload_data',
             'map_embed',
             'category_add',
             'category_update',
@@ -161,6 +164,57 @@ class UpdateMapTileLayers(TemplateView):
             "redirect": map_inst.get_absolute_url()
         }
         return HttpResponse(simplejson.dumps(response))
+
+    def render_to_response(self, context, **response_kwargs):
+        return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
+
+
+class UploadData(FormView):
+    template_name = "chickpea/upload_form.html"
+    form_class = UploadDataForm
+
+    def get_form(self, form_class):
+        form = super(UploadData, self).get_form(form_class)
+        map_inst = get_object_or_404(Map, pk=self.kwargs['map_id'])
+        form.fields['category'].queryset = Category.objects.filter(map=map_inst)
+        return form
+
+    def get_context_data(self, **kwargs):
+        kwargs.update({
+            'action_url': reverse_lazy('upload_data', kwargs={'map_id': self.kwargs['map_id']})
+        })
+        return super(UploadData, self).get_context_data(**kwargs)
+
+    def form_valid(self, form):
+        FEATURE_TO_MODEL = {
+            'Point': Marker,
+            'LineString': Polyline,
+            'Polygon': Polygon
+        }
+        FIELDS = ['name', 'description']
+        features = form.cleaned_data.get('data_file')
+        category = form.cleaned_data.get('category')
+        counter = 0
+        for feature in features:
+            klass = FEATURE_TO_MODEL.get(feature.geometry['type'], None)
+            if not klass:
+                continue  # TODO notify user
+            kwargs = {
+                'latlng': GEOSGeometry(str(feature.geometry)),
+                'category': category
+            }
+            for field in FIELDS:
+                if field in feature.properties:
+                    kwargs[field] = feature.properties[field]
+            try:
+                klass.objects.create(**kwargs)
+            except:
+                continue  # TODO notify user
+            counter += 1
+        return simple_json_response(
+            info="%d features uploaded with success!" % counter,
+            category=category.json
+        )
 
     def render_to_response(self, context, **response_kwargs):
         return render_to_json(self.get_template_names(), response_kwargs, context, self.request)

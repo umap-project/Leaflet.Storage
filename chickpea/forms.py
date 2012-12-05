@@ -2,6 +2,8 @@ from django import forms
 from django.template.defaultfilters import slugify
 from django.contrib.gis.geos import Point
 
+from vectorformats.Formats import GeoJSON
+
 from chickpea.models import Map, Category
 
 
@@ -51,3 +53,26 @@ class CategoryForm(forms.ModelForm):
         widgets = {
             "map": forms.HiddenInput()
         }
+
+
+class UploadDataForm(forms.Form):
+
+    data_file = forms.FileField(help_text="Supported format: GeoJSON.")
+    category = forms.ModelChoiceField([])  # queryset is set by view
+
+    def clean_data_file(self):
+        """
+        Return a features list if file is valid.
+        Otherwise raise a ValidationError.
+        """
+        features = []
+        f = self.cleaned_data.get('data_file')
+        if f.content_type == "application/json":
+            geoj = GeoJSON.GeoJSON()
+            try:
+                features = geoj.decode(f.read())
+            except:
+                raise forms.ValidationError('Unvalid geojson')
+        else:
+            raise forms.ValidationError('Unvalid content_type: %s' % f.content_type)
+        return features

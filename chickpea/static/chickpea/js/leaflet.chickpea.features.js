@@ -296,7 +296,6 @@ L.ChickpeaPolygon = L.Polygon.extend({
     includes: [L.Mixin.ChickpeaFeature, L.Mixin.ChickpeaPath, L.Mixin.Events],
 
     initialize: function(map, chickpea_id, latlngs, options) {
-        console.log("latlngs in initialize", latlngs)
         this.map = map;
         if(typeof options == "undefined") {
             options = {};

@@ -15,8 +15,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
 
     onAdd: function (map) {
         var container = L.Control.Draw.prototype.onAdd.call(this, map);
-        // var container = L.DomUtil.create('div', "leaflet-control-edit");
-        // this._createNewOverlayButton(map, container);
+        this._createUploadButton(map, container);
         this._createUpdateMapExtentButton(map, container);
         this._createUpdateMapTileLayersButton(map, container);
         this._createUpdateMapInfosButton(map, container);
@@ -74,12 +73,12 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
         );
     },
 
-    _createNewOverlayButton: function(map, container) {
+    _createUploadButton: function(map, container) {
         this._createButton(
-            'Add an overlay',
-            'add-overlay',
+            'Upload data',
+            'upload-data',
             container,
-            function() {},
+            function() { map.uploadData(); },
             {}
         );
     },

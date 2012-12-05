@@ -151,5 +151,35 @@ L.ChickpeaMap = L.Map.extend({
                 L.Chickpea.fire("modal_ready", {'data': data, "cssClass": "update-infos"});
             }
         });
+    },
+
+    uploadData: function () {
+        var map = this;
+        var handle_response = function (data) {
+            L.Chickpea.fire("modal_ready", {'data': data, "cssClass": "upload-data"});
+            L.Util.Xhr.listen_form("upload_data", {
+                'callback': function (data) {
+                    if (data.category) {
+                        var layer = map.chickpea_overlays[data.category.pk];
+                        layer.clearLayers();
+                        layer.fetchData();
+                        L.Chickpea.fire('modal_close');
+                        if (data.info) {
+                            L.Chickpea.fire("alert", {"content": data.info, "level": "info"});
+                        }
+                    }
+                    else {
+                        // start again
+                        handle_response(data);
+                    }
+                }
+            });
+        };
+        var url = L.Util.template(this.options.urls.upload_data, {'map_id': this.options.chickpea_id});
+        L.Util.Xhr.get(url, {
+            'dataType': 'json',
+            'callback': handle_response
+        });
     }
+
 });

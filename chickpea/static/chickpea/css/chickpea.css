@@ -54,6 +54,12 @@ a.update-map-infos {
     background-repeat: no-repeat;
     display: none;
 }
+a.upload-data {
+    background-image: url("../img/upload.png");
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    display: none;
+}
 .chickpea-edit-enabled .leaflet-control-draw a + a {
     margin-left: 5px;
 }
