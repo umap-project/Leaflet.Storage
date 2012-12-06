@@ -74,24 +74,43 @@ class MapViews(TestCase):
 
 class UploadData(TestCase):
 
-    def test_generic(self):
-        map_inst = MapFactory()
-        category = CategoryFactory(map=map_inst)
-        url = reverse('upload_data', kwargs={'map_id': map_inst.pk})
+    def setUp(self):
+        self.map = MapFactory()
+        self.category = CategoryFactory(map=self.map)
+
+    def process_file(self, filename):
+        """
+        Process a file stored in tests/fixtures/
+        """
+        url = reverse('upload_data', kwargs={'map_id': self.map.pk})
         current_path = os.path.dirname(os.path.realpath(__file__))
         fixture_path = os.path.join(
             current_path,
             'fixtures',
-            'test_upload_data.json'
+            filename
         )
-        # Contains tow Point, two Polygons and one Polyline
         f = open(fixture_path)
         post_data = {
-            'category': category.pk,
+            'category': self.category.pk,
             'data_file': f
         }
         response = self.client.post(url, post_data)
+        return response
+
+    def test_generic(self):
+        # Contains tow Point, two Polygons and one Polyline
+        response = self.process_file("test_upload_data.json")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(Marker.objects.filter(category=category).count(), 2)
-        self.assertEqual(Polygon.objects.filter(category=category).count(), 2)
-        self.assertEqual(Polyline.objects.filter(category=category).count(), 1)
+        self.assertEqual(Marker.objects.filter(category=self.category).count(), 2)
+        self.assertEqual(Polygon.objects.filter(category=self.category).count(), 2)
+        self.assertEqual(Polyline.objects.filter(category=self.category).count(), 1)
+
+    def test_empty_coordinates_should_not_be_imported(self):
+        self.assertEqual(Marker.objects.filter(category=self.category).count(), 0)
+        self.assertEqual(Polyline.objects.filter(category=self.category).count(), 0)
+        self.assertEqual(Polygon.objects.filter(category=self.category).count(), 0)
+        response = self.process_file("test_upload_empty_coordinates.json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Marker.objects.filter(category=self.category).count(), 0)
+        self.assertEqual(Polyline.objects.filter(category=self.category).count(), 0)
+        self.assertEqual(Polygon.objects.filter(category=self.category).count(), 0)

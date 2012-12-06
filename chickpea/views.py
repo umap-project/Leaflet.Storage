@@ -203,6 +203,8 @@ class UploadData(FormView):
                 latlng = GEOSGeometry(str(feature.geometry))
             except Exception:
                 continue  # TODO notify user
+            if latlng.empty:
+                continue  # TODO notify user
             kwargs = {
                 'latlng': latlng,
                 'category': category
