@@ -1,15 +1,17 @@
+from django.db import transaction
 from django.utils import simplejson
 from django.http import HttpResponse
+from django.db.utils import DatabaseError
 from django.template import RequestContext
 from django.views.generic import DetailView
 from django.shortcuts import get_object_or_404
+from django.contrib.gis.geos import GEOSGeometry
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic.list import BaseListView
 from django.views.generic.base import TemplateView
 from django.template.loader import render_to_string
 from django.views.generic.detail import BaseDetailView
 from django.views.generic.edit import CreateView, UpdateView, FormView
-from django.contrib.gis.geos import GEOSGeometry
 
 from vectorformats.Formats import Django, GeoJSON
 
@@ -201,7 +203,7 @@ class UploadData(FormView):
                 continue  # TODO notify user
             try:
                 latlng = GEOSGeometry(str(feature.geometry))
-            except Exception:
+            except:
                 continue  # TODO notify user
             if latlng.empty:
                 continue  # TODO notify user
@@ -214,8 +216,11 @@ class UploadData(FormView):
                     kwargs[field] = feature.properties[field]
             try:
                 klass.objects.create(**kwargs)
-            except:
+            except DatabaseError:
+                transaction.rollback()
                 continue  # TODO notify user
+            else:
+                transaction.commit()
             counter += 1
         kwargs = {
             'category': category.json,

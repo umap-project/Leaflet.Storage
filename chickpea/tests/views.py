@@ -1,6 +1,6 @@
 import os
 
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 from django.utils import simplejson
 from django.core.urlresolvers import reverse
 
@@ -72,7 +72,7 @@ class MapViews(TestCase):
         self.assertEqual(updated_map.name, new_name)
 
 
-class UploadData(TestCase):
+class UploadData(TransactionTestCase):
 
     def setUp(self):
         self.map = MapFactory()
@@ -119,3 +119,13 @@ class UploadData(TestCase):
         response = self.process_file("test_upload_non_linear_ring.json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Polygon.objects.filter(category=self.category).count(), 0)
+
+    def test_missing_name_should_not_stop_import(self):
+        # One feature is missing a name
+        # We have to make sure that the other feature are imported
+        self.assertEqual(Marker.objects.filter(category=self.category).count(), 0)
+        response = self.process_file("test_upload_missing_name.json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Marker.objects.filter(category=self.category).count(), 1)
+        self.assertEqual(Polyline.objects.filter(category=self.category).count(), 1)
+        self.assertEqual(Polygon.objects.filter(category=self.category).count(), 1)
