@@ -71,7 +71,7 @@ L.ChickpeaLayer = L.LazyGeoJSON.extend({
                 layer = this._polygonToLayer(geojson, latlngs);
                 break;
             default:
-                console.log("Unkown geometry.type: " + geometry.type);
+                throw new Error("Unkown geometry.type: " + geometry.type);
         }
         return this.addLayer(layer);
     },
