@@ -60,7 +60,7 @@ L.ChickpeaLayer = L.LazyGeoJSON.extend({
         switch (geometry.type) {
             case 'Point':
                 latlng = L.GeoJSON.coordsToLatLng(coords);
-                layer = this._pointToLayer(geojson, latlng)
+                layer = this._pointToLayer(geojson, latlng);
                 break;
             case 'LineString':
                 latlngs = L.GeoJSON.coordsToLatLngs(coords);
@@ -68,9 +68,7 @@ L.ChickpeaLayer = L.LazyGeoJSON.extend({
                 break;
             case 'Polygon':
                 latlngs = L.GeoJSON.coordsToLatLngs(coords, 1);
-                console.log("latlngs in switch", latlngs)
                 layer = this._polygonToLayer(geojson, latlngs);
-                console.log(layer);
                 break;
             default:
                 console.log("Unkown geometry.type: " + geometry.type);
