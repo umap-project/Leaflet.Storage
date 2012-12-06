@@ -279,11 +279,20 @@ class MarkerGeoJSONView(BaseDetailView, GeoJSONMixin):
         return Marker.objects.filter(pk=self.kwargs['pk'])
 
 
-class MarkerView(DetailView):
-    model = Marker
+class FeatureView(DetailView):
+    context_object_name = "feature"
 
     def render_to_response(self, context, **response_kwargs):
         return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
+
+    def get_template_names(self):
+        """
+        Add a fallback, but keep the default templates to make it easily
+        extendable.
+        """
+        templates = super(FeatureView, self).get_template_names()
+        templates.append("chickpea/feature_detail.html")
+        return templates
 
 
 class FeatureAdd(CreateView):
@@ -317,6 +326,10 @@ class FeatureUpdate(UpdateView):
         return form
 
 
+class MarkerView(FeatureView):
+    model = Marker
+
+
 class MarkerUpdate(FeatureUpdate):
     model = Marker
     geojson_url = 'marker_geojson'
@@ -327,11 +340,8 @@ class MarkerAdd(FeatureAdd):
     geojson_url = 'marker_geojson'
 
 
-class PolylineView(DetailView):
+class PolylineView(FeatureView):
     model = Polyline
-
-    def render_to_response(self, context, **response_kwargs):
-        return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
 
 
 class PolylineAdd(FeatureAdd):
@@ -352,11 +362,8 @@ class PolylineGeoJSONView(BaseDetailView, GeoJSONMixin):
         return Polyline.objects.filter(pk=self.kwargs['pk'])
 
 
-class PolygonView(DetailView):
+class PolygonView(FeatureView):
     model = Polygon
-
-    def render_to_response(self, context, **response_kwargs):
-        return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
 
 
 class PolygonAdd(FeatureAdd):
