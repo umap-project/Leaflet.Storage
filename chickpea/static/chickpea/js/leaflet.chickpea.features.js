@@ -30,6 +30,7 @@ L.Mixin.ChickpeaFeature = {
     },
 
     _firePopup: function(content) {
+        this.unbindPopup();
         this.bindPopup(content);
         this.openPopup();
         if(this.map.editEnabled) {
@@ -87,6 +88,7 @@ L.Mixin.ChickpeaFeature = {
             }
         };
         var submit = function (e) {
+            L.DomEvent.off(form, 'submit', submit);
             // Always update field value with current position
             // We use JSON, GEOSGeometry is aware of it
             form.latlng.value = JSON.stringify(self.geometry());
