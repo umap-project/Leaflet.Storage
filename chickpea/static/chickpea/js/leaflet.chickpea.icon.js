@@ -4,17 +4,17 @@ L.ChickpeaIcon = L.DivIcon.extend({
         var default_options = {
             iconSize: null,  // Made in css
             iconUrl: this.map.options.default_icon_url,
-            overlay: {}
+            feature: null
         };
         options = L.Util.extend({}, default_options, options);
         L.Icon.prototype.initialize.call(this, options);
-        this.overlay = this.options.overlay;
+        this.feature = this.options.feature;
     },
 
     _getIconUrl: function (name) {
         var url;
-        if(this.overlay[name + 'Url']) {
-            url = this.overlay[name + 'Url'];
+        if(this.feature && this.feature._getIconUrl(name)) {
+            url = this.feature._getIconUrl(name);
         }
         else {
             url = this.options[name + 'Url'];
@@ -35,9 +35,10 @@ L.ChickpeaIcon.Default = L.ChickpeaIcon.extend({
     },
 
     _setColor: function() {
-        if(this.overlay) {
-            this.elements.container.style.backgroundColor = this.overlay.chickpea_color;
-            this.elements.arrow.style.borderTopColor = this.overlay.chickpea_color;
+        if(this.feature) {
+            var color = this.feature.getColor();
+            this.elements.container.style.backgroundColor = color;
+            this.elements.arrow.style.borderTopColor = color;
         }
     },
 
@@ -70,8 +71,9 @@ L.ChickpeaIcon.Circle = L.ChickpeaIcon.extend({
     },
 
     _setColor: function() {
-        if(this.overlay) {
-            this.elements.main.style.backgroundColor = this.overlay.chickpea_color;
+        if(this.feature) {
+            var color = this.feature.getColor();
+            this.elements.main.style.backgroundColor = color;
         }
     },
 

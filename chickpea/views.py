@@ -253,7 +253,7 @@ class GeoJSONMixin(object):
 
     def render_to_response(self, context):
         qs = self.get_queryset()
-        djf = Django.Django(geodjango="latlng", properties=['name', 'category_id'])
+        djf = Django.Django(geodjango="latlng", properties=['name', 'category_id', 'color'])
         geoj = GeoJSON.GeoJSON()
         output = geoj.encode(djf.decode(qs))
         return HttpResponse(output)

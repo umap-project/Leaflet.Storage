@@ -7,7 +7,8 @@ L.Map.mergeOptions({
     lng: null,
     hash: true,
     embedControl: true,
-    layersControl: true
+    layersControl: true,
+    default_color: "DarkBlue"
 });
 
 L.ChickpeaMap = L.Map.extend({

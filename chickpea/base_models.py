@@ -132,6 +132,7 @@ class Category(models.Model):
 class BaseFeature(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
+    color = models.CharField(max_length=32, blank=True, null=True)
     category = models.ForeignKey(Category)
 
     objects = models.GeoManager()

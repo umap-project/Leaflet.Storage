@@ -116,5 +116,9 @@ L.ChickpeaLayer = L.LazyGeoJSON.extend({
             icon_class = this.chickpea_icon_class;
         }
         return new L.ChickpeaIcon[icon_class](this.map);
+    },
+
+    getColor: function () {
+        return this.chickpea_color || this.map.options.default_color;
     }
 });

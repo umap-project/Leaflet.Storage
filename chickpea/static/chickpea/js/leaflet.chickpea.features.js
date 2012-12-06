@@ -1,4 +1,5 @@
 L.Mixin.ChickpeaFeature = {
+
   _onClick: function(e){
         if(this.map.editEnabled) {
             this.edit(e);
@@ -66,10 +67,20 @@ L.Mixin.ChickpeaFeature = {
                 if (!self.chickpea_id) {
                     self.chickpea_id = feature.id;
                 }
-                // Redraw icon in case overlay has changed
+                var newColor = feature.properties.color;
+                var oldColor = self.chickpea_color;
+                self.chickpea_color = newColor;
                 var newOverlay = self.map.chickpea_overlays[feature.properties.category_id];
                 if(self.chickpea_overlay !== newOverlay) {
                     self.changeOverlay(newOverlay);
+                } else {
+                    // Needed only if overlay hasn't changed because
+                    // changeOverlay method already make the style to be
+                    // updated
+                    if (oldColor != newColor) {
+                        self.resetColor();
+                    }
+
                 }
                 // FIXME make a little message system
                 self.closePopup();
@@ -103,8 +114,21 @@ L.Mixin.ChickpeaFeature = {
         return this.chickpea_id?
             L.Util.template(this.update_url_template, {'pk': this.chickpea_id, 'map_id': this.map.options.chickpea_id}):
             L.Util.template(this.add_url_template, {'map_id': this.map.options.chickpea_id});
-    }
+    },
 
+    getColor: function () {
+        var color;
+        if (this.chickpea_color) {
+            color = this.chickpea_color;
+        }
+        else if (this.chickpea_overlay) {
+            color = this.chickpea_overlay.getColor();
+        }
+        else {
+            color = this.map.options.default_color;
+        }
+        return color;
+    }
 };
 
 L.ChickpeaMarker = L.Marker.extend({
@@ -116,12 +140,8 @@ L.ChickpeaMarker = L.Marker.extend({
             options = {};
         }
         // Overlay the marker belongs to
-        if(options.overlay) {
-            this.chickpea_overlay = options.overlay;
-        }
-        else {
-            this.chickpea_overlay = null;
-        }
+        this.chickpea_overlay = options.overlay || null;
+        this.chickpea_color = options.geojson ? options.geojson.properties.color : null;
         if(!options.icon) {
             if (this.chickpea_overlay) {
                 options.icon = this.chickpea_overlay.getIcon();
@@ -173,9 +193,13 @@ L.ChickpeaMarker = L.Marker.extend({
         this._redrawIcon();
     },
 
+    resetColor: function () {
+        this._redrawIcon();
+    },
+
     connectToOverlay: function (overlay) {
         this.options.icon = overlay.getIcon();
-        this.options.icon.overlay = overlay;
+        this.options.icon.feature = this;
         L.Mixin.ChickpeaFeature.connectToOverlay.call(this, overlay);
     },
 
@@ -194,6 +218,15 @@ L.ChickpeaMarker = L.Marker.extend({
                 latlng.lat
             ]
         };
+    },
+
+    _getIconUrl: function (name) {
+        var url = null;
+        // TODO manage picto in the marker itself
+        if(this.chickpea_overlay && this.chickpea_overlay[name + 'Url']) {
+            url = this.chickpea_overlay[name + 'Url'];
+        }
+        return url;
     }
 });
 
@@ -230,9 +263,7 @@ L.Mixin.ChickpeaPath = {
     },
 
     _setColor: function () {
-        if(this.chickpea_overlay) {
-            this.options.color = this.chickpea_overlay.chickpea_color;
-        }
+        this.options.color = this.getColor();
     },
 
     _updateStyle: function () {
@@ -243,6 +274,10 @@ L.Mixin.ChickpeaPath = {
     changeOverlay: function(layer) {
         L.Mixin.ChickpeaFeature.changeOverlay.call(this, layer);
         // path color depends on overlay
+        this._updateStyle();
+    },
+
+    resetColor: function () {
         this._updateStyle();
     }
 };
@@ -257,12 +292,8 @@ L.ChickpeaPolyline = L.Polyline.extend({
             options = {};
         }
         // Overlay the marker belongs to
-        if(options.overlay) {
-            this.chickpea_overlay = options.overlay;
-        }
-        else {
-            this.chickpea_overlay = null;
-        }
+        this.chickpea_overlay = options.overlay || null;
+        this.chickpea_color = options.geojson ? options.geojson.properties.color : null;
         L.Polyline.prototype.initialize.call(this, latlngs, options);
         this.form_id = "polyline_form";
 
@@ -307,12 +338,8 @@ L.ChickpeaPolygon = L.Polygon.extend({
             options = {};
         }
         // Overlay the marker belongs to
-        if(options.overlay) {
-            this.chickpea_overlay = options.overlay;
-        }
-        else {
-            this.chickpea_overlay = null;
-        }
+        this.chickpea_overlay = options.overlay || null;
+        this.chickpea_color = options.geojson ? options.geojson.properties.color : null;
         L.Polygon.prototype.initialize.call(this, latlngs, options);
         this.form_id = "polygon_form";
 
