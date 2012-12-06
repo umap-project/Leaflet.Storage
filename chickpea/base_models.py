@@ -87,6 +87,7 @@ class Pictogram(models.Model):
     An image added to an icon of the map.
     """
     name = models.CharField(max_length=50)
+    attribution = models.CharField(max_length=300)
     pictogram = models.ImageField(upload_to="pictogram")
 
     def __unicode__(self):
