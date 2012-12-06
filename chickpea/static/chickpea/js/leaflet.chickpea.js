@@ -169,7 +169,7 @@ L.ChickpeaMap = L.Map.extend({
                         }
                     }
                     else if (data.error) {
-                        L.Chickpea.fire("alert", {"content": raw.error, "level": "error"});
+                        L.Chickpea.fire("alert", {"content": data.error, "level": "error"});
                     }
                     else {
                         // start again
