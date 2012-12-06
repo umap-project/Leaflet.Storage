@@ -113,6 +113,12 @@ a.upload-data {
     opacity: 0.9;
     /*box-shadow: 4px 8px 6px -3px black;*/
 }
+.chickpea-circle-icon {
+    border: 1px solid white;
+    border-radius: 10px 10px 10px 10px;
+    height: 12px;
+    width: 12px;
+}
 
 /* ***** */
 /* Popup */

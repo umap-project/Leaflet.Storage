@@ -9,7 +9,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
         this._map = map;
         L.Control.Draw.prototype.initialize.call(this, options);
         if (this.options.marker) {
-            this.options.marker.icon = new L.ChickpeaIcon(this._map);
+            this.options.marker.icon = new L.ChickpeaIcon.Default(this._map);
         }
     },
 

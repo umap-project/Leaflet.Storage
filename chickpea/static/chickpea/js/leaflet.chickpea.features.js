@@ -123,7 +123,12 @@ L.ChickpeaMarker = L.Marker.extend({
             this.chickpea_overlay = null;
         }
         if(!options.icon) {
-            options.icon = new L.ChickpeaIcon(this.map);
+            if (this.chickpea_overlay) {
+                options.icon = this.chickpea_overlay.getIcon();
+            }
+            else {
+                options.icon = new L.ChickpeaIcon.Default(this.map);
+            }
         }
         L.Marker.prototype.initialize.call(this, latlng, options);
         this.form_id = "marker_form";
@@ -169,6 +174,7 @@ L.ChickpeaMarker = L.Marker.extend({
     },
 
     connectToOverlay: function (overlay) {
+        this.options.icon = overlay.getIcon();
         this.options.icon.overlay = overlay;
         L.Mixin.ChickpeaFeature.connectToOverlay.call(this, overlay);
     },

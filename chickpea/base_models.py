@@ -97,11 +97,16 @@ class Category(models.Model):
     """
     Category of a Marker.
     """
+    ICON_CLASS = (
+        ('Default', 'Default'),
+        ('Circle', 'Circle'),
+    )
     map = models.ForeignKey(Map)
     name = models.CharField(max_length=50)
     description = models.TextField(blank=True, null=True)
     color = models.CharField(max_length=32, default="DarkBlue")
     icon = models.ForeignKey(Icon, null=True, blank=True)
+    icon_class = models.CharField(choices=ICON_CLASS, max_length=32, default="Default")
     preset = models.BooleanField(default=False, help_text="Display this category on load.")
     rank = models.IntegerField(null=True, blank=True)
 
@@ -115,6 +120,7 @@ class Category(models.Model):
             "pk": self.pk,
             "color": self.color,
             "icon_url": self.icon.icon.url if self.icon else None,
+            "icon_class": self.icon_class,
             "preset": self.preset,
         }
 

@@ -1,8 +1,10 @@
 L.ChickpeaLayer = L.LazyGeoJSON.extend({
     initialize: function (/* Object from db */ category, map, options) {
+        this.default_icon_class = "Default";
         this.chickpea_id = category.pk;
         this.chickpea_name = category.name;
         this.chickpea_color = category.color;
+        this.chickpea_icon_class = category.icon_class || this.default_icon_class;
         this.iconUrl = category.icon_url;
         this.preset = category.preset;
         this.map = map;
@@ -106,5 +108,13 @@ L.ChickpeaLayer = L.LazyGeoJSON.extend({
 
     getEditUrl: function(){
         return L.Util.template(this.map.options.urls.category_update, {'map_id': this.map.options.chickpea_id, 'pk': this.chickpea_id});
+    },
+
+    getIcon: function () {
+        var icon_class = this.default_icon_class;
+        if(L.ChickpeaIcon[this.chickpea_icon_class]) {
+            icon_class = this.chickpea_icon_class;
+        }
+        return new L.ChickpeaIcon[icon_class](this.map);
     }
 });
