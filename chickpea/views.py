@@ -187,6 +187,7 @@ class UploadData(FormView):
         })
         return super(UploadData, self).get_context_data(**kwargs)
 
+    @transaction.commit_manually
     def form_valid(self, form):
         FEATURE_TO_MODEL = {
             'Point': Marker,
