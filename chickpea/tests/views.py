@@ -114,3 +114,8 @@ class UploadData(TestCase):
         self.assertEqual(Marker.objects.filter(category=self.category).count(), 0)
         self.assertEqual(Polyline.objects.filter(category=self.category).count(), 0)
         self.assertEqual(Polygon.objects.filter(category=self.category).count(), 0)
+
+    def test_non_linear_ring_should_not_be_imported(self):
+        response = self.process_file("test_upload_non_linear_ring.json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Polygon.objects.filter(category=self.category).count(), 0)
