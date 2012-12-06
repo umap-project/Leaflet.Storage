@@ -8,9 +8,9 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
     initialize: function(map, options) {
         this._map = map;
         L.Control.Draw.prototype.initialize.call(this, options);
-        this.options.marker = {
-            icon: new L.ChickpeaIcon(this._map)
-        };
+        if (this.options.marker) {
+            this.options.marker.icon = new L.ChickpeaIcon(this._map);
+        }
     },
 
     onAdd: function (map) {
