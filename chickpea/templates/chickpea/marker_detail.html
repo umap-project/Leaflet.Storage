@@ -1,2 +1,4 @@
-<h3>{{ marker }}</h3>
-<div>{{ marker.description|urlize|linebreaks }}</div>
+<h5>{{ marker }}</h5>
+{% if marker.description %}
+    <div>{{ marker.description|urlize|linebreaks }}</div>
+{% endif %}
