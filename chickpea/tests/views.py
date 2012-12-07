@@ -72,6 +72,40 @@ class MapViews(TestCase):
         self.assertEqual(updated_map.name, new_name)
 
 
+class BaseFeatureViews(TestCase):
+
+    def setUp(self):
+        self.map = MapFactory()
+        self.category = CategoryFactory(map=self.map)
+
+
+class MarkerViews(BaseFeatureViews):
+
+    def test_add_GET(self):
+        url = reverse('marker_add', args=(self.map.pk, ))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        json = simplejson.loads(response.content)
+        self.assertIn("html", json)
+        self.assertIn("form", json['html'])
+
+    def test_add_POST(self):
+        url = reverse('marker_add', args=(self.map.pk, ))
+        name = 'test-marker'
+        post_data = {
+            'name': name,
+            'category': self.category.pk,
+            'latlng': '{"type": "Point","coordinates": [-0.1318359375,51.474540439419755]}'
+        }
+        response = self.client.post(url, post_data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        created_marker = Marker.objects.latest('pk')
+        self.assertEqual(created_marker.name, name)
+        # Test response is a json
+        json = simplejson.loads(response.content)
+        self.assertIn("features", json)
+
+
 class UploadData(TransactionTestCase):
 
     def setUp(self):

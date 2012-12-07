@@ -1,7 +1,7 @@
 from django.contrib.gis.geos import Point
 import factory
 
-from chickpea.models import Map, TileLayer, Licence, Category
+from chickpea.models import Map, TileLayer, Licence, Category, Marker
 
 
 class LicenceFactory(factory.Factory):
@@ -32,3 +32,15 @@ class CategoryFactory(factory.Factory):
     color = "DarkRed"
     preset = True
     rank = 1
+
+
+class BaseFeatureFactory(factory.Factory):
+    ABSTRACT_FACTORY = True
+    name = "test feature"
+    description = "test description"
+    color = None  # Having a color on a feature is not the normal case
+    category = factory.SubFactory(CategoryFactory)
+
+
+class MarkerFactory(BaseFeatureFactory):
+    FACTORY_FOR = Marker
