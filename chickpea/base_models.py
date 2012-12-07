@@ -52,6 +52,7 @@ class Map(models.Model):
     zoom = models.IntegerField(default=7)
     locate = models.BooleanField(default=False)
     licence = models.ForeignKey(Licence, help_text="Choose the map licence.")
+    modified_at = models.DateTimeField(auto_now=True)
     tilelayers = models.ManyToManyField(TileLayer, through="MapToTileLayer")
 
     objects = models.GeoManager()
