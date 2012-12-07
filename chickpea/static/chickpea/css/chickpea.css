@@ -143,6 +143,24 @@ a.upload-data {
     height: 12px;
     width: 12px;
 }
+.chickpea-ball-icon .icon_container {
+    background: radial-gradient(circle at 6px 38% , white -4px, darkblue 8px) repeat scroll 0 0 transparent;
+    border-radius: 8px 8px 8px 8px;
+    box-shadow: 1px 21px 6px -3px black;
+    height: 16px;
+    opacity: 0.9;
+    text-align: center;
+    width: 16px;
+}
+.chickpea-ball-icon .icon_arrow {
+    background-color: black;
+    height: 16px;
+    left: 7px;
+    opacity: 0.9;
+    position: relative;
+    top: -1px;
+    width: 2px;
+}
 
 /* ***** */
 /* Popup */

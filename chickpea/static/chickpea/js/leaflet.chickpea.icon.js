@@ -96,3 +96,36 @@ L.ChickpeaIcon.Drop = L.ChickpeaIcon.Default.extend({
             className: "chickpea-drop-icon"
     }
 });
+
+L.ChickpeaIcon.Ball = L.ChickpeaIcon.Default.extend({
+    'default_options': {
+            iconAnchor: new L.Point(10, 30),
+            popupAnchor: new L.Point(0, -10),
+            className: "chickpea-ball-icon"
+    },
+
+    createIcon: function() {
+        this.elements = {};
+        this.elements.main = L.DomUtil.create('div');
+        this.elements.container = L.DomUtil.create('div', 'icon_container', this.elements.main);
+        this.elements.arrow = L.DomUtil.create('div', 'icon_arrow', this.elements.main);
+        this._setColor();
+        this._setIconStyles(this.elements.main, 'icon');
+        return this.elements.main;
+    },
+
+    _setColor: function() {
+        if(this.feature) {
+            var color = this.feature.getColor(),
+                background;
+            if (L.Browser.webkit) {
+                background ="-webkit-gradient( radial, 6 38%, 0, 6 38%, 8, from(white), to(" + color + ") )";
+            }
+            else {
+                background = "radial-gradient(circle at 6px 38% , white -4px, " + color + " 8px) repeat scroll 0 0 transparent";
+            }
+            this.elements.container.style.background = background;
+        }
+    }
+
+});

@@ -102,6 +102,7 @@ class Category(models.Model):
         ('Default', 'Default'),
         ('Circle', 'Circle'),
         ('Drop', 'Drop'),
+        ('Ball', 'Ball'),
     )
     map = models.ForeignKey(Map)
     name = models.CharField(max_length=50)
