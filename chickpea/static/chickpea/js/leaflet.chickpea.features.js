@@ -83,8 +83,8 @@ L.Mixin.ChickpeaFeature = {
                     }
 
                 }
-                // FIXME make a little message system
                 self.closePopup();
+                L.Chickpea.fire("alert", {"content": "Feature updated with success!", "level": "info"});
             }
         };
         var submit = function (e) {
