@@ -44,3 +44,4 @@ class BaseFeatureFactory(factory.Factory):
 
 class MarkerFactory(BaseFeatureFactory):
     FACTORY_FOR = Marker
+    latlng = '{"type": "Point","coordinates": [-0.1318359375,51.474540439419755]}'

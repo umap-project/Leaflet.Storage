@@ -6,7 +6,8 @@ from django.core.urlresolvers import reverse
 
 from chickpea.models import Map, Category, Marker, Polygon, Polyline
 
-from .base import TileLayerFactory, LicenceFactory, MapFactory, CategoryFactory
+from .base import (TileLayerFactory, LicenceFactory, MapFactory,
+                   CategoryFactory, MarkerFactory)
 
 
 class MapViews(TestCase):
@@ -104,6 +105,31 @@ class MarkerViews(BaseFeatureViews):
         # Test response is a json
         json = simplejson.loads(response.content)
         self.assertIn("features", json)
+
+    def test_delete_GET(self):
+        marker = MarkerFactory(category=self.category)
+        url = reverse('marker_delete', args=(self.map.pk, marker.pk))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        json = simplejson.loads(response.content)
+        self.assertIn("html", json)
+        self.assertIn("form", json['html'])
+
+    def test_delete_POST(self):
+        marker = MarkerFactory(category=self.category)
+        url = reverse('marker_delete', args=(self.map.pk, marker.pk))
+        post_data = {
+            'confirm': "yes",
+        }
+        response = self.client.post(url, post_data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Marker.objects.filter(pk=marker.pk).count(), 0)
+        # Check that category and map have not been impacted
+        self.assertEqual(Map.objects.filter(pk=self.map.pk).count(), 1)
+        self.assertEqual(Category.objects.filter(pk=self.category.pk).count(), 1)
+        # Test response is a json
+        json = simplejson.loads(response.content)
+        self.assertIn("info", json)
 
 
 class UploadData(TransactionTestCase):

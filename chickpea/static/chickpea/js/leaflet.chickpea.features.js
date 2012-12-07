@@ -13,30 +13,53 @@ L.Mixin.ChickpeaFeature = {
 
     view: function(e) {
         var url = this.getViewURL();
-        this._retrievePopupContent(url);
+        var self = this;
+        L.Util.Xhr.get(url, {
+            "dataType": "json",
+            "callback": function(data){
+                self._firePopup(data.html);
+            }
+        });
     },
 
     edit: function() {
         if(!this.map.editEnabled) return;
         var url = this.getEditURL();
-        this._retrievePopupContent(url);
+        var self = this;
+        L.Util.Xhr.get(url, {
+            "dataType": "json",
+            "callback": function(data){
+                self._firePopup(data.html);
+                self.listenEditForm(self.form_id);
+            }
+        });
     },
 
-    _retrievePopupContent: function(url) {
-        // FIXME: unbind popup when editEnable
-        // Otherwise, when we disable editing, popup already openned
-        // are not fetched again (and so we keep the edit one)
-        (function(self){L.Util.Xhr.get(url, {"dataType": "json", "callback": function(data){self._firePopup(data.html);}});})(this);
+    confirmDelete: function() {
+        if(!this.map.editEnabled) return;
+        var url = this.getDeleteURL();
+        var self = this;
+        L.Util.Xhr.get(url, {
+            "dataType": "json",
+            "callback": function(data){
+                self._firePopup(data.html);
+                self.listenDeleteForm();
+            }
+        });
+    },
+
+    _delete: function () {
+        this.map.closePopup();
+        if (this.chickpea_overlay) {
+            this.chickpea_overlay.removeLayer(this);
+            this.disconnectFromOverlay(this.chickpea_overlay);
+        }
+        this.map.removeLayer(this);
     },
 
     _firePopup: function(content) {
-        this.unbindPopup();
         this.bindPopup(content);
         this.openPopup();
-        if(this.map.editEnabled) {
-            // We are in edit mode, so we display a form
-            this.listenEditForm(this.form_id);
-        }
     },
 
     connectToOverlay: function (overlay) {
@@ -99,6 +122,32 @@ L.Mixin.ChickpeaFeature = {
             return false;
         };
         L.DomEvent.on(form, 'submit', submit);
+        var delete_link = L.DomUtil.get("delete_feature_button");
+        if (delete_link) {
+            L.DomEvent
+                .on(delete_link, 'click', L.DomEvent.stopPropagation)
+                .on(delete_link, 'click', L.DomEvent.preventDefault)
+                .on(delete_link, 'click', this.confirmDelete, this);
+        }
+    },
+
+    listenDeleteForm: function() {
+        var form = L.DomUtil.get("feature_delete");
+        var self = this;
+        var manage_ajax_return = function (data) {
+            if (data.error) {
+                L.Chickpea.fire('alert', {'content': data.error, 'level': 'error'});
+            }
+            else if (data.info) {
+                self._delete();
+                L.Chickpea.fire('alert', {'content': data.info, 'level': 'info'});
+            }
+        };
+        var submit = function (e) {
+            form.action = self.getDeleteURL();
+            L.Util.Xhr.submit_form(form, {"callback": function(data) { manage_ajax_return(data);}});
+        };
+        L.DomEvent.on(form, 'submit', submit);
     },
 
     changeOverlay: function(layer) {
@@ -116,6 +165,10 @@ L.Mixin.ChickpeaFeature = {
         return this.chickpea_id?
             L.Util.template(this.update_url_template, {'pk': this.chickpea_id, 'map_id': this.map.options.chickpea_id}):
             L.Util.template(this.add_url_template, {'map_id': this.map.options.chickpea_id});
+    },
+
+    getDeleteURL: function() {
+        return L.Util.template(this.delete_url_template, {'pk': this.chickpea_id, 'map_id': this.map.options.chickpea_id});
     },
 
     getColor: function () {
@@ -162,6 +215,7 @@ L.ChickpeaMarker = L.Marker.extend({
         this.view_url_template = this.map.options.urls.marker;
         this.update_url_template = this.map.options.urls.marker_update;
         this.add_url_template = this.map.options.urls.marker_add;
+        this.delete_url_template = this.map.options.urls.marker_delete;
 
         // Events
         this.on("dragend", this.edit);
@@ -307,6 +361,7 @@ L.ChickpeaPolyline = L.Polyline.extend({
         this.view_url_template = this.map.options.urls.polyline;
         this.update_url_template = this.map.options.urls.polyline_update;
         this.add_url_template = this.map.options.urls.polyline_add;
+        this.delete_url_template = this.map.options.urls.polyline_delete;
 
         // Add events
         this.on("dragend", this.edit);
@@ -352,6 +407,7 @@ L.ChickpeaPolygon = L.Polygon.extend({
         this.view_url_template = this.map.options.urls.polygon;
         this.update_url_template = this.map.options.urls.polygon_update;
         this.add_url_template = this.map.options.urls.polygon_add;
+        this.delete_url_template = this.map.options.urls.polygon_delete;
 
         // Add events
         this.on("dragend", this.edit);

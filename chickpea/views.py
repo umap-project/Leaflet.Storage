@@ -11,7 +11,7 @@ from django.views.generic.list import BaseListView
 from django.views.generic.base import TemplateView
 from django.template.loader import render_to_string
 from django.views.generic.detail import BaseDetailView
-from django.views.generic.edit import CreateView, UpdateView, FormView
+from django.views.generic.edit import CreateView, UpdateView, FormView, DeleteView
 
 from vectorformats.Formats import Django, GeoJSON
 
@@ -30,14 +30,17 @@ def _urls_for_js(urls=None):
         urls = [
             'marker_update',
             'marker_add',
+            'marker_delete',
             'marker',
             'feature_geojson_list',
             'polyline',
             'polyline_add',
             'polyline_update',
+            'polyline_delete',
             'polygon',
             'polygon_add',
             'polygon_update',
+            'polygon_delete',
             'map_update_extent',
             'map_update_tilelayers',
             'map_update',
@@ -333,12 +336,35 @@ class FeatureUpdate(UpdateView):
     def render_to_response(self, context, **response_kwargs):
         return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
 
+    def get_context_data(self, **kwargs):
+        kwargs.update({
+            'delete_url': reverse_lazy(self.delete_url, kwargs={'map_id': self.kwargs['map_id'], 'pk': self.object.pk})
+        })
+        return super(FeatureUpdate, self).get_context_data(**kwargs)
+
     # TODO: factorize with FeatureAdd!
     def get_form(self, form_class):
         form = super(FeatureUpdate, self).get_form(form_class)
         map_inst = get_object_or_404(Map, pk=self.kwargs['map_id'])
         form.fields['category'].queryset = Category.objects.filter(map=map_inst)
         return form
+
+
+class FeatureDelete(DeleteView):
+    context_object_name = "feature"
+    template_name = "chickpea/feature_confirm_delete.html"
+
+    def render_to_response(self, context, **response_kwargs):
+        return render_to_json(self.get_template_names(), response_kwargs, context, self.request)
+
+    def delete(self, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        return simple_json_response(info="Feature successfully deleted.")
+
+
+class MarkerDelete(FeatureDelete):
+    model = Marker
 
 
 class MarkerView(FeatureView):
@@ -348,6 +374,7 @@ class MarkerView(FeatureView):
 class MarkerUpdate(FeatureUpdate):
     model = Marker
     geojson_url = 'marker_geojson'
+    delete_url = "marker_delete"
 
 
 class MarkerAdd(FeatureAdd):
@@ -367,6 +394,11 @@ class PolylineAdd(FeatureAdd):
 class PolylineUpdate(FeatureUpdate):
     model = Polyline
     geojson_url = 'polyline_geojson'
+    delete_url = "polyline_delete"
+
+
+class PolylineDelete(FeatureDelete):
+    model = Polyline
 
 
 class PolylineGeoJSONView(BaseDetailView, GeoJSONMixin):
@@ -389,6 +421,11 @@ class PolygonAdd(FeatureAdd):
 class PolygonUpdate(FeatureUpdate):
     model = Polygon
     geojson_url = 'polygon_geojson'
+    delete_url = "polygon_delete"
+
+
+class PolygonDelete(FeatureDelete):
+    model = Polygon
 
 
 class PolygonGeoJSONView(BaseDetailView, GeoJSONMixin):

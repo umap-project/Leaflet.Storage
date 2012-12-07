@@ -7,4 +7,7 @@
     <p>{{ form.category }}</p>
     <input type="hidden" name="{{ form.latlng.html_name }}" value="{{ form.latlng.value }}" />
     <input type="submit" />
+    {% if delete_url %}
+        <a href="{{ delete_url }}" id="delete_feature_button" >Delete</a>
+    {% endif %}
 </form>
