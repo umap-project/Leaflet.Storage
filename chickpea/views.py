@@ -72,6 +72,13 @@ class MapView(DetailView):
 
     model = Map
 
+    def get_int_from_request(self, key, fallback):
+        try:
+            output = int(self.request.GET[key])
+        except (ValueError, KeyError):
+            output = fallback
+        return output
+
     def get_context_data(self, **kwargs):
         context = super(MapView, self).get_context_data(**kwargs)
         categories = Category.objects.filter(map=self.object)  # TODO manage state
@@ -80,11 +87,8 @@ class MapView(DetailView):
         context['urls'] = simplejson.dumps(_urls_for_js())
         tilelayers_data = self.object.tilelayers_data
         context['tilelayers'] = simplejson.dumps(tilelayers_data)
-        try:
-            allowEdit = int(self.request.GET["allowEdit"])
-        except (ValueError, KeyError):
-            allowEdit = 1
-        context['allowEdit'] = allowEdit  # TODO manage permissions
+        context['allowEdit'] = self.get_int_from_request("allowEdit", 1)  # TODO manage permissions
+        context['embedControl'] = self.get_int_from_request("embedControl", 1)  # TODO manage permissions
         return context
 
 
@@ -247,6 +251,7 @@ class EmbedMap(DetailView):
         iframe_url = 'http://%s%s' % (self.request.META['HTTP_HOST'], self.object.get_absolute_url())
         qs_kwargs = {
             'allowEdit': 0,
+            'embedControl': 0,
         }
         query_string = "&".join("%s=%s" % (k, v) for k, v in qs_kwargs.iteritems())
         iframe_url = "%s?%s" % (iframe_url, query_string)
