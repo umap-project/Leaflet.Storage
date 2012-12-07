@@ -4,7 +4,7 @@ Django-Chickpea
 
 Provide collaborative maps for your Django project.
 Built on top of `Geodjango <http://geodjango.org/>`_ and `Leaflet <http://leaflet.cloudmade.com/>`_.
-It's in "molto alpha" stage, but already usable for proof-of-concept projects.
+It's in "molto alpha" stage, but already usable for proof-of-concept projects. Demo `here <http://youmap.fluv.io>`_
 
 Goals:
 
