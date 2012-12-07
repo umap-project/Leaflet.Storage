@@ -101,6 +101,7 @@ class Category(models.Model):
     ICON_CLASS = (
         ('Default', 'Default'),
         ('Circle', 'Circle'),
+        ('Drop', 'Drop'),
     )
     map = models.ForeignKey(Map)
     name = models.CharField(max_length=50)

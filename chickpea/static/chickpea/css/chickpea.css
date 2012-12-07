@@ -113,6 +113,30 @@ a.upload-data {
     opacity: 0.9;
     /*box-shadow: 4px 8px 6px -3px black;*/
 }
+.chickpea-drop-icon .icon_arrow {
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 16px solid #2270B5;
+    height: 0;
+    left: 6px;
+    opacity: 0.9;
+    position: relative;
+    top: -3px;
+    width: 0;
+}
+.chickpea-drop-icon .icon_container {
+    background-color: #2470B5;
+    border-radius: 16px 16px 16px 16px;
+    box-shadow: 6px 13px 8px -4px black;
+    height: 32px;
+    line-height: 32px;
+    opacity: 0.9;
+    text-align: center;
+    width: 32px;
+}
+.chickpea-drop-icon .icon_container img {
+    vertical-align: middle;
+}
 .chickpea-circle-icon {
     border: 1px solid white;
     border-radius: 10px 10px 10px 10px;

@@ -24,13 +24,14 @@ L.ChickpeaIcon = L.DivIcon.extend({
 });
 
 L.ChickpeaIcon.Default = L.ChickpeaIcon.extend({
+    default_options: {
+        iconAnchor: new L.Point(16, 40),
+        popupAnchor: new L.Point(0, -40),
+        className: "chickpea-div-icon"
+    },
+
     initialize: function(map, options) {
-        var default_options = {
-            iconAnchor: new L.Point(16, 40),
-            popupAnchor: new L.Point(0, -40),
-            className: "chickpea-div-icon"
-        };
-        options = L.Util.extend({}, default_options, options);
+        options = L.Util.extend({}, this.default_options, options);
         L.ChickpeaIcon.prototype.initialize.call(this, map, options);
     },
 
@@ -86,4 +87,12 @@ L.ChickpeaIcon.Circle = L.ChickpeaIcon.extend({
         return this.elements.main;
     }
 
+});
+
+L.ChickpeaIcon.Drop = L.ChickpeaIcon.Default.extend({
+    'default_options': {
+            iconAnchor: new L.Point(16, 42),
+            popupAnchor: new L.Point(0, -42),
+            className: "chickpea-drop-icon"
+    }
 });
