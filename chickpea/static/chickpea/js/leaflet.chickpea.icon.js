@@ -63,7 +63,7 @@ L.ChickpeaIcon.Default = L.ChickpeaIcon.extend({
 L.ChickpeaIcon.Circle = L.ChickpeaIcon.extend({
     initialize: function(map, options) {
         var default_options = {
-            iconAnchor: new L.Point(6, 12),
+            iconAnchor: new L.Point(6, 6),
             popupAnchor: new L.Point(0, -12),
             className: "chickpea-circle-icon"
         };
