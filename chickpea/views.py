@@ -80,6 +80,11 @@ class MapView(DetailView):
         context['urls'] = simplejson.dumps(_urls_for_js())
         tilelayers_data = self.object.tilelayers_data
         context['tilelayers'] = simplejson.dumps(tilelayers_data)
+        try:
+            allowEdit = int(self.request.GET["allowEdit"])
+        except (ValueError, KeyError):
+            allowEdit = 1
+        context['allowEdit'] = allowEdit  # TODO manage permissions
         return context
 
 
@@ -240,6 +245,11 @@ class EmbedMap(DetailView):
     def get_context_data(self, **kwargs):
         # FIXME use settings for SITE_URL?
         iframe_url = 'http://%s%s' % (self.request.META['HTTP_HOST'], self.object.get_absolute_url())
+        qs_kwargs = {
+            'allowEdit': 0,
+        }
+        query_string = "&".join("%s=%s" % (k, v) for k, v in qs_kwargs.iteritems())
+        iframe_url = "%s?%s" % (iframe_url, query_string)
         kwargs.update({
             'iframe_url': iframe_url
         })
