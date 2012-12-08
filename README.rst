@@ -95,6 +95,7 @@ map_add :
     POST: fields 'name', 'description', 'licences'
 
 map_update :
+
     template variable: {pk}
 
     GET: forms with fields 'name', 'description', 'licences' available
@@ -102,6 +103,7 @@ map_update :
     POST: fields (str) name, (str) description, (backend internal id) licence
 
 map_update_tilelayers :
+
     template variable: {pk}
     
     GET: returns a form with available tilelayers
@@ -114,9 +116,11 @@ map_update_tilelayers :
           be changed to update the tilelayers in javascript directly
 
 map_update_extent :
+
     template variable: {pk}
 
     POST: (int) `zoom`, (geojson) `center`
 
 map_embed :
+
     GET: return the HTML to export an iframe view of the map
