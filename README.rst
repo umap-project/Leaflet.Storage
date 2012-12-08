@@ -10,22 +10,23 @@ Known backends:
 - `django-chickpea <https://github.com/yohanboniface/django-chickpea>`_
 
 
-=======
-Classes
-=======
+==================
+Building a backend
+==================
 
--------------
-L.ChickpeaMap
--------------
+You will need to:
+- instanciate the `L.ChickpeaMap` with the correct options
+- implement the requiered views
 
+---------------------
+L.ChickpeaMap options
+---------------------
+
+All the `L.Map` options works. Plus there are some specific to Chickpea.
 Ex. usage::
 
     var MAP = new L.ChickpeaMap("map", options);
 
-
-Options
--------
-All the `L.Map` options works. Plus there are some specific to Chickpea.
 
 
 (required) chickpea_id :
@@ -83,17 +84,39 @@ embedControl:
 locate:
     (bool) try or not to locate user
 
+-----
 Views
 -----
 
-map_update_tilelayers:
+map_add :
+
+    GET: form with fields 'name', 'description', 'licences' available
+
+    POST: fields 'name', 'description', 'licences'
+
+map_update :
+    template variable: {pk}
+
+    GET: forms with fields 'name', 'description', 'licences' available
+
+    POST: fields (str) name, (str) description, (backend internal id) licence
+
+map_update_tilelayers :
     template variable: {pk}
     
     GET: returns a form with available tilelayers
     
     POST: a form with selected tilelayers
-    
+
     #TODO:
         - rank is not managed, so a refactor is expected here
         - POST json content returns now a redirect, this have to
           be changed to update the tilelayers in javascript directly
+
+map_update_extent :
+    template variable: {pk}
+
+    POST: (int) `zoom`, (geojson) `center`
+
+map_embed :
+    GET: return the HTML to export an iframe view of the map
