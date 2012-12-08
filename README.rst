@@ -25,6 +25,8 @@ Ex. usage::
 
 Options
 -------
+All the `L.Map` options works. Plus there are some specific to Chickpea.
+
 
 (required) chickpea_id :
     (int) backend internal unique id
@@ -59,7 +61,7 @@ Options
 (required) default_icon_url:
     an url of an image (26x26 max)
 center:
-    a L.LatLng object or an Array(lat, lng)
+    a L.LatLng object or an Array(lat, lng) or geojson of type Point
 zoom:
     (int) a zoom level
 categories:

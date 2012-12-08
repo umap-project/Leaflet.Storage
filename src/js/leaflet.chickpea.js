@@ -3,8 +3,6 @@ L.Map.mergeOptions({
     overlay_layers: null,
     categories: [],
     zoom: 10,
-    lat: null,
-    lng: null,
     hash: true,
     embedControl: true,
     layersControl: true,
@@ -14,6 +12,11 @@ L.Map.mergeOptions({
 L.ChickpeaMap = L.Map.extend({
     initialize: function (/* DOM element or id*/ el, /* Object*/ options) {
         // Call the parent
+        if (options.center) {
+            // We manage it
+            this.options.center = options.center;
+            delete options.center;
+        }
         L.Map.prototype.initialize.call(this, el, options);
         // User must provide a pk
         if (typeof this.options.chickpea_id == "undefined") {
@@ -58,20 +61,8 @@ L.ChickpeaMap = L.Map.extend({
             // Hash management (for permalink)
             this.hash = new L.Hash(this);
         }
+        this.initCenter();
 
-        if (this.options.hash && this.hash.parseHash(location.hash)) {
-            // FIXME An invalid hash will cause the load to fail
-            this.hash.update();
-        }
-        else if(options.locate && options.locate.setView) {
-            // Prevent from making two setViews at init
-            // which is not very fluid...
-            this.locate(options.locate);
-        }
-        else {
-            var center = new L.LatLng(this.options.lat, this.options.lng);
-            this.setView(center, this.options.zoom);
-        }
 
         // Init control layers
         // It will be populated while creating the overlays
@@ -92,6 +83,7 @@ L.ChickpeaMap = L.Map.extend({
             }
         }
     },
+
     addTileLayer: function (options) {
         var tilelayer = new L.TileLayer(
             options.tilelayer.url_template,
@@ -109,6 +101,31 @@ L.ChickpeaMap = L.Map.extend({
         this.tilelayers[options.tilelayer.name] = tilelayer;
     },
 
+    initCenter: function () {
+        if (this.options.hash && this.hash.parseHash(location.hash)) {
+            // FIXME An invalid hash will cause the load to fail
+            this.hash.update();
+        }
+        else if(this.options.locate && this.options.locate.setView) {
+            // Prevent from making two setViews at init
+            // which is not very fluid...
+            this.locate(options.locate);
+        }
+        else {
+            this.options.center = this.latLng(this.options.center);
+            this.setView(this.options.center, this.options.zoom);
+        }
+    },
+
+    latLng: function(a, b, c) {
+        // manage geojson case and call original method
+        if (!(a instanceof L.LatLng) && a.coordinates) {
+            // Guess it's a geojson
+            a = Array(a.coordinates[1], a.coordinates[0]);
+        }
+        return L.latLng(a, b, c);
+    },
+
     _createOverlay: function(category) {
         return new L.ChickpeaLayer(category, this);
     },
@@ -116,7 +133,7 @@ L.ChickpeaMap = L.Map.extend({
     updateExtent: function() {
         // Save in db the current center and zoom
         var latlng = this.getCenter(),
-            zoom = this.getZoom();
+            zoom = this.getZoom(),
             center = {
                 type: "Point",
                 coordinates: [
