@@ -1,9 +1,0 @@
-[submodule "chickpea/static/leaflet"]
-	path = chickpea/static/leaflet
-	url = git://github.com/CloudMade/Leaflet.git
-[submodule "chickpea/static/draw"]
-	path = chickpea/static/draw
-	url = git://github.com/jacobtoye/Leaflet.draw.git
-[submodule "chickpea/static/hash"]
-	path = chickpea/static/hash
-	url = git://github.com/mlevans/leaflet-hash.git
