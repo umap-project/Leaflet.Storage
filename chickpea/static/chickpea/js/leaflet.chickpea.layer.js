@@ -27,8 +27,7 @@ L.ChickpeaLayer = L.LazyGeoJSON.extend({
         var geojson;
         L.Util.Xhr.get(this._dataUrl(), {
             "async": false, // To be able to return the geojson
-            "callback": function(json) {geojson = json;},
-            "dataType": "json"
+            "callback": function(json) {geojson = json;}
             });
         return geojson;
     },

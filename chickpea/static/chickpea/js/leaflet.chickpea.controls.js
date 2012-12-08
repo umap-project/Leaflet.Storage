@@ -151,7 +151,7 @@ L.Control.Embed = L.Control.extend({
         link.title = "Embed this map";
         var fn = function (e) {
             var url = L.Util.template(this.options.urls.map_embed, {'pk': map.options.chickpea_id});
-            L.Util.Xhr.get(url, {'dataType':'json'});
+            L.Util.Xhr.get(url);
         };
 
         L.DomEvent
@@ -216,7 +216,6 @@ L.Control.ChickpeaLayers = L.Control.Layers.extend({
             var fn = function (e) {
                 var url = obj.layer.getEditUrl();
                 L.Util.Xhr.get(url, {
-                    'dataType':'json',
                     'callback': function (data) {return self._handleEditResponse(data);}
                 });
             };
@@ -265,8 +264,7 @@ L.Control.ChickpeaLayers = L.Control.Layers.extend({
         var fn = function (e) {
             var url = L.Util.template(this.options.urls.category_add, {'map_id': map.options.chickpea_id});
             L.Util.Xhr.get(url, {
-                'dataType':'json',
-                    'callback': function (data) {return self._handleEditResponse(data);}
+                'callback': function (data) {return self._handleEditResponse(data);}
             });
         };
         L.DomEvent

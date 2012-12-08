@@ -4,7 +4,8 @@ L.Util.Xhr = {
             'async': true,
             'callback': null,
             'responseType': "text",
-            'data': null
+            'data': null,
+            'dataType': 'json'
         };
         settings = L.Util.extend({}, default_options, options);
 
@@ -55,7 +56,6 @@ L.Util.Xhr = {
         if(typeof options == "undefined") {
             options = {};
         }
-        options['dataType'] = "json";
         var form = L.DomUtil.get(form_id);
         var formData = new FormData(form);
         if(options.extraFormData) {
@@ -67,16 +67,12 @@ L.Util.Xhr = {
     },
 
     listen_form: function (form_id, options) {
-        default_options = {
-            'dataType': 'json'
-        };
-        settings = L.Util.extend({}, default_options, options);
         var form = L.DomUtil.get(form_id);
         L.DomEvent
             .on(form, 'submit', L.DomEvent.stopPropagation)
             .on(form, 'submit', L.DomEvent.preventDefault)
             .on(form, 'submit', function (e) {
-                L.Util.Xhr.submit_form(form_id, settings);
+                L.Util.Xhr.submit_form(form_id, options);
             });
     }
 

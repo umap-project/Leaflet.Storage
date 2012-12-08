@@ -15,7 +15,6 @@ L.Mixin.ChickpeaFeature = {
         var url = this.getViewURL();
         var self = this;
         L.Util.Xhr.get(url, {
-            "dataType": "json",
             "callback": function(data){
                 self._firePopup(data.html);
             }
@@ -27,7 +26,6 @@ L.Mixin.ChickpeaFeature = {
         var url = this.getEditURL();
         var self = this;
         L.Util.Xhr.get(url, {
-            "dataType": "json",
             "callback": function(data){
                 self._firePopup(data.html);
                 self.listenEditForm(self.form_id);
@@ -40,7 +38,6 @@ L.Mixin.ChickpeaFeature = {
         var url = this.getDeleteURL();
         var self = this;
         L.Util.Xhr.get(url, {
-            "dataType": "json",
             "callback": function(data){
                 self._firePopup(data.html);
                 self.listenDeleteForm();
