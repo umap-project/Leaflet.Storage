@@ -99,8 +99,8 @@ L.ChickpeaIcon.Drop = L.ChickpeaIcon.Default.extend({
 
 L.ChickpeaIcon.Ball = L.ChickpeaIcon.Default.extend({
     'default_options': {
-            iconAnchor: new L.Point(10, 30),
-            popupAnchor: new L.Point(0, -10),
+            iconAnchor: new L.Point(8, 30),
+            popupAnchor: new L.Point(0, -28),
             className: "chickpea-ball-icon"
     },
 
