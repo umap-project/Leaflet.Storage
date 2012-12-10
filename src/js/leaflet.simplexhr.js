@@ -1,11 +1,11 @@
 L.Util.Xhr = {
+    // supports only JSON as response data type
     _ajax: function (verb, uri, options) {
         var default_options = {
             'async': true,
             'callback': null,
             'responseType': "text",
-            'data': null,
-            'dataType': 'json'
+            'data': null
         };
         settings = L.Util.extend({}, default_options, options);
 
@@ -15,29 +15,34 @@ L.Util.Xhr = {
 
         xhr.onload = function(e) {
             if (this.status == 200) {
-                var raw = this.response;
-                if (settings.dataType == "json") {
-                    raw = JSON.parse(raw);
+                var data;
+                try {
+                    data = JSON.parse(this.response);
+                }
+                catch (err) {
+                    console.log(err);
+                    L.Chickpea.fire("alert", {"content": "Problem in the response format", "level": "error"});
                 }
                 if (settings.callback) {
-                    settings.callback(raw);
+                    settings.callback(data);
                 } else {
-                    // Default JSON callback
-                    if (settings.dataType == "json") {
-                        if (raw.redirect) {
-                            window.location = raw.redirect;
-                        }
-                        else if (raw.info) {
-                            L.Chickpea.fire("alert", {"content": raw.info, "level": "info"});
-                        }
-                        else if (raw.error) {
-                            L.Chickpea.fire("alert", {"content": raw.error, "level": "error"});
-                        }
-                        else if (raw.html) {
-                            L.Chickpea.fire('modal_ready', {'data': raw});
-                        }
+                    // default callback, to avoid boilerplate
+                    if (data.redirect) {
+                        window.location = data.redirect;
+                    }
+                    else if (data.info) {
+                        L.Chickpea.fire("alert", {"content": data.info, "level": "info"});
+                    }
+                    else if (data.error) {
+                        L.Chickpea.fire("alert", {"content": data.error, "level": "error"});
+                    }
+                    else if (data.html) {
+                        L.Chickpea.fire('modal_ready', {'data': data});
                     }
                 }
+            }
+            else {
+                L.Chickpea.fire("alert", {"content": "Problem in the response", "level": "error"});
             }
         };
 
