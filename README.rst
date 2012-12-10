@@ -90,17 +90,17 @@ Views
 
 map_add :
 
-    GET: form with fields 'name', 'description', 'licences' available
+    GET: form with fields `name`, `description`, `licence` (licences available in backend)
 
-    POST: fields 'name', 'description', 'licences'
+    POST: fields `name`, `description`, `licences`
 
 map_update :
 
     template variable: {pk}
 
-    GET: forms with fields 'name', 'description', 'licences' available
+    GET: forms with fields `name`, `description`, `licence` (licences available in backend)
 
-    POST: fields (str) name, (str) description, (backend internal id) licence
+    POST: fields `(str) name`, `(str) description`, `(backend internal id) licence`
 
 map_update_tilelayers :
 
