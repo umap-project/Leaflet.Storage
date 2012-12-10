@@ -1,6 +1,8 @@
 L.Util.Xhr = {
     // supports only JSON as response data type
     _ajax: function (verb, uri, options) {
+        var args = arguments,
+            self = this;
         var default_options = {
             'async': true,
             'callback': null,
@@ -23,21 +25,32 @@ L.Util.Xhr = {
                     console.log(err);
                     L.Chickpea.fire("alert", {"content": "Problem in the response format", "level": "error"});
                 }
-                if (settings.callback) {
-                    settings.callback(data);
-                } else {
-                    // default callback, to avoid boilerplate
-                    if (data.redirect) {
-                        window.location = data.redirect;
+                if (data.login_required) {
+                    // login_required should be an URL for the login form
+                    if (settings.login_callback) {
+                        settings.login_callback(data);
                     }
-                    else if (data.info) {
-                        L.Chickpea.fire("alert", {"content": data.info, "level": "info"});
+                    else {
+                        self.login(data, args);
                     }
-                    else if (data.error) {
-                        L.Chickpea.fire("alert", {"content": data.error, "level": "error"});
-                    }
-                    else if (data.html) {
-                        L.Chickpea.fire('modal_ready', {'data': data});
+                }
+                else {
+                    if (settings.callback) {
+                        settings.callback(data);
+                    } else {
+                        // default callback, to avoid boilerplate
+                        if (data.redirect) {
+                            window.location = data.redirect;
+                        }
+                        else if (data.info) {
+                            L.Chickpea.fire("alert", {"content": data.info, "level": "info"});
+                        }
+                        else if (data.error) {
+                            L.Chickpea.fire("alert", {"content": data.error, "level": "error"});
+                        }
+                        else if (data.html) {
+                            L.Chickpea.fire('modal_ready', {'data': data});
+                        }
                     }
                 }
             }
@@ -79,6 +92,36 @@ L.Util.Xhr = {
             .on(form, 'submit', function (e) {
                 L.Util.Xhr.submit_form(form_id, options);
             });
+    },
+
+    login: function (data, args) {
+        // data.html: login form
+        // args: args of the first _ajax call, to call again at process end
+        var self = this;
+        var ask_for_login = function (data) {
+            L.Chickpea.fire('modal_ready', {'data': data});
+            L.Util.Xhr.listen_form('login_form', {
+                'callback': function (data) {
+                    if (data.html) {
+                        // Problem in the login
+                        self.login(data, args);
+                    }
+                    else {
+                        L.Util.Xhr._ajax.apply(self, args);
+                    }
+                }
+            });
+        };
+        if (data.login_required) {
+            this.get(data.login_required, {
+                'callback': function (data) {
+                    ask_for_login(data);
+                }
+            });
+        }
+        else {
+            ask_for_login(data);
+        }
     }
 
 };
