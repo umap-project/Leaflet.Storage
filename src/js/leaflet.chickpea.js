@@ -141,7 +141,7 @@ L.ChickpeaMap = L.Map.extend({
                     latlng.lat
                 ]
             },
-            url = L.Util.template(this.options.urls.map_update_extent, {'pk': this.options.chickpea_id}),
+            url = L.Util.template(this.options.urls.map_update_extent, {'map_id': this.options.chickpea_id}),
             formData = new FormData();
             formData.append('center', JSON.stringify(center));
             formData.append('zoom', zoom);
@@ -151,7 +151,7 @@ L.ChickpeaMap = L.Map.extend({
     },
 
     updateTileLayers: function () {
-        var url = L.Util.template(this.options.urls.map_update_tilelayers, {'pk': this.options.chickpea_id});
+        var url = L.Util.template(this.options.urls.map_update_tilelayers, {'map_id': this.options.chickpea_id});
         L.Util.Xhr.get(url, {
             'callback': function (data) {
                 L.Chickpea.fire("modal_ready", {'data': data, "cssClass": "update-tilelayers"});
@@ -160,7 +160,7 @@ L.ChickpeaMap = L.Map.extend({
     },
 
     updateInfos: function () {
-        var url = L.Util.template(this.options.urls.map_update, {'pk': this.options.chickpea_id});
+        var url = L.Util.template(this.options.urls.map_update, {'map_id': this.options.chickpea_id});
         L.Util.Xhr.get(url, {
             'callback': function (data) {
                 L.Chickpea.fire("modal_ready", {'data': data, "cssClass": "update-infos"});

@@ -150,7 +150,7 @@ L.Control.Embed = L.Control.extend({
         link.href = '#';
         link.title = "Embed this map";
         var fn = function (e) {
-            var url = L.Util.template(this.options.urls.map_embed, {'pk': map.options.chickpea_id});
+            var url = L.Util.template(this.options.urls.map_embed, {'map_id': map.options.chickpea_id});
             L.Util.Xhr.get(url);
         };
 
