@@ -39,24 +39,7 @@ L.Util.Xhr = {
                     if (settings.callback) {
                         settings.callback(data);
                     } else {
-                        // default callback, to avoid boilerplate
-                        if (data.redirect) {
-                            window.location = data.redirect;
-                        }
-                        else if (data.info) {
-                            L.Chickpea.fire("alert", {"content": data.info, "level": "info"});
-                            L.Chickpea.fire('modal_close');
-                        }
-                        else if (data.error) {
-                            L.Chickpea.fire("alert", {"content": data.error, "level": "error"});
-                        }
-                        else if (data.html) {
-                            L.Chickpea.fire('modal_ready', {'data': data});
-                            // To low boilerplate, if there is a form, listen it
-                            if (settings.listen_form) {
-                                L.Util.Xhr.listen_form(settings.listen_form.id, settings.listen_form.options);
-                            }
-                        }
+                        self.default_callback(data, settings);
                     }
                 }
             }
@@ -103,6 +86,27 @@ L.Util.Xhr = {
             });
     },
 
+    default_callback: function (data, options) {
+        // default callback, to avoid boilerplate
+        if (data.redirect) {
+            window.location = data.redirect;
+        }
+        else if (data.info) {
+            L.Chickpea.fire("alert", {"content": data.info, "level": "info"});
+            L.Chickpea.fire('modal_close');
+        }
+        else if (data.error) {
+            L.Chickpea.fire("alert", {"content": data.error, "level": "error"});
+        }
+        else if (data.html) {
+            L.Chickpea.fire('modal_ready', {'data': data});
+            // To low boilerplate, if there is a form, listen it
+            if (options.listen_form) {
+                L.Util.Xhr.listen_form(options.listen_form.id, settings.listen_form.options);
+            }
+        }
+    },
+
     login: function (data, args) {
         // data.html: login form
         // args: args of the first _ajax call, to call again at process end
@@ -116,7 +120,12 @@ L.Util.Xhr = {
                         self.login(data, args);
                     }
                     else {
-                        L.Util.Xhr._ajax.apply(self, args);
+                        if (typeof args !== "undefined") {
+                            L.Util.Xhr._ajax.apply(self, args);
+                        }
+                        else {
+                            self.default_callback(data, {});
+                        }
                     }
                 }
             });
@@ -131,6 +140,10 @@ L.Util.Xhr = {
         else {
             ask_for_login(data);
         }
+    },
+
+    logout: function(url) {
+        this.get(url);
     }
 
 };
