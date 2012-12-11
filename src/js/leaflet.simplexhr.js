@@ -7,7 +7,8 @@ L.Util.Xhr = {
             'async': true,
             'callback': null,
             'responseType': "text",
-            'data': null
+            'data': null,
+            'listen_form': null // optional form to listen in default callback
         };
         settings = L.Util.extend({}, default_options, options);
 
@@ -44,15 +45,23 @@ L.Util.Xhr = {
                         }
                         else if (data.info) {
                             L.Chickpea.fire("alert", {"content": data.info, "level": "info"});
+                            L.Chickpea.fire('modal_close');
                         }
                         else if (data.error) {
                             L.Chickpea.fire("alert", {"content": data.error, "level": "error"});
                         }
                         else if (data.html) {
                             L.Chickpea.fire('modal_ready', {'data': data});
+                            // To low boilerplate, if there is a form, listen it
+                            if (settings.listen_form) {
+                                L.Util.Xhr.listen_form(settings.listen_form.id, settings.listen_form.options);
+                            }
                         }
                     }
                 }
+            }
+            else if (this.status == 403) {
+                L.Chickpea.fire("alert", {"content": "Action not allowed :(", "level": "error"});
             }
             else {
                 L.Chickpea.fire("alert", {"content": "Problem in the response", "level": "error"});
