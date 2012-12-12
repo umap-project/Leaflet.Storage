@@ -1,4 +1,4 @@
-L.Util.Xhr = {
+L.Storage.Xhr = {
     // supports only JSON as response data type
     _ajax: function (verb, uri, options) {
         var args = arguments,
@@ -24,7 +24,7 @@ L.Util.Xhr = {
                 }
                 catch (err) {
                     console.log(err);
-                    L.Chickpea.fire("alert", {"content": "Problem in the response format", "level": "error"});
+                    L.Storage.fire("alert", {"content": "Problem in the response format", "level": "error"});
                 }
                 if (data.login_required) {
                     // login_required should be an URL for the login form
@@ -44,10 +44,10 @@ L.Util.Xhr = {
                 }
             }
             else if (this.status == 403) {
-                L.Chickpea.fire("alert", {"content": "Action not allowed :(", "level": "error"});
+                L.Storage.fire("alert", {"content": "Action not allowed :(", "level": "error"});
             }
             else {
-                L.Chickpea.fire("alert", {"content": "Problem in the response", "level": "error"});
+                L.Storage.fire("alert", {"content": "Problem in the response", "level": "error"});
             }
         };
 
@@ -55,11 +55,11 @@ L.Util.Xhr = {
     },
 
     get: function(uri, options) {
-        L.Util.Xhr._ajax("GET", uri, options);
+        L.Storage.Xhr._ajax("GET", uri, options);
     },
 
     post: function(uri, options) {
-        L.Util.Xhr._ajax("POST", uri, options);
+        L.Storage.Xhr._ajax("POST", uri, options);
     },
 
     submit_form: function(form_id, options) {
@@ -72,7 +72,7 @@ L.Util.Xhr = {
             formData.append(options.extraFormData);
         }
         options.data = formData;
-        L.Util.Xhr.post(form.action, options);
+        L.Storage.Xhr.post(form.action, options);
         return false;
     },
 
@@ -82,7 +82,7 @@ L.Util.Xhr = {
             .on(form, 'submit', L.DomEvent.stopPropagation)
             .on(form, 'submit', L.DomEvent.preventDefault)
             .on(form, 'submit', function (e) {
-                L.Util.Xhr.submit_form(form_id, options);
+                L.Storage.Xhr.submit_form(form_id, options);
             });
     },
 
@@ -92,17 +92,17 @@ L.Util.Xhr = {
             window.location = data.redirect;
         }
         else if (data.info) {
-            L.Chickpea.fire("alert", {"content": data.info, "level": "info"});
-            L.Chickpea.fire('modal_close');
+            L.Storage.fire("alert", {"content": data.info, "level": "info"});
+            L.Storage.fire('modal_close');
         }
         else if (data.error) {
-            L.Chickpea.fire("alert", {"content": data.error, "level": "error"});
+            L.Storage.fire("alert", {"content": data.error, "level": "error"});
         }
         else if (data.html) {
-            L.Chickpea.fire('modal_ready', {'data': data});
+            L.Storage.fire('modal_ready', {'data': data});
             // To low boilerplate, if there is a form, listen it
             if (options.listen_form) {
-                L.Util.Xhr.listen_form(options.listen_form.id, settings.listen_form.options);
+                L.Storage.Xhr.listen_form(options.listen_form.id, settings.listen_form.options);
             }
         }
     },
@@ -112,8 +112,8 @@ L.Util.Xhr = {
         // args: args of the first _ajax call, to call again at process end
         var self = this;
         var ask_for_login = function (data) {
-            L.Chickpea.fire('modal_ready', {'data': data});
-            L.Util.Xhr.listen_form('login_form', {
+            L.Storage.fire('modal_ready', {'data': data});
+            L.Storage.Xhr.listen_form('login_form', {
                 'callback': function (data) {
                     if (data.html) {
                         // Problem in the login
@@ -121,7 +121,7 @@ L.Util.Xhr = {
                     }
                     else {
                         if (typeof args !== "undefined") {
-                            L.Util.Xhr._ajax.apply(self, args);
+                            L.Storage.Xhr._ajax.apply(self, args);
                         }
                         else {
                             self.default_callback(data, {});

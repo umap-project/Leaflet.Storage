@@ -1,4 +1,4 @@
-L.ChickpeaIcon = L.DivIcon.extend({
+L.Storage.Icon = L.DivIcon.extend({
     initialize: function(map, options) {
         this.map = map;
         var default_options = {
@@ -23,16 +23,16 @@ L.ChickpeaIcon = L.DivIcon.extend({
     }
 });
 
-L.ChickpeaIcon.Default = L.ChickpeaIcon.extend({
+L.Storage.Icon.Default = L.Storage.Icon.extend({
     default_options: {
         iconAnchor: new L.Point(16, 40),
         popupAnchor: new L.Point(0, -40),
-        className: "chickpea-div-icon"
+        className: "storage-div-icon"
     },
 
     initialize: function(map, options) {
         options = L.Util.extend({}, this.default_options, options);
-        L.ChickpeaIcon.prototype.initialize.call(this, map, options);
+        L.Storage.Icon.prototype.initialize.call(this, map, options);
     },
 
     _setColor: function() {
@@ -60,15 +60,15 @@ L.ChickpeaIcon.Default = L.ChickpeaIcon.extend({
 
 });
 
-L.ChickpeaIcon.Circle = L.ChickpeaIcon.extend({
+L.Storage.Icon.Circle = L.Storage.Icon.extend({
     initialize: function(map, options) {
         var default_options = {
             iconAnchor: new L.Point(6, 6),
             popupAnchor: new L.Point(0, -6),
-            className: "chickpea-circle-icon"
+            className: "storage-circle-icon"
         };
         options = L.Util.extend({}, default_options, options);
-        L.ChickpeaIcon.prototype.initialize.call(this, map, options);
+        L.Storage.Icon.prototype.initialize.call(this, map, options);
     },
 
     _setColor: function() {
@@ -89,19 +89,19 @@ L.ChickpeaIcon.Circle = L.ChickpeaIcon.extend({
 
 });
 
-L.ChickpeaIcon.Drop = L.ChickpeaIcon.Default.extend({
+L.Storage.Icon.Drop = L.Storage.Icon.Default.extend({
     'default_options': {
             iconAnchor: new L.Point(16, 42),
             popupAnchor: new L.Point(0, -42),
-            className: "chickpea-drop-icon"
+            className: "storage-drop-icon"
     }
 });
 
-L.ChickpeaIcon.Ball = L.ChickpeaIcon.Default.extend({
+L.Storage.Icon.Ball = L.Storage.Icon.Default.extend({
     'default_options': {
             iconAnchor: new L.Point(8, 30),
             popupAnchor: new L.Point(0, -28),
-            className: "chickpea-ball-icon"
+            className: "storage-ball-icon"
     },
 
     createIcon: function() {

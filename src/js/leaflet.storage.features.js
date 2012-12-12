@@ -1,4 +1,4 @@
-L.Mixin.ChickpeaFeature = {
+L.Storage.FeatureMixin = {
 
   _onClick: function(e){
         if(this.map.editEnabled) {
@@ -14,7 +14,7 @@ L.Mixin.ChickpeaFeature = {
     view: function(e) {
         var url = this.getViewURL();
         var self = this;
-        L.Util.Xhr.get(url, {
+        L.Storage.Xhr.get(url, {
             "callback": function(data){
                 self._firePopup(data.html);
             }
@@ -25,7 +25,7 @@ L.Mixin.ChickpeaFeature = {
         if(!this.map.editEnabled) return;
         var url = this.getEditURL();
         var self = this;
-        L.Util.Xhr.get(url, {
+        L.Storage.Xhr.get(url, {
             "callback": function(data){
                 self._firePopup(data.html);
                 self.listenEditForm(self.form_id);
@@ -37,7 +37,7 @@ L.Mixin.ChickpeaFeature = {
         if(!this.map.editEnabled) return;
         var url = this.getDeleteURL();
         var self = this;
-        L.Util.Xhr.get(url, {
+        L.Storage.Xhr.get(url, {
             "callback": function(data){
                 self._firePopup(data.html);
                 self.listenDeleteForm();
@@ -47,9 +47,9 @@ L.Mixin.ChickpeaFeature = {
 
     _delete: function () {
         this.map.closePopup();
-        if (this.chickpea_overlay) {
-            this.chickpea_overlay.removeLayer(this);
-            this.disconnectFromOverlay(this.chickpea_overlay);
+        if (this.storage_overlay) {
+            this.storage_overlay.removeLayer(this);
+            this.disconnectFromOverlay(this.storage_overlay);
         }
         this.map.removeLayer(this);
     },
@@ -60,16 +60,16 @@ L.Mixin.ChickpeaFeature = {
     },
 
     connectToOverlay: function (overlay) {
-        var id = L.Util.stamp(this); // Id leaflet, not chickpea
+        var id = L.Util.stamp(this); // Id leaflet, not storage
                                      // as new marker will be added too
-        this.chickpea_overlay = overlay;
+        this.storage_overlay = overlay;
         this.map.marker_to_overlay[id] = overlay;
     },
 
     disconnectFromOverlay: function (overlay) {
-        var id = L.Util.stamp(this); // Id leaflet, not chickpea
+        var id = L.Util.stamp(this); // Id leaflet, not storage
                                       // as new marker will be added too
-        this.chickpea_overlay = null;
+        this.storage_overlay = null;
         delete this.map.marker_to_overlay[id];
     },
 
@@ -85,14 +85,14 @@ L.Mixin.ChickpeaFeature = {
                 // Guess its a geojson here
                 // Update object, if it's new
                 var feature = data.features[0];
-                if (!self.chickpea_id) {
-                    self.chickpea_id = feature.id;
+                if (!self.storage_id) {
+                    self.storage_id = feature.id;
                 }
                 var newColor = feature.properties.color;
-                var oldColor = self.chickpea_color;
-                self.chickpea_color = newColor;
-                var newOverlay = self.map.chickpea_overlays[feature.properties.category_id];
-                if(self.chickpea_overlay !== newOverlay) {
+                var oldColor = self.storage_color;
+                self.storage_color = newColor;
+                var newOverlay = self.map.storage_overlays[feature.properties.category_id];
+                if(self.storage_overlay !== newOverlay) {
                     self.changeOverlay(newOverlay);
                 } else {
                     // Needed only if overlay hasn't changed because
@@ -104,7 +104,7 @@ L.Mixin.ChickpeaFeature = {
 
                 }
                 self.closePopup();
-                L.Chickpea.fire("alert", {"content": "Feature updated with success!", "level": "info"});
+                L.Storage.fire("alert", {"content": "Feature updated with success!", "level": "info"});
             }
         };
         var submit = function (e) {
@@ -114,7 +114,7 @@ L.Mixin.ChickpeaFeature = {
             form.latlng.value = JSON.stringify(self.geometry());
             // Update action in case of creation (do it in python?)
             form.action = self.getEditURL();
-            L.Util.Xhr.submit_form(form, {"callback": function(data) { manage_ajax_return(data);}});
+            L.Storage.Xhr.submit_form(form, {"callback": function(data) { manage_ajax_return(data);}});
             L.DomEvent.stop(e);
             return false;
         };
@@ -133,48 +133,48 @@ L.Mixin.ChickpeaFeature = {
         var self = this;
         var manage_ajax_return = function (data) {
             if (data.error) {
-                L.Chickpea.fire('alert', {'content': data.error, 'level': 'error'});
+                L.Storage.fire('alert', {'content': data.error, 'level': 'error'});
             }
             else if (data.info) {
                 self._delete();
-                L.Chickpea.fire('alert', {'content': data.info, 'level': 'info'});
+                L.Storage.fire('alert', {'content': data.info, 'level': 'info'});
             }
         };
         var submit = function (e) {
             form.action = self.getDeleteURL();
-            L.Util.Xhr.submit_form(form, {"callback": function(data) { manage_ajax_return(data);}});
+            L.Storage.Xhr.submit_form(form, {"callback": function(data) { manage_ajax_return(data);}});
         };
         L.DomEvent.on(form, 'submit', submit);
     },
 
     changeOverlay: function(layer) {
-        if(this.chickpea_overlay) {
-            this.chickpea_overlay.removeLayer(this);
+        if(this.storage_overlay) {
+            this.storage_overlay.removeLayer(this);
         }
         layer.addLayer(this);
     },
 
     getViewURL: function () {
-        return L.Util.template(this.view_url_template, {'pk': this.chickpea_id});
+        return L.Util.template(this.view_url_template, {'pk': this.storage_id});
     },
 
     getEditURL: function() {
-        return this.chickpea_id?
-            L.Util.template(this.update_url_template, {'pk': this.chickpea_id, 'map_id': this.map.options.chickpea_id}):
-            L.Util.template(this.add_url_template, {'map_id': this.map.options.chickpea_id});
+        return this.storage_id?
+            L.Util.template(this.update_url_template, {'pk': this.storage_id, 'map_id': this.map.options.storage_id}):
+            L.Util.template(this.add_url_template, {'map_id': this.map.options.storage_id});
     },
 
     getDeleteURL: function() {
-        return L.Util.template(this.delete_url_template, {'pk': this.chickpea_id, 'map_id': this.map.options.chickpea_id});
+        return L.Util.template(this.delete_url_template, {'pk': this.storage_id, 'map_id': this.map.options.storage_id});
     },
 
     getColor: function () {
         var color;
-        if (this.chickpea_color) {
-            color = this.chickpea_color;
+        if (this.storage_color) {
+            color = this.storage_color;
         }
-        else if (this.chickpea_overlay) {
-            color = this.chickpea_overlay.getColor();
+        else if (this.storage_overlay) {
+            color = this.storage_overlay.getColor();
         }
         else {
             color = this.map.options.default_color;
@@ -183,30 +183,30 @@ L.Mixin.ChickpeaFeature = {
     }
 };
 
-L.ChickpeaMarker = L.Marker.extend({
-    includes: [L.Mixin.ChickpeaFeature, L.Mixin.Events],
+L.Storage.Marker = L.Marker.extend({
+    includes: [L.Storage.FeatureMixin, L.Mixin.Events],
 
-    initialize: function(map, chickpea_id, latlng, options) {
+    initialize: function(map, storage_id, latlng, options) {
         this.map = map;
         if(typeof options == "undefined") {
             options = {};
         }
         // Overlay the marker belongs to
-        this.chickpea_overlay = options.overlay || null;
-        this.chickpea_color = options.geojson ? options.geojson.properties.color : null;
+        this.storage_overlay = options.overlay || null;
+        this.storage_color = options.geojson ? options.geojson.properties.color : null;
         if(!options.icon) {
-            if (this.chickpea_overlay) {
-                options.icon = this.chickpea_overlay.getIcon();
+            if (this.storage_overlay) {
+                options.icon = this.storage_overlay.getIcon();
             }
             else {
-                options.icon = new L.ChickpeaIcon.Default(this.map);
+                options.icon = new L.Storage.Icon.Default(this.map);
             }
         }
         L.Marker.prototype.initialize.call(this, latlng, options);
         this.form_id = "marker_form";
 
-        // Use a null chickpea_id when you want to create a new Marker
-        this.chickpea_id = chickpea_id;
+        // Use a null storage_id when you want to create a new Marker
+        this.storage_id = storage_id;
 
         // URL templates
         this.view_url_template = this.map.options.urls.marker;
@@ -241,7 +241,7 @@ L.ChickpeaMarker = L.Marker.extend({
     },
 
     changeOverlay: function(layer) {
-        L.Mixin.ChickpeaFeature.changeOverlay.call(this, layer);
+        L.Storage.FeatureMixin.changeOverlay.call(this, layer);
         // Icon look depends on overlay
         this._redrawIcon();
     },
@@ -253,12 +253,12 @@ L.ChickpeaMarker = L.Marker.extend({
     connectToOverlay: function (overlay) {
         this.options.icon = overlay.getIcon();
         this.options.icon.feature = this;
-        L.Mixin.ChickpeaFeature.connectToOverlay.call(this, overlay);
+        L.Storage.FeatureMixin.connectToOverlay.call(this, overlay);
     },
 
     disconnectFromOverlay: function (overlay) {
         this.options.icon.overlay = null;
-        L.Mixin.ChickpeaFeature.disconnectFromOverlay.call(this, overlay);
+        L.Storage.FeatureMixin.disconnectFromOverlay.call(this, overlay);
     },
 
     geometry: function() {
@@ -276,19 +276,19 @@ L.ChickpeaMarker = L.Marker.extend({
     _getIconUrl: function (name) {
         var url = null;
         // TODO manage picto in the marker itself
-        if(this.chickpea_overlay && this.chickpea_overlay[name + 'Url']) {
-            url = this.chickpea_overlay[name + 'Url'];
+        if(this.storage_overlay && this.storage_overlay[name + 'Url']) {
+            url = this.storage_overlay[name + 'Url'];
         }
         return url;
     }
 });
 
 
-L.chickpea_marker = function (map, chickpea_id, latlng, options) {
-    return new L.ChickpeaMarker(map, chickpea_id, latlng, options);
+L.storage_marker = function (map, storage_id, latlng, options) {
+    return new L.Storage.Marker(map, storage_id, latlng, options);
 };
 
-L.Mixin.ChickpeaPath = {
+L.Storage.PathMixin = {
 
   _onClick: function(e){
         this._popupHandlersAdded = true;  // Prevent leaflet from managing event
@@ -325,7 +325,7 @@ L.Mixin.ChickpeaPath = {
     },
 
     changeOverlay: function(layer) {
-        L.Mixin.ChickpeaFeature.changeOverlay.call(this, layer);
+        L.Storage.FeatureMixin.changeOverlay.call(this, layer);
         // path color depends on overlay
         this._updateStyle();
     },
@@ -336,22 +336,22 @@ L.Mixin.ChickpeaPath = {
 };
 
 
-L.ChickpeaPolyline = L.Polyline.extend({
-    includes: [L.Mixin.ChickpeaFeature, L.Mixin.ChickpeaPath, L.Mixin.Events],
+L.Storage.Polyline = L.Polyline.extend({
+    includes: [L.Storage.FeatureMixin, L.Storage.PathMixin, L.Mixin.Events],
 
-    initialize: function(map, chickpea_id, latlngs, options) {
+    initialize: function(map, storage_id, latlngs, options) {
         this.map = map;
         if(typeof options == "undefined") {
             options = {};
         }
         // Overlay the marker belongs to
-        this.chickpea_overlay = options.overlay || null;
-        this.chickpea_color = options.geojson ? options.geojson.properties.color : null;
+        this.storage_overlay = options.overlay || null;
+        this.storage_color = options.geojson ? options.geojson.properties.color : null;
         L.Polyline.prototype.initialize.call(this, latlngs, options);
         this.form_id = "polyline_form";
 
-        // Use a null chickpea_id when you want to create a new Marker
-        this.chickpea_id = chickpea_id;
+        // Use a null storage_id when you want to create a new Marker
+        this.storage_id = storage_id;
 
 
         // URL templates
@@ -383,22 +383,22 @@ L.ChickpeaPolyline = L.Polyline.extend({
 
 });
 
-L.ChickpeaPolygon = L.Polygon.extend({
-    includes: [L.Mixin.ChickpeaFeature, L.Mixin.ChickpeaPath, L.Mixin.Events],
+L.Storage.Polygon = L.Polygon.extend({
+    includes: [L.Storage.FeatureMixin, L.Storage.PathMixin, L.Mixin.Events],
 
-    initialize: function(map, chickpea_id, latlngs, options) {
+    initialize: function(map, storage_id, latlngs, options) {
         this.map = map;
         if(typeof options == "undefined") {
             options = {};
         }
         // Overlay the marker belongs to
-        this.chickpea_overlay = options.overlay || null;
-        this.chickpea_color = options.geojson ? options.geojson.properties.color : null;
+        this.storage_overlay = options.overlay || null;
+        this.storage_color = options.geojson ? options.geojson.properties.color : null;
         L.Polygon.prototype.initialize.call(this, latlngs, options);
         this.form_id = "polygon_form";
 
-        // Use a null chickpea_id when you want to create a new Marker
-        this.chickpea_id = chickpea_id;
+        // Use a null storage_id when you want to create a new Marker
+        this.storage_id = storage_id;
 
         // URL templates
         this.view_url_template = this.map.options.urls.polygon;

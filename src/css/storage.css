@@ -66,10 +66,10 @@ a.upload-data {
     background-repeat: no-repeat;
     display: none;
 }
-.chickpea-edit-enabled .leaflet-control-draw a + a {
+.storage-edit-enabled .leaflet-control-draw a + a {
     margin-left: 5px;
 }
-.chickpea-edit-enabled .leaflet-control-draw a {
+.storage-edit-enabled .leaflet-control-draw a {
     display: inline-block;
 }
 .leaflet-control-draw a.leaflet-control-edit-toggle {
@@ -78,7 +78,7 @@ a.upload-data {
     background-repeat: no-repeat;
     display: inline-block;
 }
-.chickpea-edit-enabled .leaflet-control-draw {
+.storage-edit-enabled .leaflet-control-draw {
     /*box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);*/
     box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.2) inset;
     background-color: #ddd;
@@ -86,7 +86,7 @@ a.upload-data {
 .edit-overlay {
     display: none;
 }
-.chickpea-edit-enabled .leaflet-control-layers-expanded .edit-overlay {
+.storage-edit-enabled .leaflet-control-layers-expanded .edit-overlay {
     display: block;
     position: relative;
 }
@@ -94,7 +94,7 @@ a.upload-data {
 /* ************* */
 /* Marker's Icon */
 /* ************* */
-.chickpea-div-icon .icon_container {
+.storage-div-icon .icon_container {
     background-color: white;
     border-radius: 4px 4px 4px 4px;
     height: 32px;
@@ -105,10 +105,10 @@ a.upload-data {
     text-align: center;
     line-height: 32px;
 }
-.chickpea-div-icon .icon_container img {
+.storage-div-icon .icon_container img {
     vertical-align: middle;
 }
-.chickpea-div-icon .icon_arrow {
+.storage-div-icon .icon_arrow {
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
     border-top: 8px solid #2270b5;
@@ -119,7 +119,7 @@ a.upload-data {
     opacity: 0.9;
     /*box-shadow: 4px 8px 6px -3px black;*/
 }
-.chickpea-drop-icon .icon_arrow {
+.storage-drop-icon .icon_arrow {
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
     border-top: 16px solid #2270B5;
@@ -130,7 +130,7 @@ a.upload-data {
     top: -3px;
     width: 0;
 }
-.chickpea-drop-icon .icon_container {
+.storage-drop-icon .icon_container {
     background-color: #2470B5;
     border-radius: 16px 16px 16px 16px;
     box-shadow: 6px 13px 8px -4px black;
@@ -140,16 +140,16 @@ a.upload-data {
     text-align: center;
     width: 32px;
 }
-.chickpea-drop-icon .icon_container img {
+.storage-drop-icon .icon_container img {
     vertical-align: middle;
 }
-.chickpea-circle-icon {
+.storage-circle-icon {
     border: 1px solid white;
     border-radius: 10px 10px 10px 10px;
     height: 12px;
     width: 12px;
 }
-.chickpea-ball-icon .icon_container {
+.storage-ball-icon .icon_container {
     background: radial-gradient(circle at 6px 38% , white -4px, darkblue 8px) repeat scroll 0 0 transparent;
     border-radius: 8px 8px 8px 8px;
     box-shadow: 1px 21px 6px -3px black;
@@ -158,7 +158,7 @@ a.upload-data {
     text-align: center;
     width: 16px;
 }
-.chickpea-ball-icon .icon_arrow {
+.storage-ball-icon .icon_arrow {
     background-color: black;
     height: 16px;
     left: 7px;

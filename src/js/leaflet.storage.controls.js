@@ -9,7 +9,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
         this._map = map;
         L.Control.Draw.prototype.initialize.call(this, options);
         if (this.options.marker) {
-            this.options.marker.icon = new L.ChickpeaIcon.Default(this._map);
+            this.options.marker.icon = new L.Storage.Icon.Default(this._map);
         }
     },
 
@@ -95,11 +95,11 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
     },
 
     _enableEdit: function(e, map) {
-        L.DomUtil.addClass(map._container, "chickpea-edit-enabled");
+        L.DomUtil.addClass(map._container, "storage-edit-enabled");
         map.editEnabled = true;
     },
     _disableEdit: function(e, map, container) {
-        L.DomUtil.removeClass(map._container, "chickpea-edit-enabled");
+        L.DomUtil.removeClass(map._container, "storage-edit-enabled");
         map.editEnabled = false;
         this._disableInactiveModes();
     }
@@ -120,7 +120,7 @@ L.Marker.Draw.include({
         // How to do it in a cleaner way? Asking upstream to add a hook?
         this._map.fire(
             'draw:marker-created',
-            { marker: new L.ChickpeaMarker(this._map, null, this._marker.getLatLng()) }
+            { marker: new L.Storage.Marker(this._map, null, this._marker.getLatLng()) }
         );
         this.disable();
     }
@@ -131,7 +131,7 @@ L.Polyline.Draw.include({
     _finishShape: function () {
         this._map.fire(
             'draw:poly-created',
-            { poly: new L.ChickpeaPolyline(this._map, null, this._poly.getLatLngs(), this.options.shapeOptions) }
+            { poly: new L.Storage.Polyline(this._map, null, this._poly.getLatLngs(), this.options.shapeOptions) }
         );
         this.disable();
     }
@@ -143,7 +143,7 @@ L.Polygon.Draw.include({
     _finishShape: function () {
         this._map.fire(
             'draw:poly-created',
-            { poly: new L.ChickpeaPolygon(this._map, null, this._poly.getLatLngs(), this.options.shapeOptions) }
+            { poly: new L.Storage.Polygon(this._map, null, this._poly.getLatLngs(), this.options.shapeOptions) }
         );
         this.disable();
     }
@@ -161,8 +161,8 @@ L.Control.Embed = L.Control.extend({
         link.href = '#';
         link.title = "Embed this map";
         var fn = function (e) {
-            var url = L.Util.template(this.options.urls.map_embed, {'map_id': map.options.chickpea_id});
-            L.Util.Xhr.get(url);
+            var url = L.Util.template(this.options.urls.map_embed, {'map_id': map.options.storage_id});
+            L.Storage.Xhr.get(url);
         };
 
         L.DomEvent
@@ -183,7 +183,7 @@ L.Map.addInitHook(function () {
     }
 });
 
-L.Control.ChickpeaLayers = L.Control.Layers.extend({
+L.Storage.ControlLayers = L.Control.Layers.extend({
     options: {},
 
     onAdd: function (map) {
@@ -193,7 +193,7 @@ L.Control.ChickpeaLayers = L.Control.Layers.extend({
     },
 
     _addItem: function (obj) {
-        // Obj is and object {chickpea_layer, name, (bool)overlay}
+        // Obj is and object {storage_layer, name, (bool)overlay}
         // TODO: DRYME when leaflet #1167 is in dist
         var label = document.createElement('label'),
             input,
@@ -226,7 +226,7 @@ L.Control.ChickpeaLayers = L.Control.Layers.extend({
             link.href = '#';
             var fn = function (e) {
                 var url = obj.layer.getEditUrl();
-                L.Util.Xhr.get(url, {
+                L.Storage.Xhr.get(url, {
                     'callback': function (data) {return self._handleEditResponse(data);}
                 });
             };
@@ -244,20 +244,20 @@ L.Control.ChickpeaLayers = L.Control.Layers.extend({
         var map = this._map,
             form_id = "category_edit",
             self = this;
-        L.Chickpea.fire('modal_ready', {'data': data});
-        L.Util.Xhr.listen_form(form_id, {
+        L.Storage.fire('modal_ready', {'data': data});
+        L.Storage.Xhr.listen_form(form_id, {
             'callback': function (data) {
                 if (data.category) {
                     /* Means success */
-                    if (typeof map.chickpea_overlays[data.category.pk] !== "undefined") {
+                    if (typeof map.storage_overlays[data.category.pk] !== "undefined") {
                         // TODO update instead of removing/recreating
-                        var layer = map.chickpea_overlays[data.category.pk];
+                        var layer = map.storage_overlays[data.category.pk];
                         map.removeLayer(layer);
                         self.removeLayer(layer);
                     }
                     map._createOverlay(data.category);
-                    L.Chickpea.fire('alert', {'content':"Category successfuly edited", 'level': 'info'});
-                    L.Chickpea.fire('modal_close');
+                    L.Storage.fire('alert', {'content':"Category successfuly edited", 'level': 'info'});
+                    L.Storage.fire('modal_close');
                 }
                 else {
                     // Let's start again
@@ -273,8 +273,8 @@ L.Control.ChickpeaLayers = L.Control.Layers.extend({
         link.href = '#';
         var self = this;
         var fn = function (e) {
-            var url = L.Util.template(this.options.urls.category_add, {'map_id': map.options.chickpea_id});
-            L.Util.Xhr.get(url, {
+            var url = L.Util.template(this.options.urls.category_add, {'map_id': map.options.storage_id});
+            L.Storage.Xhr.get(url, {
                 'callback': function (data) {return self._handleEditResponse(data);}
             });
         };
@@ -287,8 +287,8 @@ L.Control.ChickpeaLayers = L.Control.Layers.extend({
 });
 
 L.Map.addInitHook(function () {
-    // this.chickpea_layers_control is created in Map initialize
+    // this.storage_layers_control is created in Map initialize
     if (this.options.layersControl) {
-        this.addControl(this.chickpea_layers_control);
+        this.addControl(this.storage_layers_control);
     }
 });

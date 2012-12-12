@@ -9,7 +9,7 @@ L.Map.mergeOptions({
     default_color: "DarkBlue"
 });
 
-L.ChickpeaMap = L.Map.extend({
+L.Storage.Map = L.Map.extend({
     initialize: function (/* DOM element or id*/ el, /* Object*/ options) {
         // Call the parent
         if (options.center) {
@@ -19,8 +19,8 @@ L.ChickpeaMap = L.Map.extend({
         }
         L.Map.prototype.initialize.call(this, el, options);
         // User must provide a pk
-        if (typeof this.options.chickpea_id == "undefined") {
-            alert("ImplementationError: you must provide a chickpea_id for ChickpeaMap.");
+        if (typeof this.options.storage_id == "undefined") {
+            alert("ImplementationError: you must provide a storage_id for Storage.Map.");
         }
 
         if (this.options.allowEdit) {
@@ -35,7 +35,7 @@ L.ChickpeaMap = L.Map.extend({
                 e.poly.edit();
             });
             this.on("popupclose", function(e) {
-                // remove source if it has not been created (no chickpea_id)
+                // remove source if it has not been created (no storage_id)
                 var layer = e.popup._source;
                 var id = L.Util.stamp(layer);
                 // Prevent from caching popup in edit mode
@@ -43,7 +43,7 @@ L.ChickpeaMap = L.Map.extend({
                     layer._popup = null;
                 }
                 if(drawnItems._layers.hasOwnProperty(id)
-                    && !layer.chickpea_id) {
+                    && !layer.storage_id) {
                     drawnItems.removeLayer(layer);
                 }
             });
@@ -68,12 +68,12 @@ L.ChickpeaMap = L.Map.extend({
         // It will be populated while creating the overlays
         // Control is added as an initHook, to keep the order
         // with other controls
-        this.chickpea_layers_control = new L.Control.ChickpeaLayers(
+        this.storage_layers_control = new L.Storage.ControlLayers(
             this.options.tilelayers.length > 1? this.tilelayers: {}
         );
 
         // Global storage for retrieving overlays
-        this.chickpea_overlays = {};
+        this.storage_overlays = {};
         this.marker_to_overlay = {};
         // create overlays
         for(var j in this.options.categories) {
@@ -126,7 +126,7 @@ L.ChickpeaMap = L.Map.extend({
     },
 
     _createOverlay: function(category) {
-        return new L.ChickpeaLayer(category, this);
+        return new L.Storage.Layer(category, this);
     },
 
     updateExtent: function() {
@@ -140,36 +140,36 @@ L.ChickpeaMap = L.Map.extend({
                     latlng.lat
                 ]
             },
-            url = L.Util.template(this.options.urls.map_update_extent, {'map_id': this.options.chickpea_id}),
+            url = L.Util.template(this.options.urls.map_update_extent, {'map_id': this.options.storage_id}),
             formData = new FormData();
             formData.append('center', JSON.stringify(center));
             formData.append('zoom', zoom);
-        L.Util.Xhr.post(url, {
+        L.Storage.Xhr.post(url, {
             'data': formData
         });
     },
 
     updateTileLayers: function () {
-        var url = L.Util.template(this.options.urls.map_update_tilelayers, {'map_id': this.options.chickpea_id});
-        L.Util.Xhr.get(url, {
+        var url = L.Util.template(this.options.urls.map_update_tilelayers, {'map_id': this.options.storage_id});
+        L.Storage.Xhr.get(url, {
             'callback': function (data) {
-                L.Chickpea.fire("modal_ready", {'data': data, "cssClass": "update-tilelayers"});
+                L.Storage.fire("modal_ready", {'data': data, "cssClass": "update-tilelayers"});
             }
         });
     },
 
     updateInfos: function () {
-        var url = L.Util.template(this.options.urls.map_update, {'map_id': this.options.chickpea_id});
-        L.Util.Xhr.get(url, {
+        var url = L.Util.template(this.options.urls.map_update, {'map_id': this.options.storage_id});
+        L.Storage.Xhr.get(url, {
             'callback': function (data) {
-                L.Chickpea.fire("modal_ready", {'data': data, "cssClass": "update-infos"});
+                L.Storage.fire("modal_ready", {'data': data, "cssClass": "update-infos"});
             }
         });
     },
 
     updatePermissions: function () {
-        var url = L.Util.template(this.options.urls.map_update_permissions, {'map_id': this.options.chickpea_id});
-        L.Util.Xhr.get(url, {
+        var url = L.Util.template(this.options.urls.map_update_permissions, {'map_id': this.options.storage_id});
+        L.Storage.Xhr.get(url, {
             'listen_form': {'id': 'map_edit'}
         });
     },
@@ -177,20 +177,20 @@ L.ChickpeaMap = L.Map.extend({
     uploadData: function () {
         var map = this;
         var handle_response = function (data) {
-            L.Chickpea.fire("modal_ready", {'data': data, "cssClass": "upload-data"});
-            L.Util.Xhr.listen_form("upload_data", {
+            L.Storage.fire("modal_ready", {'data': data, "cssClass": "upload-data"});
+            L.Storage.Xhr.listen_form("upload_data", {
                 'callback': function (data) {
                     if (data.category) {
-                        var layer = map.chickpea_overlays[data.category.pk];
+                        var layer = map.storage_overlays[data.category.pk];
                         layer.clearLayers();
                         layer.fetchData();
-                        L.Chickpea.fire('modal_close');
+                        L.Storage.fire('modal_close');
                         if (data.info) {
-                            L.Chickpea.fire("alert", {"content": data.info, "level": "info"});
+                            L.Storage.fire("alert", {"content": data.info, "level": "info"});
                         }
                     }
                     else if (data.error) {
-                        L.Chickpea.fire("alert", {"content": data.error, "level": "error"});
+                        L.Storage.fire("alert", {"content": data.error, "level": "error"});
                     }
                     else {
                         // start again
@@ -199,8 +199,8 @@ L.ChickpeaMap = L.Map.extend({
                 }
             });
         };
-        var url = L.Util.template(this.options.urls.upload_data, {'map_id': this.options.chickpea_id});
-        L.Util.Xhr.get(url, {
+        var url = L.Util.template(this.options.urls.upload_data, {'map_id': this.options.storage_id});
+        L.Storage.Xhr.get(url, {
             'callback': handle_response
         });
     }

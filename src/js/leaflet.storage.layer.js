@@ -1,14 +1,14 @@
-L.ChickpeaLayer = L.LazyGeoJSON.extend({
+L.Storage.Layer = L.LazyGeoJSON.extend({
     initialize: function (/* Object from db */ category, map, options) {
         this.default_icon_class = "Default";
-        this.chickpea_id = category.pk;
-        this.chickpea_name = category.name;
-        this.chickpea_color = category.color;
-        this.chickpea_icon_class = category.icon_class || this.default_icon_class;
+        this.storage_id = category.pk;
+        this.storage_name = category.name;
+        this.storage_color = category.color;
+        this.storage_icon_class = category.icon_class || this.default_icon_class;
         this.iconUrl = category.pictogram_url;
         this.preset = category.preset;
         this.map = map;
-        this.map.chickpea_overlays[this.chickpea_id] = this;
+        this.map.storage_overlays[this.storage_id] = this;
         if(typeof options == "undefined") {
             options = {};
         }
@@ -17,15 +17,15 @@ L.ChickpeaLayer = L.LazyGeoJSON.extend({
         if(this.preset) {
             this.map.addLayer(this);
         }
-        this.map.chickpea_layers_control.addOverlay(this, this.chickpea_name);
+        this.map.storage_layers_control.addOverlay(this, this.storage_name);
     },
     _dataUrl: function() {
         var template = this.map.options.urls.feature_geojson_list;
-        return L.Util.template(template, {"category_id": this.chickpea_id});
+        return L.Util.template(template, {"category_id": this.storage_id});
     },
     _dataGetter: function () {
         var geojson;
-        L.Util.Xhr.get(this._dataUrl(), {
+        L.Storage.Xhr.get(this._dataUrl(), {
             "async": false, // To be able to return the geojson
             "callback": function(json) {geojson = json;}
             });
@@ -80,7 +80,7 @@ L.ChickpeaLayer = L.LazyGeoJSON.extend({
         if(this.options.pointToLayer) {
             return options.pointToLayer(geojson, latlng);
         }
-        return L.chickpea_marker(
+        return L.storage_marker(
             this.map,
             geojson.id,
             latlng,
@@ -88,7 +88,7 @@ L.ChickpeaLayer = L.LazyGeoJSON.extend({
         );
     },
     _lineToLayer: function(geojson, latlngs) {
-        return new L.ChickpeaPolyline(
+        return new L.Storage.Polyline(
             this.map,
             geojson.id,
             latlngs,
@@ -97,7 +97,7 @@ L.ChickpeaLayer = L.LazyGeoJSON.extend({
     },
 
     _polygonToLayer: function(geojson, latlngs) {
-        return new L.ChickpeaPolygon(
+        return new L.Storage.Polygon(
             this.map,
             geojson.id,
             latlngs,
@@ -106,18 +106,18 @@ L.ChickpeaLayer = L.LazyGeoJSON.extend({
     },
 
     getEditUrl: function(){
-        return L.Util.template(this.map.options.urls.category_update, {'map_id': this.map.options.chickpea_id, 'pk': this.chickpea_id});
+        return L.Util.template(this.map.options.urls.category_update, {'map_id': this.map.options.storage_id, 'pk': this.storage_id});
     },
 
     getIcon: function () {
         var icon_class = this.default_icon_class;
-        if(L.ChickpeaIcon[this.chickpea_icon_class]) {
-            icon_class = this.chickpea_icon_class;
+        if(L.Storage.Icon[this.storage_icon_class]) {
+            icon_class = this.storage_icon_class;
         }
-        return new L.ChickpeaIcon[icon_class](this.map);
+        return new L.Storage.Icon[icon_class](this.map);
     },
 
     getColor: function () {
-        return this.chickpea_color || this.map.options.default_color;
+        return this.storage_color || this.map.options.default_color;
     }
 });
