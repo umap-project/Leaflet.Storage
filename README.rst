@@ -15,6 +15,7 @@ Building a backend
 ==================
 
 You will need to:
+
 - instanciate the `L.ChickpeaMap` with the correct options
 - implement the requiered views
 
