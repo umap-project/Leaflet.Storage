@@ -28,62 +28,34 @@ Ex. usage::
 
     var MAP = new L.Storage.Map("map", options);
 
++------------------+------------+--------------------+---------------------------------------------+
+| field name       | required   |    type            |   description                               |
++==================+============+====================+=============================================+
+| storage_id       | yes        | int                | backend internal unique id                  |
++------------------+------------+--------------------+---------------------------------------------+
+| urls             | yes        | object             | list of templates url                       |
++------------------+------------+--------------------+---------------------------------------------+
+| default_icon_url | yes        | string             | URL of the default image to use in icons    |
++------------------+------------+--------------------+---------------------------------------------+
+| center           | yes        | L.LatLng           | default center of the map                   |
+|                  |            | or Array(lat, lng) |                                             |
+|                  |            | or geojson Point   |                                             |
++------------------+------------+--------------------+---------------------------------------------+
+| zoom             | yes        | int                | default zoom level                          |
++------------------+------------+--------------------+---------------------------------------------+
+| categories       | yes        | Array of objects   | L.Storage.Layer to instanciate              |
++------------------+------------+--------------------+---------------------------------------------+
+| tilelayers       | yes        | Array of objects   | L.TileLayer to instanciate                  |
++------------------+------------+--------------------+---------------------------------------------+
+| allowEdit        | no         | bool               | display or not the edit toolbar             |
++------------------+------------+--------------------+---------------------------------------------+
+| embedControl     | no         | bool               | display or not the control "Embed this map" |
++------------------+------------+--------------------+---------------------------------------------+
+| locate           | no         | bool               | try or not to locate user on load           |
++------------------+------------+--------------------+---------------------------------------------+
+| hash             | no         | bool               | activate hash management (permalink) or not |
++------------------+------------+--------------------+---------------------------------------------+
 
-
-(required) storage_id :
-    (int) backend internal unique id
-(required) urls:
-    object representing all templates URL of the backend.
-    It's important to respect the expected variables.
-    Ex.::
-
-        "urls": {
-            "polygon_update": "/map/{map_id}/polygon/edit/{pk}/",
-            "polygon_add": "/map/{map_id}/polygon/add/", 
-            "map_update_tilelayers": "/map/update-tilelayers/{pk}/", 
-            "category_update": "/map/{map_id}/category/edit/{pk}/", 
-            "marker_add": "/map/{map_id}/marker/add/", 
-            "polygon": "/polygon/{pk}/", 
-            "marker_update": "/map/{map_id}/marker/edit/{pk}/", 
-            "polyline_delete": "/map/{map_id}/polyline/delete/{pk}/", 
-            "map_embed": "/map/embed/{pk}/", 
-            "feature_geojson_list": "/category/{category_id}/feature/json/", 
-            "polyline_update": "/map/{map_id}/polyline/edit/{pk}/", 
-            "polyline_add": "/map/{map_id}/polyline/add/", 
-            "map_update_extent": "/map/update-extent/{pk}/", 
-            "polyline": "/polyline/{pk}/", 
-            "category_add": "/map/{map_id}/category/add/", 
-            "polygon_delete": "/map/{map_id}/polygon/delete/{pk}/", 
-            "marker": "/marker/{pk}/", 
-            "marker_delete": "/map/{map_id}/marker/delete/{pk}/", 
-            "map_update": "/map/update/{pk}/", 
-            "upload_data": "/map/{map_id}/upload-data/"
-        },
-
-(required) default_icon_url:
-    an url of an image (26x26 max)
-center:
-    a L.LatLng object or an Array(lat, lng) or geojson of type Point
-zoom:
-    (int) a zoom level
-categories:
-    Array of objects representing StorageOverlay instances
-    ex::
-        {
-            categories: [{"icon_class": "Default", "name": "POIs", "color": "DarkBlue", "preset": true, "pk": 26, "pictogram_url": null}]
-        }
-
-tilelayers:
-    Array of objects representing L.TileLayer instances:
-    Ex.::
-        "tilelayers": [{"tilelayer": {"attribution": "OSM Contributors", "name": "OpenStreetMap", "url_template": "http://tile.openstreetmap.org/{z}/{x}/{y}.png", "minZoom": 0, "maxZoom": 18, "id": 1}, "rank": 1}],
-
-allowEdit:
-    (bool) display or not the edit toolbar
-embedControl:
-    (bool) display or not the control "Embed this map"
-locate:
-    (bool) try or not to locate user
 
 -----
 Views
