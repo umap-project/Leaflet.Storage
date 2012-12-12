@@ -168,8 +168,8 @@ L.ChickpeaMap = L.Map.extend({
         });
     },
 
-    updateEditors: function () {
-        var url = L.Util.template(this.options.urls.map_update_editors, {'map_id': this.options.chickpea_id});
+    updatePermissions: function () {
+        var url = L.Util.template(this.options.urls.map_update_permissions, {'map_id': this.options.chickpea_id});
         L.Util.Xhr.get(url, {
             'listen_form': {'id': 'map_edit'}
         });

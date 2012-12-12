@@ -18,7 +18,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
         this._createUploadButton(map, container);
         this._createUpdateMapExtentButton(map, container);
         this._createUpdateMapTileLayersButton(map, container);
-        this._createUpdateMapEditorsButton(map, container);
+        this._createUpdateMapPermissionsButton(map, container);
         this._createUpdateMapInfosButton(map, container);
         this._createToggleButton(map, container);
         return container;
@@ -64,12 +64,12 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
         );
     },
 
-    _createUpdateMapEditorsButton: function(map, container) {
+    _createUpdateMapPermissionsButton: function(map, container) {
         this._createButton(
-            'Update allowed editors',
-            'update-map-editors',
+            'Update permissions and editors',
+            'update-map-permissions',
             container,
-            function(e) { map.updateEditors();},
+            function(e) { map.updatePermissions();},
             {}
         );
     },

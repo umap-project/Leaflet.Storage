@@ -54,8 +54,8 @@ a.update-map-infos {
     background-repeat: no-repeat;
     display: none;
 }
-a.update-map-editors {
-    background-image: url("../img/update-editors.png");
+a.update-map-permissions {
+    background-image: url("../img/update-permissions.png");
     background-position: 50% 50%;
     background-repeat: no-repeat;
     display: none;
