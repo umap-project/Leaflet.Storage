@@ -1,6 +1,6 @@
-================
-Leaflet-Chickpea
-================
+===============
+Leaflet-Storage
+===============
 
 Manage maps, draw features and store them in a given backend.
 
@@ -16,21 +16,21 @@ Building a backend
 
 You will need to:
 
-- instanciate the `L.ChickpeaMap` with the correct options
+- instanciate the `L.Storage.Map` with the correct options
 - implement the requiered views
 
 ---------------------
-L.ChickpeaMap options
+L.Storage.Map options
 ---------------------
 
-All the `L.Map` options works. Plus there are some specific to Chickpea.
+`L.Storage.Map` inherit from `L.Map`, so all the `L.Map` options works. Plus there are some specific to Storage.
 Ex. usage::
 
-    var MAP = new L.ChickpeaMap("map", options);
+    var MAP = new L.Storage.Map("map", options);
 
 
 
-(required) chickpea_id :
+(required) storage_id :
     (int) backend internal unique id
 (required) urls:
     object representing all templates URL of the backend.
@@ -67,7 +67,7 @@ center:
 zoom:
     (int) a zoom level
 categories:
-    Array of objects representing ChickpeaOverlay instances
+    Array of objects representing StorageOverlay instances
     ex::
         {
             categories: [{"icon_class": "Default", "name": "POIs", "color": "DarkBlue", "preset": true, "pk": 26, "pictogram_url": null}]
