@@ -285,3 +285,10 @@ L.Control.ChickpeaLayers = L.Control.Layers.extend({
             .on(link, 'dblclick', L.DomEvent.stopPropagation);
     }
 });
+
+L.Map.addInitHook(function () {
+    // this.chickpea_layers_control is created in Map initialize
+    if (this.options.layersControl) {
+        this.addControl(this.chickpea_layers_control);
+    }
+});

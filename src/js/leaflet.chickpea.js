@@ -66,12 +66,11 @@ L.ChickpeaMap = L.Map.extend({
 
         // Init control layers
         // It will be populated while creating the overlays
+        // Control is added as an initHook, to keep the order
+        // with other controls
         this.chickpea_layers_control = new L.Control.ChickpeaLayers(
             this.options.tilelayers.length > 1? this.tilelayers: {}
         );
-        if (this.options.layersControl) {
-            this.addControl(this.chickpea_layers_control);
-        }
 
         // Global storage for retrieving overlays
         this.chickpea_overlays = {};
