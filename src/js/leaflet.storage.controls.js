@@ -285,10 +285,3 @@ L.Storage.ControlLayers = L.Control.Layers.extend({
             .on(link, 'dblclick', L.DomEvent.stopPropagation);
     }
 });
-
-L.Map.addInitHook(function () {
-    // this.storage_layers_control is created in Map initialize
-    if (this.options.layersControl) {
-        this.addControl(this.storage_layers_control);
-    }
-});

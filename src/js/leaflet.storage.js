@@ -71,6 +71,10 @@ L.Storage.Map = L.Map.extend({
         this.storage_layers_control = new L.Storage.ControlLayers(
             this.options.tilelayers.length > 1? this.tilelayers: {}
         );
+        // this.storage_layers_control is created in Map initialize
+        if (this.options.layersControl) {
+            this.addControl(this.storage_layers_control);
+        }
 
         // Global storage for retrieving overlays
         this.storage_overlays = {};
