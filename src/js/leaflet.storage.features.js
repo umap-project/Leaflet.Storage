@@ -1,6 +1,8 @@
 L.Storage.FeatureMixin = {
 
-  _onClick: function(e){
+    form_id: "feature_form",
+
+    _onClick: function(e){
         if(this.map.editEnabled) {
             this.edit(e);
         }
@@ -203,7 +205,6 @@ L.Storage.Marker = L.Marker.extend({
             }
         }
         L.Marker.prototype.initialize.call(this, latlng, options);
-        this.form_id = "marker_form";
 
         // Use a null storage_id when you want to create a new Marker
         this.storage_id = storage_id;
@@ -348,7 +349,6 @@ L.Storage.Polyline = L.Polyline.extend({
         this.storage_overlay = options.overlay || null;
         this.storage_color = options.geojson ? options.geojson.properties.color : null;
         L.Polyline.prototype.initialize.call(this, latlngs, options);
-        this.form_id = "polyline_form";
 
         // Use a null storage_id when you want to create a new Marker
         this.storage_id = storage_id;
@@ -395,7 +395,6 @@ L.Storage.Polygon = L.Polygon.extend({
         this.storage_overlay = options.overlay || null;
         this.storage_color = options.geojson ? options.geojson.properties.color : null;
         L.Polygon.prototype.initialize.call(this, latlngs, options);
-        this.form_id = "polygon_form";
 
         // Use a null storage_id when you want to create a new Marker
         this.storage_id = storage_id;
