@@ -194,31 +194,9 @@ L.Storage.ControlLayers = L.Control.Layers.extend({
 
     _addItem: function (obj) {
         // Obj is and object {storage_layer, name, (bool)overlay}
-        // TODO: DRYME when leaflet #1167 is in dist
-        var label = document.createElement('label'),
-            input,
+        var label = L.Control.Layers.prototype._addItem.call(this, obj);
             map = this._map,
-            self = this,
-            checked = map.hasLayer(obj.layer);
-
-        if (obj.overlay) {
-            input = document.createElement('input');
-            input.type = 'checkbox';
-            input.className = 'leaflet-control-layers-selector';
-            input.defaultChecked = checked;
-        } else {
-            input = this._createRadioElement('leaflet-base-layers', checked);
-        }
-
-        input.layerId = L.Util.stamp(obj.layer);
-
-        L.DomEvent.on(input, 'click', this._onInputClick, this);
-
-        var name = document.createElement('span');
-        name.innerHTML = ' ' + obj.name;
-
-        label.appendChild(input);
-        label.appendChild(name);
+            self = this;
 
         if (obj.overlay) {
             var link = L.DomUtil.create('a', "edit-overlay", label);
@@ -235,9 +213,7 @@ L.Storage.ControlLayers = L.Control.Layers.extend({
                 .on(link, 'click', L.DomEvent.preventDefault)
                 .on(link, 'click', fn, map);
         }
-
-        var container = obj.overlay ? this._overlaysList : this._baseLayersList;
-        container.appendChild(label);
+        return label;
     },
 
     _handleEditResponse: function(data) {
