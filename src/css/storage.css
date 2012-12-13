@@ -16,7 +16,7 @@
 /* Controls    */
 /* *********** */
 
-.leaflet-control-draw, .leaflet-control-embed {
+.leaflet-control-draw, .leaflet-control-embed, .leaflet-control-infos {
     background: none repeat scroll 0 0 #F8F8F9;
     border-radius: 8px 8px 8px 8px;
     box-shadow: 0 1px 7px #999999;
@@ -36,6 +36,14 @@
     width: 46px;
     display: block;
 }
+.leaflet-control-infos a {
+    background-image: url("../img/map-infos.png");
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    height: 46px;
+    width: 46px;
+    display: block;
+}
 a.update-map-extent {
     background-image: url("../img/update-extent.png");
     background-position: 50% 50%;
@@ -49,7 +57,7 @@ a.update-map-tilelayers {
     display: none;
 }
 a.update-map-infos {
-    background-image: url("../img/update-infos.png");
+    background-image: url("../img/map-infos.png");
     background-position: 50% 50%;
     background-repeat: no-repeat;
     display: none;

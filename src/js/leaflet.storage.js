@@ -6,7 +6,9 @@ L.Map.mergeOptions({
     hash: true,
     embedControl: true,
     layersControl: true,
-    default_color: "DarkBlue"
+    default_color: "DarkBlue",
+    attributionControl: false,
+    storageAttributionControl: true
 });
 
 L.Storage.Map = L.Map.extend({

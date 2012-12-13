@@ -261,3 +261,37 @@ L.Storage.ControlLayers = L.Control.Layers.extend({
             .on(link, 'dblclick', L.DomEvent.stopPropagation);
     }
 });
+
+L.Storage.AttributionControl = L.Control.extend({
+
+    options: {
+        position: 'bottomright'
+    },
+
+    onAdd: function (map) {
+        var className = 'leaflet-control-infos',
+            container = L.DomUtil.create('div', className);
+
+        var link = L.DomUtil.create('a', "", container);
+        link.href = '#';
+        link.title = "Caption and credits";
+        var fn = function (e) {
+            var url = L.Util.template(this.options.urls.map_infos, {'map_id': map.options.storage_id});
+            L.Storage.Xhr.get(url);
+        };
+
+        L.DomEvent
+            .on(link, 'click', L.DomEvent.stopPropagation)
+            .on(link, 'click', L.DomEvent.preventDefault)
+            .on(link, 'click', fn, map)
+            .on(link, 'dblclick', L.DomEvent.stopPropagation);
+
+        return container;
+    }
+});
+
+L.Map.addInitHook(function () {
+    if (this.options.storageAttributionControl) {
+        this.attributionControl = (new L.Storage.AttributionControl()).addTo(this);
+    }
+});
