@@ -83,12 +83,17 @@ a.upload-data {
     box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.2) inset;
     background-color: #ddd;
 }
-.edit-overlay {
+a.edit-overlay {
     display: none;
+    float: right;
+    text-decoration: underline;
+    font-size: 12px;
+    line-height: 21px;
+    color: #a5a5a5;
+    font-style: italic;
 }
 .storage-edit-enabled .leaflet-control-layers-expanded .edit-overlay {
-    display: block;
-    position: relative;
+    display: inline-block;
 }
 
 /* ************* */
