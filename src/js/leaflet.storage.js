@@ -159,7 +159,9 @@ L.Storage.Map = L.Map.extend({
         var url = L.Util.template(this.options.urls.map_update_tilelayers, {'map_id': this.options.storage_id});
         L.Storage.Xhr.get(url, {
             'callback': function (data) {
+                // Fire event from here, to pass a custom cssClass
                 L.Storage.fire("modal_ready", {'data': data, "cssClass": "update-tilelayers"});
+                L.Storage.Xhr.listen_form("map_edit");
             }
         });
     },
