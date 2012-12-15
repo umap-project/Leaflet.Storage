@@ -81,7 +81,8 @@ L.Storage.FeatureMixin = {
         var manage_ajax_return = function (data) {
             if(data.html) {
                 // We have HTML, put it in the popup
-                self._firePopup(data.html);
+                self._popup.setContent(data.html);
+                self.listenEditForm();
             }
             else {
                 // Guess its a geojson here
