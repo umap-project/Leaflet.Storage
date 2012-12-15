@@ -227,6 +227,12 @@ L.Storage.Marker = L.Marker.extend({
         // TODO: start dragging after 1 second on mouse down
         if(this.map.editEnabled) {
             this.dragging.enable();
+            // Enabling dragging on the marker override the Draggable._OnDown
+            // event, which, as it stopPropagation, refrain the call of
+            // _onDown with map-pane element, which is responsible to
+            // set the _moved to false, and thus to enable the click.
+            // We should find a cleaner way to handle this.
+            this.map.dragging._draggable._moved = false;
         }
     },
 
