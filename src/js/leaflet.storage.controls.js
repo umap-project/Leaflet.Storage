@@ -140,6 +140,14 @@ L.Polyline.Draw.include({
 
 L.Polygon.Draw.include({
 
+    initialize: function(map, options) {
+        // Polygon is set not clickable by default by Leaflet.Draw
+        // to workaround a bug
+        // See: https://github.com/jacobtoye/Leaflet.draw/issues/9
+        L.Polyline.Draw.prototype.initialize.call(this, map, options);
+        this.options.shapeOptions.clickable = true;
+    },
+
     _finishShape: function () {
         this._map.fire(
             'draw:poly-created',
