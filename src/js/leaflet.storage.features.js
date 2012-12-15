@@ -30,7 +30,7 @@ L.Storage.FeatureMixin = {
         L.Storage.Xhr.get(url, {
             "callback": function(data){
                 self._firePopup(data.html);
-                self.listenEditForm(self.form_id);
+                self.listenEditForm();
             }
         });
     },
@@ -75,9 +75,9 @@ L.Storage.FeatureMixin = {
         delete this.map.marker_to_overlay[id];
     },
 
-    listenEditForm: function(form_id) {
+    listenEditForm: function() {
         var self = this;
-        var form = L.DomUtil.get(form_id);
+        var form = L.DomUtil.get(this.form_id);
         var manage_ajax_return = function (data) {
             if(data.html) {
                 // We have HTML, put it in the popup
