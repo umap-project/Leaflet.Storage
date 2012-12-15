@@ -167,9 +167,7 @@ L.Storage.Map = L.Map.extend({
     updateInfos: function () {
         var url = L.Util.template(this.options.urls.map_update, {'map_id': this.options.storage_id});
         L.Storage.Xhr.get(url, {
-            'callback': function (data) {
-                L.Storage.fire("modal_ready", {'data': data, "cssClass": "update-infos"});
-            }
+            'listen_form': {'id': 'map_edit'}
         });
     },
 
