@@ -102,7 +102,9 @@ L.Storage.Xhr = {
             L.Storage.fire('modal_ready', {'data': data});
             // To low boilerplate, if there is a form, listen it
             if (options.listen_form) {
-                L.Storage.Xhr.listen_form(options.listen_form.id, settings.listen_form.options);
+                // Listen form again
+                listen_options = L.Util.extend({}, options, options.listen_form.options);
+                L.Storage.Xhr.listen_form(options.listen_form.id, listen_options);
             }
         }
     },
