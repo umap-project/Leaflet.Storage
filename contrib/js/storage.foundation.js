@@ -29,7 +29,13 @@ $('a.reveal').click(function(e) {
   // Generic reveal from ajax call
   e.preventDefault();
   var $this = $(this);
-  L.Storage.Xhr.get($this.attr('href'));
+  var options = {};
+  if ($this.data('listenForm')) {
+      options.listen_form = {
+          id: $this.data('listenForm')
+      };
+  }
+  L.Storage.Xhr.get($this.attr('href'), options);
 });
 /*
 * Alerts
