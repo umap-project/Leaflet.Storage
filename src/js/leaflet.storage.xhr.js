@@ -10,7 +10,7 @@ L.Storage.Xhr = {
             'data': null,
             'listen_form': null // optional form to listen in default callback
         };
-        settings = L.Util.extend({}, default_options, options);
+        var settings = L.Util.extend({}, default_options, options);
 
         var xhr = new XMLHttpRequest();
         xhr.open(verb, uri, settings.async);
@@ -113,7 +113,7 @@ L.Storage.Xhr = {
         // data.html: login form
         // args: args of the first _ajax call, to call again at process end
         var self = this;
-        var ask_for_login = function (data) {
+        var ask_for_login = function (data) {
             L.Storage.fire('modal_ready', {'data': data});
             L.Storage.Xhr.listen_form('login_form', {
                 'callback': function (data) {

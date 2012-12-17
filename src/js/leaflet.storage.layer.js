@@ -19,26 +19,26 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
         }
         this.map.storage_layers_control.addOverlay(this, this.storage_name);
     },
+
     _dataUrl: function() {
         var template = this.map.options.urls.feature_geojson_list;
         return L.Util.template(template, {"category_id": this.storage_id});
     },
-    _dataGetter: function () {
-        var geojson;
-        L.Storage.Xhr.get(this._dataUrl(), {
-            "async": false, // To be able to return the geojson
-            "callback": function(json) {geojson = json;}
-            });
-        return geojson;
+
+    _dataGetter: function (callback) {
+        L.Storage.Xhr.get(this._dataUrl(), {"callback": callback});
     },
+
     addLayer: function (layer) {
         layer.connectToOverlay(this);
         return L.LazyGeoJSON.prototype.addLayer.call(this, layer);
     },
+
     removeLayer: function (layer) {
         layer.disconnectFromOverlay(this);
         return L.LazyGeoJSON.prototype.removeLayer.call(this, layer);
     },
+
     addData: function (geojson) {
         // We override it, because we need to take control of
         // creating Polylines ; currently, only points creation is

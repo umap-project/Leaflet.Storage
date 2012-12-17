@@ -8,7 +8,8 @@ L.Map.mergeOptions({
     layersControl: true,
     default_color: "DarkBlue",
     attributionControl: false,
-    storageAttributionControl: true
+    storageAttributionControl: true,
+    allowEdit: true
 });
 
 L.Storage.Map = L.Map.extend({
