@@ -1,0 +1,9 @@
+[submodule "reqs/hash"]
+	path = reqs/hash
+	url = git://github.com/mlevans/leaflet-hash.git
+[submodule "reqs/draw"]
+	path = reqs/draw
+	url = git://github.com/jacobtoye/Leaflet.draw.git
+[submodule "reqs/leaflet"]
+	path = reqs/leaflet
+	url = git://github.com/CloudMade/Leaflet.git

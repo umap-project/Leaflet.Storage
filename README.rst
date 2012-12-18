@@ -10,6 +10,18 @@ Known backends:
 - `django-chickpea <https://github.com/yohanboniface/django-chickpea>`_
 
 
+================
+Functional tests
+================
+
+Functional tests are implemented with `casperjs <http://casperjs.org>`_.
+
+To launch them::
+
+    cd Leaflet.Storage/
+    make test
+
+
 ==================
 Building a backend
 ==================
