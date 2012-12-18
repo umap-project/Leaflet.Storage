@@ -107,7 +107,7 @@ L.Storage.FeatureMixin = {
 
                 }
                 self.closePopup();
-                L.Storage.fire("alert", {"content": "Feature updated with success!", "level": "info"});
+                L.Storage.fire("ui:alert", {"content": "Feature updated with success!", "level": "info"});
             }
         };
         var submit = function (e) {
@@ -136,11 +136,11 @@ L.Storage.FeatureMixin = {
         var self = this;
         var manage_ajax_return = function (data) {
             if (data.error) {
-                L.Storage.fire('alert', {'content': data.error, 'level': 'error'});
+                L.Storage.fire('ui:alert', {'content': data.error, 'level': 'error'});
             }
             else if (data.info) {
                 self._delete();
-                L.Storage.fire('alert', {'content': data.info, 'level': 'info'});
+                L.Storage.fire('ui:alert', {'content': data.info, 'level': 'info'});
             }
         };
         var submit = function (e) {

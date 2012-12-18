@@ -1,14 +1,14 @@
 /*
 * Optionaly include this file if you are using Foundation framework.
-* You need a <div id="reveal-container"></div> at the bottom of your
+* You need a <div id="storage-ui-container"></div> at the bottom of your
 * HTML page.
 */
 $(document).foundationAlerts();
 /*
 * Modals
 */
-L.Storage.on('modal_ready', function (e) {
-    var $div = $('#reveal-container');
+L.Storage.on('ui:start', function (e) {
+    var $div = $('#storage-ui-container');
     // reset class
     $div.attr("class", "");
     $div.addClass("reveal-modal");
@@ -19,8 +19,8 @@ L.Storage.on('modal_ready', function (e) {
     $div.unbind('.reveal');
     return $div.empty().html(e.data.html).append('<a class="close-reveal-modal">&#215;</a>').reveal();
 });
-L.Storage.on('modal_close', function (e) {
-    var $div = $('#reveal-container');
+L.Storage.on('ui:end', function (e) {
+    var $div = $('#storage-ui-container');
     if ($div) {
         $div.trigger('reveal:close');
     }
@@ -40,7 +40,7 @@ $('a.reveal').click(function(e) {
 /*
 * Alerts
 */
-L.Storage.on('alert', function (e) {
+L.Storage.on('ui:alert', function (e) {
     var level_class = e.level && e.level == "info"? "success": "alert";
     $div = $('<div>').addClass('alert-box global').addClass(level_class).html(e.content);
     $div.append('<a href="#" class="close">&times;</a>');

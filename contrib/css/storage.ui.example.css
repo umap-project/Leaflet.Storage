@@ -1,0 +1,65 @@
+/* *********** */
+/*    Panel    */
+/* *********** */
+.storage-ui #map, .storage-ui #storage-alert-container {
+    width: 70%;
+}
+#storage-ui-container {
+    height: 100%;
+    width: 30%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    padding: 20px;
+    box-shadow: 0 1px 7px #999999;
+    display: none;
+    overflow-x: auto;
+}
+.storage-ui #storage-ui-container {
+    display: block;
+}
+
+/* *********** */
+/*   Alerts    */
+/* *********** */
+.storage-alert .leaflet-top {
+    top: 30px;
+}
+#storage-alert-container {
+    height: 30px;
+    line-height: 30px;
+    padding-left: 10px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    box-shadow: 0 1px 7px #999999;
+    display: none;
+    background-color: #5da423;
+    font-weight: bold;
+    color: #fff;
+}
+#storage-alert-container .error {
+    background-color: #c60f13;
+}
+.storage-alert #storage-alert-container {
+    display: block;
+}
+
+/* *********** */
+/* Close link  */
+/* *********** */
+.storage-close-link {
+    position: absolute;
+    top: 0;
+    right: 20px;
+    color: #fff;
+    line-height: 20px;
+    font-size: 20px;
+    cursor: pointer;
+}
+#storage-ui-container .storage-close-link {
+    color: #000;
+}

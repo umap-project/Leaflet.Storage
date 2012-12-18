@@ -161,7 +161,7 @@ L.Storage.Map = L.Map.extend({
         L.Storage.Xhr.get(url, {
             'callback': function (data) {
                 // Fire event from here, to pass a custom cssClass
-                L.Storage.fire("modal_ready", {'data': data, "cssClass": "update-tilelayers"});
+                L.Storage.fire("ui:start", {'data': data, "cssClass": "update-tilelayers"});
                 L.Storage.Xhr.listen_form("map_edit");
             }
         });
@@ -184,20 +184,20 @@ L.Storage.Map = L.Map.extend({
     uploadData: function () {
         var map = this;
         var handle_response = function (data) {
-            L.Storage.fire("modal_ready", {'data': data, "cssClass": "upload-data"});
+            L.Storage.fire("ui:start", {'data': data, "cssClass": "upload-data"});
             L.Storage.Xhr.listen_form("upload_data", {
                 'callback': function (data) {
                     if (data.category) {
                         var layer = map.storage_overlays[data.category.pk];
                         layer.clearLayers();
                         layer.fetchData();
-                        L.Storage.fire('modal_close');
+                        L.Storage.fire('ui:end');
                         if (data.info) {
-                            L.Storage.fire("alert", {"content": data.info, "level": "info"});
+                            L.Storage.fire("ui:alert", {"content": data.info, "level": "info"});
                         }
                     }
                     else if (data.error) {
-                        L.Storage.fire("alert", {"content": data.error, "level": "error"});
+                        L.Storage.fire("ui:alert", {"content": data.error, "level": "error"});
                     }
                     else {
                         // start again

@@ -24,7 +24,7 @@ L.Storage.Xhr = {
                 }
                 catch (err) {
                     console.log(err);
-                    L.Storage.fire("alert", {"content": "Problem in the response format", "level": "error"});
+                    L.Storage.fire("ui:alert", {"content": "Problem in the response format", "level": "error"});
                 }
                 if (data.login_required) {
                     // login_required should be an URL for the login form
@@ -44,10 +44,10 @@ L.Storage.Xhr = {
                 }
             }
             else if (this.status == 403) {
-                L.Storage.fire("alert", {"content": "Action not allowed :(", "level": "error"});
+                L.Storage.fire("ui:alert", {"content": "Action not allowed :(", "level": "error"});
             }
             else {
-                L.Storage.fire("alert", {"content": "Problem in the response", "level": "error"});
+                L.Storage.fire("ui:alert", {"content": "Problem in the response", "level": "error"});
             }
         };
 
@@ -92,14 +92,14 @@ L.Storage.Xhr = {
             window.location = data.redirect;
         }
         else if (data.info) {
-            L.Storage.fire("alert", {"content": data.info, "level": "info"});
-            L.Storage.fire('modal_close');
+            L.Storage.fire("ui:alert", {"content": data.info, "level": "info"});
+            L.Storage.fire('ui:end');
         }
         else if (data.error) {
-            L.Storage.fire("alert", {"content": data.error, "level": "error"});
+            L.Storage.fire("ui:alert", {"content": data.error, "level": "error"});
         }
         else if (data.html) {
-            L.Storage.fire('modal_ready', {'data': data});
+            L.Storage.fire('ui:start', {'data': data});
             // To low boilerplate, if there is a form, listen it
             if (options.listen_form) {
                 // Listen form again
@@ -114,7 +114,7 @@ L.Storage.Xhr = {
         // args: args of the first _ajax call, to call again at process end
         var self = this;
         var ask_for_login = function (data) {
-            L.Storage.fire('modal_ready', {'data': data});
+            L.Storage.fire('ui:start', {'data': data});
             L.Storage.Xhr.listen_form('login_form', {
                 'callback': function (data) {
                     if (data.html) {

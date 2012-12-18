@@ -228,7 +228,7 @@ L.Storage.ControlLayers = L.Control.Layers.extend({
         var map = this._map,
             form_id = "category_edit",
             self = this;
-        L.Storage.fire('modal_ready', {'data': data});
+        L.Storage.fire('ui:start', {'data': data});
         L.Storage.Xhr.listen_form(form_id, {
             'callback': function (data) {
                 if (data.category) {
@@ -240,8 +240,8 @@ L.Storage.ControlLayers = L.Control.Layers.extend({
                         self.removeLayer(layer);
                     }
                     map._createOverlay(data.category);
-                    L.Storage.fire('alert', {'content':"Category successfuly edited", 'level': 'info'});
-                    L.Storage.fire('modal_close');
+                    L.Storage.fire('ui:alert', {'content':"Category successfuly edited", 'level': 'info'});
+                    L.Storage.fire('ui:end');
                 }
                 else {
                     // Let's start again
