@@ -123,6 +123,7 @@ L.Storage.Xhr = {
                     }
                     else {
                         if (typeof args !== "undefined") {
+                            L.Storage.fire('ui:end');
                             L.Storage.Xhr._ajax.apply(self, args);
                         }
                         else {
