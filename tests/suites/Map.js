@@ -26,6 +26,21 @@ casper.then(function () {
 
 casper.thenClick('a.update-map-infos', function () {
     this.test.assertExists('form[id="map_edit"]');
+    this.test.assertExists('form[id="map_edit"] input[type="submit"]');
+});
+
+casper.then(function () {
+    path = '/map/42/update/metadata/';
+    this.server.watchRequest(path);
+    this.server.watchPath(path, {data: '{"redirect": "/"}'});
+    new_name = 'A new new name';
+    this.fill('form#map_edit', {name: new_name});
+});
+
+casper.thenClick('form[id="map_edit"] input[type="submit"]', function () {
+    var request = this.server.watchedRequests[path];
+    this.test.assertEqual(request.method, 'POST', 'Map update infos form submit a POST');
+    this.test.assertEqual(request.post.name, new_name, 'Map new name has been submited');
 });
 
 casper.run(function() {
