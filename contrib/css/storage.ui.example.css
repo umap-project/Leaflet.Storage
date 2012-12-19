@@ -41,7 +41,7 @@
     font-weight: bold;
     color: #fff;
 }
-#storage-alert-container .error {
+#storage-alert-container.error {
     background-color: #c60f13;
 }
 .storage-alert #storage-alert-container {

@@ -38,7 +38,7 @@ L.Storage.on('ui:alert', function (e) {
     div.innerHTML = "";
     div.innerHTML = e.content;
     L.DomUtil.addClass(body, 'storage-alert');
-    var level_class = e.level && e.level == "info"? "success": "alert";
+    var level_class = e.level && e.level == "info"? "info": "error";
     L.DomUtil.addClass(div, level_class);
     var close_link = L.DomUtil.create('a', 'storage-close-link', div);
     close_link.innerHTML = "&times;";
