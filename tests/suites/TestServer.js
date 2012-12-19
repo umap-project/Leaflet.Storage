@@ -2,10 +2,8 @@ casper.start('http://localhost:1337');
 
 casper.urlToTitle = function (url) {
     this.evaluate(function (url) {
-        console.log('init of evaluate');
         L.Storage.Xhr.get(url, {
             callback: function (data) {
-                console.log('init of callback', data.content);
                 var title = document.getElementsByTagName('title')[0];
                 title.innerHTML = data.content;
                 console.log(title.innerHTML);

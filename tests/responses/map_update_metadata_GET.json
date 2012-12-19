@@ -1,0 +1,3 @@
+{
+    "html": "<form action='/map/42/update/metadata/'' method='post' id='map_edit'><input name='name' placeholder='Name' value='Birds map' maxlength='100' type='text' id='id_name' /><textarea id='id_description' rows='10' placeholder='Description' cols='40' name='description'>Where have you seen birds?</textarea><label for='licence'>Licence</label><select name='licence' id='id_licence'><option value=''>---------</option><option value='1' selected='selected'>WTFL</option></select><small class='help-text'>Choose the map licence.</small><input type='hidden' name='center' value='POINT (15.9191894531249982 49.0018439179785261)' id='id_center' /> <input type='submit' /></form>"
+}

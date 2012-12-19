@@ -19,7 +19,7 @@ casper.startServer = function(port) {
         response.statusCode = 200;
         self.log("Server - handling URL " + request.url, "debug");
 
-        if(request.url.indexOf('/src/') === 0 || request.url.indexOf('/reqs/') === 0){
+        if(request.url.search('^(/src/|/reqs/|/contrib/)') !== -1){
             // serve statics
             content = fs.read('.' + request.url);
         }

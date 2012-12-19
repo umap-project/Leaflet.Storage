@@ -21,6 +21,11 @@ casper.then(function () {
     // Edit map infos
     this.toggleEditButton();
     this.test.assertVisible('a.update-map-infos', 'update map infos button is visibile when edit enabled');
+    this.server.watchPath('/map/42/update/metadata/', 'map_update_metadata_GET');
+});
+
+casper.thenClick('a.update-map-infos', function () {
+    this.test.assertExists('form[id="map_edit"]');
 });
 
 casper.run(function() {
