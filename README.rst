@@ -2,12 +2,29 @@
 Leaflet-Storage
 ===============
 
-Manage maps, draw features and store them in a given backend.
+Manage map and features with Leaflet and expose them for backend storage with an API.
 
+----------------
+Backend agnostic
+----------------
+
+Leaflet.Storage is backend agnostic: it only knows about a convention API.
 
 Known backends:
 
 - `django-chickpea <https://github.com/yohanboniface/django-chickpea>`_
+
+More about backend API: https://github.com/yohanboniface/Leaflet.Storage/wiki/Backend
+
+---------------------------
+Front-end famework agnostic
+---------------------------
+
+Leaflet.Storage is framework agnostic: it doesn't know nothing about jQuery nor Foundation nor
+Boostrap or whatever frontend framework. Instead, all the *user interface* is handled via events.
+A default UI is provided, but one can use it's own modals, or popups, or panel, instead.
+
+More about UI: https://github.com/yohanboniface/Leaflet.Storage/wiki/UI
 
 
 ================
