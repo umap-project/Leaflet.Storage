@@ -45,6 +45,7 @@ L.Storage.on('ui:alert', function (e) {
     var close = function (e) {
         div.innerHTML = "";
         L.DomUtil.removeClass(body, 'storage-alert');
+        L.DomUtil.removeClass(div, level_class);
     };
     L.DomEvent
         .on(close_link, 'click', L.DomEvent.stopPropagation)
