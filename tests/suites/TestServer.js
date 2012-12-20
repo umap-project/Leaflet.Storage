@@ -6,10 +6,15 @@ casper.urlToTitle = function (url) {
             callback: function (data) {
                 var title = document.getElementsByTagName('title')[0];
                 title.innerHTML = data.content;
-                console.log(title.innerHTML);
             }
         });
     }, {url: url});
+};
+
+casper.sendPost = function (url, data) {
+    this.evaluate(function(url, data) {
+        __utils__.sendAJAX(url, 'POST', data, true);
+    }, {url: url, data: data});
 };
 
 casper.then(function() {
@@ -46,10 +51,6 @@ casper.then(function() {
     this.test.assertTitle('test content from file test_1_2_3.json');
 });
 
-casper.run(function() {
-    this.test.done();
-});
-
 casper.then(function() {
     // Watch with a object
     var url = "/test9999/";
@@ -59,4 +60,22 @@ casper.then(function() {
 
 casper.then(function() {
     this.test.assertTitle('content from object');
+});
+
+casper.then(function () {
+    path = '/testpostdata/';
+    name_value = "this is a name";
+    this.server.watchRequest(path);
+    this.sendPost(path, {name: name_value});
+});
+
+casper.then(function () {
+    var request = this.server.watchedRequests[path];
+    this.test.assertTruthy(request, "Request has been catched");
+    this.test.assertEqual(request.method, 'POST', 'POST received');
+    this.test.assertEqual(request.post.name, name_value, 'POST name value is correct');
+});
+
+casper.run(function() {
+    this.test.done();
 });
