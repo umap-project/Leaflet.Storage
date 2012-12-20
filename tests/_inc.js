@@ -58,7 +58,7 @@ casper.startServer = function(port) {
             // serve statics
             content = fs.read('.' + request.url);
         }
-        else if(request.url === '/'){
+        else if(request.url === '/' || request.url.indexOf('/?') === 0){
             // map detail page
             content = fs.read('./tests/index.html');
         }

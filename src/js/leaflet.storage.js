@@ -170,7 +170,13 @@ L.Storage.Map = L.Map.extend({
     updateInfos: function () {
         var url = L.Util.template(this.options.urls.map_update, {'map_id': this.options.storage_id});
         L.Storage.Xhr.get(url, {
-            'listen_form': {'id': 'map_edit'}
+            'listen_form': {'id': 'map_edit'},  // 1. edit form
+            'listen_link': {
+                'id': 'delete_map_button',  // 2. delete link
+                'options': {
+                    'listen_form': {'id': 'map_delete'}  // 3. confirm delete form
+                }
+            }
         });
     },
 

@@ -38,9 +38,32 @@ casper.then(function () {
 });
 
 casper.thenClick('form[id="map_edit"] input[type="submit"]', function () {
+    // Submit edit form
     var request = this.server.watchedRequests[path];
     this.test.assertEqual(request.method, 'POST', 'Map update infos form submit a POST');
     this.test.assertEqual(request.post.name, new_name, 'Map new name has been submited');
+    this.server.unwatchPath(path);
+    this.server.unwatchRequest(path);
+    this.server.watchPath('/map/42/update/metadata/', 'map_update_metadata_GET');
+});
+
+casper.thenClick('a.update-map-infos', function () {
+    // Request again Map edit form
+    this.test.assertExists('form[id="map_edit"]');
+    this.test.assertExists('a#delete_map_button');
+    delete_path = "/map/42/delete/";
+    this.server.watchPath(delete_path, 'map_delete_GET');
+});
+
+casper.thenClick('a#delete_map_button', function () {
+    // Click on delete link and assert form has been populated
+    this.test.assertExists('form#map_delete');
+    this.test.assertExists('form#map_delete input[type="submit"]');
+    this.server.watchPath(delete_path, {data: '{"redirect": "/?redirected"}'});
+});
+
+casper.thenClick('form#map_delete input[type="submit"]', function () {
+    this.test.assertUrlMatch(/\?redirected/, "Redirection has been done after map delete");
 });
 
 casper.run(function() {

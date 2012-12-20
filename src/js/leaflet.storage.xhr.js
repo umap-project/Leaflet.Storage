@@ -86,6 +86,18 @@ L.Storage.Xhr = {
             });
     },
 
+    listen_link: function (link_id, options) {
+        var link = L.DomUtil.get(link_id);
+        if (link) {
+            L.DomEvent
+                .on(link, 'click', L.DomEvent.stopPropagation)
+                .on(link, 'click', L.DomEvent.preventDefault)
+                .on(link, 'click', function (e) {
+                    L.Storage.Xhr.get(link.href, options);
+                });
+        }
+    },
+
     default_callback: function (data, options) {
         // default callback, to avoid boilerplate
         if (data.redirect) {
@@ -105,6 +117,11 @@ L.Storage.Xhr = {
                 // Listen form again
                 listen_options = L.Util.extend({}, options, options.listen_form.options);
                 L.Storage.Xhr.listen_form(options.listen_form.id, listen_options);
+            }
+            if (options.listen_link) { // Allow an array?
+                // Listen link again
+                listen_options = L.Util.extend({}, options, options.listen_link.options);
+                L.Storage.Xhr.listen_link(options.listen_link.id, listen_options);
             }
         }
     },
