@@ -18,9 +18,9 @@ Known backends:
 
 More about backend API: https://github.com/yohanboniface/Leaflet.Storage/wiki/Backend
 
----------------------------
-Front-end famework agnostic
----------------------------
+----------------------------
+Front-end framework agnostic
+----------------------------
 
 Leaflet.Storage is framework agnostic: it doesn't know nothing about jQuery nor Foundation nor
 Boostrap or whatever frontend framework. Instead, all the *user interface* is handled via events.
