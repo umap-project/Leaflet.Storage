@@ -1,0 +1,10 @@
+{
+    "category": {
+        "icon_class": "Default",
+        "name": "Elephants",
+        "color": "Pink",
+        "preset": true,
+        "pk": 62,
+        "pictogram_url": null
+    }
+}

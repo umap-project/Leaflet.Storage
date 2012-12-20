@@ -1,0 +1,51 @@
+casper.start('http://localhost:1337');
+
+casper.then(function () {
+    category_edit_path = '/map/42/category/edit/62/';
+    this.toggleEditButton();
+    this.test.assertExists('a#edit_overlay_62', 'Edit overlay button exists');
+    this.test.assertExists('input.leaflet-control-layers-selector', 'Display overlay checkbox exists');
+    this.mouseEvent('mouseover', 'div.leaflet-control-layers');
+    this.test.assertVisible('a#edit_overlay_62', 'Edit overlay button is visibile when edit enabled');
+    this.server.watchPath(category_edit_path, 'map_category_update_GET');
+});
+
+casper.thenClick('a#edit_overlay_62', function(){
+    this.test.assertExists('form#category_edit');
+    this.test.assertExists('form#category_edit input[type="submit"]');
+    new_name = "Name 1234 Tadam";
+    this.fill('form#category_edit', {name: new_name});
+    this.server.watchPath(category_edit_path, 'map_category_update_POST');
+    this.server.watchRequest(category_edit_path);
+});
+
+casper.thenClick('form#category_edit input[type="submit"]', function () {
+    var request = this.server.watchedRequests[category_edit_path];
+    this.test.assertEqual(request.method, 'POST', 'Category update infos form submit a POST');
+    this.test.assertEqual(request.post.name, new_name, 'Category new name has been submited');
+    this.server.unwatchRequest(category_edit_path);
+    this.server.watchPath(category_edit_path, 'map_category_update_GET');
+    this.mouseEvent('mouseover', 'div.leaflet-control-layers');
+    this.test.assertVisible('a#edit_overlay_62', 'Edit overlay button is visibile when edit enabled');
+});
+
+casper.thenClick('a#edit_overlay_62', function () {
+    this.test.assertExists('a#delete_category_button');
+    category_delete_path = '/map/42/category/delete/62/';
+    this.server.watchPath(category_delete_path, 'map_category_delete_GET');
+});
+
+casper.thenClick('a#delete_category_button', function () {
+    this.test.assertExists('form#category_delete');
+    this.test.assertExists('form#category_delete input[type="submit"]');
+    this.server.watchPath(category_delete_path, 'map_category_delete_POST');
+});
+
+casper.thenClick('form#category_delete input[type="submit"]', function () {
+    this.test.assertNotExists('input.leaflet-control-layers-selector', 'Display overlay checkbox does not exist after category has been deleted');
+    this.test.assertNotExists('div.icon_container', 'icon container is not found after category has been deleted');
+});
+
+casper.run(function() {
+    this.test.done();
+});

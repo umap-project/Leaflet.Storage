@@ -210,10 +210,11 @@ L.Storage.ControlLayers = L.Control.Layers.extend({
             var link = L.DomUtil.create('a', "edit-overlay", label);
             link.innerHTML = link.title = 'Edit';
             link.href = '#';
+            link.id = 'edit_overlay_' + obj.layer.storage_id;
             var fn = function (e) {
                 var url = obj.layer.getEditUrl();
                 L.Storage.Xhr.get(url, {
-                    'callback': function (data) {return self._handleEditResponse(data);}
+                    'callback': function (data) {return obj.layer._handleEditResponse(data);}
                 });
             };
             L.DomEvent
@@ -224,33 +225,6 @@ L.Storage.ControlLayers = L.Control.Layers.extend({
         return label;
     },
 
-    _handleEditResponse: function(data) {
-        var map = this._map,
-            form_id = "category_edit",
-            self = this;
-        L.Storage.fire('ui:start', {'data': data});
-        L.Storage.Xhr.listen_form(form_id, {
-            'callback': function (data) {
-                if (data.category) {
-                    /* Means success */
-                    if (typeof map.storage_overlays[data.category.pk] !== "undefined") {
-                        // TODO update instead of removing/recreating
-                        var layer = map.storage_overlays[data.category.pk];
-                        map.removeLayer(layer);
-                        self.removeLayer(layer);
-                    }
-                    map._createOverlay(data.category);
-                    L.Storage.fire('ui:alert', {'content':"Category successfuly edited", 'level': 'info'});
-                    L.Storage.fire('ui:end');
-                }
-                else {
-                    // Let's start again
-                    self._handleEditResponse(data);
-                }
-            }
-        });
-    },
-
     _createNewOverlayButton: function (map, container) {
         var link = L.DomUtil.create('a', "edit-overlay add-overlay", container);
         link.innerHTML = link.title = 'Add a category';
@@ -259,7 +233,10 @@ L.Storage.ControlLayers = L.Control.Layers.extend({
         var fn = function (e) {
             var url = L.Util.template(this.options.urls.category_add, {'map_id': map.options.storage_id});
             L.Storage.Xhr.get(url, {
-                'callback': function (data) {return self._handleEditResponse(data);}
+                'callback': function (data) {
+                    var category = map._createOverlay({});
+                    return category._handleEditResponse(data);
+                }
             });
         };
         L.DomEvent

@@ -133,7 +133,7 @@ L.Storage.Map = L.Map.extend({
     },
 
     _createOverlay: function(category) {
-        return new L.Storage.Layer(category, this);
+        return new L.Storage.Layer(this, category);
     },
 
     updateExtent: function() {

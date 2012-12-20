@@ -1,23 +1,35 @@
 L.Storage.Layer = L.LazyGeoJSON.extend({
-    initialize: function (/* Object from db */ category, map, options) {
+
+    initialize: function (map, /* Object from db */ category, options) {
         this.default_icon_class = "Default";
-        this.storage_id = category.pk;
-        this.storage_name = category.name;
-        this.storage_color = category.color;
-        this.storage_icon_class = category.icon_class || this.default_icon_class;
-        this.iconUrl = category.pictogram_url;
-        this.preset = category.preset;
         this.map = map;
-        this.map.storage_overlays[this.storage_id] = this;
+        this.populate(category);
         if(typeof options == "undefined") {
             options = {};
         }
 
         L.LazyGeoJSON.prototype.initialize.call(this, this._dataGetter, options);
-        if(this.preset) {
-            this.map.addLayer(this);
+        this.connectToMap();
+    },
+
+    populate: function (category) {
+        // Category is nulll when listening creation form
+        this.storage_id = category.pk || null;
+        this.storage_name = category.name || "";
+        this.storage_color = category.color || this.map.options.default_color;
+        this.storage_icon_class = category.icon_class || this.default_icon_class;
+        this.iconUrl = category.pictogram_url || null;
+        this.preset = category.preset || false;
+    },
+
+    connectToMap: function () {
+        if (this.storage_id) {
+            this.map.storage_overlays[this.storage_id] = this;
+            if(this.preset) {
+                this.map.addLayer(this);
+            }
+            this.map.storage_layers_control.addOverlay(this, this.storage_name);
         }
-        this.map.storage_layers_control.addOverlay(this, this.storage_name);
     },
 
     _dataUrl: function() {
@@ -119,5 +131,86 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
 
     getColor: function () {
         return this.storage_color || this.map.options.default_color;
+    },
+
+
+    getDeleteURL: function () {
+        return L.Util.template(this.map.options.urls.category_delete, {'pk': this.storage_id, 'map_id': this.map.options.storage_id});
+
+    },
+
+    confirmDelete: function() {
+        if(!this.map.editEnabled) return;
+        var url = this.getDeleteURL();
+        var self = this;
+        L.Storage.Xhr.get(url, {
+            "callback": function(data){
+                L.Storage.fire('ui:start', {'data': data});
+                self.listenDeleteForm();
+            }
+        });
+    },
+
+    listenDeleteForm: function() {
+        var form = L.DomUtil.get("category_delete");
+        var self = this;
+        var manage_ajax_return = function (data) {
+            if (data.error) {
+                L.Storage.fire('ui:alert', {'content': data.error, 'level': 'error'});
+            }
+            else if (data.info) {
+                self._delete();
+                L.Storage.fire('ui:alert', {'content': data.info, 'level': 'info'});
+                L.Storage.fire('ui:end');
+            }
+        };
+        var submit = function (e) {
+            form.action = self.getDeleteURL();
+            L.Storage.Xhr.submit_form(form, {"callback": function(data) { manage_ajax_return(data);}});
+        };
+        L.DomEvent.on(form, 'submit', submit);
+    },
+
+    _delete: function () {
+        this.map.removeLayer(this);
+        this.map.storage_layers_control.removeLayer(this);
+    },
+
+    _handleEditResponse: function(data) {
+        var map = this.map,
+            form_id = "category_edit",
+            self = this;
+        L.Storage.fire('ui:start', {'data': data});
+        L.Storage.Xhr.listen_form(form_id, {
+            'callback': function (data) {
+                if (data.category) {
+                    /* Means success */
+                    if (self.storage_id) {
+                        // TODO update instead of removing/recreating
+                        map.removeLayer(self);
+                        map.storage_layers_control.removeLayer(self);
+                    }
+                    self.populate(data.category);
+                    // force preset not to get the layer hidden while
+                    // working on it
+                    self.preset = true;
+                    self.connectToMap();
+                    L.Storage.fire('ui:alert', {'content':"Category successfuly edited", 'level': 'info'});
+                    L.Storage.fire('ui:end');
+                }
+                else {
+                    // Let's start again
+                    self._handleEditResponse(data);
+                }
+            }
+        });
+        var delete_link = L.DomUtil.get("delete_category_button");
+        if (delete_link) {
+            L.DomEvent
+                .on(delete_link, 'click', L.DomEvent.stopPropagation)
+                .on(delete_link, 'click', L.DomEvent.preventDefault)
+                .on(delete_link, 'click', this.confirmDelete, this);
+        }
     }
+
 });
