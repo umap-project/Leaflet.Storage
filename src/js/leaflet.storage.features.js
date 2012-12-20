@@ -29,7 +29,8 @@ L.Storage.FeatureMixin = {
         var self = this;
         L.Storage.Xhr.get(url, {
             "callback": function(data){
-                self._firePopup(data.html);
+                self.bringToCenter();
+                L.Storage.fire('ui:start', {'data': data});
                 self.listenEditForm();
             }
         });
@@ -41,7 +42,7 @@ L.Storage.FeatureMixin = {
         var self = this;
         L.Storage.Xhr.get(url, {
             "callback": function(data){
-                self._firePopup(data.html);
+                L.Storage.fire('ui:start', {'data': data});
                 self.listenDeleteForm();
             }
         });
@@ -81,7 +82,7 @@ L.Storage.FeatureMixin = {
         var manage_ajax_return = function (data) {
             if(data.html) {
                 // We have HTML, put it in the popup
-                self._popup.setContent(data.html);
+                L.Storage.fire('ui:start', {'data': data});
                 self.listenEditForm();
             }
             else {
@@ -106,7 +107,7 @@ L.Storage.FeatureMixin = {
                     }
 
                 }
-                self.closePopup();
+                L.Storage.fire('ui:end');
                 L.Storage.fire("ui:alert", {"content": "Feature updated with success!", "level": "info"});
             }
         };
@@ -183,6 +184,11 @@ L.Storage.FeatureMixin = {
             color = this.map.options.default_color;
         }
         return color;
+    },
+
+    bringToCenter: function () {
+        var latlng = this.getCenter();
+        this.map.panTo(latlng);
     }
 };
 
@@ -288,6 +294,10 @@ L.Storage.Marker = L.Marker.extend({
             url = this.storage_overlay[name + 'Url'];
         }
         return url;
+    },
+
+    getCenter: function () {
+        return this._latlng;
     }
 });
 
@@ -340,7 +350,12 @@ L.Storage.PathMixin = {
 
     resetColor: function () {
         this._updateStyle();
+    },
+
+    getCenter: function () {
+        return this._latlng || this._latlngs[Math.floor(this._latlngs.length / 2)];
     }
+
 };
 
 
