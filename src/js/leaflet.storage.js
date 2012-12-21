@@ -47,6 +47,11 @@ L.Storage.Map = L.Map.extend({
                 }
             });
             this.addLayer(drawnItems);
+            L.Storage.on('ui:end', function (e) {
+                if (this.edited_feature) {
+                    this.edited_feature.endEdit();
+                }
+            }, this);
         }
 
 

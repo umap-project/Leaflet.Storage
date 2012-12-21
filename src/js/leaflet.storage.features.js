@@ -25,6 +25,7 @@ L.Storage.FeatureMixin = {
 
     edit: function() {
         if(!this.map.editEnabled) return;
+        this.map.edited_feature = this;
         var url = this.getEditURL();
         var self = this;
         L.Storage.Xhr.get(url, {
@@ -34,6 +35,12 @@ L.Storage.FeatureMixin = {
                 self.listenEditForm();
             }
         });
+    },
+
+    endEdit: function () {
+        if (!this.storage_id) {
+            this._delete();
+        }
     },
 
     confirmDelete: function() {
@@ -89,26 +96,7 @@ L.Storage.FeatureMixin = {
                 // Guess its a geojson here
                 // Update object, if it's new
                 var feature = data.features[0];
-                if (!self.storage_id) {
-                    self.storage_id = feature.id;
-                }
-                var newColor = feature.properties.color;
-                var oldColor = self.storage_color;
-                self.storage_color = newColor;
-                var newOverlay = self.map.storage_overlays[feature.properties.category_id];
-                if(self.storage_overlay !== newOverlay) {
-                    self.changeOverlay(newOverlay);
-                } else {
-                    // Needed only if overlay hasn't changed because
-                    // changeOverlay method already make the style to be
-                    // updated
-                    if (oldColor != newColor) {
-                        self.resetColor();
-                    }
-
-                }
-                // Force refetch of the popup content
-                self._popup = null;
+                self.updateFromServer(feature);
                 L.Storage.fire('ui:end');
                 L.Storage.fire("ui:alert", {"content": "Feature updated with success!", "level": "info"});
             }
@@ -151,6 +139,29 @@ L.Storage.FeatureMixin = {
             L.Storage.Xhr.submit_form(form, {"callback": function(data) { manage_ajax_return(data);}});
         };
         L.DomEvent.on(form, 'submit', submit);
+    },
+
+    updateFromServer: function (feature) {
+        if (!this.storage_id) {
+            this.storage_id = feature.id;
+        }
+        var newColor = feature.properties.color;
+        var oldColor = this.storage_color;
+        this.storage_color = newColor;
+        var newOverlay = this.map.storage_overlays[feature.properties.category_id];
+        if(this.storage_overlay !== newOverlay) {
+            this.changeOverlay(newOverlay);
+        } else {
+            // Needed only if overlay hasn't changed because
+            // changeOverlay method already make the style to be
+            // updated
+            if (oldColor != newColor) {
+                this.resetColor();
+            }
+
+        }
+        // Force refetch of the popup content
+        this._popup = null;
     },
 
     changeOverlay: function(layer) {
@@ -329,10 +340,11 @@ L.Storage.PathMixin = {
         if(this.map.editEnabled) {
             if(this.editing._enabled) {
                 this.editing.disable();
-                this.edit();
+                L.Storage.fire('ui:end');
             }
             else {
                 this.editing.enable();
+                this.edit();
             }
         }
         // FIXME: disable when disabling global edit
@@ -364,6 +376,11 @@ L.Storage.PathMixin = {
 
     getCenter: function () {
         return this._latlng || this._latlngs[Math.floor(this._latlngs.length / 2)];
+    },
+
+    endEdit: function () {
+        this.editing.disable();
+        L.Storage.FeatureMixin.endEdit.call(this);
     }
 
 };
