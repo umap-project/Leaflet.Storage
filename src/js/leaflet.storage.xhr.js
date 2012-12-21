@@ -124,6 +124,10 @@ L.Storage.Xhr = {
                 L.Storage.Xhr.listen_link(options.listen_link.id, listen_options);
             }
         }
+        else if (options.success) {
+            // Success is called only if data contain no msg and no html
+            options.success(data);
+        }
     },
 
     login: function (data, args) {

@@ -53,12 +53,6 @@ L.Storage.Map = L.Map.extend({
             this.addLayer(drawnItems);
         }
 
-        this.tilelayers = {};
-        for(var i in this.options.tilelayers) {
-            if(this.options.tilelayers.hasOwnProperty(i)) {
-                this.addTileLayer(this.options.tilelayers[i]);
-            }
-        }
 
         if (this.options.hash) {
             // Hash management (for permalink)
@@ -71,10 +65,8 @@ L.Storage.Map = L.Map.extend({
         // It will be populated while creating the overlays
         // Control is added as an initHook, to keep the order
         // with other controls
-        this.storage_layers_control = new L.Storage.ControlLayers(
-            this.options.tilelayers.length > 1? this.tilelayers: {}
-        );
-        // this.storage_layers_control is created in Map initialize
+        this.storage_layers_control = new L.Storage.ControlLayers();
+        this.populateTileLayers(this.options.tilelayers);
         if (this.options.layersControl) {
             this.addControl(this.storage_layers_control);
         }
@@ -90,6 +82,25 @@ L.Storage.Map = L.Map.extend({
         }
     },
 
+    populateTileLayers: function (tilelayers) {
+        this.tilelayers = {};
+        for(var i in tilelayers) {
+            if(tilelayers.hasOwnProperty(i)) {
+                this.addTileLayer(tilelayers[i]);
+            }
+        }
+        this.storage_layers_control._update();
+    },
+
+    resetTileLayers: function () {
+        for(var i in this.tilelayers) {
+            if(this.tilelayers.hasOwnProperty(i)) {
+                this.removeLayer(this.tilelayers[i]);
+                this.storage_layers_control.removeLayer(this.tilelayers[i]);
+            }
+        }
+    },
+
     addTileLayer: function (options) {
         var tilelayer = new L.TileLayer(
             options.tilelayer.url_template,
@@ -99,11 +110,12 @@ L.Storage.Map = L.Map.extend({
                 maxZoom: options.tilelayer.maxZoom
             }
         );
-        // Add only the firs to the map, to make it visible,
+        // Add only the first to the map, to make it visible,
         // and the other only when user click on them
         if(options.rank == 1) {
             this.addLayer(tilelayer);
         }
+        this.storage_layers_control._addLayer(tilelayer, options.tilelayer.name);
         this.tilelayers[options.tilelayer.name] = tilelayer;
     },
 
@@ -157,12 +169,23 @@ L.Storage.Map = L.Map.extend({
     },
 
     updateTileLayers: function () {
-        var url = L.Util.template(this.options.urls.map_update_tilelayers, {'map_id': this.options.storage_id});
+        var url = L.Util.template(this.options.urls.map_update_tilelayers, {'map_id': this.options.storage_id}),
+            self = this;
         L.Storage.Xhr.get(url, {
-            'callback': function (data) {
-                // Fire event from here, to pass a custom cssClass
-                L.Storage.fire("ui:start", {'data': data, "cssClass": "update-tilelayers"});
-                L.Storage.Xhr.listen_form("map_edit");
+            "listen_form": {
+                'id': 'map_edit',
+                'options': {
+                    'success': function (data) {
+                        if (data.tilelayers) {
+                            self.resetTileLayers();
+                            self.populateTileLayers(data.tilelayers);
+                            L.Storage.fire('ui:end');
+                        }
+                        else {
+                            L.Storage.fire('ui:alert', {'content': 'Invalid response', 'level': 'error'});
+                        }
+                    }
+                }
             }
         });
     },

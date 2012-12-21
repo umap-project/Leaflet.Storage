@@ -4,7 +4,8 @@ casper.then(function () {
     category_edit_path = '/map/42/category/edit/62/';
     this.toggleEditButton();
     this.test.assertExists('a#edit_overlay_62', 'Edit overlay button exists');
-    this.test.assertExists('input.leaflet-control-layers-selector', 'Display overlay checkbox exists');
+    this.test.assertExists('input.leaflet-control-layers-selector[type="checkbox"]', 'Display overlay checkbox exists');
+    this.test.assertElementsCount('input.leaflet-control-layers-selector[type="checkbox"]', 1);
     this.mouseEvent('mouseover', 'div.leaflet-control-layers');
     this.test.assertVisible('a#edit_overlay_62', 'Edit overlay button is visibile when edit enabled');
     this.server.watchPath(category_edit_path, 'map_category_update_GET');
@@ -42,7 +43,7 @@ casper.thenClick('a#delete_category_button', function () {
 });
 
 casper.thenClick('form#category_delete input[type="submit"]', function () {
-    this.test.assertNotExists('input.leaflet-control-layers-selector', 'Display overlay checkbox does not exist after category has been deleted');
+    this.test.assertNotExists('input.leaflet-control-layers-selector[type="checkbox"]', 'Display overlay checkbox does not exist after category has been deleted');
     this.test.assertNotExists('div.icon_container', 'icon container is not found after category has been deleted');
 });
 
