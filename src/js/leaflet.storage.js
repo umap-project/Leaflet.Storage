@@ -180,6 +180,7 @@ L.Storage.Map = L.Map.extend({
                             self.resetTileLayers();
                             self.populateTileLayers(data.tilelayers);
                             L.Storage.fire('ui:end');
+                            L.Storage.fire('ui:alert', {'content': 'Successfully updated tilelayers', 'level': 'info'});
                         }
                         else {
                             L.Storage.fire('ui:alert', {'content': 'Invalid response', 'level': 'error'});
