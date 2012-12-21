@@ -41,10 +41,6 @@ L.Storage.Map = L.Map.extend({
                 // remove source if it has not been created (no storage_id)
                 var layer = e.popup._source;
                 var id = L.Util.stamp(layer);
-                // Prevent from caching popup in edit mode
-                if(this.editEnabled) {
-                    layer._popup = null;
-                }
                 if(drawnItems._layers.hasOwnProperty(id)
                     && !layer.storage_id) {
                     drawnItems.removeLayer(layer);

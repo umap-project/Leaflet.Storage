@@ -107,6 +107,8 @@ L.Storage.FeatureMixin = {
                     }
 
                 }
+                // Force refetch of the popup content
+                self._popup = null;
                 L.Storage.fire('ui:end');
                 L.Storage.fire("ui:alert", {"content": "Feature updated with success!", "level": "info"});
             }
@@ -298,7 +300,15 @@ L.Storage.Marker = L.Marker.extend({
 
     getCenter: function () {
         return this._latlng;
+    },
+
+    openPopup: function () {
+        if (this.map.editEnabled) {
+            return;
+        }
+        L.Marker.prototype.openPopup.call(this);
     }
+
 });
 
 
