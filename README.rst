@@ -14,7 +14,7 @@ Leaflet.Storage is backend agnostic: it only knows about a convention API.
 
 Known backends:
 
-- `django-chickpea <https://github.com/yohanboniface/django-chickpea>`_
+- `django-leaflet-storage <https://github.com/yohanboniface/django-leaflet-storage>`_
 
 More about backend API: https://github.com/yohanboniface/Leaflet.Storage/wiki/Backend
 
