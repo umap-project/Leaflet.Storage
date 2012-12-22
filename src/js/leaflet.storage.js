@@ -9,7 +9,10 @@ L.Map.mergeOptions({
     default_color: "DarkBlue",
     attributionControl: false,
     storageAttributionControl: true,
-    allowEdit: true
+    allowEdit: true,
+    homeControl: true,
+    zoomControl: false,  // Not to activate initHook, which make zoom comes before homeControl
+    storageZoomControl: true
 });
 
 L.Storage.Map = L.Map.extend({
@@ -21,6 +24,13 @@ L.Storage.Map = L.Map.extend({
             delete options.center;
         }
         L.Map.prototype.initialize.call(this, el, options);
+        if (this.options.storageZoomControl) {
+            // Calling parent has called the initHook, we can now add the
+            // zoom control
+            this.zoomControl = new L.Control.Zoom();
+            this.addControl(this.zoomControl);
+        }
+
         // User must provide a pk
         if (typeof this.options.storage_id == "undefined") {
             alert("ImplementationError: you must provide a storage_id for Storage.Map.");

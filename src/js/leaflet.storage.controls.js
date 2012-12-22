@@ -280,3 +280,26 @@ L.Map.addInitHook(function () {
         this.attributionControl = (new L.Storage.AttributionControl()).addTo(this);
     }
 });
+
+L.Storage.HomeControl = L.Control.extend({
+
+    options: {
+        position: 'topleft'
+    },
+
+    onAdd: function (map) {
+        var className = 'leaflet-control-home',
+            container = L.DomUtil.create('div', className);
+
+        var link = L.DomUtil.create('a', "", container);
+        link.href = '/';
+        link.title = "Go to home page";
+
+        return container;
+    }
+});
+L.Map.addInitHook(function () {
+    if (this.options.homeControl) {
+        this.homeControl = (new L.Storage.HomeControl()).addTo(this);
+    }
+});

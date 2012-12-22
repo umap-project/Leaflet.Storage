@@ -16,10 +16,13 @@
 /* Controls    */
 /* *********** */
 
-.leaflet-control-draw, .leaflet-control-embed, .leaflet-control-infos {
+.leaflet-control-draw, .leaflet-control-embed,
+.leaflet-control-infos, .leaflet-control-home,
+.leaflet-control-layers {
     background: none repeat scroll 0 0 #F8F8F9;
-    border-radius: 8px 8px 8px 8px;
-    box-shadow: 0 1px 7px #999999;
+    border: 1px solid #888888;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
 }
 .leaflet-control-draw a {
     height: 36px;
@@ -42,6 +45,14 @@
     background-repeat: no-repeat;
     height: 46px;
     width: 46px;
+    display: block;
+}
+.leaflet-control-home a {
+    background-image: url("../img/home.png");
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    height: 36px;
+    width: 36px;
     display: block;
 }
 a.update-map-extent {
@@ -221,6 +232,9 @@ a.edit-overlay {
     height: 36px;
     width: 36px;
     line-height: 36px;
+}
+.leaflet-container .leaflet-control-zoom {
+    margin-left: 10px;
 }
 
 /* ****** */
