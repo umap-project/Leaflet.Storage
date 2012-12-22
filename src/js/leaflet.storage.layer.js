@@ -172,8 +172,14 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
     },
 
     _delete: function () {
-        this.map.removeLayer(this);
-        this.map.storage_layers_control.removeLayer(this);
+        this.reset();
+    },
+
+    reset: function () {
+        map.removeLayer(this);
+        map.storage_layers_control.removeLayer(this);
+        this._geojson = null;
+        this._layers = {};
     },
 
     _handleEditResponse: function(data) {
@@ -187,8 +193,7 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
                     /* Means success */
                     if (self.storage_id) {
                         // TODO update instead of removing/recreating
-                        map.removeLayer(self);
-                        map.storage_layers_control.removeLayer(self);
+                        self.reset();
                     }
                     self.populate(data.category);
                     // force preset not to get the layer hidden while

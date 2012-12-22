@@ -1,17 +1,23 @@
 casper.start('http://localhost:1337');
 
+var category_edit_path = '/map/42/category/edit/62/';
+
+casper.getEditForm = function (id) {
+    this.mouseEvent('mouseover', 'div.leaflet-control-layers');
+    this.test.assertVisible('a#edit_overlay_' + id, 'Edit overlay button is visibile when edit enabled');
+    this.click('a#edit_overlay_' + id);
+};
+
 casper.then(function () {
-    category_edit_path = '/map/42/category/edit/62/';
     this.toggleEditButton();
     this.test.assertExists('a#edit_overlay_62', 'Edit overlay button exists');
     this.test.assertExists('input.leaflet-control-layers-selector[type="checkbox"]', 'Display overlay checkbox exists');
     this.test.assertElementsCount('input.leaflet-control-layers-selector[type="checkbox"]', 1);
-    this.mouseEvent('mouseover', 'div.leaflet-control-layers');
-    this.test.assertVisible('a#edit_overlay_62', 'Edit overlay button is visibile when edit enabled');
     this.server.watchPath(category_edit_path, 'map_category_update_GET');
+    this.getEditForm(62);
 });
 
-casper.thenClick('a#edit_overlay_62', function(){
+casper.then(function(){
     this.test.assertExists('form#category_edit');
     this.test.assertExists('form#category_edit input[type="submit"]');
     new_name = "Name 1234 Tadam";
@@ -25,9 +31,41 @@ casper.thenClick('form#category_edit input[type="submit"]', function () {
     this.test.assertEqual(request.method, 'POST', 'Category update infos form submit a POST');
     this.test.assertEqual(request.post.name, new_name, 'Category new name has been submited');
     this.server.unwatchRequest(category_edit_path);
+    this.server.unwatchPath(category_edit_path);
+});
+
+/* ******************* */
+/*  Icon class change  */
+/* ******************* */
+casper.then(function () {
+    this.test.assertExists('div.storage-div-icon', "Current marker has Default icon class");
+    // Get edit form again
     this.server.watchPath(category_edit_path, 'map_category_update_GET');
-    this.mouseEvent('mouseover', 'div.leaflet-control-layers');
-    this.test.assertVisible('a#edit_overlay_62', 'Edit overlay button is visibile when edit enabled');
+    this.getEditForm(62);
+});
+
+casper.then(function () {
+    // Return a new icon class: Circle
+    this.server.watchPath(category_edit_path, {data: '{"category": {"icon_class": "Circle","name": "Elephants","color": "Pink","preset": true,"pk": 62,"pictogram_url": null}}'});
+});
+
+casper.thenClick('form#category_edit input[type="submit"]', function () {
+    this.test.assertNotExists('div.storage-div-icon', "Current marker has not Default icon class");
+    this.test.assertExists('div.storage-circle-icon', "Current marker has Circle icon class");
+});
+
+// casper.then(function () {
+// });
+
+
+/* ******************* */
+/*        Delete       */
+/* ******************* */
+
+casper.then(function () {
+    // Get edit form again
+    this.server.watchPath(category_edit_path, 'map_category_update_GET');
+    this.getEditForm(62);
 });
 
 casper.thenClick('a#edit_overlay_62', function () {

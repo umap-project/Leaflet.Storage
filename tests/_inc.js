@@ -63,12 +63,14 @@ casper.startServer = function(port) {
             content = fs.read('./tests/index.html');
         }
         else if (typeof self.server.watchedPaths[request.url] !== "undefined") {
+            self.log("Build response from watched path " + request.url, "debug");
             var what = self.server.watchedPaths[request.url];
             // what can be a function, an object with response properties or a filepath (string)
             if (typeof what == "function") {
                 content = what(request.url);
             }
             else if (typeof what == "string") {
+                self.log("Build response from file " + what, "debug");
                 content = fs.read('./tests/responses/' + what + '.json');
             }
             else {
@@ -89,6 +91,7 @@ casper.startServer = function(port) {
             path = path.replace(/\//g, '_'); // replace / by _
             path = './tests/responses/' + path + '.json';
             if (fs.exists(path)) {
+                self.log("Build response from file " + path, "debug");
                 content = fs.read(path);
             }
             else {
