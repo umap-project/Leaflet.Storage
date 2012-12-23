@@ -132,6 +132,7 @@ L.Storage.FeatureMixin = {
             else if (data.info) {
                 self._delete();
                 L.Storage.fire('ui:alert', {'content': data.info, 'level': 'info'});
+                L.Storage.fire('ui:end');
             }
         };
         var submit = function (e) {
