@@ -28,7 +28,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
         var self = this;
         var link = L.DomUtil.create('a', "leaflet-control-edit-toggle", container);
         link.href = '#';
-        link.title = "Enable/disable editing";
+        link.title = L.S._("Enable/disable editing");
 
         var fn = function (e) {
             if(map.editEnabled) {
@@ -46,7 +46,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
 
     _createUpdateMapExtentButton: function(map, container) {
         this._createButton(
-            'Save this center and zoom',
+            L.S._('Save this center and zoom'),
             'update-map-extent',
             container,
             function(e) { map.updateExtent();},
@@ -56,7 +56,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
 
     _createUpdateMapTileLayersButton: function(map, container) {
         this._createButton(
-            'Change tilelayers',
+            L.S._('Change tilelayers'),
             'update-map-tilelayers',
             container,
             function(e) { map.updateTileLayers();},
@@ -66,7 +66,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
 
     _createUpdateMapPermissionsButton: function(map, container) {
         this._createButton(
-            'Update permissions and editors',
+            L.S._('Update permissions and editors'),
             'update-map-permissions',
             container,
             function(e) { map.updatePermissions();},
@@ -76,7 +76,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
 
     _createUpdateMapInfosButton: function(map, container) {
         this._createButton(
-            'Edit map infos',
+            L.S._('Edit map infos'),
             'update-map-infos',
             container,
             function(e) { map.updateInfos();},
@@ -86,7 +86,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
 
     _createUploadButton: function(map, container) {
         this._createButton(
-            'Upload data',
+            L.S._('Upload data'),
             'upload-data',
             container,
             function() { map.uploadData(); },
@@ -167,7 +167,7 @@ L.Control.Embed = L.Control.extend({
 
         var link = L.DomUtil.create('a', "", container);
         link.href = '#';
-        link.title = "Embed this map";
+        link.title = L.S._("Embed this map");
         var fn = function (e) {
             var url = L.Util.template(this.options.urls.map_embed, {'map_id': map.options.storage_id});
             L.Storage.Xhr.get(url);
@@ -208,7 +208,7 @@ L.Storage.ControlLayers = L.Control.Layers.extend({
 
         if (obj.overlay) {
             var link = L.DomUtil.create('a', "edit-overlay", label);
-            link.innerHTML = link.title = 'Edit';
+            link.innerHTML = link.title = L.S._('Edit');
             link.href = '#';
             link.id = 'edit_overlay_' + obj.layer.storage_id;
             var fn = function (e) {
@@ -227,7 +227,7 @@ L.Storage.ControlLayers = L.Control.Layers.extend({
 
     _createNewOverlayButton: function (map, container) {
         var link = L.DomUtil.create('a', "edit-overlay add-overlay", container);
-        link.innerHTML = link.title = 'Add a category';
+        link.innerHTML = link.title = L.S._('Add a category');
         link.href = '#';
         var self = this;
         var fn = function (e) {
@@ -259,7 +259,7 @@ L.Storage.AttributionControl = L.Control.extend({
 
         var link = L.DomUtil.create('a', "", container);
         link.href = '#';
-        link.title = "Caption and credits";
+        link.title = L.S._("Caption and credits");
         var fn = function (e) {
             var url = L.Util.template(this.options.urls.map_infos, {'map_id': map.options.storage_id});
             L.Storage.Xhr.get(url);
@@ -293,7 +293,7 @@ L.Storage.HomeControl = L.Control.extend({
 
         var link = L.DomUtil.create('a', "", container);
         link.href = '/';
-        link.title = "Go to home page";
+        link.title = L.S._("Go to home page");
 
         return container;
     }

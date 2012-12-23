@@ -98,7 +98,7 @@ L.Storage.FeatureMixin = {
                 var feature = data.features[0];
                 self.updateFromServer(feature);
                 L.Storage.fire('ui:end');
-                L.Storage.fire("ui:alert", {"content": "Feature updated with success!", "level": "info"});
+                L.Storage.fire("ui:alert", {"content": L.S._("Feature updated with success!"), "level": "info"});
             }
         };
         var submit = function (e) {
