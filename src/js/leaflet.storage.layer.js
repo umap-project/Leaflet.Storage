@@ -19,13 +19,13 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
         this.storage_color = category.color || this.map.options.default_color;
         this.storage_icon_class = category.icon_class || this.default_icon_class;
         this.iconUrl = category.pictogram_url || null;
-        this.preset = category.preset || false;
+        this.display_on_load = category.display_on_load || false;
     },
 
     connectToMap: function () {
         if (this.storage_id) {
             this.map.storage_overlays[this.storage_id] = this;
-            if(this.preset) {
+            if(this.display_on_load) {
                 this.map.addLayer(this);
             }
             this.map.storage_layers_control.addOverlay(this, this.storage_name);
@@ -196,9 +196,9 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
                         self.reset();
                     }
                     self.populate(data.category);
-                    // force preset not to get the layer hidden while
+                    // force display_on_load not to get the layer hidden while
                     // working on it
-                    self.preset = true;
+                    self.display_on_load = true;
                     self.connectToMap();
                     L.Storage.fire('ui:alert', {'content': L.S._("Category successfuly edited"), 'level': 'info'});
                     L.Storage.fire('ui:end');

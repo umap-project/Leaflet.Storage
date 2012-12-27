@@ -46,7 +46,7 @@ casper.then(function () {
 
 casper.then(function () {
     // Return a new icon class: Circle
-    this.server.watchPath(category_edit_path, {data: '{"category": {"icon_class": "Circle","name": "Elephants","color": "Pink","preset": true,"pk": 62,"pictogram_url": null}}'});
+    this.server.watchPath(category_edit_path, {data: '{"category": {"icon_class": "Circle","name": "Elephants","color": "Pink","display_on_load": true,"pk": 62,"pictogram_url": null}}'});
 });
 
 casper.thenClick('form#category_edit input[type="submit"]', function () {
