@@ -95,8 +95,7 @@ L.Storage.FeatureMixin = {
             else {
                 // Guess its a geojson here
                 // Update object, if it's new
-                var feature = data.features[0];
-                self.updateFromServer(feature);
+                self.updateFromServer(data);
                 L.Storage.fire('ui:end');
                 L.Storage.fire("ui:alert", {"content": L.S._("Feature updated with success!"), "level": "info"});
             }
