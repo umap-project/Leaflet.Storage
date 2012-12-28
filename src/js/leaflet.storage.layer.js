@@ -145,7 +145,7 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
         var self = this;
         L.Storage.Xhr.get(url, {
             "callback": function(data){
-                L.Storage.fire('ui:start', {'data': data});
+                L.Storage.fire('ui:start', {'data': data, 'cssClass': 'warning'});
                 self.listenDeleteForm();
             }
         });

@@ -111,7 +111,11 @@ L.Storage.Xhr = {
             L.Storage.fire("ui:alert", {"content": data.error, "level": "error"});
         }
         else if (data.html) {
-            L.Storage.fire('ui:start', {'data': data});
+            var ui_options = {'data': data};
+            if (options.cssClass) {
+                ui_options['cssClass'] = options.cssClass;
+            }
+            L.Storage.fire('ui:start', ui_options);
             // To low boilerplate, if there is a form, listen it
             if (options.listen_form) {
                 // Listen form again

@@ -9,11 +9,17 @@
 L.Storage.on('ui:start', function (e) {
     var div = L.DomUtil.get('storage-ui-container');
     var body = document.getElementsByTagName('body')[0];
+    // We reset all because we can't know which class has been added
+    // by previous ui processes...
+    div.className = "";
     div.innerHTML = "";
     div.innerHTML = e.data.html;
     L.DomUtil.addClass(body, 'storage-ui');
     var close_link = L.DomUtil.create('a', 'storage-close-link', div);
     close_link.innerHTML = "&times;";
+    if (e.cssClass) {
+        L.DomUtil.addClass(div, e.cssClass);
+    }
     var close = function (e) {
         L.Storage.fire('ui:end');
     };

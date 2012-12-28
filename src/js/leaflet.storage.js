@@ -209,7 +209,8 @@ L.Storage.Map = L.Map.extend({
             'listen_link': {
                 'id': 'delete_map_button',  // 2. delete link
                 'options': {
-                    'listen_form': {'id': 'map_delete'}  // 3. confirm delete form
+                    'listen_form': {'id': 'map_delete'},  // 3. confirm delete form
+                    'cssClass': 'warning'
                 }
             }
         });

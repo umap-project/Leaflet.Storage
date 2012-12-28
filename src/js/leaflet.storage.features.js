@@ -49,7 +49,7 @@ L.Storage.FeatureMixin = {
         var self = this;
         L.Storage.Xhr.get(url, {
             "callback": function(data){
-                L.Storage.fire('ui:start', {'data': data});
+                L.Storage.fire('ui:start', {'data': data, cssClass: 'warning'});
                 self.listenDeleteForm();
             }
         });
