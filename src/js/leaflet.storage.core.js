@@ -5,6 +5,22 @@ L.StorageSingleton = L.Class.extend({
 });
 L.Storage = new L.StorageSingleton();
 L.S = L.Storage;
+
+/*
+* Global events
+*/
+L.S._onKeyDown = function (e) {
+    var key = e.keyCode,
+        ESC = 27;
+    if (key == ESC) {
+        L.S.fire('ui:end');
+    }
+};
+L.DomEvent.addListener(document, 'keydown', L.S._onKeyDown, L.S);
+
+/*
+* i18n
+*/
 L.S.locales = {};
 L.S.locale = null;
 L.S.registerLocale = function registerLocale(code, locale) {
