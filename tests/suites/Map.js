@@ -1,4 +1,4 @@
-casper.start('http://localhost:1337');
+casper.start('http://localhost:8007');
 
 casper.then(function() {
     // Check page state on load
@@ -21,7 +21,7 @@ casper.then(function () {
     // Edit map infos
     this.toggleEditButton();
     this.test.assertVisible('a.update-map-infos', 'update map infos button is visibile when edit enabled');
-    this.server.watchPath('/map/42/update/metadata/', 'map_update_metadata_GET');
+    this.server.watchPath('/map/42/update/metadata/', {filePath: 'map_update_metadata_GET'});
 });
 
 casper.thenClick('a.update-map-infos', function () {
@@ -32,7 +32,7 @@ casper.thenClick('a.update-map-infos', function () {
 casper.then(function () {
     path = '/map/42/update/metadata/';
     this.server.watchRequest(path);
-    this.server.watchPath(path, {data: '{"redirect": "/"}'});
+    this.server.watchPath(path, {content: '{"redirect": "/"}'});
     new_name = 'A new new name';
     this.fill('form#map_edit', {name: new_name});
 });
@@ -44,7 +44,7 @@ casper.thenClick('form[id="map_edit"] input[type="submit"]', function () {
     this.test.assertEqual(request.post.name, new_name, 'Map new name has been submited');
     this.server.unwatchPath(path);
     this.server.unwatchRequest(path);
-    this.server.watchPath('/map/42/update/metadata/', 'map_update_metadata_GET');
+    this.server.watchPath('/map/42/update/metadata/', {filePath: 'map_update_metadata_GET'});
 });
 
 casper.thenClick('a.update-map-infos', function () {
@@ -52,14 +52,14 @@ casper.thenClick('a.update-map-infos', function () {
     this.test.assertExists('form[id="map_edit"]');
     this.test.assertExists('a#delete_map_button');
     delete_path = "/map/42/delete/";
-    this.server.watchPath(delete_path, 'map_delete_GET');
+    this.server.watchPath(delete_path, {filePath: 'map_delete_GET'});
 });
 
 casper.thenClick('a#delete_map_button', function () {
     // Click on delete link and assert form has been populated
     this.test.assertExists('form#map_delete');
     this.test.assertExists('form#map_delete input[type="submit"]');
-    this.server.watchPath(delete_path, {data: '{"redirect": "/?redirected"}'});
+    this.server.watchPath(delete_path, {content: '{"redirect": "/?redirected"}'});
 });
 
 casper.thenClick('form#map_delete input[type="submit"]', function () {

@@ -1,4 +1,4 @@
-casper.start('http://localhost:1337');
+casper.start('http://localhost:8007/');
 
 casper.assertI18n = function (string, data, expected, message) {
     var translated = this.evaluate(function (string, data) {

@@ -1,2 +1,2 @@
-casper.startServer(1337);
+casper.server.start();
 casper.test.done();

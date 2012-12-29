@@ -7,3 +7,6 @@
 [submodule "reqs/leaflet"]
 	path = reqs/leaflet
 	url = git://github.com/CloudMade/Leaflet.git
+[submodule "tests/casperserver"]
+	path = tests/casperserver
+	url = git://github.com/yohanboniface/casperserver.git
