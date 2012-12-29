@@ -18,7 +18,8 @@ L.Storage.FeatureMixin = {
         var self = this;
         L.Storage.Xhr.get(url, {
             "callback": function(data){
-                self._firePopup(data.html);
+                self.bindPopup(data.html);
+                self.openPopup(e.latlng);
             }
         });
     },
@@ -62,11 +63,6 @@ L.Storage.FeatureMixin = {
             this.disconnectFromOverlay(this.storage_overlay);
         }
         this.map.removeLayer(this);
-    },
-
-    _firePopup: function(content) {
-        this.bindPopup(content);
-        this.openPopup();
     },
 
     connectToOverlay: function (overlay) {
