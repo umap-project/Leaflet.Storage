@@ -1,7 +1,7 @@
 // Paths must be relative to the Makefile dir (Leaflet.Storage root).
 require('./tests/casperserver/casperserver.js').create(casper, {
     port: 8007,
-    fsPath: './tests/responses/'
+    responsesDir: './tests/responses/'
 });
 
 casper.server.watchPath('^(/src/|/reqs/|/contrib/)', {
