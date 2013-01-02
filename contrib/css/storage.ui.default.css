@@ -49,6 +49,28 @@
 }
 
 /* *********** */
+/*   Tooltip   */
+/* *********** */
+#storage-tooltip-container {
+    height: 20px;
+    line-height: 20px;
+    padding: 0 5px;
+    width: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-shadow: 0 1px 7px #999999;
+    display: none;
+    background-color: #fff;
+    color: #000;
+    font-size: 0.9em;
+}
+.storage-tooltip #storage-tooltip-container {
+    display: block;
+}
+
+
+/* *********** */
 /* Close link  */
 /* *********** */
 .storage-close-link {

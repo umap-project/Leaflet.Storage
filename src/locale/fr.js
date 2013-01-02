@@ -21,6 +21,7 @@ fr = {
     // Xhr.js
     "Problem in the response format": "Problème dans le format de la réponse",
     "Action not allowed :(": "Action non autorisée :(",
-    "Problem in the response": "Problème dans la réponse du serveur"
+    "Problem in the response": "Problème dans la réponse du serveur",
+    "Double-click to edit": "Double-cliquer pour éditer"
 };
 L.S.registerLocale("fr", fr);

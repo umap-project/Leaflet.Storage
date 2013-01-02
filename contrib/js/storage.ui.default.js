@@ -59,3 +59,23 @@ L.Storage.on('ui:alert', function (e) {
         .on(close_link, 'click', close);
     window.setTimeout(close, 3000);
 });
+
+/*
+* Tooltips
+*/
+L.Storage.on('ui:tooltip', function (e) {
+    var div = L.DomUtil.get('storage-tooltip-container');
+    var body = document.getElementsByTagName('body')[0];
+    div.innerHTML = "";
+    div.innerHTML = e.content;
+    L.DomUtil.addClass(body, 'storage-tooltip');
+    if (e.point) {
+        e.point.y = e.point.y - div.offsetHeight;
+        L.DomUtil.setPosition(div, e.point);
+    }
+    var close = function (e) {
+        div.innerHTML = "";
+        L.DomUtil.removeClass(body, 'storage-tooltip');
+    };
+    window.setTimeout(close, 1000);
+});

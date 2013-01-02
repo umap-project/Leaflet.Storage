@@ -377,6 +377,16 @@ L.Storage.PathMixin = {
     endEdit: function () {
         this.editing.disable();
         L.Storage.FeatureMixin.endEdit.call(this);
+    },
+
+    _onMouseOver: function (e) {
+        if (this.map.editEnabled && !this.editing._enabled) {
+            var event = {
+                content: L.S._("Double-click to edit"),
+                point: L.DomEvent.getMousePosition(e.originalEvent)
+            };
+            L.Storage.fire('ui:tooltip', event);
+        }
     }
 
 };
@@ -409,6 +419,7 @@ L.Storage.Polyline = L.Polyline.extend({
         this.on("dragend", this.edit);
         this.on("click", this._onClick);
         this.on("dblclick", this._toggleEditing);
+        this.on("mouseover", this._onMouseOver);
     },
 
     geometry: function() {
@@ -454,6 +465,7 @@ L.Storage.Polygon = L.Polygon.extend({
         this.on("dragend", this.edit);
         this.on("click", this._onClick);
         this.on("dblclick", this._toggleEditing);
+        this.on("mouseover", this._onMouseOver);
     },
 
     geometry: function() {
