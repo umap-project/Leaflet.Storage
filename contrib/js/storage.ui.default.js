@@ -73,6 +73,10 @@ L.Storage.on('ui:tooltip', function (e) {
         e.point.y = e.point.y - div.offsetHeight;
         L.DomUtil.setPosition(div, e.point);
     }
+    if (e.zIndex) {
+        console.log("zIndex", e.zIndex);
+        div.style.zIndex = e.zIndex;
+    }
     var close = function (e) {
         div.innerHTML = "";
         L.DomUtil.removeClass(body, 'storage-tooltip');

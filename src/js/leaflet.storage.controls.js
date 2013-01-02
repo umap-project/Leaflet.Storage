@@ -98,10 +98,25 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
         L.DomUtil.addClass(map._container, "storage-edit-enabled");
         map.editEnabled = true;
     },
+
     _disableEdit: function(e, map, container) {
         L.DomUtil.removeClass(map._container, "storage-edit-enabled");
         map.editEnabled = false;
         this._disableInactiveModes();
+    },
+
+    _createButton: function (title, className, container, fn, context) {
+        var button = L.Control.Draw.prototype._createButton.call(this, title, className, container, fn, context);
+        button.title = "";  // We don't want our tooltip AND default HTML one
+        L.DomEvent.on(button, 'mouseover', function (e) {
+            console.log(e);
+            var event = {
+                content: L.S._(title),
+                point: L.DomEvent.getMousePosition(e),
+                zIndex: 1001
+            };
+            L.Storage.fire('ui:tooltip', event);
+        });
     }
 });
 
