@@ -109,7 +109,6 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
         var button = L.Control.Draw.prototype._createButton.call(this, title, className, container, fn, context);
         button.title = "";  // We don't want our tooltip AND default HTML one
         L.DomEvent.on(button, 'mouseover', function (e) {
-            console.log(e);
             var event = {
                 content: L.S._(title),
                 point: L.DomEvent.getMousePosition(e),

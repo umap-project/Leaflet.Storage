@@ -74,7 +74,6 @@ L.Storage.on('ui:tooltip', function (e) {
         L.DomUtil.setPosition(div, e.point);
     }
     if (e.zIndex) {
-        console.log("zIndex", e.zIndex);
         div.style.zIndex = e.zIndex;
     }
     var close = function (e) {
