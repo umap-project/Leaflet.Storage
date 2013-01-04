@@ -18,7 +18,7 @@
 
 .leaflet-control-draw, .leaflet-control-embed,
 .leaflet-control-infos, .leaflet-control-home,
-.leaflet-control-layers {
+.leaflet-control-layers, .leaflet-control-locate {
     background: none repeat scroll 0 0 #F8F8F9;
     border: 1px solid #888888;
     border-radius: 5px 5px 5px 5px;
@@ -31,29 +31,32 @@
     margin-top: 0;
     margin-bottom: -4px; /* inline-blocks show spaces */
 }
-.leaflet-control-embed a {
-    background-image: url("../img/embed.png");
+.leaflet-control-embed a,
+.leaflet-control-infos a,
+.leaflet-control-locate a,
+.leaflet-control-home a {
     background-position: 50% 50%;
     background-repeat: no-repeat;
     height: 46px;
     width: 46px;
     display: block;
+}
+.leaflet-control-embed a {
+    background-image: url("../img/embed.png");
 }
 .leaflet-control-infos a {
     background-image: url("../img/map-infos.png");
-    background-position: 50% 50%;
-    background-repeat: no-repeat;
-    height: 46px;
-    width: 46px;
-    display: block;
+}
+.leaflet-control-home a,
+.leaflet-control-locate a {
+    height: 36px;
+    width: 36px;
 }
 .leaflet-control-home a {
     background-image: url("../img/home.png");
-    background-position: 50% 50%;
-    background-repeat: no-repeat;
-    height: 36px;
-    width: 36px;
-    display: block;
+}
+.leaflet-control-locate a {
+    background-image: url("../img/locate.png");
 }
 a.update-map-extent {
     background-image: url("../img/update-extent.png");

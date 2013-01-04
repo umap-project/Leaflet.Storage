@@ -11,6 +11,7 @@ fr = {
     "Save this center and zoom": "Enregistrer le zoom et le centre actuels",
     "Enable/disable editing": "Activer/désactiver le mode édition",
     "Upload data": "Importer des données",
+    "Center map on your location": "Centrer la carte sur votre position",
     // features.js
     "Feature updated with success!": "POI mis à jour avec succès!",
     // layer.js

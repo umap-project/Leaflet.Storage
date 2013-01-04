@@ -317,3 +317,38 @@ L.Map.addInitHook(function () {
         this.homeControl = (new L.Storage.HomeControl()).addTo(this);
     }
 });
+
+
+L.Storage.LocateControl = L.Control.extend({
+
+    options: {
+        position: 'topleft'
+    },
+
+    onAdd: function (map) {
+        var className = 'leaflet-control-locate',
+            container = L.DomUtil.create('div', className);
+
+        var link = L.DomUtil.create('a', "", container);
+        link.href = '#';
+        link.title = L.S._("Center map on your location");
+        var fn = function (e) {
+            map.locate({
+                setView: true,
+                enableHighAccuracy: true
+            });
+        };
+
+        L.DomEvent
+            .on(link, 'click', L.DomEvent.stopPropagation)
+            .on(link, 'click', L.DomEvent.preventDefault)
+            .on(link, 'click', fn, map)
+            .on(link, 'dblclick', L.DomEvent.stopPropagation);
+
+        return container;    }
+});
+L.Map.addInitHook(function () {
+    if (this.options.locateControl) {
+        this.locateControl = (new L.Storage.LocateControl()).addTo(this);
+    }
+});
