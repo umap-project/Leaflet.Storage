@@ -48,6 +48,13 @@ Dependencies
 * `Leaflet.Draw <https://github.com/jacobtoye/Leaflet.draw/>`_
 * `Leaflet.Hash <https://github.com/mlevans/leaflet-hash>`_
 
+=======================
+Maintained repositories
+=======================
+
+* `Github <https://github.com/yohanboniface/Leaflet.Storage>`_
+* `Bitbucket <https://bitbucket.org/yohanboniface/leaflet.storage>`_
+
 ================
 Show me an image
 ================
