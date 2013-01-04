@@ -1,7 +1,7 @@
 de = {
     // controls.js
     "Go to home page": "Zur Startseite zurückkehren",
-    "Caption and credits": "Légence et crédits",
+    "Caption and credits": "Bildunterschrift und Credits",
     "Add a category": "Katergorie hinzufügen",
     "Edit": "Bearbeiten",
     "Embed this map": "Karte einbinden",
