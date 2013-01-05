@@ -23,6 +23,7 @@ L.LazyGeoJSON = L.GeoJSON.extend({
         this.geojson_getter(function (geojson) {
             self.addData(geojson);
             self._geojson = geojson;
+            self.fire('dataloaded');
         });
     }
 });

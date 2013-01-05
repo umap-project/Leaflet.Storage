@@ -232,6 +232,9 @@ L.Storage.Map = L.Map.extend({
                 'callback': function (data) {
                     if (data.category) {
                         var layer = map.storage_overlays[data.category.pk];
+                        layer.on('dataloaded', function (e) {
+                            map.fitBounds(layer.getBounds());
+                        });
                         layer.clearLayers();
                         layer.fetchData();
                         L.Storage.fire('ui:end');
