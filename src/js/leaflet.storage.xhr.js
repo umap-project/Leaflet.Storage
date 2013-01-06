@@ -171,6 +171,14 @@ L.Storage.Xhr = {
 
     logout: function(url) {
         this.get(url);
+    },
+
+    buildQueryString: function (params) {
+        var query_string = [];
+        for (var key in params) {
+            query_string.push(encodeURIComponent(key) + "=" + encodeURIComponent(params[key]));
+        }
+        return query_string.join('&');
     }
 
 };

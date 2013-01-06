@@ -12,6 +12,8 @@ fr = {
     "Enable/disable editing": "Activer/désactiver le mode édition",
     "Upload data": "Importer des données",
     "Center map on your location": "Centrer la carte sur votre position",
+    "Jump to location": "Zoom sur une localité",
+    "Sorry, no location found for {location}": "Désolé, aucun résultat pour {location}",
     // features.js
     "Feature updated with success!": "POI mis à jour avec succès!",
     // layer.js

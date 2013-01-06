@@ -352,3 +352,78 @@ L.Map.addInitHook(function () {
         this.locateControl = (new L.Storage.LocateControl()).addTo(this);
     }
 });
+
+
+L.Storage.JumpToLocationControl = L.Control.extend({
+
+    options: {
+        position: 'topleft',
+        server_url: 'http://open.mapquestapi.com/nominatim/v1/search.php'
+    },
+
+    onAdd: function (map) {
+        var className = 'leaflet-control-search',
+            container = L.DomUtil.create('div', className),
+            self = this;
+
+        L.DomEvent.disableClickPropagation(container);
+        var link = L.DomUtil.create('a', "", container);
+        var form = L.DomUtil.create('form', "", container);
+        var input = L.DomUtil.create('input', "", form);
+        link.href = '#';
+        link.title = input.placeholder = L.S._("Jump to location");
+        link.innerHTML = "&nbsp;";
+        var fn = function (e) {
+            L.DomUtil.addClass(link, 'loading');
+            var search_terms = input.value;
+            if (!search_terms) {
+                return;
+            }
+            var url = [],
+                bounds = map.getBounds();
+                viewbox = [
+                    //left,top,right,bottom,
+                    bounds.getNorthWest().lon,
+                    bounds.getNorthWest().lat,
+                    bounds.getSouthEast().lon,
+                    bounds.getSouthEast().lat
+                ],
+                viewbox = viewbox.join(',');
+            var params = {
+                format: 'json',
+                q: search_terms,
+                viewbox: viewbox, // this is just a preferred area, not a constraint
+                limit: 1
+            };
+            url = self.options.server_url + "?" + L.S.Xhr.buildQueryString(params);
+            L.Storage.Xhr.get(url, {
+                callback: function (data) {
+                    L.DomUtil.removeClass(link, 'loading');
+                    if (data.length > 0 && data[0].lon && data[0].lat) {
+                        map.panTo([data[0].lat, data[0].lon]);
+                        map.setZoom(15);
+                    }
+                    else {
+                        L.S.fire('ui:alert', {content: L.S._('Sorry, no location found for {location}', {location: search_terms})});
+                    }
+                }
+            });
+        };
+
+        L.DomEvent
+            .on(form, 'submit', L.DomEvent.stopPropagation)
+            .on(form, 'submit', L.DomEvent.preventDefault)
+            .on(form, 'submit', fn);
+        L.DomEvent
+            .on(link, 'click', L.DomEvent.stopPropagation)
+            .on(link, 'click', L.DomEvent.preventDefault)
+            .on(link, 'click', fn)
+            .on(link, 'dblclick', L.DomEvent.stopPropagation);
+
+        return container;    }
+});
+L.Map.addInitHook(function () {
+    if (this.options.jumpToLocationControl) {
+        this.jumpToLocationControl = (new L.Storage.JumpToLocationControl()).addTo(this);
+    }
+});

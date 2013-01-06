@@ -18,7 +18,8 @@
 
 .leaflet-control-draw, .leaflet-control-embed,
 .leaflet-control-infos, .leaflet-control-home,
-.leaflet-control-layers, .leaflet-control-locate {
+.leaflet-control-layers, .leaflet-control-locate,
+.leaflet-control-search {
     background: none repeat scroll 0 0 #F8F8F9;
     border: 1px solid #888888;
     border-radius: 5px 5px 5px 5px;
@@ -48,6 +49,7 @@
     background-image: url("../img/map-infos.png");
 }
 .leaflet-control-home a,
+.leaflet-control-search a,
 .leaflet-control-locate a {
     height: 36px;
     width: 36px;
@@ -57,6 +59,29 @@
 }
 .leaflet-control-locate a {
     background-image: url("../img/locate.png");
+}
+.leaflet-control-search a {
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-image: url("../img/search.png");
+    display: inline-block;
+}
+.leaflet-control-search a.loading {
+    background-image: url("../img/search.gif");
+}
+.leaflet-control-search input {
+    display: none;
+}
+.leaflet-control-search form {
+    display: inline;
+}
+.leaflet-control-search input:focus, div.leaflet-control-search:hover input {
+    display: inline-block;
+    margin-right: 5px;
+}
+.leaflet-control-search {
+    height: 36px;
+    line-height: 36px;
 }
 a.update-map-extent {
     background-image: url("../img/update-extent.png");

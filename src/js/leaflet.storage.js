@@ -13,7 +13,8 @@ L.Map.mergeOptions({
     homeControl: true,
     zoomControl: false,  // Not to activate initHook, which make zoom comes before homeControl
     storageZoomControl: true,
-    locateControl: true
+    locateControl: true,
+    jumpToLocationControl: true
 });
 
 L.Storage.Map = L.Map.extend({
