@@ -374,11 +374,11 @@ L.Storage.JumpToLocationControl = L.Control.extend({
         link.title = input.placeholder = L.S._("Jump to location");
         link.innerHTML = "&nbsp;";
         var fn = function (e) {
-            L.DomUtil.addClass(link, 'loading');
             var search_terms = input.value;
             if (!search_terms) {
                 return;
             }
+            L.DomUtil.addClass(link, 'loading');
             var url = [],
                 bounds = map.getBounds();
                 viewbox = [
