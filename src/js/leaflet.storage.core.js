@@ -1,7 +1,8 @@
 /* Poor man pub/sub handler, enough for now */
 
 L.StorageSingleton = L.Class.extend({
-    includes: L.Mixin.Events
+    includes: L.Mixin.Events,
+    version: '0.1.0'
 });
 L.Storage = new L.StorageSingleton();
 L.S = L.Storage;
