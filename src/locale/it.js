@@ -1,7 +1,7 @@
 it = {
     // controls.js
     "Go to home page": "Torna alla pagina principale",
-    "Caption and credits": "Legenda e ringraziamenti",
+    "Caption and credits": "Legenda e riconoscimenti",
     "Add a category": "Aggiungi una categoria",
     "Edit": "Modifica",
     "Embed this map": "Integra questa mappa",
