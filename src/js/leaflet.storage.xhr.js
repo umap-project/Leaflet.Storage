@@ -78,6 +78,9 @@ L.Storage.Xhr = {
 
     listen_form: function (form_id, options) {
         var form = L.DomUtil.get(form_id);
+        if (!form) {
+            return;
+        }
         L.DomEvent
             .on(form, 'submit', L.DomEvent.stopPropagation)
             .on(form, 'submit', L.DomEvent.preventDefault)
@@ -138,6 +141,15 @@ L.Storage.Xhr = {
         // data.html: login form
         // args: args of the first _ajax call, to call again at process end
         var self = this;
+        var proceed = function () {
+            L.Storage.fire('ui:end');
+            if (typeof args !== "undefined") {
+                L.Storage.Xhr._ajax.apply(self, args);
+            }
+            else {
+                self.default_callback(data, {});
+            }
+        };
         var ask_for_login = function (data) {
             L.Storage.fire('ui:start', {'data': data});
             L.Storage.Xhr.listen_form('login_form', {
@@ -147,15 +159,27 @@ L.Storage.Xhr = {
                         self.login(data, args);
                     }
                     else {
-                        if (typeof args !== "undefined") {
-                            L.Storage.Xhr._ajax.apply(self, args);
-                        }
-                        else {
-                            self.default_callback(data, {});
-                        }
+                        proceed();
                     }
                 }
             });
+            // Auth links
+            var links = document.getElementsByClassName("storage-login-popup");
+            Object.keys(links).forEach(function (el) {
+                var link = links[el];
+                L.DomEvent
+                    .on(link, 'click', L.DomEvent.stopPropagation)
+                    .on(link, 'click', L.DomEvent.preventDefault)
+                    .on(link, 'click', function (e) {
+                        L.Storage.fire('ui:end');
+                        var win = window.open(link.href);
+                        window.storage_proceed = function () {
+                            proceed();
+                            win.close();
+                        };
+                    });
+            });
+
         };
         if (data.login_required) {
             this.get(data.login_required, {

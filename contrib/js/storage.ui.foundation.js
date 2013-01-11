@@ -53,7 +53,10 @@ $(document).ready(function(e){
   $('a.login_button').click(function (e) {
     e.preventDefault();
     var $this = $(this);
-    L.Storage.Xhr.login({"login_required": $this.attr('href')});
+    L.Storage.Xhr.login({
+      "login_required": $this.attr('href'),
+      "redirect": "/"
+    });
   });
 });
 $(document).ready(function(e){
