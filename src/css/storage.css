@@ -113,6 +113,12 @@ a.upload-data {
     background-repeat: no-repeat;
     display: none;
 }
+a.update-map-settings {
+    background-image: url("../img/settings.png");
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    display: none;
+}
 .storage-edit-enabled .leaflet-control-draw a + a {
     margin-left: 5px;
 }

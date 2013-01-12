@@ -140,7 +140,7 @@ L.Storage.Map = L.Map.extend({
         else if(this.options.locate && this.options.locate.setView) {
             // Prevent from making two setViews at init
             // which is not very fluid...
-            this.locate(options.locate);
+            this.locate(this.options.locate);
         }
         else {
             this.options.center = this.latLng(this.options.center);
@@ -220,6 +220,13 @@ L.Storage.Map = L.Map.extend({
 
     updatePermissions: function () {
         var url = L.Util.template(this.options.urls.map_update_permissions, {'map_id': this.options.storage_id});
+        L.Storage.Xhr.get(url, {
+            'listen_form': {'id': 'map_edit'}
+        });
+    },
+
+    updateSettings: function () {
+        var url = L.Util.template(this.options.urls.map_update_settings, {'map_id': this.options.storage_id});
         L.Storage.Xhr.get(url, {
             'listen_form': {'id': 'map_edit'}
         });

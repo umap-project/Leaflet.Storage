@@ -7,6 +7,15 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
 
     initialize: function(map, options) {
         this._map = map;
+        if (!map.options.enableMarkerDraw) {
+            options.marker = null;
+        }
+        if (!map.options.enablePolylineDraw) {
+            options.polyline = null;
+        }
+        if (!map.options.enablePolygonDraw) {
+            options.polygon = null;
+        }
         L.Control.Draw.prototype.initialize.call(this, options);
         if (this.options.marker) {
             this.options.marker.icon = new L.Storage.Icon.Default(this._map);
@@ -20,6 +29,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
         this._createUpdateMapTileLayersButton(map, container);
         this._createUpdateMapPermissionsButton(map, container);
         this._createUpdateMapInfosButton(map, container);
+        this._createUpdateMapSettingsButton(map, container);
         this._createToggleButton(map, container);
         return container;
     },
@@ -80,6 +90,16 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
             'update-map-infos',
             container,
             function(e) { map.updateInfos();},
+            {}
+        );
+    },
+
+    _createUpdateMapSettingsButton: function(map, container) {
+        this._createButton(
+            L.S._('Edit map settings'),
+            'update-map-settings',
+            container,
+            function(e) { map.updateSettings();},
             {}
         );
     },
