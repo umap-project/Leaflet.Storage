@@ -65,10 +65,7 @@ L.Storage.Map = L.Map.extend({
         }
 
 
-        if (this.options.hash) {
-            // Hash management (for permalink)
-            this.hash = new L.Hash(this);
-        }
+        this.addHash();
         this.initCenter();
 
 
@@ -131,9 +128,9 @@ L.Storage.Map = L.Map.extend({
     },
 
     initCenter: function () {
-        if (this.options.hash && this.hash.parseHash(location.hash)) {
+        if (this.options.hash && this._hash.parseHash(location.hash)) {
             // FIXME An invalid hash will cause the load to fail
-            this.hash.update();
+            this._hash.update();
         }
         else if(this.options.locate && this.options.locate.setView) {
             // Prevent from making two setViews at init
