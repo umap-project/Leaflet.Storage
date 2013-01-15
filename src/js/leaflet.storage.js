@@ -19,13 +19,11 @@ L.Map.mergeOptions({
 
 L.Storage.Map = L.Map.extend({
     initialize: function (/* DOM element or id*/ el, /* Object*/ options) {
-        // Call the parent
-        if (options.center) {
-            // We manage it
-            this.options.center = options.center;
-            delete options.center;
-        }
+        // We manage it, so don't use Leaflet default behaviour
+        var center = options.center;
+        delete options.center;
         L.Map.prototype.initialize.call(this, el, options);
+        this.options.center = center;
         if (this.options.storageZoomControl) {
             // Calling parent has called the initHook, we can now add the
             // zoom control
