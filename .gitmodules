@@ -3,10 +3,10 @@
 	url = git://github.com/mlevans/leaflet-hash.git
 [submodule "reqs/draw"]
 	path = reqs/draw
-	url = git://github.com/jacobtoye/Leaflet.draw.git
+	url = git://github.com/Leaflet/Leaflet.draw.git
 [submodule "reqs/leaflet"]
 	path = reqs/leaflet
-	url = git://github.com/CloudMade/Leaflet.git
+	url = git://github.com/Leaflet/Leaflet.git
 [submodule "tests/casperserver"]
 	path = tests/casperserver
 	url = git://github.com/yohanboniface/casperserver.git

@@ -24,6 +24,13 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
 
     onAdd: function (map) {
         var container = L.Control.Draw.prototype.onAdd.call(this, map);
+        // remove bar class set by Leaflet.draw
+        var buttons = container.getElementsByTagName('a');
+        for (var i=0, l=buttons.length, button; i<l; i++) {
+            button = buttons[i];
+            L.DomUtil.removeClass(button, "leaflet-bar-part-bottom");
+            L.DomUtil.removeClass(button, "leaflet-bar-part-top");
+        }
         this._createUploadButton(map, container);
         this._createUpdateMapExtentButton(map, container);
         this._createUpdateMapTileLayersButton(map, container);
@@ -136,6 +143,8 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
             };
             L.Storage.fire('ui:tooltip', event);
         });
+        L.DomUtil.addClass(button, "leaflet-bar-part");
+        return button;
     }
 });
 
