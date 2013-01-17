@@ -65,7 +65,9 @@ L.Storage.Map = L.Map.extend({
         }
 
 
-        this.addHash();
+        if (this.options.hash) {
+            this.addHash();
+        }
         this.initCenter();
 
 
