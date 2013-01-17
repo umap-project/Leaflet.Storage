@@ -136,12 +136,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
         var button = L.Control.Draw.prototype._createButton.call(this, title, className, container, fn, context);
         button.title = "";  // We don't want our tooltip AND default HTML one
         L.DomEvent.on(button, 'mouseover', function (e) {
-            var event = {
-                content: L.S._(title),
-                point: L.DomEvent.getMousePosition(e),
-                zIndex: 1001
-            };
-            L.Storage.fire('ui:tooltip', event);
+            L.Storage.fire('ui:tooltip', {content: L.S._(title)});
         });
         L.DomUtil.addClass(button, "leaflet-bar-part");
         return button;

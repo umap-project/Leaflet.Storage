@@ -52,18 +52,19 @@
 /*   Tooltip   */
 /* *********** */
 #storage-tooltip-container {
-    height: 20px;
     line-height: 20px;
-    padding: 0 5px;
+    padding: 5px 10px;
     width: auto;
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 10px;
+    left: 10px;
     box-shadow: 0 1px 7px #999999;
     display: none;
     background-color: #000;
     color: #fff;
     font-size: 0.9em;
+    border-radius: 4px;
+    opacity: 0.9;
 }
 .storage-tooltip #storage-tooltip-container {
     display: block;

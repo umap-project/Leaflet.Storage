@@ -6,6 +6,7 @@
 - add a control for map settings management
 - move to Leaflet 0.5
 - move to Leaflet.draw 0.1.6
+- default tooltip has now a fixed position
 
 ## 0.1.0
 

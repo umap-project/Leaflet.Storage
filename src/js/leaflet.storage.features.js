@@ -381,11 +381,7 @@ L.Storage.PathMixin = {
 
     _onMouseOver: function (e) {
         if (this.map.editEnabled && !this.editing._enabled) {
-            var event = {
-                content: L.S._("Double-click to edit"),
-                point: L.DomEvent.getMousePosition(e.originalEvent)
-            };
-            L.Storage.fire('ui:tooltip', event);
+            L.Storage.fire('ui:tooltip', {content: L.S._("Double-click to edit")});
         }
     }
 

@@ -69,16 +69,15 @@ L.Storage.on('ui:tooltip', function (e) {
     div.innerHTML = "";
     div.innerHTML = e.content;
     L.DomUtil.addClass(body, 'storage-tooltip');
-    if (e.point) {
-        e.point.y = e.point.y - div.offsetHeight;
-        L.DomUtil.setPosition(div, e.point);
-    }
-    if (e.zIndex) {
-        div.style.zIndex = e.zIndex;
-    }
+    var map = L.DomUtil.get('map'),
+        left = map.offsetLeft + (map.clientWidth / 2) - (div.clientWidth / 2),
+        top = map.offsetTop + 5,
+        point = L.point(left, top);
+    L.DomUtil.setPosition(div, point);
     var close = function (e) {
         div.innerHTML = "";
         L.DomUtil.removeClass(body, 'storage-tooltip');
     };
-    window.setTimeout(close, 1000);
+    L.DomEvent.on(div, 'mouseover', close);
+    window.setTimeout(close, 3000);
 });
