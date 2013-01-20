@@ -7,6 +7,7 @@
 - move to Leaflet 0.5
 - move to Leaflet.draw 0.1.6
 - default tooltip has now a fixed position
+- make just drown polys editable
 
 ## 0.1.0
 
