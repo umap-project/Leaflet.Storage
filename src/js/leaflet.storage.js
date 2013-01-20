@@ -45,6 +45,7 @@ L.Storage.Map = L.Map.extend({
             });
             this.on('draw:poly-created', function (e) {
                 drawnItems.addLayer(e.poly);
+                e.poly.editing.enable();
                 e.poly.edit();
             });
             this.on("popupclose", function(e) {

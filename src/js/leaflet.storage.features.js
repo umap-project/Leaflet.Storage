@@ -2,17 +2,6 @@ L.Storage.FeatureMixin = {
 
     form_id: "feature_form",
 
-    _onClick: function(e){
-        if(this.map.editEnabled) {
-            this.edit(e);
-        }
-        else {
-            if(!this._popup) {
-                this.view(e);
-            }
-        }
-    },
-
     view: function(e) {
         var url = this.getViewURL();
         var self = this;
@@ -236,6 +225,17 @@ L.Storage.Marker = L.Marker.extend({
         this.on("click", this._onClick);
         this.on("mouseover", this._enableDragging);
         this.on("mouseout", this._disableDragging);
+    },
+
+    _onClick: function(e){
+        if(this.map.editEnabled) {
+            this.edit(e);
+        }
+        else {
+            if(!this._popup) {
+                this.view(e);
+            }
+        }
     },
 
     _enableDragging: function() {
