@@ -15,7 +15,7 @@
         <script src="/contrib/js/storage.ui.default.js"></script>
         <link rel="stylesheet" href="/reqs/leaflet/dist/leaflet.css" />
         <!--[if lte IE 8]>
-            <link rel="stylesheet" href="../reqs/leaflet/dist/leaflet.ie.css" />
+            <link rel="stylesheet" href="/reqs/leaflet/dist/leaflet.ie.css" />
         <![endif]-->
         <link rel="stylesheet" href="/reqs/draw/dist/leaflet.draw.css" />
         <link rel="stylesheet" href="/src/css/storage.css" />
@@ -27,7 +27,7 @@
             map_settings = {
                 "storage_id": 42,
                 "center": { "type": "Point", "coordinates": [ -19.533691, 65.330178 ] },
-                "categories": [{"icon_class": "Default", "name": "POIs", "color": "DarkGreen", "display_on_load": true, "pk": 62, "pictogram_url": null}
+                "categories": [{"icon_class": "Default", "name": "POIs", "display_on_load": true, "pk": 62, "pictogram_url": null, "options": {"color": "DarkGreen"}}
                 ],
                 "urls": {
                     "polygon_update": "/map/{map_id}/polygon/edit/{pk}/",
@@ -62,7 +62,7 @@
                     "map_delete": "/map/{map_id}/delete/",
                     "login": "/login/"
                 },
-                "default_icon_url": "../src/img/marker.png",
+                "default_icon_url": "/src/img/marker.png",
                 "zoom": 6,
                 "tilelayers": [{
                     "tilelayer": {

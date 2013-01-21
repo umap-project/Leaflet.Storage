@@ -3,12 +3,11 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
     initialize: function (map, /* Object from db */ category, options) {
         this.default_icon_class = "Default";
         this.map = map;
-        this.populate(category);
         if(typeof options == "undefined") {
             options = {};
         }
-
         L.LazyGeoJSON.prototype.initialize.call(this, this._dataGetter, options);
+        this.populate(category);
         this.connectToMap();
     },
 
@@ -16,10 +15,10 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
         // Category is nulll when listening creation form
         this.storage_id = category.pk || null;
         this.storage_name = category.name || "";
-        this.storage_color = category.color || this.map.options.default_color;
         this.storage_icon_class = category.icon_class || this.default_icon_class;
         this.iconUrl = category.pictogram_url || null;
         this.display_on_load = category.display_on_load || false;
+        L.Util.extend(this.options, category.options);
     },
 
     connectToMap: function () {
@@ -130,7 +129,7 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
     },
 
     getColor: function () {
-        return this.storage_color || this.map.options.default_color;
+        return this.options.color || this.map.options.default_color;
     },
 
 

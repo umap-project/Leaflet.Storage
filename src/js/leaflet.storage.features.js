@@ -80,7 +80,7 @@ L.Storage.FeatureMixin = {
             else {
                 // Guess its a geojson here
                 // Update object, if it's new
-                self.updateFromServer(data);
+                self.updateFromBackEnd(data);
                 L.Storage.fire('ui:end');
                 L.Storage.fire("ui:alert", {"content": L.S._("Feature updated with success!"), "level": "info"});
             }
@@ -126,13 +126,13 @@ L.Storage.FeatureMixin = {
         L.DomEvent.on(form, 'submit', submit);
     },
 
-    updateFromServer: function (feature) {
+    updateFromBackEnd: function (feature) {
         if (!this.storage_id) {
             this.storage_id = feature.id;
         }
-        var newColor = feature.properties.color;
-        var oldColor = this.storage_color;
-        this.storage_color = newColor;
+        var newColor = feature.properties.options.color;
+        var oldColor = this.options.color;
+        L.setOptions(this, feature.properties.options);
         var newOverlay = this.map.storage_overlays[feature.properties.category_id];
         if(this.storage_overlay !== newOverlay) {
             this.changeOverlay(newOverlay);
@@ -172,8 +172,8 @@ L.Storage.FeatureMixin = {
 
     getColor: function () {
         var color;
-        if (this.storage_color) {
-            color = this.storage_color;
+        if (this.options.color) {
+            color = this.options.color;
         }
         else if (this.storage_overlay) {
             color = this.storage_overlay.getColor();
@@ -200,7 +200,9 @@ L.Storage.Marker = L.Marker.extend({
         }
         // Overlay the marker belongs to
         this.storage_overlay = options.overlay || null;
-        this.storage_color = options.geojson ? options.geojson.properties.color : null;
+        if (options.geojson) {
+            options = L.Util.extend(options.geojson.properties.options);
+        }
         if(!options.icon) {
             if (this.storage_overlay) {
                 options.icon = this.storage_overlay.getIcon();
@@ -391,6 +393,10 @@ L.Storage.PathMixin = {
 L.Storage.Polyline = L.Polyline.extend({
     includes: [L.Storage.FeatureMixin, L.Storage.PathMixin, L.Mixin.Events],
 
+    options: {
+        color: null  // unset default Leaflet value
+    },
+
     initialize: function(map, storage_id, latlngs, options) {
         this.map = map;
         if(typeof options == "undefined") {
@@ -398,7 +404,9 @@ L.Storage.Polyline = L.Polyline.extend({
         }
         // Overlay the marker belongs to
         this.storage_overlay = options.overlay || null;
-        this.storage_color = options.geojson ? options.geojson.properties.color : null;
+        if (options.geojson) {
+            options = L.Util.extend(options.geojson.properties.options);
+        }
         L.Polyline.prototype.initialize.call(this, latlngs, options);
 
         // Use a null storage_id when you want to create a new Marker
@@ -438,6 +446,10 @@ L.Storage.Polyline = L.Polyline.extend({
 L.Storage.Polygon = L.Polygon.extend({
     includes: [L.Storage.FeatureMixin, L.Storage.PathMixin, L.Mixin.Events],
 
+    options: {
+        color: null  // unset default Leaflet value
+    },
+
     initialize: function(map, storage_id, latlngs, options) {
         this.map = map;
         if(typeof options == "undefined") {
@@ -445,7 +457,9 @@ L.Storage.Polygon = L.Polygon.extend({
         }
         // Overlay the marker belongs to
         this.storage_overlay = options.overlay || null;
-        this.storage_color = options.geojson ? options.geojson.properties.color : null;
+        if (options.geojson) {
+            options = L.Util.extend(options.geojson.properties.options);
+        }
         L.Polygon.prototype.initialize.call(this, latlngs, options);
 
         // Use a null storage_id when you want to create a new Marker
