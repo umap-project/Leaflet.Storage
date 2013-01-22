@@ -2,19 +2,13 @@ casper.start('http://localhost:8007');
 
 var category_edit_path = '/map/42/category/edit/62/';
 
-casper.getEditForm = function (id) {
-    this.mouseEvent('mouseover', 'div.leaflet-control-layers');
-    this.test.assertVisible('a#edit_overlay_' + id, 'Edit overlay button is visibile when edit enabled');
-    this.click('a#edit_overlay_' + id);
-};
-
 casper.then(function () {
     this.toggleEditButton();
     this.test.assertExists('a#edit_overlay_62', 'Edit overlay button exists');
     this.test.assertExists('input.leaflet-control-layers-selector[type="checkbox"]', 'Display overlay checkbox exists');
     this.test.assertElementsCount('input.leaflet-control-layers-selector[type="checkbox"]', 1);
     this.server.watchPath(category_edit_path, {filePath: 'map_category_update_GET'});
-    this.getEditForm(62);
+    this.getCategoryEditForm(62);
 });
 
 casper.then(function(){
@@ -41,7 +35,7 @@ casper.then(function () {
     this.test.assertExists('div.storage-div-icon', "Current marker has Default icon class");
     // Get edit form again
     this.server.watchPath(category_edit_path, {filePath: 'map_category_update_GET'});
-    this.getEditForm(62);
+    this.getCategoryEditForm(62);
 });
 
 casper.then(function () {
@@ -65,7 +59,7 @@ casper.thenClick('form#category_edit input[type="submit"]', function () {
 casper.then(function () {
     // Get edit form again
     this.server.watchPath(category_edit_path, {filePath: 'map_category_update_GET'});
-    this.getEditForm(62);
+    this.getCategoryEditForm(62);
 });
 
 casper.then(function () {

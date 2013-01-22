@@ -8,6 +8,7 @@
 - move to Leaflet.draw 0.1.6
 - default tooltip has now a fixed position
 - make just drown polys editable
+- handle path styling option (https://github.com/yohanboniface/Leaflet.Storage/issues/26)
 
 ## 0.1.0
 

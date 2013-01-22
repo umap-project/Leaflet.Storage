@@ -7,6 +7,12 @@ L.Map.mergeOptions({
     embedControl: true,
     layersControl: true,
     default_color: "DarkBlue",
+    default_smoothFactor: 1.0,
+    default_opacity: 0.5,
+    default_fillOpacity: 0.3,
+    default_stroke: true,
+    default_fill: true,
+    default_weight: 3,
     attributionControl: false,
     storageAttributionControl: true,
     allowEdit: true,
@@ -157,6 +163,10 @@ L.Storage.Map = L.Map.extend({
 
     _createOverlay: function(category) {
         return new L.Storage.Layer(this, category);
+    },
+
+    getDefaultOption: function (option) {
+        return this.options["default_" + option] || null;
     },
 
     updateExtent: function() {

@@ -1,6 +1,7 @@
 L.Storage.FeatureMixin = {
 
     form_id: "feature_form",
+    default_options: {},
 
     view: function(e) {
         var url = this.getViewURL();
@@ -58,7 +59,7 @@ L.Storage.FeatureMixin = {
         var id = L.Util.stamp(this); // Id leaflet, not storage
                                      // as new marker will be added too
         this.storage_overlay = overlay;
-        this.map.marker_to_overlay[id] = overlay;
+        this.map.marker_to_overlay[id] = overlay; // TODO rename
     },
 
     disconnectFromOverlay: function (overlay) {
@@ -126,13 +127,15 @@ L.Storage.FeatureMixin = {
         L.DomEvent.on(form, 'submit', submit);
     },
 
-    updateFromBackEnd: function (feature) {
+    populate: function (feature) {
         if (!this.storage_id) {
             this.storage_id = feature.id;
         }
-        var newColor = feature.properties.options.color;
-        var oldColor = this.options.color;
-        L.setOptions(this, feature.properties.options);
+        this.storage_options = feature.properties.options;
+    },
+
+    updateFromBackEnd: function (feature) {
+        this.populate(feature);
         var newOverlay = this.map.storage_overlays[feature.properties.category_id];
         if(this.storage_overlay !== newOverlay) {
             this.changeOverlay(newOverlay);
@@ -140,10 +143,7 @@ L.Storage.FeatureMixin = {
             // Needed only if overlay hasn't changed because
             // changeOverlay method already make the style to be
             // updated
-            if (oldColor != newColor) {
-                this.resetColor();
-            }
-
+            this._redraw();
         }
         // Force refetch of the popup content
         this._popup = null;
@@ -170,18 +170,25 @@ L.Storage.FeatureMixin = {
         return L.Util.template(this.delete_url_template, {'pk': this.storage_id, 'map_id': this.map.options.storage_id});
     },
 
-    getColor: function () {
-        var color;
-        if (this.options.color) {
-            color = this.options.color;
+    usableOption: function (options, option) {
+        return typeof options[option] !== "undefined" && options[option] !== "" && options[option] !== null;
+    },
+
+    getOption: function (option) {
+        var value = null;
+        if (this.usableOption(this.storage_options, option)) {
+            value = this.storage_options[option];
         }
-        else if (this.storage_overlay) {
-            color = this.storage_overlay.getColor();
+        else if (this.storage_overlay && this.usableOption(this.storage_overlay.options, option)) {
+            value = this.storage_overlay.options[option];
+        }
+        else if (typeof this.default_options[option] !== "undefined") {
+            value = this.default_options[option];
         }
         else {
-            color = this.map.options.default_color;
+            value = this.map.getDefaultOption(option);
         }
-        return color;
+        return value;
     },
 
     bringToCenter: function () {
@@ -201,7 +208,7 @@ L.Storage.Marker = L.Marker.extend({
         // Overlay the marker belongs to
         this.storage_overlay = options.overlay || null;
         if (options.geojson) {
-            options = L.Util.extend(options.geojson.properties.options);
+            this.populate(options.geojson);
         }
         if(!options.icon) {
             if (this.storage_overlay) {
@@ -259,7 +266,7 @@ L.Storage.Marker = L.Marker.extend({
         }
     },
 
-    _redrawIcon: function() {
+    _redraw: function() {
         this._removeIcon();
         this._initIcon();
         this.update();
@@ -268,11 +275,7 @@ L.Storage.Marker = L.Marker.extend({
     changeOverlay: function(layer) {
         L.Storage.FeatureMixin.changeOverlay.call(this, layer);
         // Icon look depends on overlay
-        this._redrawIcon();
-    },
-
-    resetColor: function () {
-        this._redrawIcon();
+        this._redraw();
     },
 
     connectToOverlay: function (overlay) {
@@ -327,6 +330,12 @@ L.storage_marker = function (map, storage_id, latlng, options) {
 
 L.Storage.PathMixin = {
 
+    options: {
+        clickable: true
+    },  // reset path options
+
+    storage_options: {},
+
   _onClick: function(e){
         this._popupHandlersAdded = true;  // Prevent leaflet from managing event
         if(!this.map.editEnabled) {
@@ -353,22 +362,36 @@ L.Storage.PathMixin = {
         this.map.closePopup(this._popup);
     },
 
-    _setColor: function () {
-        this.options.color = this.getColor();
+    _setStyleOptions: function () {
+        var option,
+            style_options = [
+            'smoothFactor',
+            'color',
+            'opacity',
+            'stroke',
+            'weight',
+            'fill',
+            'fillColor',
+            'fillOpacity',
+            'dashArray'
+        ];
+        for (var idx in style_options) {
+            option = style_options[idx];
+            this.options[option] = this.getOption(option);
+        }
     },
 
     _updateStyle: function () {
-        this._setColor();
+        this._setStyleOptions();
         L.Polyline.prototype._updateStyle.call(this);
     },
 
     changeOverlay: function(layer) {
         L.Storage.FeatureMixin.changeOverlay.call(this, layer);
-        // path color depends on overlay
-        this._updateStyle();
+        this._redraw();
     },
 
-    resetColor: function () {
+    _redraw: function () {
         this._updateStyle();
     },
 
@@ -393,8 +416,10 @@ L.Storage.PathMixin = {
 L.Storage.Polyline = L.Polyline.extend({
     includes: [L.Storage.FeatureMixin, L.Storage.PathMixin, L.Mixin.Events],
 
-    options: {
-        color: null  // unset default Leaflet value
+    default_options: {
+        // unset default Leaflet value, use categorie ones as default
+        stroke: true,
+        fill: false
     },
 
     initialize: function(map, storage_id, latlngs, options) {
@@ -405,7 +430,7 @@ L.Storage.Polyline = L.Polyline.extend({
         // Overlay the marker belongs to
         this.storage_overlay = options.overlay || null;
         if (options.geojson) {
-            options = L.Util.extend(options.geojson.properties.options);
+            this.populate(options.geojson);
         }
         L.Polyline.prototype.initialize.call(this, latlngs, options);
 
@@ -446,10 +471,6 @@ L.Storage.Polyline = L.Polyline.extend({
 L.Storage.Polygon = L.Polygon.extend({
     includes: [L.Storage.FeatureMixin, L.Storage.PathMixin, L.Mixin.Events],
 
-    options: {
-        color: null  // unset default Leaflet value
-    },
-
     initialize: function(map, storage_id, latlngs, options) {
         this.map = map;
         if(typeof options == "undefined") {
@@ -458,7 +479,7 @@ L.Storage.Polygon = L.Polygon.extend({
         // Overlay the marker belongs to
         this.storage_overlay = options.overlay || null;
         if (options.geojson) {
-            options = L.Util.extend(options.geojson.properties.options);
+            this.populate(options.geojson);
         }
         L.Polygon.prototype.initialize.call(this, latlngs, options);
 

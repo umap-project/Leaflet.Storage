@@ -12,7 +12,7 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
     },
 
     populate: function (category) {
-        // Category is nulll when listening creation form
+        // Category is null when listening creation form
         this.storage_id = category.pk || null;
         this.storage_name = category.name || "";
         this.storage_icon_class = category.icon_class || this.default_icon_class;
@@ -127,11 +127,6 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
         }
         return new L.Storage.Icon[icon_class](this.map);
     },
-
-    getColor: function () {
-        return this.options.color || this.map.options.default_color;
-    },
-
 
     getDeleteURL: function () {
         return L.Util.template(this.map.options.urls.category_delete, {'pk': this.storage_id, 'map_id': this.map.options.storage_id});

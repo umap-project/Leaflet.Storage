@@ -27,7 +27,7 @@
             map_settings = {
                 "storage_id": 42,
                 "center": { "type": "Point", "coordinates": [ -19.533691, 65.330178 ] },
-                "categories": [{"icon_class": "Default", "name": "POIs", "display_on_load": true, "pk": 62, "pictogram_url": null, "options": {"color": "DarkGreen"}}
+                "categories": [{"icon_class": "Default", "name": "POIs", "display_on_load": true, "pk": 62, "pictogram_url": null, "options": {}}
                 ],
                 "urls": {
                     "polygon_update": "/map/{map_id}/polygon/edit/{pk}/",
@@ -68,7 +68,7 @@
                     "tilelayer": {
                         "attribution": "\u00a9 OSM Contributors",
                         "name": "OpenStreetMap",
-                        "url_template": "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                        "url_template": "http://localhost:20008/tile/openriverboatmap/{z}/{x}/{y}.png",
                         "minZoom": 0,
                         "maxZoom": 18,
                         "id": 1

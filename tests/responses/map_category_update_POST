@@ -2,9 +2,19 @@
     "category": {
         "icon_class": "Default",
         "name": "Elephants",
-        "color": "Pink",
-        "preset": true,
+        "display_on_load": true,
         "pk": 62,
-        "pictogram_url": null
+        "pictogram_url": null,
+        "options": {
+            "opacity": null,
+            "weight": null,
+            "fillColor": "",
+            "color": "",
+            "stroke": true,
+            "smoothFactor": null,
+            "dashArray": "",
+            "fillOpacity": null,
+            "fill": true
+        }
     }
 }

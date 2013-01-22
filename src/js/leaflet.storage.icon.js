@@ -37,7 +37,7 @@ L.Storage.Icon.Default = L.Storage.Icon.extend({
 
     _setColor: function() {
         if(this.feature) {
-            var color = this.feature.getColor();
+            var color = this.feature.getOption("color");
             this.elements.container.style.backgroundColor = color;
             this.elements.arrow.style.borderTopColor = color;
         }
@@ -73,7 +73,7 @@ L.Storage.Icon.Circle = L.Storage.Icon.extend({
 
     _setColor: function() {
         if(this.feature) {
-            var color = this.feature.getColor();
+            var color = this.feature.getOption("color");
             this.elements.main.style.backgroundColor = color;
         }
     },
@@ -116,7 +116,7 @@ L.Storage.Icon.Ball = L.Storage.Icon.Default.extend({
 
     _setColor: function() {
         if(this.feature) {
-            var color = this.feature.getColor(),
+            var color = this.feature.getOption("color"),
                 background;
             if (L.Browser.webkit) {
                 background ="-webkit-gradient( radial, 6 38%, 0, 6 38%, 8, from(white), to(" + color + ") )";
