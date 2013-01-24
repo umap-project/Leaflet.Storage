@@ -86,10 +86,11 @@ L.Storage.FormUtil = {
     },
 
         listenIconImageField: function (map) {
-        var container = L.DomUtil.get('storage-demo-pictogram'),
+        var parent = L.DomUtil.get('storage-demo-pictogram'),
             input = L.DomUtil.get('id_pictogram'),
             baseClass = "storage-icon-choice",
-            button = L.DomUtil.create("a", "", container);
+            button = L.DomUtil.create("a", "", parent),
+            container = L.DomUtil.create("div", "", parent);
         button.innerHTML = L.S._('Change icon image');
         button.href = "#";
         button.style.display = "block";
@@ -106,6 +107,7 @@ L.Storage.FormUtil = {
         var fn = function (e) {
             L.Storage.Xhr.get(map.options.urls.pictogram_list_json, {
                 callback: function (data) {
+                    container.innerHTML = "";
                     for (var idx in data.pictogram_list) {
                         createPictogram(data.pictogram_list[idx]);
                     }
