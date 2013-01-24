@@ -412,7 +412,6 @@ L.Storage.PathMixin = {
 
 };
 
-
 L.Storage.Polyline = L.Polyline.extend({
     includes: [L.Storage.FeatureMixin, L.Storage.PathMixin, L.Mixin.Events],
 

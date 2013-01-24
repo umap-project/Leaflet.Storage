@@ -230,6 +230,49 @@ a.edit-overlay {
     width: 2px;
 }
 
+/*
+* FormUtils
+*/
+#storage-demo-marker, #storage-demo-pictogram {
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+.storage-icon-choice {
+    display: block;
+    float: left;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    position: relative;
+    cursor: pointer;
+    background-image: url("../img/icon-bg.png");
+    text-align: center;
+    box-shadow: 0 0 4px 0 black inset;
+}
+#storage-demo-pictogram .storage-icon-choice {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+}
+#storage-demo-pictogram .storage-icon-choice img {
+    vertical-align: middle;
+}
+.storage-icon-choice + .storage-icon-choice {
+    margin-left: 5px;
+}
+.storage-icon-choice:hover,
+.storage-icon-choice.selected {
+    box-shadow: 0 0 4px 0 black;
+}
+#storage-demo-marker .leaflet-marker-icon {
+    bottom: 0;
+    left: 30px;
+    position: absolute;
+}
+
+
 /* ***** */
 /* Popup */
 /* ***** */

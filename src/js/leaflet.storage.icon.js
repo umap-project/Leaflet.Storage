@@ -21,6 +21,7 @@ L.Storage.Icon = L.DivIcon.extend({
         }
         return url;
     }
+
 });
 
 L.Storage.Icon.Default = L.Storage.Icon.extend({
@@ -72,10 +73,14 @@ L.Storage.Icon.Circle = L.Storage.Icon.extend({
     },
 
     _setColor: function() {
+        var color;
         if(this.feature) {
-            var color = this.feature.getOption("color");
-            this.elements.main.style.backgroundColor = color;
+            color = this.feature.getOption("color");
         }
+        else {
+            color = this.map.getDefaultOption('color');
+        }
+        this.elements.main.style.backgroundColor = color;
     },
 
     createIcon: function() {

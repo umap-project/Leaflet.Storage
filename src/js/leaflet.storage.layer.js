@@ -181,6 +181,8 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
             form_id = "category_edit",
             self = this;
         L.Storage.fire('ui:start', {'data': data});
+        L.Storage.FormUtil.listenIconClassField(this.map);
+        L.Storage.FormUtil.listenIconImageField(this.map);
         L.Storage.Xhr.listen_form(form_id, {
             'callback': function (data) {
                 if (data.category) {
