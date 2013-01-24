@@ -250,6 +250,8 @@ a.edit-overlay {
     background-image: url("../img/icon-bg.png");
     text-align: center;
     box-shadow: 0 0 4px 0 black inset;
+    margin-bottom: 5px;
+    margin-right: 5px;
 }
 #storage-demo-pictogram .storage-icon-choice {
     width: 30px;
@@ -258,9 +260,6 @@ a.edit-overlay {
 }
 #storage-demo-pictogram .storage-icon-choice img {
     vertical-align: middle;
-}
-.storage-icon-choice + .storage-icon-choice {
-    margin-left: 5px;
 }
 .storage-icon-choice:hover,
 .storage-icon-choice.selected {
