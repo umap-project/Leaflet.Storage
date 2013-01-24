@@ -91,7 +91,7 @@ L.Storage.FormUtil = {
             baseClass = "storage-icon-choice",
             button = L.DomUtil.create("a", "", parent),
             container = L.DomUtil.create("div", "", parent);
-        button.innerHTML = L.S._('Change icon image');
+        button.innerHTML = L.S._('Change icon symbol');
         button.href = "#";
         button.style.display = "block";
         var createPictogram = function (pictogram) {
@@ -112,7 +112,7 @@ L.Storage.FormUtil = {
                         createPictogram(data.pictogram_list[idx]);
                     }
                     delete_button = L.DomUtil.create("a", "", container);
-                    delete_button.innerHTML = L.S._('Remove icon image');
+                    delete_button.innerHTML = L.S._('Remove icon symbol');
                     delete_button.href = "#";
                     delete_button.style.display = "block";
                     delete_button.style.clear = "both";
