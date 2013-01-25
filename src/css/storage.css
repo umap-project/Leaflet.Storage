@@ -187,9 +187,8 @@ a.edit-overlay {
     border-top: 16px solid #2270B5;
     height: 0;
     left: 6px;
-    opacity: 0.9;
     position: relative;
-    top: -3px;
+    top: -4px;
     width: 0;
 }
 .storage-drop-icon .icon_container {
