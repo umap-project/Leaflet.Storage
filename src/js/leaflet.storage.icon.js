@@ -3,7 +3,7 @@ L.Storage.Icon = L.DivIcon.extend({
         this.map = map;
         var default_options = {
             iconSize: null,  // Made in css
-            iconUrl: this.map.options.default_icon_url,
+            iconUrl: this.map.getDefaultOption('iconUrl'),
             feature: null
         };
         options = L.Util.extend({}, default_options, options);
@@ -20,6 +20,20 @@ L.Storage.Icon = L.DivIcon.extend({
             url = this.options[name + 'Url'];
         }
         return url;
+    },
+
+    _getColor: function () {
+        var color;
+        if(this.feature) {
+            color = this.feature.getOption("color");
+        }
+        else if (this.options.color) {
+            color = this.options.color;
+        }
+        else {
+            color = this.map.getDefaultOption('color');
+        }
+        return color;
     }
 
 });
@@ -37,11 +51,9 @@ L.Storage.Icon.Default = L.Storage.Icon.extend({
     },
 
     _setColor: function() {
-        if(this.feature) {
-            var color = this.feature.getOption("color");
-            this.elements.container.style.backgroundColor = color;
-            this.elements.arrow.style.borderTopColor = color;
-        }
+        var color = this._getColor();
+        this.elements.container.style.backgroundColor = color;
+        this.elements.arrow.style.borderTopColor = color;
     },
 
     createIcon: function() {
@@ -73,14 +85,7 @@ L.Storage.Icon.Circle = L.Storage.Icon.extend({
     },
 
     _setColor: function() {
-        var color;
-        if(this.feature) {
-            color = this.feature.getOption("color");
-        }
-        else {
-            color = this.map.getDefaultOption('color');
-        }
-        this.elements.main.style.backgroundColor = color;
+        this.elements.main.style.backgroundColor = this._getColor();
     },
 
     createIcon: function() {
@@ -120,17 +125,15 @@ L.Storage.Icon.Ball = L.Storage.Icon.Default.extend({
     },
 
     _setColor: function() {
-        if(this.feature) {
-            var color = this.feature.getOption("color"),
-                background;
-            if (L.Browser.webkit) {
-                background ="-webkit-gradient( radial, 6 38%, 0, 6 38%, 8, from(white), to(" + color + ") )";
-            }
-            else {
-                background = "radial-gradient(circle at 6px 38% , white -4px, " + color + " 8px) repeat scroll 0 0 transparent";
-            }
-            this.elements.container.style.background = background;
+        var color = this._getColor("color"),
+            background;
+        if (L.Browser.webkit) {
+            background ="-webkit-gradient( radial, 6 38%, 0, 6 38%, 8, from(white), to(" + color + ") )";
         }
+        else {
+            background = "radial-gradient(circle at 6px 38% , white -4px, " + color + " 8px) repeat scroll 0 0 transparent";
+        }
+        this.elements.container.style.background = background;
     }
 
 });

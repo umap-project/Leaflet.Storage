@@ -120,12 +120,16 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
         return L.Util.template(this.map.options.urls.category_update, {'map_id': this.map.options.storage_id, 'pk': this.storage_id});
     },
 
-    getIcon: function () {
-        var icon_class = this.default_icon_class;
+    getIconClass: function () {
+        var iconClass = this.default_icon_class;
         if(L.Storage.Icon[this.storage_icon_class]) {
-            icon_class = this.storage_icon_class;
+            iconClass = this.storage_icon_class;
         }
-        return new L.Storage.Icon[icon_class](this.map);
+        return iconClass;
+    },
+
+    getIcon: function () {
+        return new L.Storage.Icon[this.getIconClass()](this.map);
     },
 
     getDeleteURL: function () {
@@ -181,8 +185,11 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
             form_id = "category_edit",
             self = this;
         L.Storage.fire('ui:start', {'data': data});
-        L.Storage.FormUtil.listenIconClassField(this.map);
-        L.Storage.FormUtil.listenIconImageField(this.map);
+        var listener = new L.Storage.FormListener.IconField(this.map, form_id, {
+            iconUrl: this.iconUrl || this.map.getDefaultOption('iconUrl'),
+            iconColor: this.options.color || this.map.getDefaultOption('color'),
+            iconClass: this.getIconClass()
+        });
         L.Storage.Xhr.listen_form(form_id, {
             'callback': function (data) {
                 if (data.category) {

@@ -233,11 +233,14 @@ a.edit-overlay {
 /*
 * FormUtils
 */
-#storage-demo-marker, #storage-demo-pictogram {
+#storage-form-iconfield {
     position: relative;
     overflow: hidden;
     padding-bottom: 5px;
     padding-top: 5px;
+}
+.storage-icon-list, .storage-pictogram-list {
+    clear: both;
 }
 .storage-icon-choice {
     display: block;
@@ -253,19 +256,19 @@ a.edit-overlay {
     margin-bottom: 5px;
     margin-right: 5px;
 }
-#storage-demo-pictogram .storage-icon-choice {
+.storage-pictogram-list .storage-icon-choice {
     width: 30px;
     height: 30px;
     line-height: 30px;
 }
-#storage-demo-pictogram .storage-icon-choice img {
+.storage-pictogram-list .storage-icon-choice img {
     vertical-align: middle;
 }
 .storage-icon-choice:hover,
 .storage-icon-choice.selected {
     box-shadow: 0 0 4px 0 black;
 }
-#storage-demo-marker .leaflet-marker-icon {
+.storage-icon-choice .leaflet-marker-icon {
     bottom: 0;
     left: 30px;
     position: absolute;
