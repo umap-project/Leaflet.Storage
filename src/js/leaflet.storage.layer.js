@@ -86,6 +86,7 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
         }
         return this.addLayer(layer);
     },
+
     _pointToLayer: function(geojson, latlng) {
         if(this.options.pointToLayer) {
             return options.pointToLayer(geojson, latlng);
@@ -97,6 +98,7 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
             {"geojson": geojson, "overlay": this}
         );
     },
+
     _lineToLayer: function(geojson, latlngs) {
         return new L.Storage.Polyline(
             this.map,
@@ -184,10 +186,13 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
             form_id = "category_edit",
             self = this;
         L.Storage.fire('ui:start', {'data': data});
-        var listener = new L.Storage.FormListener.IconField(this.map, form_id, {
+        var iconHelper = new L.Storage.FormHelper.IconField(this.map, form_id, {
             iconUrl: this.iconUrl || this.map.getDefaultOption('iconUrl'),
             iconColor: this.options.color || this.map.getDefaultOption('color'),
             iconClass: this.getIconClass()
+        });
+        var colorHelper = new L.Storage.FormHelper.Color(this.map, form_id, {
+            color: this.options.color || this.map.getDefaultOption('color')
         });
         L.Storage.Xhr.listen_form(form_id, {
             'callback': function (data) {

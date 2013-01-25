@@ -72,6 +72,9 @@ L.Storage.FeatureMixin = {
     listenEditForm: function() {
         var self = this;
         var form = L.DomUtil.get(this.form_id);
+        var colorHelper = new L.Storage.FormHelper.Color(this.map, this.form_id, {
+            color: this.getOption('color')
+        });
         var manage_ajax_return = function (data) {
             if(data.html) {
                 // We have HTML, put it in the popup
@@ -341,7 +344,7 @@ L.Storage.Marker = L.Marker.extend({
     },
 
     listenEditForm: function () {
-        var listener = new L.Storage.FormListener.IconField(this.map, this.form_id, {
+        var iconHelper = new L.Storage.FormHelper.IconField(this.map, this.form_id, {
             iconUrl: this._getIconUrl() || this.map.getDefaultOption('iconUrl'),
             iconColor: this.getOption('color'),
             iconClass: this.getIconClass()

@@ -1,7 +1,7 @@
 /*
-* FormUtils
+* FormHelpers
 */
-L.Storage.FormListener = L.Class.extend({
+L.Storage.FormHelper = L.Class.extend({
 
     initialize: function (map, form_id, options) {
         this.initOptions(options);
@@ -41,12 +41,30 @@ L.Storage.FormListener = L.Class.extend({
     },
 
     addEventListener: function (element, type) {
-        var self = this;
-        var listenerName = "on_" + element.name + "_" + type;
+        var self = this,
+            listenerName = "on_" + element.name + "_" + type,
+            keyName = '_storage_on_' + type;
         if (typeof this[listenerName] === "function") {
-            element["on" + type] = function () {
-                self[listenerName].call(self);
-            };
+            if (typeof element[keyName] === "undefined") {
+                element[keyName] = [];
+            }
+            element[keyName].push({
+                event: self[listenerName],
+                context: self
+            });
+        }
+        element["on" + type] = function () {
+            self.fireEvent(element, type);
+        };
+    },
+
+    fireEvent: function (element, type) {
+        var keyName = '_storage_on_' + type;
+        if (!element[keyName]) {
+            return;
+        }
+        for (var idx in element[keyName]) {
+            element[keyName][idx].event.call(element[keyName][idx].context);
         }
     },
 
@@ -61,7 +79,7 @@ L.Storage.FormListener = L.Class.extend({
 
 });
 
-L.Storage.FormListener.IconField = L.Storage.FormListener.extend({
+L.Storage.FormHelper.IconField = L.Storage.FormHelper.extend({
 
     iconClasses: ["Default", "Circle", "Drop", "Ball"],
 
@@ -206,4 +224,82 @@ L.Storage.FormListener.IconField = L.Storage.FormListener.extend({
         this.options.iconClass = this.element_icon_class.value;
         this.initDemoIcon();
     }
+});
+
+L.Storage.FormHelper.Color = L.Storage.FormHelper.extend({
+    colors: [
+        "Black", "Navy", "DarkBlue", "MediumBlue", "Blue", "DarkGreen",
+        "Green", "Teal", "DarkCyan", "DeepSkyBlue", "DarkTurquoise",
+        "MediumSpringGreen", "Lime", "SpringGreen", "Aqua", "Cyan",
+        "MidnightBlue", "DodgerBlue", "LightSeaGreen", "ForestGreen",
+        "SeaGreen", "DarkSlateGray", "DarkSlateGrey", "LimeGreen",
+        "MediumSeaGreen", "Turquoise", "RoyalBlue", "SteelBlue",
+        "DarkSlateBlue", "MediumTurquoise", "Indigo", "DarkOliveGreen",
+        "CadetBlue", "CornflowerBlue", "MediumAquaMarine", "DimGray",
+        "DimGrey", "SlateBlue", "OliveDrab", "SlateGray", "SlateGrey",
+        "LightSlateGray", "LightSlateGrey", "MediumSlateBlue", "LawnGreen",
+        "Chartreuse", "Aquamarine", "Maroon", "Purple", "Olive", "Gray",
+        "Grey", "SkyBlue", "LightSkyBlue", "BlueViolet", "DarkRed",
+        "DarkMagenta", "SaddleBrown", "DarkSeaGreen", "LightGreen",
+        "MediumPurple", "DarkViolet", "PaleGreen", "DarkOrchid",
+        "YellowGreen", "Sienna", "Brown", "DarkGray", "DarkGrey",
+        "LightBlue", "GreenYellow", "PaleTurquoise", "LightSteelBlue",
+        "PowderBlue", "FireBrick", "DarkGoldenRod", "MediumOrchid",
+        "RosyBrown", "DarkKhaki", "Silver", "MediumVioletRed", "IndianRed",
+        "Peru", "Chocolate", "Tan", "LightGray", "LightGrey", "Thistle",
+        "Orchid", "GoldenRod", "PaleVioletRed", "Crimson", "Gainsboro",
+        "Plum", "BurlyWood", "LightCyan", "Lavender", "DarkSalmon",
+        "Violet", "PaleGoldenRod", "LightCoral", "Khaki", "AliceBlue",
+        "HoneyDew", "Azure", "SandyBrown", "Wheat", "Beige", "WhiteSmoke",
+        "MintCream", "GhostWhite", "Salmon", "AntiqueWhite", "Linen",
+        "LightGoldenRodYellow", "OldLace", "Red", "Fuchsia", "Magenta",
+        "DeepPink", "OrangeRed", "Tomato", "HotPink", "Coral", "DarkOrange",
+        "LightSalmon", "Orange", "LightPink", "Pink", "Gold", "PeachPuff",
+        "NavajoWhite", "Moccasin", "Bisque", "MistyRose", "BlanchedAlmond",
+        "PapayaWhip", "LavenderBlush", "SeaShell", "Cornsilk",
+        "LemonChiffon", "FloralWhite", "Snow", "Yellow", "LightYellow",
+        "Ivory", "White"
+    ],
+
+    init_options_color: function () {
+        this.container = L.DomUtil.create('div', 'storage-color-picker');
+        this.container.style.display = "none";
+        this.element_options_color.parentNode.insertBefore(this.container, this.element_options_color.nextSibling);
+        for (var idx in this.colors) {
+            this.addColor(this.colors[idx]);
+        }
+        this.on_options_color_change();
+    },
+
+    on_options_color_focus: function () {
+        this.container.style.display = "block";
+    },
+
+    on_options_color_blur: function () {
+        var self = this,
+            closePicker = function () {
+            self.container.style.display = "none";
+        };
+        // We must leave time for the click to be listened
+        window.setTimeout(closePicker, 100);
+    },
+
+    on_options_color_change: function () {
+        this.options.color = this.element_options_color.value;
+        this.element_options_color.style.backgroundColor = this.getOption('color');
+    },
+
+    addColor: function (colorName) {
+            var span = L.DomUtil.create('span', '', this.container);
+            span.style.backgroundColor = colorName;
+            span.title = colorName;
+            var updateColorInput = function (e) {
+                this.element_options_color.value = colorName;
+                this.options.color = colorName;
+                this.element_options_color.onchange();
+                this.container.style.display = "none";
+            };
+            L.DomEvent.on(span, "click", updateColorInput, this);
+    }
+
 });
