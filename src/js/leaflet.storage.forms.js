@@ -4,7 +4,7 @@
 L.Storage.FormListener = L.Class.extend({
 
     initialize: function (map, form_id, options) {
-        this.options = options;
+        this.initOptions(options);
         this.map = map;
         this.form_id = form_id;
         this.form = L.DomUtil.get(form_id);
@@ -14,6 +14,15 @@ L.Storage.FormListener = L.Class.extend({
                 this.initElement(this.form.elements[idx]);
             }
         }
+    },
+
+    initOptions: function (options) {
+        this.options = L.Util.extend({}, options);
+        this.defaultOptions = L.Util.extend({}, options);
+    },
+
+    getOption: function (option) {
+        return this.options[option] || this.defaultOptions[option];
     },
 
     initForm: function () {
@@ -72,7 +81,6 @@ L.Storage.FormListener.IconField = L.Storage.FormListener.extend({
         L.DomEvent.on(iconContainer, "click", function (e) {
             input.value = value;
             input.onchange();
-            this.initDemoIcon();
             this.unselectAll(container);
             L.DomUtil.addClass(iconContainer, "selected");
         }, this);
@@ -88,7 +96,7 @@ L.Storage.FormListener.IconField = L.Storage.FormListener.extend({
     },
 
     initDemoIcon: function () {
-        var iconElement = this.createIcon(this.options.iconClass, this.options.iconUrl, this.options.iconColor);
+        var iconElement = this.createIcon(this.getOption("iconClass"), this.getOption("iconUrl"), this.getOption("iconColor"));
         this.iconContainer.innerHTML = "";
         this.iconContainer.appendChild(iconElement);
     },
@@ -102,9 +110,14 @@ L.Storage.FormListener.IconField = L.Storage.FormListener.extend({
         changeClassButton.innerHTML = L.S._('Change shape');
         changeClassButton.href = "#";
         changeClassButton.style.display = "block";
-        var addIcon = function (_iconClass) {
+        var addShape = function (_iconClass) {
             var icon = self.createIcon(_iconClass, self.options.iconUrl, self.options.iconColor);
             self.populateTableList(self.shapesContainer, self.element_icon_class, icon, _iconClass);
+        };
+        var removeShape = function () {
+            self.element_icon_class.value = "";
+            self.element_icon_class.onchange();
+            self.unselectAll(self.shapesContainer);
         };
         L.DomEvent
             .on(changeClassButton, "click", L.DomEvent.stop)
@@ -112,10 +125,18 @@ L.Storage.FormListener.IconField = L.Storage.FormListener.extend({
                 this.shapesContainer.innerHTML = "";
                 this.pictogramsContainer.innerHTML = "";
                 var title = L.DomUtil.create('h5', '', this.shapesContainer);
-                title.innerHTML = "Choose a shape";
+                title.innerHTML = L.S._("Choose a shape");
                 for (var idx in this.iconClasses) {
-                    addIcon(this.iconClasses[idx]);
+                    addShape(this.iconClasses[idx]);
                 }
+                var deleteButton = L.DomUtil.create("a", "storage-delete-button", self.shapesContainer);
+                deleteButton.innerHTML = L.S._('Remove icon shape');
+                deleteButton.href = "#";
+                deleteButton.style.display = "block";
+                deleteButton.style.clear = "both";
+                L.DomEvent
+                    .on(deleteButton, "click", L.DomEvent.stop)
+                    .on(deleteButton, "click", removeShape);
             }, this);
     },
 
@@ -133,7 +154,8 @@ L.Storage.FormListener.IconField = L.Storage.FormListener.extend({
         };
         var removePictogram = function () {
             self.element_pictogram.value = "";
-            self.unselectAll(container);
+            self.element_pictogram.onchange();
+            self.unselectAll(self.pictogramsContainer);
         };
         var retrievePictograms = function (e) {
             L.Storage.Xhr.get(self.map.options.urls.pictogram_list_json, {
@@ -166,23 +188,22 @@ L.Storage.FormListener.IconField = L.Storage.FormListener.extend({
     },
 
     on_options_color_change: function () {
-        if (this.element_options_color.value) {
-            this.options.iconColor = this.element_options_color.value;
-        }
+        this.options.iconColor = this.element_options_color.value;
         this.initDemoIcon();
     },
 
     on_pictogram_change: function () {
-        if (this.element_options_color.value) {
+        if (this.element_pictogram.value) {
             this.options.iconUrl = this.pictograms[this.element_pictogram.value].src;
+        }
+        else {
+            this.options.iconUrl = null;
         }
         this.initDemoIcon();
     },
 
     on_icon_class_change: function () {
-        if (this.element_icon_class.value) {
-            this.options.iconClass = this.element_icon_class.value;
-        }
+        this.options.iconClass = this.element_icon_class.value;
         this.initDemoIcon();
     }
 });

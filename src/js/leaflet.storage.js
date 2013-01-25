@@ -13,6 +13,7 @@ L.Map.mergeOptions({
     default_stroke: true,
     default_fill: true,
     default_weight: 3,
+    default_iconClass: "Default",
     attributionControl: false,
     storageAttributionControl: true,
     allowEdit: true,

@@ -207,17 +207,11 @@ L.Storage.Marker = L.Marker.extend({
         }
         // Overlay the marker belongs to
         this.storage_overlay = options.overlay || null;
+        this.storage_options = {};
         if (options.geojson) {
             this.populate(options.geojson);
         }
-        if(!options.icon) {
-            if (this.storage_overlay) {
-                options.icon = this.storage_overlay.getIcon();
-            }
-            else {
-                options.icon = new L.Storage.Icon.Default(this.map);
-            }
-        }
+        this.setIcon(this.getIcon());
         L.Marker.prototype.initialize.call(this, latlng, options);
 
         // Use a null storage_id when you want to create a new Marker
@@ -234,6 +228,12 @@ L.Storage.Marker = L.Marker.extend({
         this.on("click", this._onClick);
         this.on("mouseover", this._enableDragging);
         this.on("mouseout", this._disableDragging);
+    },
+
+    populate: function (feature) {
+        L.Storage.FeatureMixin.populate.call(this, feature);
+        this.storage_icon_class = feature.properties.icon['class'];
+        this.iconUrl = feature.properties.icon.url;
     },
 
     _onClick: function(e){
@@ -267,7 +267,7 @@ L.Storage.Marker = L.Marker.extend({
     },
 
     _redraw: function() {
-        this._removeIcon();
+        this.setIcon(this.getIcon());
         this._initIcon();
         this.update();
     },
@@ -279,8 +279,7 @@ L.Storage.Marker = L.Marker.extend({
     },
 
     connectToOverlay: function (overlay) {
-        this.options.icon = overlay.getIcon();
-        this.options.icon.feature = this;
+        // this.options.icon = this.getIcon();
         L.Storage.FeatureMixin.connectToOverlay.call(this, overlay);
     },
 
@@ -302,12 +301,32 @@ L.Storage.Marker = L.Marker.extend({
     },
 
     _getIconUrl: function (name) {
+        if (typeof name === "undefined") {
+            name = "icon";
+        }
         var url = null;
-        // TODO manage picto in the marker itself
-        if(this.storage_overlay && this.storage_overlay[name + 'Url']) {
+        if (this[name + 'Url']) {
+            url = this[name + 'Url'];
+        }
+        else if(this.storage_overlay && this.storage_overlay[name + 'Url']) {
             url = this.storage_overlay[name + 'Url'];
         }
         return url;
+    },
+
+    getIconClass: function () {
+        var iconClass = this.map.getDefaultOption('iconClass');
+        if (this.storage_icon_class) {
+            iconClass = this.storage_icon_class;
+        }
+        else if (this.storage_overlay) {
+            iconClass = this.storage_overlay.getIconClass();
+        }
+        return iconClass;
+    },
+
+    getIcon: function () {
+        return new L.Storage.Icon[this.getIconClass()](this.map, {feature: this});
     },
 
     getCenter: function () {
@@ -319,6 +338,15 @@ L.Storage.Marker = L.Marker.extend({
             return;
         }
         L.Marker.prototype.openPopup.call(this);
+    },
+
+    listenEditForm: function () {
+        var listener = new L.Storage.FormListener.IconField(this.map, this.form_id, {
+            iconUrl: this._getIconUrl() || this.map.getDefaultOption('iconUrl'),
+            iconColor: this.getOption('color'),
+            iconClass: this.getIconClass()
+        });
+        L.Storage.FeatureMixin.listenEditForm.call(this);
     }
 
 });
@@ -428,6 +456,7 @@ L.Storage.Polyline = L.Polyline.extend({
         }
         // Overlay the marker belongs to
         this.storage_overlay = options.overlay || null;
+        this.storage_options = {};
         if (options.geojson) {
             this.populate(options.geojson);
         }
@@ -477,6 +506,7 @@ L.Storage.Polygon = L.Polygon.extend({
         }
         // Overlay the marker belongs to
         this.storage_overlay = options.overlay || null;
+        this.storage_options = {};
         if (options.geojson) {
             this.populate(options.geojson);
         }

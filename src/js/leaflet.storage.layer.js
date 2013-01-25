@@ -1,7 +1,6 @@
 L.Storage.Layer = L.LazyGeoJSON.extend({
 
     initialize: function (map, /* Object from db */ category, options) {
-        this.default_icon_class = "Default";
         this.map = map;
         if(typeof options == "undefined") {
             options = {};
@@ -15,7 +14,7 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
         // Category is null when listening creation form
         this.storage_id = category.pk || null;
         this.storage_name = category.name || "";
-        this.storage_icon_class = category.icon_class || this.default_icon_class;
+        this.storage_icon_class = category.icon_class || this.map.getDefaultOption('iconClass');
         this.iconUrl = category.pictogram_url || null;
         this.display_on_load = category.display_on_load || false;
         L.Util.extend(this.options, category.options);
@@ -121,7 +120,7 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
     },
 
     getIconClass: function () {
-        var iconClass = this.default_icon_class;
+        var iconClass = this.map.getDefaultOption('iconClass');
         if(L.Storage.Icon[this.storage_icon_class]) {
             iconClass = this.storage_icon_class;
         }
