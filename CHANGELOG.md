@@ -10,6 +10,7 @@
 - make just drown polys editable
 - handle path styling option (https://github.com/yohanboniface/Leaflet.Storage/issues/26)
 - add an UI to manage icon style and picto (https://github.com/yohanboniface/django-leaflet-storage/issues/22)
+- icon style and picto are now manageable also on Markers (https://github.com/yohanboniface/django-leaflet-storage/issues/21)
 
 ## 0.1.0
 
