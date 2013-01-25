@@ -52,7 +52,7 @@ L.Storage.FormListener = L.Class.extend({
 
 });
 
-L.Storage.FormListener.IconField = L.Storage.FormEasier.extend({
+L.Storage.FormListener.IconField = L.Storage.FormListener.extend({
 
     iconClasses: ["Default", "Circle", "Drop", "Ball"],
 
