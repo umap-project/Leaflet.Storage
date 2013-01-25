@@ -19,6 +19,13 @@
 .storage-ui #storage-ui-container {
     display: block;
 }
+#storage-ui-container,
+#storage-alert-container,
+#storage-tooltip-container {
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    box-sizing: border-box;
+}
 
 /* *********** */
 /*   Alerts    */
