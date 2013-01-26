@@ -21,7 +21,9 @@ L.Map.mergeOptions({
     zoomControl: false,  // Not to activate initHook, which make zoom comes before homeControl
     storageZoomControl: true,
     locateControl: true,
-    jumpToLocationControl: true
+    jumpToLocationControl: true,
+    editInOSMControl: false,
+    editInOSMControlOptions: {}
 });
 
 L.Storage.Map = L.Map.extend({
@@ -29,6 +31,8 @@ L.Storage.Map = L.Map.extend({
         // We manage it, so don't use Leaflet default behaviour
         var center = options.center;
         delete options.center;
+        var editInOSMControl = options.editInOSMControl;
+        delete options.editInOSMControl;
         L.Map.prototype.initialize.call(this, el, options);
         this.options.center = center;
         if (this.options.storageZoomControl) {
@@ -36,6 +40,9 @@ L.Storage.Map = L.Map.extend({
             // zoom control
             this.zoomControl = new L.Control.Zoom();
             this.addControl(this.zoomControl);
+        }
+        if (editInOSMControl) {
+            this.editInOSMControl = (new L.Control.EditInOSM(this.options.editInOSMControlOptions)).addTo(this);
         }
 
         // User must provide a pk

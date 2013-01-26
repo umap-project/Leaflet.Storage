@@ -52,10 +52,13 @@
     width: 36px;
     display: block;
 }
+.leaflet-control-edit-in-osm .leaflet-control-edit-in-osm-toggle,
+.leaflet-control-edit-in-osm a.osm-editor,
 .leaflet-control-embed a,
 .leaflet-control-infos a {
     height: 46px;
     width: 46px;
+    line-height: 46px;
 }
 .leaflet-control-embed a {
     background-image: url("../img/embed.png");

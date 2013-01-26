@@ -407,9 +407,9 @@ L.Storage.JumpToLocationControl = L.Control.extend({
                 bounds = map.getBounds();
                 viewbox = [
                     //left,top,right,bottom,
-                    bounds.getNorthWest().lon,
+                    bounds.getNorthWest().lng,
                     bounds.getNorthWest().lat,
-                    bounds.getSouthEast().lon,
+                    bounds.getSouthEast().lng,
                     bounds.getSouthEast().lat
                 ],
                 viewbox = viewbox.join(',');
