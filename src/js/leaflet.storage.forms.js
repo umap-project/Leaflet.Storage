@@ -109,7 +109,7 @@ L.Storage.FormHelper.IconField = L.Storage.FormHelper.extend({
         icon.options.color = iconColor;
         icon.options.iconUrl = iconUrl;
         icon = icon.createIcon();
-        icon.style.transform = L.DomUtil.getTranslateString(new L.Point(0, 50));
+        icon.style[L.DomUtil.TRANSFORM] = L.DomUtil.getTranslateString(new L.Point(0, 50));
         return icon;
     },
 
