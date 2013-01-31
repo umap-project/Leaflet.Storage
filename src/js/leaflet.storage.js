@@ -55,12 +55,15 @@ L.Storage.Map = L.Map.extend({
             var drawnItems = new L.LayerGroup();
             this.on('draw:marker-created', function (e) {
                 drawnItems.addLayer(e.marker);
-                e.marker.edit();
+                e.marker.edit(e);
             });
             this.on('draw:poly-created', function (e) {
                 drawnItems.addLayer(e.poly);
                 e.poly.editing.enable();
-                e.poly.edit();
+                if (!e.latlng) {
+                    e.latlng = e.poly._latlngs[e.poly._latlngs.length-1];
+                }
+                e.poly.edit(e);
             });
             this.on("popupclose", function(e) {
                 // remove source if it has not been created (no storage_id)

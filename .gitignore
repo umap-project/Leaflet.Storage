@@ -9,3 +9,4 @@
 *.orig
 *~
 doc/_build/*
+node_modules/*

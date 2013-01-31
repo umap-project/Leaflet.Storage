@@ -14,14 +14,14 @@ L.Storage.FeatureMixin = {
         });
     },
 
-    edit: function() {
+    edit: function(e) {
         if(!this.map.editEnabled) return;
         this.map.edited_feature = this;
         var url = this.getEditURL();
         var self = this;
         L.Storage.Xhr.get(url, {
             "callback": function(data){
-                self.bringToCenter();
+                self.bringToCenter(e);
                 L.Storage.fire('ui:start', {'data': data});
                 self.listenEditForm();
             }
@@ -194,8 +194,14 @@ L.Storage.FeatureMixin = {
         return value;
     },
 
-    bringToCenter: function () {
-        var latlng = this.getCenter();
+    bringToCenter: function (e) {
+        var latlng;
+        if (e && e.latlng) {
+            latlng = e.latlng;
+        }
+        else {
+            latlng = this.getCenter();
+        }
         this.map.panTo(latlng);
     }
 };
@@ -382,7 +388,7 @@ L.Storage.PathMixin = {
             }
             else {
                 this.editing.enable();
-                this.edit();
+                this.edit(e);
             }
         }
         // FIXME: disable when disabling global edit
