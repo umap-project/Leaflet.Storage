@@ -10,3 +10,9 @@
 [submodule "tests/casperserver"]
 	path = tests/casperserver
 	url = git://github.com/yohanboniface/casperserver.git
+[submodule "reqs/minimap"]
+	path = reqs/minimap
+	url = git://github.com/Norkart/Leaflet-MiniMap.git
+[submodule "reqs/edit_in_osm"]
+	path = reqs/edit_in_osm
+	url = git://github.com/yohanboniface/Leaflet.EditInOSM.git
