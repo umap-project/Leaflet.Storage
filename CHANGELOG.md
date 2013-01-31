@@ -13,6 +13,7 @@
 - icon style and picto are now manageable also on Markers (https://github.com/yohanboniface/django-leaflet-storage/issues/21)
 - add Leaflet.EditInOSM plugin in options
 - add a scale control (optional)
+- add an optional minimap (with Leaflet.MiniMap plugin)
 
 ## 0.1.0
 
