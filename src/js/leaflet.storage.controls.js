@@ -135,7 +135,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
     }
 });
 
-L.Map.addInitHook(function () {
+L.Storage.Map.addInitHook(function () {
     if (this.options.allowEdit) {
         var options = this.options.editOptions ? this.options.editOptions : {};
         this.toggleEditControl = new L.Control.ToggleEdit(this, options);
@@ -213,7 +213,7 @@ L.Control.Embed = L.Control.extend({
     }
 });
 
-L.Map.addInitHook(function () {
+L.Storage.Map.addInitHook(function () {
     if (this.options.embedControl) {
         var options = this.options.embedOptions ? this.options.embedOptions : {};
         this.embedControl = new L.Control.Embed(this, options);
@@ -280,7 +280,7 @@ L.Storage.ControlLayers = L.Control.Layers.extend({
 L.Storage.AttributionControl = L.Control.extend({
 
     options: {
-        position: 'bottomright'
+        position: 'topright'
     },
 
     onAdd: function (map) {
@@ -305,7 +305,7 @@ L.Storage.AttributionControl = L.Control.extend({
     }
 });
 
-L.Map.addInitHook(function () {
+L.Storage.Map.addInitHook(function () {
     if (this.options.storageAttributionControl) {
         this.attributionControl = (new L.Storage.AttributionControl()).addTo(this);
     }
@@ -328,7 +328,7 @@ L.Storage.HomeControl = L.Control.extend({
         return container;
     }
 });
-L.Map.addInitHook(function () {
+L.Storage.Map.addInitHook(function () {
     if (this.options.homeControl) {
         this.homeControl = (new L.Storage.HomeControl()).addTo(this);
     }
@@ -362,7 +362,7 @@ L.Storage.LocateControl = L.Control.extend({
 
         return container;    }
 });
-L.Map.addInitHook(function () {
+L.Storage.Map.addInitHook(function () {
     if (this.options.locateControl) {
         this.locateControl = (new L.Storage.LocateControl()).addTo(this);
     }
@@ -437,7 +437,7 @@ L.Storage.JumpToLocationControl = L.Control.extend({
 
         return container;    }
 });
-L.Map.addInitHook(function () {
+L.Storage.Map.addInitHook(function () {
     if (this.options.jumpToLocationControl) {
         this.jumpToLocationControl = (new L.Storage.JumpToLocationControl()).addTo(this);
     }

@@ -6,6 +6,7 @@ L.StorageSingleton = L.Class.extend({
 });
 L.Storage = new L.StorageSingleton();
 L.S = L.Storage;
+L.Storage.Map = L.Map.extend({});
 
 /*
 * Global events

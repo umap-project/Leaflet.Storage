@@ -175,8 +175,8 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
     },
 
     reset: function () {
-        map.removeLayer(this);
-        map.storage_layers_control.removeLayer(this);
+        this.map.removeLayer(this);
+        this.map.storage_layers_control.removeLayer(this);
         this._geojson = null;
         this._layers = {};
     },

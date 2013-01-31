@@ -23,11 +23,12 @@ L.Map.mergeOptions({
     locateControl: true,
     jumpToLocationControl: true,
     editInOSMControl: false,
+    editInOSMControlOptions: {},
     scaleControl: true,
-    editInOSMControlOptions: {}
+    miniMap: false
 });
 
-L.Storage.Map = L.Map.extend({
+L.Storage.Map.include({
     initialize: function (/* DOM element or id*/ el, /* Object*/ options) {
         // We manage it, so don't use Leaflet default behaviour
         var center = options.center;
@@ -133,8 +134,8 @@ L.Storage.Map = L.Map.extend({
         }
     },
 
-    addTileLayer: function (options) {
-        var tilelayer = new L.TileLayer(
+    createTileLayer: function (options) {
+        return new L.TileLayer(
             options.tilelayer.url_template,
             {
                 attribution: options.tilelayer.attribution,
@@ -142,10 +143,20 @@ L.Storage.Map = L.Map.extend({
                 maxZoom: options.tilelayer.maxZoom
             }
         );
+    },
+
+    addTileLayer: function (options) {
+        var tilelayer = this.createTileLayer(options);
         // Add only the first to the map, to make it visible,
         // and the other only when user click on them
         if(options.rank == 1) {
             this.addLayer(tilelayer);
+            if (this.options.miniMap) {
+                if (typeof this.miniMap === "object") {
+                    this.removeControl(this.miniMap);
+                }
+                this.miniMap = new L.Control.MiniMap(this.createTileLayer(options)).addTo(this);
+            }
         }
         this.storage_layers_control._addLayer(tilelayer, options.tilelayer.name);
         this.tilelayers[options.tilelayer.name] = tilelayer;
