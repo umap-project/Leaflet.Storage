@@ -93,3 +93,21 @@
 #storage-ui-container .storage-close-link {
     color: #000;
 }
+
+/* *********** */
+/*    Mobile   */
+/* *********** */
+@media all and (orientation:portrait) {
+    .storage-ui #map {
+        width: 100%;
+        height: 50%;
+    }
+    #storage-ui-container {
+        height: 50%;
+        width: 100%;
+        top: inherit;
+        bottom: 0;
+        right: 0;
+        left: 0;
+    }
+}
