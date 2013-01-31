@@ -1,4 +1,5 @@
 L.LazyGeoJSON = L.GeoJSON.extend({
+
     initialize: function (geojson_getter, options) {
         L.Util.setOptions(this, options);
 
@@ -14,7 +15,7 @@ L.LazyGeoJSON = L.GeoJSON.extend({
             this.fetchData();
         }
 
-        // Call parent
+        // Call parent of GeoJSON
         L.FeatureGroup.prototype.onAdd.call(this, map, insertAtTheBottom);
     },
 

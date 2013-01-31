@@ -33,23 +33,36 @@ casper.thenClick('form#category_edit input[type="submit"]', function () {
 /* ******************* */
 casper.then(function () {
     this.test.assertExists('div.storage-div-icon', "Current marker has Default icon class");
-    // Get edit form again
-    this.server.watchPath(category_edit_path, {filePath: 'map_category_update_GET'});
-    this.getCategoryEditForm(62);
+});
+
+casper.then(function () {
+    // Change icon
+    response = {
+        "crs": null,
+        "type": "FeatureCollection",
+        "features": [{
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-0.274658203125, 52.57634993749885]
+            },
+            "type": "Feature",
+            "id": 1807,
+            "properties": {"options": {}, "category_id": 62, "name": "test", "icon": {"url": null, "class": "Circle"}}
+        }]
+    };
+    this.server.watchPath('/feature/json/category/62/', {content: JSON.stringify(response)});
 });
 
 casper.then(function () {
     // Return a new icon class: Circle
-    this.server.watchPath(category_edit_path, {content: '{"category": {"icon_class": "Circle","name": "Elephants","color": "Pink","display_on_load": true,"pk": 62,"pictogram_url": null}}'});
+    this.editCategory(62, {icon_class: "Circle", color: "DarkRed"});
 });
 
-casper.thenClick('form#category_edit input[type="submit"]', function () {
+casper.then(function () {
+    // this.server.watchPath(category_edit_path, {content: '{"category": {"icon_class": "Circle","name": "Elephants","color": "Pink","display_on_load": true,"pk": 62,"pictogram_url": null}}'});
     this.test.assertNotExists('div.storage-div-icon', "Current marker has not Default icon class");
     this.test.assertExists('div.storage-circle-icon', "Current marker has Circle icon class");
 });
-
-// casper.then(function () {
-// });
 
 
 /* ******************* */

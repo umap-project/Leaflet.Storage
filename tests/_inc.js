@@ -11,6 +11,11 @@ casper.server.watchPath('^(/src/|/reqs/|/contrib/)', {
     permanent: true
 });
 
+casper.on("page.error", function(msg, trace) {
+    this.echo("Error: " + msg, "ERROR");
+    require('utils').dump(trace);
+});
+
 casper.toggleEditButton = function () {
     this.click('a.leaflet-control-edit-toggle');
 };
@@ -86,7 +91,8 @@ casper.polygonResponsePOST = function (settings) {
                 "fillColor": null,
                 "fill": null,
                 "fillOpacity": null
-            }
+            },
+            "icon": {}
         }
     };
     for (var key in settings) {

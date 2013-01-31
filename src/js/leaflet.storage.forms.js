@@ -205,8 +205,8 @@ L.Storage.FormHelper.IconField = L.Storage.FormHelper.extend({
             .on(changePictoButton, "click", retrievePictograms);
     },
 
-    on_options_color_change: function () {
-        this.options.iconColor = this.element_options_color.value;
+    on_color_change: function () {
+        this.options.iconColor = this.element_color.value;
         this.initDemoIcon();
     },
 
@@ -261,21 +261,21 @@ L.Storage.FormHelper.Color = L.Storage.FormHelper.extend({
         "Ivory", "White"
     ],
 
-    init_options_color: function () {
+    init_color: function () {
         this.container = L.DomUtil.create('div', 'storage-color-picker');
         this.container.style.display = "none";
-        this.element_options_color.parentNode.insertBefore(this.container, this.element_options_color.nextSibling);
+        this.element_color.parentNode.insertBefore(this.container, this.element_color.nextSibling);
         for (var idx in this.colors) {
             this.addColor(this.colors[idx]);
         }
-        this.on_options_color_change();
+        this.on_color_change();
     },
 
-    on_options_color_focus: function () {
+    on_color_focus: function () {
         this.container.style.display = "block";
     },
 
-    on_options_color_blur: function () {
+    on_color_blur: function () {
         var self = this,
             closePicker = function () {
             self.container.style.display = "none";
@@ -284,9 +284,9 @@ L.Storage.FormHelper.Color = L.Storage.FormHelper.extend({
         window.setTimeout(closePicker, 100);
     },
 
-    on_options_color_change: function () {
-        this.options.color = this.element_options_color.value;
-        this.element_options_color.style.backgroundColor = this.getOption('color');
+    on_color_change: function () {
+        this.options.color = this.element_color.value;
+        this.element_color.style.backgroundColor = this.getOption('color');
     },
 
     addColor: function (colorName) {
@@ -294,9 +294,9 @@ L.Storage.FormHelper.Color = L.Storage.FormHelper.extend({
             span.style.backgroundColor = colorName;
             span.title = colorName;
             var updateColorInput = function (e) {
-                this.element_options_color.value = colorName;
+                this.element_color.value = colorName;
                 this.options.color = colorName;
-                this.element_options_color.onchange();
+                this.element_color.onchange();
                 this.container.style.display = "none";
             };
             L.DomEvent.on(span, "click", updateColorInput, this);

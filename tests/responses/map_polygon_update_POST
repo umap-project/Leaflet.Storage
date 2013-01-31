@@ -19,6 +19,7 @@
             "fillColor": "yellow",
             "fill": true,
             "fillOpacity": 0.1
-        }
+        },
+        "icon": {}
     }
 }
