@@ -232,7 +232,7 @@ L.Storage.ControlLayers = L.Control.Layers.extend({
 
     _addItem: function (obj) {
         // Obj is and object {storage_layer, name, (bool)overlay}
-        var label = L.Control.Layers.prototype._addItem.call(this, obj);
+        var label = L.Control.Layers.prototype._addItem.call(this, obj),
             map = this._map,
             self = this;
 
@@ -319,9 +319,9 @@ L.Storage.HomeControl = L.Control.extend({
 
     onAdd: function (map) {
         var className = 'leaflet-control-home',
-            container = L.DomUtil.create('div', className);
+            container = L.DomUtil.create('div', className),
+            link = L.DomUtil.create('a', "", container);
 
-        var link = L.DomUtil.create('a', "", container);
         link.href = '/';
         link.title = L.S._("Go to home page");
 
@@ -343,9 +343,8 @@ L.Storage.LocateControl = L.Control.extend({
 
     onAdd: function (map) {
         var className = 'leaflet-control-locate',
-            container = L.DomUtil.create('div', className);
-
-        var link = L.DomUtil.create('a', "", container);
+            container = L.DomUtil.create('div', className),
+            link = L.DomUtil.create('a', "", container);
         link.href = '#';
         link.title = L.S._("Center map on your location");
         var fn = function (e) {
@@ -396,15 +395,15 @@ L.Storage.JumpToLocationControl = L.Control.extend({
             }
             L.DomUtil.addClass(link, 'loading');
             var url = [],
-                bounds = map.getBounds();
+                bounds = map.getBounds(),
                 viewbox = [
                     //left,top,right,bottom,
                     bounds.getNorthWest().lng,
                     bounds.getNorthWest().lat,
                     bounds.getSouthEast().lng,
                     bounds.getSouthEast().lat
-                ],
-                viewbox = viewbox.join(',');
+                ];
+            viewbox = viewbox.join(',');
             var params = {
                 format: 'json',
                 q: search_terms,
