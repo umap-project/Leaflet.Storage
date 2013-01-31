@@ -23,6 +23,7 @@ L.Map.mergeOptions({
     locateControl: true,
     jumpToLocationControl: true,
     editInOSMControl: false,
+    scaleControl: true,
     editInOSMControlOptions: {}
 });
 
@@ -43,6 +44,9 @@ L.Storage.Map = L.Map.extend({
         }
         if (editInOSMControl) {
             this.editInOSMControl = (new L.Control.EditInOSM(this.options.editInOSMControlOptions)).addTo(this);
+        }
+        if (this.options.scaleControl) {
+            this.scaleControl = L.control.scale().addTo(this);
         }
 
         // User must provide a pk
