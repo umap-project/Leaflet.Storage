@@ -31,12 +31,20 @@
     display: none;
     margin-top: 0;
     margin-bottom: -6px; /* inline-blocks show spaces */
-}
-.leaflet-control-draw .leaflet-bar-part {
-    border-right: 1px solid #AAAAAA;
     border-bottom: none;
     background-color: transparent;
+    border-right: 1px solid #AAAAAA;
 }
+.leaflet-control-draw a:first-child {
+    -webkit-border-radius: 4px 0 0 4px;
+            border-radius: 4px 0 0 4px;
+    }
+.leaflet-control-draw a:last-child {
+    -webkit-border-radius: 0 4px 4px 0;
+            border-radius: 0 4px 4px 0;
+    border-right: none;
+    }
+
 .leaflet-control-draw a:hover {
     background-color: transparent;
 }
@@ -130,9 +138,6 @@ a.update-map-settings {
     background-position: 50% 50%;
     background-repeat: no-repeat;
     display: none;
-}
-.storage-edit-enabled .leaflet-control-draw a + a {
-    /*margin-left: 5px;*/
 }
 .storage-edit-enabled .leaflet-control-draw a {
     display: inline-block;
