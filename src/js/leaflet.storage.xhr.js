@@ -104,7 +104,13 @@ L.Storage.Xhr = {
     default_callback: function (data, options) {
         // default callback, to avoid boilerplate
         if (data.redirect) {
-            window.location = data.redirect;
+            var newPath = data.redirect;
+            if (window.location.pathname == newPath) {
+                window.location.reload();  // Keep the hash, so the current view
+            }
+            else {
+                window.location = newPath;
+            }
         }
         else if (data.info) {
             L.Storage.fire("ui:alert", {"content": data.info, "level": "info"});
