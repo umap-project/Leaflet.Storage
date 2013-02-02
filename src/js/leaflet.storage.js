@@ -31,6 +31,9 @@ L.Map.mergeOptions({
 L.Storage.Map.include({
     initialize: function (/* DOM element or id*/ el, /* Object*/ options) {
         // We manage it, so don't use Leaflet default behaviour
+        if (options.locale) {
+            L.S.setLocale(options.locale);
+        }
         var center = options.center;
         delete options.center;
         var editInOSMControl = options.editInOSMControl;
