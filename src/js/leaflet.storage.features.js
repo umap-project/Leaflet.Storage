@@ -1,7 +1,7 @@
 L.Storage.FeatureMixin = {
 
     form_id: "feature_form",
-    default_options: {},
+    static_options: {},
 
     view: function(e) {
         var url = this.getViewURL();
@@ -179,14 +179,14 @@ L.Storage.FeatureMixin = {
 
     getOption: function (option) {
         var value = null;
-        if (this.usableOption(this.storage_options, option)) {
+        if (typeof this.static_options[option] !== "undefined") {
+            value = this.static_options[option];
+        }
+        else if (this.usableOption(this.storage_options, option)) {
             value = this.storage_options[option];
         }
         else if (this.storage_overlay && this.usableOption(this.storage_overlay.options, option)) {
             value = this.storage_overlay.options[option];
-        }
-        else if (typeof this.default_options[option] !== "undefined") {
-            value = this.default_options[option];
         }
         else {
             value = this.map.getDefaultOption(option);
@@ -369,7 +369,9 @@ L.storage_marker = function (map, storage_id, latlng, options) {
 L.Storage.PathMixin = {
 
     options: {
-        clickable: true
+        clickable: true,
+        magnetize: true,
+        magnetPoint: null
     },  // reset path options
 
     storage_options: {},
@@ -453,8 +455,7 @@ L.Storage.PathMixin = {
 L.Storage.Polyline = L.Polyline.extend({
     includes: [L.Storage.FeatureMixin, L.Storage.PathMixin, L.Mixin.Events],
 
-    default_options: {
-        // unset default Leaflet value, use categorie ones as default
+    static_options: {
         stroke: true,
         fill: false
     },
