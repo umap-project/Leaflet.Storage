@@ -283,7 +283,9 @@ L.Storage.Map.include({
         var map = this;
         var handle_response = function (data) {
             L.Storage.fire("ui:start", {'data': data, "cssClass": "upload-data"});
-            L.Storage.Xhr.listen_form("upload_data", {
+            var form_id = "upload_data",
+                urlHelper = new L.Storage.FormHelper.ImportURL(map, form_id, {});
+            L.Storage.Xhr.listen_form(form_id, {
                 'callback': function (data) {
                     if (data.category) {
                         var layer = map.storage_overlays[data.category.pk];

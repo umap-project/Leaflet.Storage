@@ -66,6 +66,27 @@ casper.thenClick('form#map_delete input[type="submit"]', function () {
     this.test.assertUrlMatch(/\?redirected/, "Redirection has been done after map delete");
 });
 
+// test upload data
+
+casper.then(function () {
+    this.getUploadDataForm();
+});
+
+casper.then(function () {
+    var path = '/map/42/import/data/';
+    this.server.watchRequest(path);
+    this.fillAndSubmitUploadDataForm({data_url: 'http://somewhere.org/test/{bbox}'});
+});
+
+casper.then(function () {
+    var path = '/map/42/import/data/';
+    var request = this.server.getWatchedRequest(path);
+    this.echo(request);
+    this.test.assertEqual(request.method, 'POST', 'Map upload data form submit a POST');
+    this.test.assertMatch(request.post.data_url, /http:\/\/somewhere\.org\/test\/[\-\.\d]+,[\-\.\d]+,[\-\.\d]+,[\-\.\d]+/, 'bbox template has been replaced by bounds values');
+    this.server.unwatchRequest(path);
+});
+
 casper.run(function() {
     this.test.done();
 });

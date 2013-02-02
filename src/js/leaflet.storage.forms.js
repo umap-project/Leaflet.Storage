@@ -8,6 +8,9 @@ L.Storage.FormHelper = L.Class.extend({
         this.map = map;
         this.form_id = form_id;
         this.form = L.DomUtil.get(form_id);
+        if (typeof this.onsubmit === "function") {
+            L.DomEvent.on(this.form, "submit", this.onsubmit, this);
+        }
         this.initForm();
         for (var idx in this.form.elements) {
             if (this.form.elements.hasOwnProperty(idx)) {
@@ -300,6 +303,29 @@ L.Storage.FormHelper.Color = L.Storage.FormHelper.extend({
                 this.container.style.display = "none";
             };
             L.DomEvent.on(span, "click", updateColorInput, this);
+    }
+
+});
+
+
+L.Storage.FormHelper.ImportURL = L.Storage.FormHelper.extend({
+
+    onsubmit: function (e) {
+        var replace = {
+            bbox: this.map.getBounds().toBBoxString(),
+            north: this.map.getBounds().getNorthEast().lat,
+            east: this.map.getBounds().getNorthEast().lng,
+            south: this.map.getBounds().getSouthWest().lat,
+            west: this.map.getBounds().getNorthEast().lng,
+            lat: this.map.getCenter().lat,
+            lng: this.map.getCenter().lng,
+            zoom: this.map.getZoom()
+        };
+        replace['left'] = replace['west'];
+        replace['bottom'] = replace['south'];
+        replace['right'] = replace['east'];
+        replace['top'] = replace['north'];
+        this.element_data_url.value = L.Util.template(this.element_data_url.value, replace);
     }
 
 });

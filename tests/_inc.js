@@ -16,9 +16,46 @@ casper.on("page.error", function(msg, trace) {
     require('utils').dump(trace);
 });
 
+DEFAULT_CATEGORY = {
+    "icon_class": "Default",
+    "name": "Elephants",
+    "display_on_load": true,
+    "pk": 62,
+    "pictogram_url": null,
+    "options": {
+        "opacity": null,
+        "weight": null,
+        "fillColor": "",
+        "color": "",
+        "stroke": true,
+        "smoothFactor": null,
+        "dashArray": "",
+        "fillOpacity": null,
+        "fill": true
+    }
+};
+
 casper.toggleEditButton = function () {
     this.click('a.leaflet-control-edit-toggle');
 };
+
+casper.getUploadDataForm = function () {
+    var path = '/map/42/import/data/';
+    this.toggleEditButton();
+    this.server.watchPath(path, {filePath: 'map_upload_data_GET'});
+    this.then(function () {
+        this.test.assertVisible('a.upload-data', 'UploadData button is visible');
+        this.click('a.upload-data');
+    });
+};
+
+casper.fillAndSubmitUploadDataForm = function (vals) {
+    this.test.assertExists('form#upload_data');
+    this.server.watchPath(path, {content: JSON.stringify({category: DEFAULT_CATEGORY, info: 'ok'})});
+    this.fill('form#upload_data', vals);
+    this.click('form#upload_data input[type="submit"]');
+};
+
 
 casper.getCategoryEditForm = function (id) {
     this.mouseEvent('mouseover', 'div.leaflet-control-layers');
@@ -28,24 +65,7 @@ casper.getCategoryEditForm = function (id) {
 
 casper.categoryResponsePOST = function (settings) {
     var response = {
-        "category": {
-            "icon_class": "Default",
-            "name": "Elephants",
-            "display_on_load": true,
-            "pk": 62,
-            "pictogram_url": null,
-            "options": {
-                "opacity": null,
-                "weight": null,
-                "fillColor": "",
-                "color": "",
-                "stroke": true,
-                "smoothFactor": null,
-                "dashArray": "",
-                "fillOpacity": null,
-                "fill": true
-            }
-        }
+        "category": DEFAULT_CATEGORY
     };
     for (var key in settings) {
         if (typeof response[key] !== "undefined") {
