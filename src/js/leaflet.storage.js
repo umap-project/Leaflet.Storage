@@ -55,6 +55,18 @@ L.Storage.Map.include({
             alert("ImplementationError: you must provide a storage_id for Storage.Map.");
         }
 
+        var edited_feature = null;
+        this.__defineGetter__("edited_feature", function(){
+            return edited_feature;
+        });
+
+        this.__defineSetter__("edited_feature", function(feature){
+            if (edited_feature) {
+                edited_feature.endEdit();
+            }
+            edited_feature = feature;
+        });
+
         if (this.options.allowEdit) {
             // Layer for items added by users
             var drawnItems = new L.LayerGroup();
@@ -81,9 +93,7 @@ L.Storage.Map.include({
             });
             this.addLayer(drawnItems);
             L.Storage.on('ui:end', function (e) {
-                if (this.edited_feature) {
-                    this.edited_feature.endEdit();
-                }
+                this.edited_feature = null;
             }, this);
         }
 
