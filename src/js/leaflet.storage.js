@@ -275,7 +275,10 @@ L.Storage.Map.include({
                     if (data.category) {
                         var layer = map.storage_overlays[data.category.pk];
                         layer.on('dataloaded', function (e) {
-                            map.fitBounds(layer.getBounds());
+                            var bounds = layer.getBounds();
+                            if (bounds.isValid()) {
+                                map.fitBounds(bounds);
+                            }
                         });
                         layer.clearLayers();
                         layer.fetchData();
