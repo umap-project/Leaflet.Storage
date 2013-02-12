@@ -20,6 +20,7 @@ L.Storage.on('ui:start', function (e) {
     if (e.cssClass) {
         L.DomUtil.addClass(div, e.cssClass);
     }
+    L.Storage.fire('ui:ready');
     var close = function (e) {
         L.Storage.fire('ui:end');
     };
