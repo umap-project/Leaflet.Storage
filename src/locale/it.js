@@ -1,5 +1,4 @@
-it = {
-    // controls.js
+var it = {
     "Go to home page": "Torna alla pagina principale",
     "Caption and credits": "Legenda e riconoscimenti",
     "Add a category": "Aggiungi una categoria",
@@ -14,17 +13,20 @@ it = {
     "Center map on your location": "Centra la mappa sulla tua posizione",
     "Jump to location": "Vai ad una località",
     "Sorry, no location found for {location}": "Mi dispiace, nessun risultato per {location}",
-    // features.js
     "Feature updated with success!": "POI aggiornato con successo!",
-    // layer.js
     "Unkown geometry.type: {type}": "Tipo di geometria sconosciuto: {type}",
     "Category successfuly edited": "Categoria modificata con successo",
-    // storage.js
     "Successfully updated tilelayers": "Livelli di sfondo aggiornati con successo",
-    // Xhr.js
     "Problem in the response format": "Problema nel formato della risposta",
     "Action not allowed :(": "Azione non permessa :(",
     "Problem in the response": "Problema nella risposta",
-    "Double-click to edit": "Doppio click per modificare"
+    "Double-click to edit": "Doppio click per modificare",
+    "Change shape": "",
+    "Change symbol": "",
+    "Choose a shape": "",
+    "Edit map settings": "",
+    "Remove icon shape": "",
+    "Remove icon symbol": ""
 };
+
 L.S.registerLocale("it", it);
