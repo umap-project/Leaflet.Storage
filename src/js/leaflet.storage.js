@@ -64,7 +64,7 @@ L.Storage.Map.include({
         });
 
         this.__defineSetter__("edited_feature", function(feature){
-            if (edited_feature) {
+            if (edited_feature && edited_feature != feature) {
                 edited_feature.endEdit();
             }
             edited_feature = feature;
