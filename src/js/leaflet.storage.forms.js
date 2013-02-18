@@ -13,9 +13,7 @@ L.Storage.FormHelper = L.Class.extend({
         }
         this.initForm();
         for (var i=0, l=this.form.elements.length; i<l; i++) {
-            if (this.form.elements.hasOwnProperty(i)) {
-                this.initElement(this.form.elements[i]);
-            }
+            this.initElement(this.form.elements[i]);
         }
     },
 
