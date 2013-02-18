@@ -12,9 +12,9 @@ L.Storage.FormHelper = L.Class.extend({
             L.DomEvent.on(this.form, "submit", this.onsubmit, this);
         }
         this.initForm();
-        for (var idx in this.form.elements) {
-            if (this.form.elements.hasOwnProperty(idx)) {
-                this.initElement(this.form.elements[idx]);
+        for (var i=0, l=this.form.elements.length; i<l; i++) {
+            if (this.form.elements.hasOwnProperty(i)) {
+                this.initElement(this.form.elements[i]);
             }
         }
     },
