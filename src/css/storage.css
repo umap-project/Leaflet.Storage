@@ -324,6 +324,9 @@ a.edit-overlay {
 .leaflet-container .leaflet-control-zoom {
     margin-left: 10px;
 }
+.leaflet-top {
+    z-index: 1001;
+}
 
 /* ****** */
 /* Mobile */
