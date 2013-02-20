@@ -1,6 +1,6 @@
 # Leaflet.Storage changelog
 
-## 0.1.x
+## 0.2.0
 
 - handle auth from popup
 - add a control for map settings management
