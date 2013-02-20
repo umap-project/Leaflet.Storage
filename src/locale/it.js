@@ -21,12 +21,12 @@ var it = {
     "Action not allowed :(": "Azione non permessa :(",
     "Problem in the response": "Problema nella risposta",
     "Double-click to edit": "Doppio click per modificare",
-    "Change shape": "",
-    "Change symbol": "",
-    "Choose a shape": "",
-    "Edit map settings": "",
-    "Remove icon shape": "",
-    "Remove icon symbol": ""
+    "Change shape": "Cambia la forma",
+    "Change symbol": "Cambia il simbolo",
+    "Choose a shape": "Schegli la forma",
+    "Edit map settings": "Modifia le impostazioni",
+    "Remove icon shape": "Rimovi la forma",
+    "Remove icon symbol": "Rimovi il simbolo"
 };
 
 L.S.registerLocale("it", it);
