@@ -1,0 +1,32 @@
+var pt = {
+    "Go to home page": "Voltar a página inicial",
+    "Caption and credits": "Título e créditos",
+    "Add a category": "Adicionar categoria",
+    "Edit": "Editar",
+    "Embed this map": "Exportar este mapa",
+    "Edit map infos": "Editar informações do mapa",
+    "Update permissions and editors": "Alterar autorizações e editores",
+    "Change tilelayers": "Alterar mapa de fundo",
+    "Save this center and zoom": "Guardar zoom e centro corrente",
+    "Enable/disable editing": "Ativar/desativar modo de edição",
+    "Upload data": "Carregar ficheiro",
+    "Center map on your location": "Focar mapa na sua localização",
+    "Jump to location": "Ir a uma localidade",
+    "Sorry, no location found for {location}": "Desculpe, nenhum resultado para {location}",
+    "Feature updated with success!": "Objeto atualizado com sucesso!",
+    "Unkown geometry.type: {type}": "Tipo geometria desconhecida: {type}",
+    "Category successfuly edited": "Categoria atualizada com sucesso",
+    "Successfully updated tilelayers": "Mapa de fundo atualizado com sucesso",
+    "Problem in the response format": "Problema no formato da resposta",
+    "Action not allowed :(": "Ação não permitida :(",
+    "Problem in the response": "Problema na resposta do servidor",
+    "Double-click to edit": "Duplo-clique para editar",
+    "Change shape": "Alterar forma",
+    "Change symbol": "Alterar pictograma",
+    "Choose a shape": "Escolher uma forma",
+    "Edit map settings": "Editar parâmetros",
+    "Remove icon shape": "Retirar forma",
+    "Remove icon symbol": "Retirar pictograma"
+};
+
+L.S.registerLocale("pt", pt);
