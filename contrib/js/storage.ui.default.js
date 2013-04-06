@@ -58,7 +58,7 @@ L.Storage.on('ui:alert', function (e) {
         .on(close_link, 'click', L.DomEvent.stopPropagation)
         .on(close_link, 'click', L.DomEvent.preventDefault)
         .on(close_link, 'click', close);
-    window.setTimeout(close, 3000);
+    window.setTimeout(close, e.duration || 3000);
 });
 
 /*
