@@ -1,6 +1,6 @@
 var de = {
     "Go to home page": "Ga naar homepagina",
-    "Caption and credits": "Credits",
+    "Caption and credits": "Onderschrift en credits",
     "Add a category": "Voeg categorie toe",
     "Edit": "Bewerken",
     "Embed this map": "Sluit deze kaart in",
