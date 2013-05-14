@@ -1,5 +1,11 @@
 # Leaflet.Storage changelog
 
+## 0.3.x
+
+- add a setting to display map caption on map load (cf #50)
+- add nl translation
+
+
 ## 0.2.0
 
 - handle auth from popup
