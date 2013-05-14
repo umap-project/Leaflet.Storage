@@ -290,15 +290,11 @@ L.Storage.AttributionControl = L.Control.extend({
         var link = L.DomUtil.create('a', "", container);
         link.href = '#';
         link.title = L.S._("Caption and credits");
-        var fn = function (e) {
-            var url = L.Util.template(this.options.urls.map_infos, {'map_id': map.options.storage_id});
-            L.Storage.Xhr.get(url);
-        };
 
         L.DomEvent
             .on(link, 'click', L.DomEvent.stopPropagation)
             .on(link, 'click', L.DomEvent.preventDefault)
-            .on(link, 'click', fn, map)
+            .on(link, 'click', map.displayCaption, map)
             .on(link, 'dblclick', L.DomEvent.stopPropagation);
 
         return container;

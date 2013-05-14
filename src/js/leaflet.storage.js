@@ -25,7 +25,8 @@ L.Map.mergeOptions({
     editInOSMControl: false,
     editInOSMControlOptions: {},
     scaleControl: true,
-    miniMap: false
+    miniMap: false,
+    displayCaptionOnLoad: false
 });
 
 L.Storage.Map.include({
@@ -125,6 +126,10 @@ L.Storage.Map.include({
             if(this.options.categories.hasOwnProperty(j)){
                 this._createOverlay(this.options.categories[j]);
             }
+        }
+
+        if (options.displayCaptionOnLoad) {
+            this.displayCaption();
         }
     },
 
@@ -318,6 +323,11 @@ L.Storage.Map.include({
         L.Storage.Xhr.get(url, {
             'callback': handle_response
         });
+    },
+
+    displayCaption: function () {
+        var url = L.Util.template(this.options.urls.map_infos, {'map_id': this.options.storage_id});
+        L.Storage.Xhr.get(url);
     }
 
 });
