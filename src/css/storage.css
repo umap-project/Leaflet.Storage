@@ -16,37 +16,42 @@
 /* Controls    */
 /* *********** */
 
-.leaflet-control-draw, .leaflet-control-embed,
-.leaflet-control-infos, .leaflet-control-home,
-.leaflet-control-layers, .leaflet-control-locate,
-.leaflet-control-search {
-    background: none repeat scroll 0 0 #F8F8F9;
+.leaflet-control-embed > a,
+.leaflet-control-infos > a, .leaflet-control-home,
+.leaflet-control-layers > a, .leaflet-control-locate,
+.leaflet-control-search, .leaflet-control-edit-toggle {
+    background: none no-repeat scroll center center #F8F8F9;
     border: 1px solid #888888;
     border-radius: 5px 5px 5px 5px;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
 }
-.leaflet-control-draw a {
+.leaflet-draw a {
     height: 46px;
     width: 46px;
     display: none;
     margin-top: 0;
-    margin-bottom: -6px; /* inline-blocks show spaces */
+    margin-bottom: -5px; /*inline-blocks show spaces*/
     border-bottom: none;
-    background-color: transparent;
+    /*background-color: transparent;*/
     border-right: 1px solid #AAAAAA;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
 }
-.leaflet-control-draw a:first-child {
+.leaflet-draw-toolbar a:first-child {
     -webkit-border-radius: 4px 0 0 4px;
-            border-radius: 4px 0 0 4px;
-    }
-.leaflet-control-draw a:last-child {
+    border-radius: 4px 0 0 4px;
+}
+.leaflet-draw-toolbar a:last-child {
     -webkit-border-radius: 0 4px 4px 0;
-            border-radius: 0 4px 4px 0;
+    border-radius: 0 4px 4px 0;
     border-right: none;
-    }
-
-.leaflet-control-draw a:hover {
+}
+/*.leaflet-bar a:hover {
     background-color: transparent;
+}
+*/
+.leaflet-draw-toolbar {
+    margin-top: 0;
 }
 .leaflet-control-embed a,
 .leaflet-control-infos a,
@@ -101,11 +106,6 @@
     height: 36px;
     line-height: 36px;
 }
-.leaflet-control-draw a {
-    background-position: 50% 50%;
-    background-repeat: no-repeat;
-    display: none;
-}
 a.update-map-extent {
     background-image: url("../img/update-extent.png");
 }
@@ -124,21 +124,64 @@ a.upload-data {
 a.update-map-settings {
     background-image: url("../img/settings.png");
 }
-.storage-edit-enabled .leaflet-control-draw a {
+.leaflet-draw-toolbar .leaflet-draw-draw-marker {
+    background-position: 50% 50%;
+    background-image: url("../img/draw_marker.png");
+}
+.leaflet-draw-toolbar .leaflet-draw-draw-polyline {
+    background-position: 50% 50%;
+    background-image: url("../img/draw_polyline.png");
+}
+.leaflet-draw-toolbar .leaflet-draw-draw-polygon {
+    background-position: 50% 50%;
+    background-image: url("../img/draw_polygon.png");
+}
+.storage-edit-enabled .leaflet-draw a {
     display: inline-block;
 }
-.leaflet-control-draw a.leaflet-control-edit-toggle {
+.leaflet-draw-section {
+    display: inline-block;
+    margin-right: 24px;
+}
+.leaflet-draw-actions {
+    top: 45px;
+}
+.leaflet-draw-actions a {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.5);
+    height: 28px;
+    position: relative;
+    top: 8px;
+    border-radius: 0!important;
+}
+.leaflet-draw-actions a:hover {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.6);
+}
+.leaflet-draw-actions li:first-child a:before {
+    border-bottom: 8px solid rgba(0, 0, 0, 0.5);
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    content: "";
+    left: 8;
+    position: absolute;
+    top: -8px;
+}
+.leaflet-draw a.leaflet-control-edit-toggle {
     background-image: url("../img/toggle-edit.png");
     display: inline-block;
+    float: right;
+    margin: 0;
 }
 a.edit-overlay {
+    border: medium none;
+    border-radius: inherit;
+    box-shadow: none;
+    color: #A5A5A5;
     display: none;
     float: right;
-    text-decoration: underline;
     font-size: 12px;
-    line-height: 21px;
-    color: #a5a5a5;
     font-style: italic;
+    line-height: 21px;
+    text-decoration: underline;
 }
 .storage-edit-enabled .leaflet-control-layers-expanded .edit-overlay {
     display: inline-block;

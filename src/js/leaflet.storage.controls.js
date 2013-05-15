@@ -1,42 +1,186 @@
-L.Control.ToggleEdit = L.Control.Draw.extend({
+/*
+* Hack for handling a custom tooltip on buttons over.
+*/
+L.Toolbar.prototype._createButtonOrig = L.Toolbar.prototype._createButton;
+
+L.Toolbar.include({
+
+    _createButton: function (options) {
+        var title = options.title;
+        options.title = "";  // We don't want our tooltip AND default HTML one
+        var button = this._createButtonOrig(options);
+        L.DomEvent.on(button, 'mouseover', function (e) {
+            L.Storage.fire('ui:tooltip', {content: L._(title)});
+        });
+        return button;
+    },
+
+    _showActionsToolbar: function () {
+        var buttonIndex = this._activeMode.buttonIndex,
+        lastButtonIndex = this._lastButtonIndex,
+        buttonWidth = 46, // TODO: this should be calculated
+        borderWidth = 1, // TODO: this should also be calculated
+        toolbarPosition = (buttonIndex * buttonWidth) + (buttonIndex * borderWidth) + 10;
+
+        // Correctly position the cancel button
+        this._actionsContainer.style.left = toolbarPosition + 'px';
+
+        if (buttonIndex === 0) {
+            L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
+            L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-top');
+        }
+
+        if (buttonIndex === lastButtonIndex) {
+            L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
+            L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
+        }
+
+        this._actionsContainer.style.display = 'block';
+    }
+
+});
+
+L.Storage.SettingsToolbar = L.Toolbar.extend({
+
+    addToolbar: function (map) {
+        var container = L.DomUtil.create('div', 'leaflet-draw-section'),
+        buttonIndex = 0,
+        buttonClassPrefix = 'leaflet-draw-draw';
+        this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar');
+
+        this._createUploadButton(map, this._toolbarContainer);
+        this._createUpdateMapExtentButton(map, this._toolbarContainer);
+        this._createUpdateMapTileLayersButton(map, this._toolbarContainer);
+        this._createUpdateMapPermissionsButton(map, this._toolbarContainer);
+        this._createUpdateMapInfosButton(map, this._toolbarContainer);
+        this._createUpdateMapSettingsButton(map, this._toolbarContainer);
+
+        container.appendChild(this._toolbarContainer);
+        return container;
+    },
+
+    _createUploadButton: function(map, container) {
+        this._createButton({
+            title: L._('Upload data'),
+            className: 'upload-data',
+            container: container,
+            callback: map.uploadData,
+            context: map
+        });
+    },
+
+    _createUpdateMapSettingsButton: function(map, container) {
+        this._createButton({
+            title: L._('Edit map settings'),
+            className: 'update-map-settings',
+            container: container,
+            callback: map.updateSettings,
+            context: map
+        });
+    },
+
+    _createUpdateMapInfosButton: function(map, container) {
+        this._createButton({
+            title: L._('Edit map infos'),
+            className: 'update-map-infos',
+            container: container,
+            callback: map.updateInfos,
+            context: map
+        });
+    },
+
+    _createUpdateMapPermissionsButton: function(map, container) {
+        this._createButton({
+            title: L._('Update permissions and editors'),
+            className: 'update-map-permissions',
+            container: container,
+            callback: map.updatePermissions,
+            context: map
+        });
+    },
+
+    _createUpdateMapTileLayersButton: function(map, container) {
+        this._createButton({
+            title: L._('Change tilelayers'),
+            className: 'update-map-tilelayers',
+            container: container,
+            callback: map.updateTileLayers,
+            context: map
+        });
+    },
+
+    _createUpdateMapExtentButton: function(map, container) {
+        this._createButton({
+            title: L._('Save this center and zoom'),
+            className: 'update-map-extent',
+            container: container,
+            callback: map.updateExtent,
+            context: map
+        });
+    }
+
+});
+
+L.Storage.EditControl = L.Control.Draw.extend({
     options: {
         position: 'topright',
-        rectangle: null,  // Later
-        circle: null  // Later
+        draw: {
+            marker: {
+                title: L._('Draw a marker')
+            },
+            rectangle: null,  // Later
+            circle: null  // Later
+        },
+        edit: false // Later...
     },
 
     initialize: function(map, options) {
+        this.editableLayers = new L.FeatureGroup();
+        map.addLayer(this.editableLayers);
+        this.options.edit.featureGroup = this.editableLayers;
         this._map = map;
         if (!map.options.enableMarkerDraw) {
-            options.marker = null;
+            options.draw.marker = null;
+        } else {
+            this.options.draw.marker.icon = new L.Storage.Icon.Default(this._map);
         }
         if (!map.options.enablePolylineDraw) {
-            options.polyline = null;
+            options.draw.polyline = null;
         }
         if (!map.options.enablePolygonDraw) {
-            options.polygon = null;
+            options.draw.polygon = null;
         }
+
         L.Control.Draw.prototype.initialize.call(this, options);
-        if (this.options.marker) {
-            this.options.marker.icon = new L.Storage.Icon.Default(this._map);
-        }
+
+        // Settings toolbar
+        var toolbar = new L.Storage.SettingsToolbar();
+        id = L.stamp(toolbar);
+        this._toolbars[id] = toolbar;
+        // Listen for when toolbar is enabled
+        this._toolbars[id].on('enable', this._toolbarEnabled, this);
     },
 
     onAdd: function (map) {
         var container = L.Control.Draw.prototype.onAdd.call(this, map);
-        this._createUploadButton(map, container);
-        this._createUpdateMapExtentButton(map, container);
-        this._createUpdateMapTileLayersButton(map, container);
-        this._createUpdateMapPermissionsButton(map, container);
-        this._createUpdateMapInfosButton(map, container);
-        this._createUpdateMapSettingsButton(map, container);
         this._createToggleButton(map, container);
         return container;
     },
 
+    _enableEdit: function(e, map) {
+        L.DomUtil.addClass(map._container, "storage-edit-enabled");
+        map.editEnabled = true;
+    },
+
+    _disableEdit: function(e, map, container) {
+        L.DomUtil.removeClass(map._container, "storage-edit-enabled");
+        map.editEnabled = false;
+        // this._disableInactiveModes();
+    },
+
     _createToggleButton: function (map, container) {
         var self = this;
-        var link = L.DomUtil.create('a', "leaflet-control-edit-toggle", container);
+        var link = L.DomUtil.create('a', "leaflet-draw-section leaflet-control-edit-toggle", container);
         link.href = '#';
         link.title = L._("Enable/disable editing");
 
@@ -52,138 +196,44 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
         .addListener(link, 'click', L.DomEvent.stopPropagation)
         .addListener(link, 'click', L.DomEvent.preventDefault)
         .addListener(link, 'click', fn);
-    },
-
-    _createUpdateMapExtentButton: function(map, container) {
-        this._createButton(
-            L._('Save this center and zoom'),
-            'update-map-extent',
-            container,
-            function(e) { map.updateExtent();},
-            {}
-        );
-    },
-
-    _createUpdateMapTileLayersButton: function(map, container) {
-        this._createButton(
-            L._('Change tilelayers'),
-            'update-map-tilelayers',
-            container,
-            function(e) { map.updateTileLayers();},
-            {}
-        );
-    },
-
-    _createUpdateMapPermissionsButton: function(map, container) {
-        this._createButton(
-            L._('Update permissions and editors'),
-            'update-map-permissions',
-            container,
-            function(e) { map.updatePermissions();},
-            {}
-        );
-    },
-
-    _createUpdateMapInfosButton: function(map, container) {
-        this._createButton(
-            L._('Edit map infos'),
-            'update-map-infos',
-            container,
-            function(e) { map.updateInfos();},
-            {}
-        );
-    },
-
-    _createUpdateMapSettingsButton: function(map, container) {
-        this._createButton(
-            L._('Edit map settings'),
-            'update-map-settings',
-            container,
-            function(e) { map.updateSettings();},
-            {}
-        );
-    },
-
-    _createUploadButton: function(map, container) {
-        this._createButton(
-            L._('Upload data'),
-            'upload-data',
-            container,
-            function() { map.uploadData(); },
-            {}
-        );
-    },
-
-    _enableEdit: function(e, map) {
-        L.DomUtil.addClass(map._container, "storage-edit-enabled");
-        map.editEnabled = true;
-    },
-
-    _disableEdit: function(e, map, container) {
-        L.DomUtil.removeClass(map._container, "storage-edit-enabled");
-        map.editEnabled = false;
-        this._disableInactiveModes();
-    },
-
-    _createButton: function (title, className, container, fn, context) {
-        var button = L.Control.Draw.prototype._createButton.call(this, title, className, container, fn, context);
-        button.title = "";  // We don't want our tooltip AND default HTML one
-        L.DomEvent.on(button, 'mouseover', function (e) {
-            L.Storage.fire('ui:tooltip', {content: L._(title)});
-        });
-        return button;
     }
+
 });
 
 L.Storage.Map.addInitHook(function () {
     if (this.options.allowEdit) {
         var options = this.options.editOptions ? this.options.editOptions : {};
-        this.toggleEditControl = new L.Control.ToggleEdit(this, options);
+        this.toggleEditControl = new L.Storage.EditControl(this, options);
         this.addControl(this.toggleEditControl);
     }
 });
 
-L.Marker.Draw.include({
 
-    _onClick: function (e) {
+
+L.Draw.Marker.include({
+
+    _fireCreatedEvent: function () {
         // Overriding to instanciate our own Marker class
         // How to do it in a cleaner way? Asking upstream to add a hook?
-        this._map.fire(
-            'draw:marker-created',
-            { marker: new L.Storage.Marker(this._map, null, this._marker.getLatLng()) }
-        );
-        this.disable();
+        var marker = new L.Storage.Marker(this._map, null, this._marker.getLatLng());
+        L.Draw.Feature.prototype._fireCreatedEvent.call(this, marker);
     }
 });
 
-L.Polyline.Draw.include({
+L.Draw.Polyline.include({
 
-    _finishShape: function () {
-        this._map.fire(
-            'draw:poly-created',
-            { poly: new L.Storage.Polyline(this._map, null, this._poly.getLatLngs(), this.options.shapeOptions) }
-        );
-        this.disable();
+    _fireCreatedEvent: function () {
+        var poly = new L.Storage.Polyline(this._map, null, this._poly.getLatLngs(), this.options.shapeOptions);
+        L.Draw.Feature.prototype._fireCreatedEvent.call(this, poly);
     }
 
 });
 
-L.Polygon.Draw.include({
+L.Draw.Polygon.include({
 
-    initialize: function(map, options) {
-        // Polygon is set not clickable by default by Leaflet.Draw
-        // to workaround a bug
-        // See: https://github.com/jacobtoye/Leaflet.draw/issues/9
-        L.Polyline.Draw.prototype.initialize.call(this, map, options);
-        this.options.shapeOptions.clickable = true;
-    },
-
-    _finishShape: function () {
-        this._map.fire(
-            'draw:poly-created',
-            { poly: new L.Storage.Polygon(this._map, null, this._poly.getLatLngs(), this.options.shapeOptions) }
-        );
-        this.disable();
+    _fireCreatedEvent: function () {
+        var poly = new L.Storage.Polygon(this._map, null, this._poly.getLatLngs(), this.options.shapeOptions);
+        L.Draw.Feature.prototype._fireCreatedEvent.call(this, poly);
     }
 
 });

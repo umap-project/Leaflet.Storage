@@ -74,17 +74,16 @@ L.Storage.Map.include({
         if (this.options.allowEdit) {
             // Layer for items added by users
             var drawnItems = new L.LayerGroup();
-            this.on('draw:marker-created', function (e) {
-                drawnItems.addLayer(e.marker);
-                e.marker.edit(e);
-            });
-            this.on('draw:poly-created', function (e) {
-                drawnItems.addLayer(e.poly);
-                e.poly.editing.enable();
-                if (!e.latlng) {
-                    e.latlng = e.poly._latlngs[e.poly._latlngs.length-1];
+            this.on('draw:created', function (e) {
+                console.log('draw:created', e);
+                drawnItems.addLayer(e.layer);
+                if (e.layerType == L.Draw.Polyline.TYPE || e.layerType == L.Draw.Polygon.TYPE) {
+                    e.layer.editing.enable();
+                    if (!e.latlng) {
+                        e.latlng = e.layer._latlngs[e.layer._latlngs.length-1];
+                    }
                 }
-                e.poly.edit(e);
+                e.layer.edit(e);
             });
             this.on("popupclose", function(e) {
                 // remove source if it has not been created (no storage_id)
