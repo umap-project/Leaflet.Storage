@@ -4,6 +4,7 @@
 
 - add a setting to display map caption on map load (cf #50)
 - add nl translation
+- update to Leaflet 0.6-dev and Leaflet.Draw 0.2
 
 
 ## 0.2.0
