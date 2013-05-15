@@ -24,7 +24,7 @@ L.Storage.Xhr = {
                 }
                 catch (err) {
                     console.log(err);
-                    L.Storage.fire("ui:alert", {"content": L.S._("Problem in the response format"), "level": "error"});
+                    L.Storage.fire("ui:alert", {"content": L._("Problem in the response format"), "level": "error"});
                 }
                 if (data.login_required) {
                     // login_required should be an URL for the login form
@@ -44,10 +44,10 @@ L.Storage.Xhr = {
                 }
             }
             else if (this.status == 403) {
-                L.Storage.fire("ui:alert", {"content": L.S._("Action not allowed :("), "level": "error"});
+                L.Storage.fire("ui:alert", {"content": L._("Action not allowed :("), "level": "error"});
             }
             else {
-                L.Storage.fire("ui:alert", {"content": L.S._("Problem in the response"), "level": "error"});
+                L.Storage.fire("ui:alert", {"content": L._("Problem in the response"), "level": "error"});
             }
         };
 

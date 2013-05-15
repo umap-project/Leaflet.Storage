@@ -86,7 +86,7 @@ L.Storage.FeatureMixin = {
                 // Update object, if it's new
                 self.updateFromBackEnd(data);
                 L.Storage.fire('ui:end');
-                L.Storage.fire("ui:alert", {"content": L.S._("Feature updated with success!"), "level": "info"});
+                L.Storage.fire("ui:alert", {"content": L._("Feature updated with success!"), "level": "info"});
             }
         };
         var submit = function (e) {
@@ -446,7 +446,7 @@ L.Storage.PathMixin = {
 
     _onMouseOver: function (e) {
         if (this.map.editEnabled && !this.editing._enabled) {
-            L.Storage.fire('ui:tooltip', {content: L.S._("Double-click to edit")});
+            L.Storage.fire('ui:tooltip', {content: L._("Double-click to edit")});
         }
     }
 

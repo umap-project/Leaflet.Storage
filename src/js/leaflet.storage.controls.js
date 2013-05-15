@@ -38,7 +38,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
         var self = this;
         var link = L.DomUtil.create('a', "leaflet-control-edit-toggle", container);
         link.href = '#';
-        link.title = L.S._("Enable/disable editing");
+        link.title = L._("Enable/disable editing");
 
         var fn = function (e) {
             if(map.editEnabled) {
@@ -56,7 +56,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
 
     _createUpdateMapExtentButton: function(map, container) {
         this._createButton(
-            L.S._('Save this center and zoom'),
+            L._('Save this center and zoom'),
             'update-map-extent',
             container,
             function(e) { map.updateExtent();},
@@ -66,7 +66,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
 
     _createUpdateMapTileLayersButton: function(map, container) {
         this._createButton(
-            L.S._('Change tilelayers'),
+            L._('Change tilelayers'),
             'update-map-tilelayers',
             container,
             function(e) { map.updateTileLayers();},
@@ -76,7 +76,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
 
     _createUpdateMapPermissionsButton: function(map, container) {
         this._createButton(
-            L.S._('Update permissions and editors'),
+            L._('Update permissions and editors'),
             'update-map-permissions',
             container,
             function(e) { map.updatePermissions();},
@@ -86,7 +86,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
 
     _createUpdateMapInfosButton: function(map, container) {
         this._createButton(
-            L.S._('Edit map infos'),
+            L._('Edit map infos'),
             'update-map-infos',
             container,
             function(e) { map.updateInfos();},
@@ -96,7 +96,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
 
     _createUpdateMapSettingsButton: function(map, container) {
         this._createButton(
-            L.S._('Edit map settings'),
+            L._('Edit map settings'),
             'update-map-settings',
             container,
             function(e) { map.updateSettings();},
@@ -106,7 +106,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
 
     _createUploadButton: function(map, container) {
         this._createButton(
-            L.S._('Upload data'),
+            L._('Upload data'),
             'upload-data',
             container,
             function() { map.uploadData(); },
@@ -129,7 +129,7 @@ L.Control.ToggleEdit = L.Control.Draw.extend({
         var button = L.Control.Draw.prototype._createButton.call(this, title, className, container, fn, context);
         button.title = "";  // We don't want our tooltip AND default HTML one
         L.DomEvent.on(button, 'mouseover', function (e) {
-            L.Storage.fire('ui:tooltip', {content: L.S._(title)});
+            L.Storage.fire('ui:tooltip', {content: L._(title)});
         });
         return button;
     }
@@ -197,7 +197,7 @@ L.Control.Embed = L.Control.extend({
 
         var link = L.DomUtil.create('a', "", container);
         link.href = '#';
-        link.title = L.S._("Embed this map");
+        link.title = L._("Embed this map");
         var fn = function (e) {
             var url = L.Util.template(this.options.urls.map_embed, {'map_id': map.options.storage_id});
             L.Storage.Xhr.get(url);
@@ -238,7 +238,7 @@ L.Storage.ControlLayers = L.Control.Layers.extend({
 
         if (obj.overlay) {
             var link = L.DomUtil.create('a', "edit-overlay", label);
-            link.innerHTML = link.title = L.S._('Edit');
+            link.innerHTML = link.title = L._('Edit');
             link.href = '#';
             link.id = 'edit_overlay_' + obj.layer.storage_id;
             var fn = function (e) {
@@ -257,7 +257,7 @@ L.Storage.ControlLayers = L.Control.Layers.extend({
 
     _createNewOverlayButton: function (map, container) {
         var link = L.DomUtil.create('a', "edit-overlay add-overlay", container);
-        link.innerHTML = link.title = L.S._('Add a category');
+        link.innerHTML = link.title = L._('Add a category');
         link.href = '#';
         var self = this;
         var fn = function (e) {
@@ -289,7 +289,7 @@ L.Storage.AttributionControl = L.Control.extend({
 
         var link = L.DomUtil.create('a', "", container);
         link.href = '#';
-        link.title = L.S._("Caption and credits");
+        link.title = L._("Caption and credits");
 
         L.DomEvent
             .on(link, 'click', L.DomEvent.stopPropagation)
@@ -319,7 +319,7 @@ L.Storage.HomeControl = L.Control.extend({
             link = L.DomUtil.create('a', "", container);
 
         link.href = '/';
-        link.title = L.S._("Go to home page");
+        link.title = L._("Go to home page");
 
         return container;
     }
@@ -342,7 +342,7 @@ L.Storage.LocateControl = L.Control.extend({
             container = L.DomUtil.create('div', className),
             link = L.DomUtil.create('a', "", container);
         link.href = '#';
-        link.title = L.S._("Center map on your location");
+        link.title = L._("Center map on your location");
         var fn = function (e) {
             map.locate({
                 setView: true,
@@ -382,7 +382,7 @@ L.Storage.JumpToLocationControl = L.Control.extend({
         var form = L.DomUtil.create('form', "", container);
         var input = L.DomUtil.create('input', "", form);
         link.href = '#';
-        link.title = input.placeholder = L.S._("Jump to location");
+        link.title = input.placeholder = L._("Jump to location");
         link.innerHTML = "&nbsp;";
         var fn = function (e) {
             var search_terms = input.value;
@@ -415,7 +415,7 @@ L.Storage.JumpToLocationControl = L.Control.extend({
                         map.setZoom(15);
                     }
                     else {
-                        L.S.fire('ui:alert', {content: L.S._('Sorry, no location found for {location}', {location: search_terms})});
+                        L.S.fire('ui:alert', {content: L._('Sorry, no location found for {location}', {location: search_terms})});
                     }
                 }
             });

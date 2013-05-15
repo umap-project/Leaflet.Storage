@@ -29,4 +29,4 @@ var pt = {
     "Remove icon symbol": "Retirar pictograma"
 };
 
-L.S.registerLocale("pt", pt);
+L.registerLocale("pt", pt);

@@ -29,4 +29,4 @@ var it = {
     "Remove icon symbol": "Rimovi il simbolo"
 };
 
-L.S.registerLocale("it", it);
+L.registerLocale("it", it);

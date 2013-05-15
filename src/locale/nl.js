@@ -1,4 +1,4 @@
-var de = {
+var nl = {
     "Go to home page": "Ga naar homepagina",
     "Caption and credits": "Onderschrift en credits",
     "Add a category": "Voeg categorie toe",
@@ -29,6 +29,4 @@ var de = {
     "Sorry, no location found for {location}": "Helaas, geen locatie gevonden voor {location}"
 };
 
-
-L.S.registerLocale("nl", nl);
-
+L.registerLocale("nl", nl);

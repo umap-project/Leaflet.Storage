@@ -82,7 +82,7 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
                 layer = this._polygonToLayer(geojson, latlngs);
                 break;
             default:
-                throw new Error(L.S._("Unkown geometry.type: {type}", {type: geometry.type}));
+                throw new Error(L._("Unkown geometry.type: {type}", {type: geometry.type}));
         }
         return this.addLayer(layer);
     },
@@ -207,7 +207,7 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
                     // working on it
                     self.display_on_load = true;
                     self.connectToMap();
-                    L.Storage.fire('ui:alert', {'content': L.S._("Category successfuly edited"), 'level': 'info'});
+                    L.Storage.fire('ui:alert', {'content': L._("Category successfuly edited"), 'level': 'info'});
                     L.Storage.fire('ui:end');
                 }
                 else {

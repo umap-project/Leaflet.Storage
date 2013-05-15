@@ -29,4 +29,4 @@ var fr = {
     "Remove icon symbol": "Annuler le picto"
 };
 
-L.S.registerLocale("fr", fr);
+L.registerLocale("fr", fr);

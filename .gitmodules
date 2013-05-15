@@ -16,3 +16,6 @@
 [submodule "reqs/edit_in_osm"]
 	path = reqs/edit_in_osm
 	url = git://github.com/yohanboniface/Leaflet.EditInOSM.git
+[submodule "reqs/i18n"]
+	path = reqs/i18n
+	url = git://github.com/yohanboniface/Leaflet.i18n.git

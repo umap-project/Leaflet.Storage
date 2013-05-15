@@ -126,7 +126,7 @@ L.Storage.FormHelper.IconField = L.Storage.FormHelper.extend({
         this.buttonsContainer = L.DomUtil.create('div', '', this.headerContainer);
         this.buttonsContainer.style.float = "left";
         var changeClassButton = L.DomUtil.create('a', '', this.buttonsContainer);
-        changeClassButton.innerHTML = L.S._('Change shape');
+        changeClassButton.innerHTML = L._('Change shape');
         changeClassButton.href = "#";
         changeClassButton.style.display = "block";
         var addShape = function (_iconClass) {
@@ -144,12 +144,12 @@ L.Storage.FormHelper.IconField = L.Storage.FormHelper.extend({
                 this.shapesContainer.innerHTML = "";
                 this.pictogramsContainer.innerHTML = "";
                 var title = L.DomUtil.create('h5', '', this.shapesContainer);
-                title.innerHTML = L.S._("Choose a shape");
+                title.innerHTML = L._("Choose a shape");
                 for (var idx in this.iconClasses) {
                     addShape(this.iconClasses[idx]);
                 }
                 var deleteButton = L.DomUtil.create("a", "storage-delete-button", self.shapesContainer);
-                deleteButton.innerHTML = L.S._('Remove icon shape');
+                deleteButton.innerHTML = L._('Remove icon shape');
                 deleteButton.href = "#";
                 deleteButton.style.display = "block";
                 deleteButton.style.clear = "both";
@@ -162,7 +162,7 @@ L.Storage.FormHelper.IconField = L.Storage.FormHelper.extend({
     init_pictogram: function () {
         var changePictoButton = L.DomUtil.create('a', '', this.buttonsContainer),
             self = this;
-        changePictoButton.innerHTML = L.S._('Change symbol');
+        changePictoButton.innerHTML = L._('Change symbol');
         changePictoButton.style.display = "block";
         changePictoButton.href = "#";
         var addPictogram = function (pictogram) {
@@ -191,7 +191,7 @@ L.Storage.FormHelper.IconField = L.Storage.FormHelper.extend({
                         addPictogram(pictogram);
                     }
                     var deleteButton = L.DomUtil.create("a", "", self.pictogramsContainer);
-                    deleteButton.innerHTML = L.S._('Remove icon symbol');
+                    deleteButton.innerHTML = L._('Remove icon symbol');
                     deleteButton.href = "#";
                     deleteButton.style.display = "block";
                     deleteButton.style.clear = "both";

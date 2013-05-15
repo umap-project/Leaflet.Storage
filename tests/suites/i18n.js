@@ -2,7 +2,7 @@ casper.start('http://localhost:8007/');
 
 casper.assertI18n = function (string, data, expected, message) {
     var translated = this.evaluate(function (string, data) {
-        return L.S._(string, data);
+        return L._(string, data);
     }, {string: string, data: data});
     this.test.assertEquals(translated, expected, message || string + " > translated to > " + translated);
 };
@@ -10,7 +10,7 @@ casper.assertI18n = function (string, data, expected, message) {
 casper.then(function () {
     this.page.injectJs('./src/locale/fr.js');
     this.evaluate(function () {
-        L.S.setLocale("fr");
+        L.setLocale("fr");
     });
 });
 
@@ -25,7 +25,7 @@ casper.then(function () {
 casper.then(function () {
     // Set a non registered locale
     this.evaluate(function () {
-        L.S.setLocale("de");
+        L.setLocale("de");
     });
     this.assertI18n("Feature updated with success!", null, "Feature updated with success!");
 });

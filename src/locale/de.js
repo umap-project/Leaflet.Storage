@@ -29,4 +29,4 @@ var de = {
     "Sorry, no location found for {location}": ""
 };
 
-L.S.registerLocale("de", de);
+L.registerLocale("de", de);

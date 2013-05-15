@@ -33,7 +33,7 @@ L.Storage.Map.include({
     initialize: function (/* DOM element or id*/ el, /* Object*/ options) {
         // We manage it, so don't use Leaflet default behaviour
         if (options.locale) {
-            L.S.setLocale(options.locale);
+            L.setLocale(options.locale);
         }
         var center = options.center;
         delete options.center;
@@ -247,7 +247,7 @@ L.Storage.Map.include({
                             self.resetTileLayers();
                             self.populateTileLayers(data.tilelayers);
                             L.Storage.fire('ui:end');
-                            L.Storage.fire('ui:alert', {'content': L.S._('Successfully updated tilelayers'), 'level': 'info'});
+                            L.Storage.fire('ui:alert', {'content': L._('Successfully updated tilelayers'), 'level': 'info'});
                         }
                         else {
                             L.Storage.fire('ui:alert', {'content': 'Invalid response', 'level': 'error'});
