@@ -65,8 +65,6 @@
     width: 36px;
     display: block;
 }
-.leaflet-control-edit-in-osm .leaflet-control-edit-in-osm-toggle,
-.leaflet-control-edit-in-osm a.osm-editor,
 .leaflet-control-embed a,
 .leaflet-control-infos a {
     height: 46px;
@@ -91,6 +89,15 @@
 }
 .leaflet-control-search a.loading {
     background-image: url("../img/search.gif");
+}
+.leaflet-control-edit-in-osm a.osm-editor,
+.leaflet-control-edit-in-osm .leaflet-control-edit-in-osm-toggle {
+    height: 44px;
+    width: 44px;
+    line-height: 44px;
+}
+.leaflet-control-edit-in-osm .leaflet-control-edit-in-osm-toggle {
+    background-image: url("../img/edit-in-osm.png");
 }
 .leaflet-control-search input {
     display: none;
