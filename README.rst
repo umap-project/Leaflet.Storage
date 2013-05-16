@@ -4,7 +4,7 @@ Leaflet-Storage
 
 Manage map and features with Leaflet and expose them for backend storage with an API.
 
-Demo: http://youmap.fluv.io/
+Demo: http://umap.fluv.io/
 
 ----------------
 Backend agnostic
