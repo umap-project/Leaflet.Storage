@@ -139,6 +139,9 @@ L.Storage.EditControl = L.Control.Draw.extend({
         map.addLayer(this.editableLayers);
         this.options.edit.featureGroup = this.editableLayers;
         this._map = map;
+        if (typeof options.draw == "undefined") {
+            options.draw = {};
+        }
         if (!map.options.enableMarkerDraw) {
             options.draw.marker = null;
         } else {
