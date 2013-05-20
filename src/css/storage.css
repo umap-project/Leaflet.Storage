@@ -378,6 +378,13 @@ a.edit-overlay {
     z-index: 1001;
 }
 
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+}
+.leaflet-popup-content-wrapper {
+    border-radius: 4px;
+}
+
 /* ****** */
 /* Mobile */
 /* ****** */
