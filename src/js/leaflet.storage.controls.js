@@ -139,19 +139,16 @@ L.Storage.EditControl = L.Control.Draw.extend({
         map.addLayer(this.editableLayers);
         this.options.edit.featureGroup = this.editableLayers;
         this._map = map;
-        if (typeof options.draw == "undefined") {
-            options.draw = {};
-        }
         if (!map.options.enableMarkerDraw) {
-            options.draw.marker = null;
+            this.options.draw.marker = null;
         } else {
             this.options.draw.marker.icon = new L.Storage.Icon.Default(this._map);
         }
         if (!map.options.enablePolylineDraw) {
-            options.draw.polyline = null;
+            this.options.draw.polyline = null;
         }
         if (!map.options.enablePolygonDraw) {
-            options.draw.polygon = null;
+            this.options.draw.polygon = null;
         }
 
         L.Control.Draw.prototype.initialize.call(this, options);
