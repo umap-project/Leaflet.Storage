@@ -75,7 +75,6 @@ L.Storage.Map.include({
             // Layer for items added by users
             var drawnItems = new L.LayerGroup();
             this.on('draw:created', function (e) {
-                console.log('draw:created', e);
                 drawnItems.addLayer(e.layer);
                 if (e.layerType == L.Draw.Polyline.TYPE || e.layerType == L.Draw.Polygon.TYPE) {
                     e.layer.editing.enable();
@@ -174,7 +173,7 @@ L.Storage.Map.include({
                 }
                 this.whenReady(function () {
                     this.miniMap = new L.Control.MiniMap(this.createTileLayer(options)).addTo(this);
-                })
+                });
             }
         }
         this.storage_layers_control._addLayer(tilelayer, options.tilelayer.name);
