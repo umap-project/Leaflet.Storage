@@ -84,15 +84,6 @@ L.Storage.Map.include({
                 }
                 e.layer.edit(e);
             });
-            this.on("popupclose", function(e) {
-                // remove source if it has not been created (no storage_id)
-                var layer = e.popup._source;
-                var id = L.Util.stamp(layer);
-                if(drawnItems._layers.hasOwnProperty(id)
-                    && !layer.storage_id) {
-                    drawnItems.removeLayer(layer);
-                }
-            });
             this.addLayer(drawnItems);
             L.Storage.on('ui:end', function (e) {
                 this.edited_feature = null;
