@@ -2,7 +2,7 @@
 
 L.StorageSingleton = L.Class.extend({
     includes: L.Mixin.Events,
-    version: '0.2.0'
+    version: '0.3.0'
 });
 L.Storage = new L.StorageSingleton();
 L.S = L.Storage;
