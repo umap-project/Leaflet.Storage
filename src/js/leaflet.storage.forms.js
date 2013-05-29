@@ -300,7 +300,7 @@ L.Storage.FormHelper.Color = L.Storage.FormHelper.extend({
                 this.element_color.onchange();
                 this.container.style.display = "none";
             };
-            L.DomEvent.on(span, "click", updateColorInput, this);
+            L.DomEvent.on(span, "mousedown", updateColorInput, this);
     }
 
 });
