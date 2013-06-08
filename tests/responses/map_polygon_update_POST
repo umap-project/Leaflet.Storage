@@ -7,7 +7,7 @@
     "type": "Feature",
     "id": 162,
     "properties": {
-        "category_id": 62,
+        "datalayer_id": 62,
         "name": "test poly simple",
         "options": {
             "opacity": 0.5,

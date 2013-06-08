@@ -1,7 +1,7 @@
 L.Map.mergeOptions({
     base_layers: null,
     overlay_layers: null,
-    categories: [],
+    datalayers: [],
     zoom: 10,
     hash: true,
     embedControl: true,
@@ -98,22 +98,22 @@ L.Storage.Map.include({
 
 
         // Init control layers
-        // It will be populated while creating the overlays
+        // It will be populated while creating the datalayers
         // Control is added as an initHook, to keep the order
         // with other controls
-        this.storage_layers_control = new L.Storage.ControlLayers();
+        this.datalayers_control = new L.Storage.ControlLayers();
         this.populateTileLayers(this.options.tilelayers);
         if (this.options.layersControl) {
-            this.addControl(this.storage_layers_control);
+            this.addControl(this.datalayers_control);
         }
 
-        // Global storage for retrieving overlays
-        this.storage_overlays = {};
-        this.marker_to_overlay = {};
-        // create overlays
-        for(var j in this.options.categories) {
-            if(this.options.categories.hasOwnProperty(j)){
-                this._createOverlay(this.options.categories[j]);
+        // Global storage for retrieving datalayers
+        this.datalayers = {};
+        this.feature_to_datalayer = {};
+        // create datalayers
+        for(var j in this.options.datalayers) {
+            if(this.options.datalayers.hasOwnProperty(j)){
+                this._createDataLayer(this.options.datalayers[j]);
             }
         }
 
@@ -129,14 +129,14 @@ L.Storage.Map.include({
                 this.addTileLayer(tilelayers[i]);
             }
         }
-        this.storage_layers_control._update();
+        this.datalayers_control._update();
     },
 
     resetTileLayers: function () {
         for(var i in this.tilelayers) {
             if(this.tilelayers.hasOwnProperty(i)) {
                 this.removeLayer(this.tilelayers[i]);
-                this.storage_layers_control.removeLayer(this.tilelayers[i]);
+                this.datalayers_control.removeLayer(this.tilelayers[i]);
             }
         }
     },
@@ -167,7 +167,7 @@ L.Storage.Map.include({
                 });
             }
         }
-        this.storage_layers_control._addLayer(tilelayer, options.tilelayer.name);
+        this.datalayers_control._addLayer(tilelayer, options.tilelayer.name);
         this.tilelayers[options.tilelayer.name] = tilelayer;
     },
 
@@ -196,8 +196,8 @@ L.Storage.Map.include({
         return L.latLng(a, b, c);
     },
 
-    _createOverlay: function(category) {
-        return new L.Storage.Layer(this, category);
+    _createDataLayer: function(datalayer) {
+        return new L.Storage.DataLayer(this, datalayer);
     },
 
     getDefaultOption: function (option) {
@@ -283,8 +283,8 @@ L.Storage.Map.include({
                 urlHelper = new L.Storage.FormHelper.ImportURL(map, form_id, {});
             L.Storage.Xhr.listen_form(form_id, {
                 'callback': function (data) {
-                    if (data.category) {
-                        var layer = map.storage_overlays[data.category.pk];
+                    if (data.datalayer) {
+                        var layer = map.datalayers[data.datalayer.pk];
                         layer.on('dataloaded', function (e) {
                             var bounds = layer.getBounds();
                             if (bounds.isValid()) {

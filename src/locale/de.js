@@ -1,7 +1,7 @@
 var de = {
     "Go to home page": "Zur Startseite zurückkehren",
     "Caption and credits": "Bildunterschrift und Credits",
-    "Add a category": "Katergorie hinzufügen",
+    "Add a layer": "Katergorie hinzufügen",
     "Edit": "Bearbeiten",
     "Embed this map": "Karte einbinden",
     "Edit map infos": "Karteninformation bearbeiten",
@@ -12,7 +12,7 @@ var de = {
     "Upload data": "Daten hochladen",
     "Feature updated with success!": "Objekt erfolgreich geändert",
     "Unkown geometry.type: {type}": "Ungültiger Geometrie Typ: {type}",
-    "Category successfuly edited": "Kategorie erfolgreich geändert.",
+    "Layer successfuly edited": "Kategorie erfolgreich geändert.",
     "Successfully updated tilelayers": "Kartenhintergrund erfolgreich geändert",
     "Problem in the response format": "Ungültiges Format der Serverantwort",
     "Action not allowed :(": "Diese Aktion ist nicht erlaubt :(",

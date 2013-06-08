@@ -1,38 +1,38 @@
-L.Storage.Layer = L.LazyGeoJSON.extend({
+L.Storage.DataLayer = L.LazyGeoJSON.extend({
 
-    initialize: function (map, /* Object from db */ category, options) {
+    initialize: function (map, /* Object from db */ datalayer, options) {
         this.map = map;
         if(typeof options == "undefined") {
             options = {};
         }
         L.LazyGeoJSON.prototype.initialize.call(this, this._dataGetter, options);
-        this.populate(category);
+        this.populate(datalayer);
         this.connectToMap();
     },
 
-    populate: function (category) {
-        // Category is null when listening creation form
-        this.storage_id = category.pk || null;
-        this.storage_name = category.name || "";
-        this.storage_icon_class = category.icon_class || this.map.getDefaultOption('iconClass');
-        this.iconUrl = category.pictogram_url || null;
-        this.display_on_load = category.display_on_load || false;
-        L.Util.extend(this.options, category.options);
+    populate: function (datalayer) {
+        // Datalayer is null when listening creation form
+        this.storage_id = datalayer.pk || null;
+        this.storage_name = datalayer.name || "";
+        this.storage_icon_class = datalayer.icon_class || this.map.getDefaultOption('iconClass');
+        this.iconUrl = datalayer.pictogram_url || null;
+        this.display_on_load = datalayer.display_on_load || false;
+        L.Util.extend(this.options, datalayer.options);
     },
 
     connectToMap: function () {
         if (this.storage_id) {
-            this.map.storage_overlays[this.storage_id] = this;
+            this.map.datalayers[this.storage_id] = this;
             if(this.display_on_load) {
                 this.map.addLayer(this);
             }
-            this.map.storage_layers_control.addOverlay(this, this.storage_name);
+            this.map.datalayers_control.addOverlay(this, this.storage_name);
         }
     },
 
     _dataUrl: function() {
         var template = this.map.options.urls.feature_geojson_list;
-        return L.Util.template(template, {"category_id": this.storage_id});
+        return L.Util.template(template, {"datalayer_id": this.storage_id});
     },
 
     _dataGetter: function (callback) {
@@ -40,12 +40,12 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
     },
 
     addLayer: function (layer) {
-        layer.connectToOverlay(this);
+        layer.connectToDataLayer(this);
         return L.LazyGeoJSON.prototype.addLayer.call(this, layer);
     },
 
     removeLayer: function (layer) {
-        layer.disconnectFromOverlay(this);
+        layer.disconnectFromDataLayer(this);
         return L.LazyGeoJSON.prototype.removeLayer.call(this, layer);
     },
 
@@ -95,7 +95,7 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
             this.map,
             geojson.id,
             latlng,
-            {"geojson": geojson, "overlay": this}
+            {"geojson": geojson, "datalayer": this}
         );
     },
 
@@ -104,7 +104,7 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
             this.map,
             geojson.id,
             latlngs,
-            {"geojson": geojson, "overlay": this}
+            {"geojson": geojson, "datalayer": this}
         );
     },
 
@@ -113,12 +113,12 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
             this.map,
             geojson.id,
             latlngs,
-            {"geojson": geojson, "overlay": this}
+            {"geojson": geojson, "datalayer": this}
         );
     },
 
     getEditUrl: function(){
-        return L.Util.template(this.map.options.urls.category_update, {'map_id': this.map.options.storage_id, 'pk': this.storage_id});
+        return L.Util.template(this.map.options.urls.datalayer_update, {'map_id': this.map.options.storage_id, 'pk': this.storage_id});
     },
 
     getIconClass: function () {
@@ -134,7 +134,7 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
     },
 
     getDeleteURL: function () {
-        return L.Util.template(this.map.options.urls.category_delete, {'pk': this.storage_id, 'map_id': this.map.options.storage_id});
+        return L.Util.template(this.map.options.urls.datalayer_delete, {'pk': this.storage_id, 'map_id': this.map.options.storage_id});
 
     },
 
@@ -151,7 +151,7 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
     },
 
     listenDeleteForm: function() {
-        var form = L.DomUtil.get("category_delete");
+        var form = L.DomUtil.get("datalayer_delete");
         var self = this;
         var manage_ajax_return = function (data) {
             if (data.error) {
@@ -176,14 +176,14 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
 
     reset: function () {
         this.map.removeLayer(this);
-        this.map.storage_layers_control.removeLayer(this);
+        this.map.datalayers_control.removeLayer(this);
         this._geojson = null;
         this._layers = {};
     },
 
     _handleEditResponse: function(data) {
         var map = this.map,
-            form_id = "category_edit",
+            form_id = "datalayer_edit",
             self = this;
         L.Storage.fire('ui:start', {'data': data});
         var iconHelper = new L.Storage.FormHelper.IconField(this.map, form_id, {
@@ -196,18 +196,18 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
         });
         L.Storage.Xhr.listen_form(form_id, {
             'callback': function (data) {
-                if (data.category) {
+                if (data.datalayer) {
                     /* Means success */
                     if (self.storage_id) {
                         // TODO update instead of removing/recreating
                         self.reset();
                     }
-                    self.populate(data.category);
+                    self.populate(data.datalayer);
                     // force display_on_load not to get the layer hidden while
                     // working on it
                     self.display_on_load = true;
                     self.connectToMap();
-                    L.Storage.fire('ui:alert', {'content': L._("Category successfuly edited"), 'level': 'info'});
+                    L.Storage.fire('ui:alert', {'content': L._("Layer successfuly edited"), 'level': 'info'});
                     L.Storage.fire('ui:end');
                 }
                 else {
@@ -216,7 +216,7 @@ L.Storage.Layer = L.LazyGeoJSON.extend({
                 }
             }
         });
-        var delete_link = L.DomUtil.get("delete_category_button");
+        var delete_link = L.DomUtil.get("delete_datalayer_button");
         if (delete_link) {
             L.DomEvent
                 .on(delete_link, 'click', L.DomEvent.stopPropagation)

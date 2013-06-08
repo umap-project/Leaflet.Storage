@@ -33,7 +33,7 @@
             map_settings = {
                 "storage_id": 42,
                 "center": { "type": "Point", "coordinates": [ -19.533691, 65.330178 ] },
-                "categories": [{"icon_class": "Default", "name": "POIs", "display_on_load": true, "pk": 62, "pictogram_url": null, "options": {}}
+                "datalayers": [{"icon_class": "Default", "name": "POIs", "display_on_load": true, "pk": 62, "pictogram_url": null, "options": {}}
                 ],
                 "urls": {
                     "polygon_update": "/map/{map_id}/polygon/edit/{pk}/",
@@ -41,12 +41,12 @@
                     "upload_data": "/map/{map_id}/import/data/",
                     "marker_update": "/map/{map_id}/marker/edit/{pk}/",
                     "map_embed": "/map/{map_id}/export/iframe/",
-                    "feature_geojson_list": "/feature/json/category/{category_id}/",
+                    "feature_geojson_list": "/feature/json/datalayer/{datalayer_id}/",
                     "polyline": "/polyline/{pk}/",
                     "marker": "/marker/{pk}/",
-                    "category_add": "/map/{map_id}/category/add/",
+                    "datalayer_add": "/map/{map_id}/datalayer/add/",
                     "map_update_tilelayers": "/map/{map_id}/update/tilelayers/",
-                    "category_update": "/map/{map_id}/category/edit/{pk}/",
+                    "datalayer_update": "/map/{map_id}/datalayer/edit/{pk}/",
                     "marker_add": "/map/{map_id}/marker/add/",
                     "polygon": "/polygon/{pk}/",
                     "polygon_geojson": "/polygon/json/{pk}/",
@@ -64,7 +64,7 @@
                     "map_update_extent": "/map/{map_id}/update/extent/",
                     "polygon_delete": "/map/{map_id}/polygon/delete/{pk}/",
                     "marker_delete": "/map/{map_id}/marker/delete/{pk}/",
-                    "category_delete": "/map/{map_id}/category/delete/{pk}/",
+                    "datalayer_delete": "/map/{map_id}/datalayer/delete/{pk}/",
                     "map_delete": "/map/{map_id}/delete/",
                     "login": "/login/"
                 },

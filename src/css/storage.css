@@ -187,7 +187,7 @@ a.update-map-settings {
     float: right;
     margin: 0;
 }
-a.edit-overlay {
+a.edit-datalayer {
     border: medium none;
     border-radius: inherit;
     box-shadow: none;
@@ -199,7 +199,7 @@ a.edit-overlay {
     line-height: 21px;
     text-decoration: underline;
 }
-.storage-edit-enabled .leaflet-control-layers-expanded .edit-overlay {
+.storage-edit-enabled .leaflet-control-layers-expanded .edit-datalayer {
     display: inline-block;
 }
 

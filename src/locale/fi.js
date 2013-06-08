@@ -1,8 +1,8 @@
 var fi = {
     "Action not allowed :(": "",
-    "Add a category": "",
+    "Add a layer": "",
     "Caption and credits": "",
-    "Category successfuly edited": "",
+    "Layer successfuly edited": "",
     "Center map on your location": "",
     "Change shape": "",
     "Change symbol": "",

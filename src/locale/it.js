@@ -1,7 +1,7 @@
 var it = {
     "Go to home page": "Torna alla pagina principale",
     "Caption and credits": "Legenda e riconoscimenti",
-    "Add a category": "Aggiungi una categoria",
+    "Add a layer": "Aggiungi una categoria",
     "Edit": "Modifica",
     "Embed this map": "Integra questa mappa",
     "Edit map infos": "Modifica le informazioni della mappa",
@@ -15,7 +15,7 @@ var it = {
     "Sorry, no location found for {location}": "Mi dispiace, nessun risultato per {location}",
     "Feature updated with success!": "POI aggiornato con successo!",
     "Unkown geometry.type: {type}": "Tipo di geometria sconosciuto: {type}",
-    "Category successfuly edited": "Categoria modificata con successo",
+    "Layer successfuly edited": "Categoria modificata con successo",
     "Successfully updated tilelayers": "Livelli di sfondo aggiornati con successo",
     "Problem in the response format": "Problema nel formato della risposta",
     "Action not allowed :(": "Azione non permessa :(",

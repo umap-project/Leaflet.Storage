@@ -1,5 +1,5 @@
 {
-    "category": {
+    "datalayer": {
         "icon_class": "Default",
         "name": "Elephants",
         "display_on_load": true,

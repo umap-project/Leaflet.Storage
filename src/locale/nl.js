@@ -1,7 +1,7 @@
 var nl = {
     "Go to home page": "Ga naar homepagina",
     "Caption and credits": "Onderschrift en credits",
-    "Add a category": "Voeg categorie toe",
+    "Add a layer": "Voeg categorie toe",
     "Edit": "Bewerken",
     "Embed this map": "Sluit deze kaart in",
     "Edit map infos": "Bewerk kaart informatie",
@@ -12,7 +12,7 @@ var nl = {
     "Upload data": "Data uploaden",
     "Feature updated with success!": "Eigenschap succesvol bijgewerkt",
     "Unkown geometry.type: {type}": "Onbekend geometrisch type: {type}",
-    "Category successfuly edited": "Categorie succesvol bewerkt.",
+    "Layer successfuly edited": "Categorie succesvol bewerkt.",
     "Successfully updated tilelayers": "Tilelayer succesvol bewerkt",
     "Problem in the response format": "Probleem met het server antwoord formaat",
     "Action not allowed :(": "Handeling niet toegestaan :(",

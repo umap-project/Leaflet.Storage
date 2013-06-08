@@ -6,15 +6,15 @@ casper.then(function() {
     this.test.assertExists('div[id="map"]', 'map div is found');
     this.test.assertExists('a.leaflet-control-edit-toggle', 'toggle edit link is found');
     this.test.assertNotVisible('a.update-map-infos', 'update map infos button is not visibile on load');
-    this.test.assertExists('div.leaflet-control-layers', 'category control is found');
-    this.test.assertExists('input.leaflet-control-layers-selector', 'category selector input is found');
+    this.test.assertExists('div.leaflet-control-layers', 'datalayer control is found');
+    this.test.assertExists('input.leaflet-control-layers-selector', 'datalayer selector input is found');
     this.test.assertExists('div.icon_container', 'icon container is found on load');
 });
 
 casper.then(function () {
-    // Uncheck category
+    // Uncheck datalayer
     this.clickLabel(' POIs'); // There is a space, #TODO check why
-    this.test.assertNotExists('div.icon_container', 'icon container is not found when category unchecked');
+    this.test.assertNotExists('div.icon_container', 'icon container is not found when datalayer unchecked');
 });
 
 casper.then(function () {

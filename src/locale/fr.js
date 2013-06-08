@@ -1,7 +1,7 @@
 var fr = {
     "Go to home page": "Retourner à l'accueil",
     "Caption and credits": "Légence et crédits",
-    "Add a category": "Ajouter une catégorie",
+    "Add a layer": "Ajouter un calque",
     "Edit": "Éditer",
     "Embed this map": "Exporter cette carte",
     "Edit map infos": "Éditer les infos de la carte",
@@ -15,7 +15,7 @@ var fr = {
     "Sorry, no location found for {location}": "Désolé, aucun résultat pour {location}",
     "Feature updated with success!": "POI mis à jour avec succès!",
     "Unkown geometry.type: {type}": "Type de géométrie inconnu: {type}",
-    "Category successfuly edited": "Catégorie mise à jour avec succès",
+    "Layer successfuly edited": "Calque mis à jour avec succès",
     "Successfully updated tilelayers": "Fonds de carte mis à jour avec succès",
     "Problem in the response format": "Problème dans le format de la réponse",
     "Action not allowed :(": "Action non autorisée :(",

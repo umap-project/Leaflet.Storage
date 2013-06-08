@@ -16,7 +16,7 @@ casper.on("page.error", function(msg, trace) {
     require('utils').dump(trace);
 });
 
-DEFAULT_CATEGORY = {
+DEFAULT_DATALAYER = {
     "icon_class": "Default",
     "name": "Elephants",
     "display_on_load": true,
@@ -51,41 +51,41 @@ casper.getUploadDataForm = function () {
 
 casper.fillAndSubmitUploadDataForm = function (vals) {
     this.test.assertExists('form#upload_data');
-    this.server.watchPath(path, {content: JSON.stringify({category: DEFAULT_CATEGORY, info: 'ok'})});
+    this.server.watchPath(path, {content: JSON.stringify({datalayer: DEFAULT_DATALAYER, info: 'ok'})});
     this.fill('form#upload_data', vals);
     this.click('form#upload_data input[type="submit"]');
 };
 
 
-casper.getCategoryEditForm = function (id) {
+casper.getDataLayerEditForm = function (id) {
     this.mouseEvent('mouseover', 'div.leaflet-control-layers');
-    this.test.assertVisible('a#edit_overlay_' + id, 'Edit overlay button is visibile when edit enabled');
-    this.click('a#edit_overlay_' + id);
+    this.test.assertVisible('a#edit_datalayer_' + id, 'Edit datalayer button is visibile when edit enabled');
+    this.click('a#edit_datalayer_' + id);
 };
 
-casper.categoryResponsePOST = function (settings) {
+casper.datalayerResponsePOST = function (settings) {
     var response = {
-        "category": DEFAULT_CATEGORY
+        "datalayer": DEFAULT_DATALAYER
     };
     for (var key in settings) {
         if (typeof response[key] !== "undefined") {
-            response.category[key] = settings[key];
+            response.datalayer[key] = settings[key];
         }
         else {
-            response.category.options[key] = settings[key];
+            response.datalayer.options[key] = settings[key];
         }
     }
     return {content: JSON.stringify(response)};
 };
 
-casper.editCategory = function (id, vals) {
-    var path = '/map/42/category/edit/' + id +'/';
-    this.server.watchPath(path, {filePath: 'map_category_update_GET'});
-    this.getCategoryEditForm(id);
+casper.editDataLayer = function (id, vals) {
+    var path = '/map/42/datalayer/edit/' + id +'/';
+    this.server.watchPath(path, {filePath: 'map_datalayer_update_GET'});
+    this.getDataLayerEditForm(id);
     this.then(function () {
-        this.server.watchPath(path, this.categoryResponsePOST(vals));
-        this.fill('form#category_edit', vals);
-        this.click('form#category_edit input[type="submit"]');
+        this.server.watchPath(path, this.datalayerResponsePOST(vals));
+        this.fill('form#datalayer_edit', vals);
+        this.click('form#datalayer_edit input[type="submit"]');
     });
 };
 
@@ -99,7 +99,7 @@ casper.polygonResponsePOST = function (settings) {
         "type": "Feature",
         "id": 76,
         "properties": {
-            "category_id": 62,
+            "datalayer_id": 62,
             "name": "test poly simple",
             "options": {
                 "opacity": null,

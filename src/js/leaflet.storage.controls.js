@@ -276,7 +276,7 @@ L.Storage.ControlLayers = L.Control.Layers.extend({
 
     onAdd: function (map) {
         var container = L.Control.Layers.prototype.onAdd.call(this, map);
-        this._createNewOverlayButton(map, container);
+        this._createNewDataLayerButton(map, container);
         return container;
     },
 
@@ -287,10 +287,10 @@ L.Storage.ControlLayers = L.Control.Layers.extend({
             self = this;
 
         if (obj.overlay) {
-            var link = L.DomUtil.create('a', "edit-overlay", label);
+            var link = L.DomUtil.create('a', "edit-datalayer", label);
             link.innerHTML = link.title = L._('Edit');
             link.href = '#';
-            link.id = 'edit_overlay_' + obj.layer.storage_id;
+            link.id = 'edit_datalayer_' + obj.layer.storage_id;
             var fn = function (e) {
                 var url = obj.layer.getEditUrl();
                 L.Storage.Xhr.get(url, {
@@ -305,17 +305,17 @@ L.Storage.ControlLayers = L.Control.Layers.extend({
         return label;
     },
 
-    _createNewOverlayButton: function (map, container) {
-        var link = L.DomUtil.create('a', "edit-overlay add-overlay", container);
-        link.innerHTML = link.title = L._('Add a category');
+    _createNewDataLayerButton: function (map, container) {
+        var link = L.DomUtil.create('a', "edit-datalayer add-datalayer", container);
+        link.innerHTML = link.title = L._('Add a layer');
         link.href = '#';
         var self = this;
         var fn = function (e) {
-            var url = L.Util.template(this.options.urls.category_add, {'map_id': map.options.storage_id});
+            var url = L.Util.template(this.options.urls.datalayer_add, {'map_id': map.options.storage_id});
             L.Storage.Xhr.get(url, {
                 'callback': function (data) {
-                    var category = map._createOverlay({});
-                    return category._handleEditResponse(data);
+                    var datalayer = map._createDataLayer({});
+                    return datalayer._handleEditResponse(data);
                 }
             });
         };

@@ -1,16 +1,15 @@
 casper.start('http://localhost:8007');
 
 casper.then(function () {
-    // One Polyline, one Polygon, see responses/feature_json_category_62
+    // One Polyline, one Polygon, see responses/feature_json_datalayer_62
     this.test.assertElementsCount("path", 2);
     this.test.assertExists('path[fill="none"]'); // Polyline
     this.test.assertExists('path[fill="DarkBlue"]'); // Polygon
-    // this.debugHTML("div.leaflet-overlay-pane");
     this.toggleEditButton();
 });
 
 casper.then(function () {
-    this.editCategory(62, {color: "DarkRed", opacity: 0.8});
+    this.editDataLayer(62, {color: "DarkRed", opacity: 0.8});
 });
 
 casper.then(function () {
@@ -43,19 +42,19 @@ casper.then(function () {
             },
             "type": "Feature",
             "id": 76,
-            "properties": {"options": {"color": "yellow"}, "category_id": 62, "name": "test poly clickeabl"}
+            "properties": {"options": {"color": "yellow"}, "datalayer_id": 62, "name": "test poly clickeabl"}
         }]
     };
-    this.server.watchPath('/feature/json/category/62/', {content: JSON.stringify(response)});
+    this.server.watchPath('/feature/json/datalayer/62/', {content: JSON.stringify(response)});
 });
 
 casper.then(function () {
-    this.editCategory(62, {color: "blue", opacity: 0.3});
+    this.editDataLayer(62, {color: "blue", opacity: 0.3});
 });
 
 casper.then(function () {
-    this.test.assertExists('path[fill="yellow"]', "Polygon fillcolor has not been overrided by category color");
-    this.test.assertAttributes('path[fill="yellow"]', {"stroke-opacity": 0.3}, "Opacity has been set from category");
+    this.test.assertExists('path[fill="yellow"]', "Polygon fillcolor has not been overrided by datalayer color");
+    this.test.assertAttributes('path[fill="yellow"]', {"stroke-opacity": 0.3}, "Opacity has been set from datalayer");
 });
 
 casper.run(function() {

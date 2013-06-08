@@ -48,25 +48,25 @@ L.Storage.FeatureMixin = {
 
     _delete: function () {
         this.map.closePopup();
-        if (this.storage_overlay) {
-            this.storage_overlay.removeLayer(this);
-            this.disconnectFromOverlay(this.storage_overlay);
+        if (this.datalayer) {
+            this.datalayer.removeLayer(this);
+            this.disconnectFromDataLayer(this.datalayer);
         }
         this.map.removeLayer(this);
     },
 
-    connectToOverlay: function (overlay) {
+    connectToDataLayer: function (datalayer) {
         var id = L.Util.stamp(this); // Id leaflet, not storage
                                      // as new marker will be added too
-        this.storage_overlay = overlay;
-        this.map.marker_to_overlay[id] = overlay; // TODO rename
+        this.datalayer = datalayer;
+        this.map.feature_to_datalayer[id] = datalayer;
     },
 
-    disconnectFromOverlay: function (overlay) {
+    disconnectFromDataLayer: function (datalayer) {
         var id = L.Util.stamp(this); // Id leaflet, not storage
                                       // as new marker will be added too
-        this.storage_overlay = null;
-        delete this.map.marker_to_overlay[id];
+        this.datalayer = null;
+        delete this.map.feature_to_datalayer[id];
     },
 
     listenEditForm: function() {
@@ -139,12 +139,12 @@ L.Storage.FeatureMixin = {
 
     updateFromBackEnd: function (feature) {
         this.populate(feature);
-        var newOverlay = this.map.storage_overlays[feature.properties.category_id];
-        if(this.storage_overlay !== newOverlay) {
-            this.changeOverlay(newOverlay);
+        var newDataLayer = this.map.datalayers[feature.properties.datalayer_id];
+        if(this.datalayer !== newDataLayer) {
+            this.changeDataLayer(newDataLayer);
         } else {
-            // Needed only if overlay hasn't changed because
-            // changeOverlay method already make the style to be
+            // Needed only if datalayer hasn't changed because
+            // changeDataLayer method already make the style to be
             // updated
             this._redraw();
         }
@@ -152,11 +152,11 @@ L.Storage.FeatureMixin = {
         this._popup = null;
     },
 
-    changeOverlay: function(layer) {
-        if(this.storage_overlay) {
-            this.storage_overlay.removeLayer(this);
+    changeDataLayer: function(datalayer) {
+        if(this.datalayer) {
+            this.datalayer.removeLayer(this);
         }
-        layer.addLayer(this);
+        datalayer.addLayer(this);
     },
 
     getViewURL: function () {
@@ -185,8 +185,8 @@ L.Storage.FeatureMixin = {
         else if (this.usableOption(this.storage_options, option)) {
             value = this.storage_options[option];
         }
-        else if (this.storage_overlay && this.usableOption(this.storage_overlay.options, option)) {
-            value = this.storage_overlay.options[option];
+        else if (this.datalayer && this.usableOption(this.datalayer.options, option)) {
+            value = this.datalayer.options[option];
         }
         else {
             value = this.map.getDefaultOption(option);
@@ -214,8 +214,8 @@ L.Storage.Marker = L.Marker.extend({
         if(typeof options == "undefined") {
             options = {};
         }
-        // Overlay the marker belongs to
-        this.storage_overlay = options.overlay || null;
+        // DataLayer the marker belongs to
+        this.datalayer = options.datalayer || null;
         this.storage_options = {};
         if (options.geojson) {
             this.populate(options.geojson);
@@ -282,20 +282,20 @@ L.Storage.Marker = L.Marker.extend({
         this.update();
     },
 
-    changeOverlay: function(layer) {
-        L.Storage.FeatureMixin.changeOverlay.call(this, layer);
-        // Icon look depends on overlay
+    changeDataLayer: function(layer) {
+        L.Storage.FeatureMixin.changeDataLayer.call(this, layer);
+        // Icon look depends on datalayer
         this._redraw();
     },
 
-    connectToOverlay: function (overlay) {
+    connectToDataLayer: function (datalayer) {
         // this.options.icon = this.getIcon();
-        L.Storage.FeatureMixin.connectToOverlay.call(this, overlay);
+        L.Storage.FeatureMixin.connectToDataLayer.call(this, datalayer);
     },
 
-    disconnectFromOverlay: function (overlay) {
-        this.options.icon.overlay = null;
-        L.Storage.FeatureMixin.disconnectFromOverlay.call(this, overlay);
+    disconnectFromDataLayer: function (datalayer) {
+        this.options.icon.datalayer = null;
+        L.Storage.FeatureMixin.disconnectFromDataLayer.call(this, datalayer);
     },
 
     geometry: function() {
@@ -318,8 +318,8 @@ L.Storage.Marker = L.Marker.extend({
         if (this[name + 'Url']) {
             url = this[name + 'Url'];
         }
-        else if(this.storage_overlay && this.storage_overlay[name + 'Url']) {
-            url = this.storage_overlay[name + 'Url'];
+        else if(this.datalayer && this.datalayer[name + 'Url']) {
+            url = this.datalayer[name + 'Url'];
         }
         return url;
     },
@@ -329,8 +329,8 @@ L.Storage.Marker = L.Marker.extend({
         if (this.storage_icon_class) {
             iconClass = this.storage_icon_class;
         }
-        else if (this.storage_overlay) {
-            iconClass = this.storage_overlay.getIconClass();
+        else if (this.datalayer) {
+            iconClass = this.datalayer.getIconClass();
         }
         return iconClass;
     },
@@ -426,8 +426,8 @@ L.Storage.PathMixin = {
         L.Polyline.prototype._updateStyle.call(this);
     },
 
-    changeOverlay: function(layer) {
-        L.Storage.FeatureMixin.changeOverlay.call(this, layer);
+    changeDataLayer: function(layer) {
+        L.Storage.FeatureMixin.changeDataLayer.call(this, layer);
         this._redraw();
     },
 
@@ -465,8 +465,8 @@ L.Storage.Polyline = L.Polyline.extend({
         if(typeof options == "undefined") {
             options = {};
         }
-        // Overlay the marker belongs to
-        this.storage_overlay = options.overlay || null;
+        // DataLayer the marker belongs to
+        this.datalayer = options.datalayer || null;
         this.storage_options = {};
         if (options.geojson) {
             this.populate(options.geojson);
@@ -515,8 +515,8 @@ L.Storage.Polygon = L.Polygon.extend({
         if(typeof options == "undefined") {
             options = {};
         }
-        // Overlay the marker belongs to
-        this.storage_overlay = options.overlay || null;
+        // DataLayer the marker belongs to
+        this.datalayer = options.datalayer || null;
         this.storage_options = {};
         if (options.geojson) {
             this.populate(options.geojson);
