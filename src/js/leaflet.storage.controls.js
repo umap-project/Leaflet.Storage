@@ -326,7 +326,9 @@ L.Storage.DataLayersControl = L.Control.extend({
     },
 
     openBrowser: function () {
-        this.initBrowserLayout();
+        if (!this._browser_container) {
+            this.initBrowserLayout();
+        }
         var datalayer;
         for(var idx in this._map.datalayers) {
             this.addFeatures(this._map.datalayers[idx]);
