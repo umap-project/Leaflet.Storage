@@ -137,7 +137,6 @@ L.Storage.Map.include({
         for(var i in this.tilelayers) {
             if(this.tilelayers.hasOwnProperty(i)) {
                 this.removeLayer(this.tilelayers[i]);
-                this.datalayers_control.removeLayer(this.tilelayers[i]);
             }
         }
     },
