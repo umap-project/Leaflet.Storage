@@ -58,8 +58,8 @@ L.Storage.FeatureMixin = {
                 }
             }, this);
             L.DomEvent.on(zoom_li, 'click', function (e) {
-                this.bringToCenter();
                 this.map.setZoom(16);
+                this.bringToCenter();
             }, this);
         }
         this.bindPopup(wrapper);
