@@ -358,6 +358,8 @@ L.Storage.DataLayersControl = L.Control.extend({
             edit = L.DomUtil.create('span', "layer-edit show-on-edit", datalayer_li);
             title = L.DomUtil.create('span', 'layer-title', datalayer_li);
 
+        zoom_to.title = L._('Zoom to layer extent');
+        toggle.title = L._('Show/hide layer');
         datalayer_li.id = "browse_data_toggle_" + datalayer.storage_id;
         L.DomUtil.addClass(datalayer_li, this._map.hasLayer(datalayer) ? 'on': 'off');
 
