@@ -314,8 +314,36 @@ a.update-map-settings {
 .storage-edit-enabled .show-on-edit.block {
     display: block!important;
 }
-
-
+/* Popup footer */
+.storage-popup-footer {
+    background-color: rgb(68, 68, 68);
+    color: white;
+    display: block;
+    height: 24px;
+    line-height: 24px;
+    margin-top: 14px;
+    /*padding: 0 5px;*/
+    /*text-align: right;*/
+    min-width: 99px;
+    border-radius: 2px;
+}
+.storage-popup-footer li {
+    background-position: center center;
+    background-repeat: no-repeat;
+    height: 24px;
+    display: inline-block;
+    width: 33.3%;
+    cursor: pointer;
+}
+.storage-popup-footer li.zoom {
+    background-image: url("../img/zoom-grey-16.png");
+}
+.storage-popup-footer li.previous {
+    background-image: url("../img/arrow-left-grey-16.png");
+}
+.storage-popup-footer li.next {
+    background-image: url("../img/arrow-right-grey-16.png");
+}
 /* ************* */
 /* Marker's Icon */
 /* ************* */

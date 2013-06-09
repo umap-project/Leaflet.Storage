@@ -329,7 +329,6 @@ L.Storage.DataLayersControl = L.Control.extend({
         if (!this._browser_container) {
             this.initBrowserLayout();
         }
-        var datalayer;
         for(var idx in this._map.datalayers) {
             this.addFeatures(this._map.datalayers[idx]);
         }
@@ -386,14 +385,17 @@ L.Storage.DataLayersControl = L.Control.extend({
             container = L.DomUtil.create('div', '', this._features_container);
             container.id = id;
         }
-        if (this._map.hasLayer(datalayer)) {
-            var title = L.DomUtil.create('h5', '', container),
-                ul = L.DomUtil.create('ul', '', container);
-            title.innerHTML = datalayer.storage_name;
-            for (var j in datalayer._layers) {
-                ul.appendChild(this.addFeature(datalayer._layers[j]));
+        container.innerHTML = "";
+        datalayer.whenLoaded(function () {
+            if (this._map.hasLayer(datalayer)) {
+                var title = L.DomUtil.create('h5', '', container),
+                    ul = L.DomUtil.create('ul', '', container);
+                title.innerHTML = datalayer.storage_name;
+                for (var j in datalayer._layers) {
+                    ul.appendChild(this.addFeature(datalayer._layers[j]));
+                }
             }
-        }
+        }, this);
     },
 
     addFeature: function (feature) {
@@ -402,6 +404,7 @@ L.Storage.DataLayersControl = L.Control.extend({
             color = L.DomUtil.create('span', 'feature-color', feature_li),
             title = L.DomUtil.create('span', 'feature-title', feature_li),
             symbol = feature._getIconUrl ? feature._getIconUrl(): null;
+        zoom_to.title = L._("Bring feature to center");
         title.innerHTML = feature.name;
         color.style.backgroundColor = feature.getOption('color');
         if (symbol) {

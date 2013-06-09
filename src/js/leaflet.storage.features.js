@@ -8,7 +8,7 @@ L.Storage.FeatureMixin = {
         var self = this;
         L.Storage.Xhr.get(url, {
             "callback": function(data){
-                self.bindPopup(data.html);
+                self.populatePopup(data.html);
                 self.openPopup(e.latlng);
             }
         });
@@ -26,6 +26,43 @@ L.Storage.FeatureMixin = {
                 self.listenEditForm();
             }
         });
+    },
+
+    populatePopup: function (html) {
+        var wrapper = L.DomUtil.create('div', '');
+        wrapper.innerHTML = html;
+        if (this.map.options.displayPopupFooter) {
+            var footer = L.DomUtil.create('ul', 'storage-popup-footer', wrapper),
+                previous_li = L.DomUtil.create('li', 'previous', footer),
+                zoom_li = L.DomUtil.create('li', 'zoom', footer),
+                next_li = L.DomUtil.create('li', 'next', footer),
+                next = this.getNext(),
+                prev = this.getPrevious();
+            if (next) {
+                next_li.title = L._("Go to «{feature}»", {feature: next.name});
+            }
+            if (prev) {
+                previous_li.title = L._("Go to «{feature}»", {feature: prev.name});
+            }
+            zoom_li.title = L._("Zoom to this feature");
+            L.DomEvent.on(next_li, 'click', function (e) {
+                if (next) {
+                    next.bringToCenter();
+                    next.view(next.getCenter());
+                }
+            }, this);
+            L.DomEvent.on(previous_li, 'click', function (e) {
+                if (prev) {
+                    prev.bringToCenter();
+                    prev.view(prev.getCenter());
+                }
+            }, this);
+            L.DomEvent.on(zoom_li, 'click', function (e) {
+                this.bringToCenter();
+                this.map.setZoom(16);
+            }, this);
+        }
+        this.bindPopup(wrapper);
     },
 
     endEdit: function () {
@@ -204,6 +241,14 @@ L.Storage.FeatureMixin = {
             latlng = this.getCenter();
         }
         this.map.panTo(latlng);
+    },
+
+    getNext: function () {
+        return this.datalayer.getNext(this);
+    },
+
+    getPrevious: function () {
+        return this.datalayer.getPrevious(this);
     }
 
 };

@@ -27,7 +27,9 @@ L.Map.mergeOptions({
     scaleControl: true,
     miniMap: false,
     displayCaptionOnLoad: false,
-    name: ''
+    name: '',
+    displayPopupFooter: false,
+    displayDataBrowserOnLoad: false
 });
 
 L.Storage.Map.include({
@@ -121,6 +123,11 @@ L.Storage.Map.include({
 
         if (options.displayCaptionOnLoad) {
             this.displayCaption();
+        }
+        else if (options.displayDataBrowserOnLoad && this.options.layersControl) {
+            this.whenReady(function () {
+                this.datalayers_control.openBrowser();
+            });
         }
     },
 

@@ -2,6 +2,7 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
 
     initialize: function (map, /* Object from db */ datalayer, options) {
         this.map = map;
+        this._index = Array();
         if(typeof options == "undefined") {
             options = {};
         }
@@ -41,11 +42,13 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
 
     addLayer: function (feature) {
         feature.connectToDataLayer(this);
+        this._index.push(L.stamp(feature));
         return L.LazyGeoJSON.prototype.addLayer.call(this, feature);
     },
 
     removeLayer: function (feature) {
         feature.disconnectFromDataLayer(this);
+        this._index.splice(this._index.indexOf(L.stamp(feature)), 1);
         return L.LazyGeoJSON.prototype.removeLayer.call(this, feature);
     },
 
@@ -249,6 +252,20 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         if (bounds.isValid()) {
             this.map.fitBounds(bounds);
         }
+    },
+
+    getNext: function (feature) {
+        if (this._index.length <= 1) { return null; }
+        var id = this._index.indexOf(L.stamp(feature)),
+            nextId = this._index[id + 1] || this._index[0];
+        return this._layers[nextId];
+    },
+
+    getPrevious: function (feature) {
+        if (this._index <= 1) { return null; }
+        var id = this._index.indexOf(L.stamp(feature)),
+            previousId = this._index[id - 1] || this._index[this._index.length - 1];
+        return this._layers[previousId];
     }
 
 });
