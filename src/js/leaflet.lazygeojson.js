@@ -26,5 +26,14 @@ L.LazyGeoJSON = L.GeoJSON.extend({
             self._geojson = geojson;
             self.fire('dataloaded');
         });
+    },
+
+    whenLoaded: function (callback, context) {
+        if (this._geojson !== null) {
+            callback.call(context || this, this);
+        } else {
+            this.on('dataloaded', callback, context);
+        }
+        return this;
     }
 });

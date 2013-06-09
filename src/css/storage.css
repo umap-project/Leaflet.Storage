@@ -18,7 +18,7 @@
 
 .leaflet-control-embed > a,
 .leaflet-control-infos > a, .leaflet-control-home,
-.leaflet-control-layers > a, .leaflet-control-locate,
+.leaflet-control-locate, .storage-browse-toggle,
 .leaflet-control-search, .leaflet-control-edit-toggle {
     background: none no-repeat scroll center center #F8F8F9;
     border: 1px solid #888888;
@@ -64,6 +64,7 @@
 }
 .leaflet-control-embed a,
 .leaflet-control-infos a,
+.leaflet-control-browse > a,
 .leaflet-control-locate a,
 .leaflet-control-home a,
 .leaflet-control-search a,
@@ -187,21 +188,133 @@ a.update-map-settings {
     float: right;
     margin: 0;
 }
-a.edit-datalayer {
-    border: medium none;
-    border-radius: inherit;
-    box-shadow: none;
-    color: #A5A5A5;
+.leaflet-control-browse .storage-browse-toggle {
+    background-image: url("../img/layers.png");
+    width: 46px;
+    height: 46px;
+}
+.leaflet-control-browse .storage-browse-actions {
+    background-color: #fff;
+    padding: 10px;
     display: none;
-    float: right;
-    font-size: 12px;
-    font-style: italic;
-    line-height: 21px;
-    text-decoration: underline;
+    line-height: 24px;
+    border-radius: 2px;
 }
-.storage-edit-enabled .leaflet-control-layers-expanded .edit-datalayer {
+.storage-browse-features span,
+.leaflet-control-browse .storage-browse-datalayers span {
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    background-position: center center;
+    background-repeat: no-repeat;
     display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    font-size: 12px;
 }
+.leaflet-control-browse .storage-browse-datalayers .off span {
+    cursor: inherit;
+}
+.leaflet-control-browse .storage-browse-actions .layer-toggle {
+    background-image: url("../img/eye-on.png");
+}
+.leaflet-control-browse .storage-browse-actions .off .layer-toggle {
+    background-image: url("../img/eye-off.png");
+}
+.storage-browse-features .feature-zoom_to {
+    background-image: url("../img/zoom_to-18.png");
+}
+.leaflet-control-browse .storage-browse-actions .layer-zoom_to {
+    background-image: url("../img/zoom_to.png");
+}
+.leaflet-control-browse .storage-browse-actions .layer-edit {
+    background-image: url("../img/edit-16.png");
+}
+.leaflet-control-browse .storage-browse-actions .off .layer-edit {
+    background-image: url("../img/edit-off-16.png");
+}
+.leaflet-control-browse .storage-browse-actions .off .layer-zoom_to {
+    background-image: url("../img/zoom_to-off.png");
+}
+.storage-browse-features .feature-title,
+.leaflet-control-browse .storage-browse-actions .layer-title {
+    width: inherit;
+    cursor: inherit;
+    padding-left: 6px;
+}
+.leaflet-control-browse .storage-browse-actions .off .layer-title {
+    color: rgb(179, 179, 179);
+}
+.leaflet-control-browse:hover > a {
+    display: none;
+}
+.leaflet-control-browse:hover .storage-browse-actions {
+    display: block;
+}
+.leaflet-control-browse a.add-datalayer,
+.leaflet-control-browse a.storage-browse-link {
+    background-image: url("../img/browse-data.png");
+    background-position: 7px center;
+    background-repeat: no-repeat;
+    background-color: rgb(68, 68, 68);
+    color: white;
+    display: block;
+    height: 24px;
+    line-height: 24px;
+    margin-top: 14px;
+    padding: 0 5px;
+    text-align: right;
+    min-width: 107px;
+    border-radius: 2px;
+}
+.leaflet-control-browse a.add-datalayer {
+    background-image: url("../img/add-layer-grey-18.png");
+}
+.leaflet-control-browse a.add-datalayer:hover,
+.leaflet-control-browse a.storage-browse-link:hover {
+    background-color: rgb(99, 99, 99);
+}
+.storage-browse-features ul {
+    border-top: 2px solid rgb(68, 68, 68);
+    margin-bottom: 14px;
+}
+.storage-browse-features li {
+    padding: 2px 0;
+    border-bottom: 1px dotted rgb(179, 179, 179);
+    white-space: nowrap;
+}
+.storage-browse-features .feature-color {
+    box-shadow: 0 0 4px 0 black inset;
+    background-size: 70% 70%;
+    border: 4px solid white;
+    cursor: inherit;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    box-sizing: border-box;
+}
+.storage-browse-features .polyline .feature-color {
+    box-shadow: 0 0 4px 0 black inset;
+    background-size: 50% 50%;
+    background-image: url("../img/draw_polyline.png");
+}
+.storage-browse-features .polygon .feature-color {
+    box-shadow: 0 0 4px 0 black inset;
+    background-size: 50% 50%;
+    background-image: url("../img/draw_polygon.png");
+}
+.show-on-edit {
+    display: none!important;
+}
+.storage-edit-enabled .show-on-edit {
+    display: inline-block!important;
+}
+.storage-edit-enabled .show-on-edit.inline {
+    display: inline!important;
+}
+.storage-edit-enabled .show-on-edit.block {
+    display: block!important;
+}
+
 
 /* ************* */
 /* Marker's Icon */
@@ -370,11 +483,6 @@ a.edit-datalayer {
 /* Overriding leaflet defaults */
 /* *************************** */
 
-.leaflet-control-layers a.leaflet-control-layers-toggle {
-    background-image: url("../img/layers.png");
-    height: 46px;
-    width: 46px;
-}
 .leaflet-control-zoom a {
     height: 36px;
     width: 36px;

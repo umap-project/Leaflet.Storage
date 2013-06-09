@@ -26,7 +26,8 @@ L.Map.mergeOptions({
     editInOSMControlOptions: {},
     scaleControl: true,
     miniMap: false,
-    displayCaptionOnLoad: false
+    displayCaptionOnLoad: false,
+    name: ''
 });
 
 L.Storage.Map.include({
@@ -40,6 +41,7 @@ L.Storage.Map.include({
         var editInOSMControl = options.editInOSMControl;
         delete options.editInOSMControl;
         L.Map.prototype.initialize.call(this, el, options);
+        this.name = this.options.name;
         this.options.center = center;
         if (this.options.storageZoomControl) {
             // Calling parent has called the initHook, we can now add the
@@ -101,11 +103,8 @@ L.Storage.Map.include({
         // It will be populated while creating the datalayers
         // Control is added as an initHook, to keep the order
         // with other controls
-        this.datalayers_control = new L.Storage.ControlLayers();
+        this.datalayers_control = new L.Storage.DataLayersControl();
         this.populateTileLayers(this.options.tilelayers);
-        if (this.options.layersControl) {
-            this.addControl(this.datalayers_control);
-        }
 
         // Global storage for retrieving datalayers
         this.datalayers = {};
@@ -115,6 +114,9 @@ L.Storage.Map.include({
             if(this.options.datalayers.hasOwnProperty(j)){
                 this._createDataLayer(this.options.datalayers[j]);
             }
+        }
+        if (this.options.layersControl) {
+            this.datalayers_control.addTo(this);
         }
 
         if (options.displayCaptionOnLoad) {
@@ -129,7 +131,6 @@ L.Storage.Map.include({
                 this.addTileLayer(tilelayers[i]);
             }
         }
-        this.datalayers_control._update();
     },
 
     resetTileLayers: function () {
@@ -167,7 +168,6 @@ L.Storage.Map.include({
                 });
             }
         }
-        this.datalayers_control._addLayer(tilelayer, options.tilelayer.name);
         this.tilelayers[options.tilelayer.name] = tilelayer;
     },
 
@@ -286,10 +286,7 @@ L.Storage.Map.include({
                     if (data.datalayer) {
                         var layer = map.datalayers[data.datalayer.pk];
                         layer.on('dataloaded', function (e) {
-                            var bounds = layer.getBounds();
-                            if (bounds.isValid()) {
-                                map.fitBounds(bounds);
-                            }
+                            layer.zoomTo();
                         });
                         layer.clearLayers();
                         layer.fetchData();

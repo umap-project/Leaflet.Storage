@@ -26,7 +26,7 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
             if(this.display_on_load) {
                 this.map.addLayer(this);
             }
-            this.map.datalayers_control.addOverlay(this, this.storage_name);
+            this.map.datalayers_control.update();
         }
     },
 
@@ -39,14 +39,14 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         L.Storage.Xhr.get(this._dataUrl(), {"callback": callback});
     },
 
-    addLayer: function (layer) {
-        layer.connectToDataLayer(this);
-        return L.LazyGeoJSON.prototype.addLayer.call(this, layer);
+    addLayer: function (feature) {
+        feature.connectToDataLayer(this);
+        return L.LazyGeoJSON.prototype.addLayer.call(this, feature);
     },
 
-    removeLayer: function (layer) {
-        layer.disconnectFromDataLayer(this);
-        return L.LazyGeoJSON.prototype.removeLayer.call(this, layer);
+    removeLayer: function (feature) {
+        feature.disconnectFromDataLayer(this);
+        return L.LazyGeoJSON.prototype.removeLayer.call(this, feature);
     },
 
     addData: function (geojson) {
@@ -176,7 +176,7 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
 
     reset: function () {
         this.map.removeLayer(this);
-        this.map.datalayers_control.removeLayer(this);
+        this.map.datalayers_control.update();
         this._geojson = null;
         this._layers = {};
     },
@@ -222,6 +222,32 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
                 .on(delete_link, 'click', L.DomEvent.stopPropagation)
                 .on(delete_link, 'click', L.DomEvent.preventDefault)
                 .on(delete_link, 'click', this.confirmDelete, this);
+        }
+    },
+
+    display: function () {
+        this.map.addLayer(this);
+        // this._map.fire('overlayadd', {layer: obj});
+    },
+
+    hide: function () {
+        this.map.removeLayer(this);
+        // this._map.fire('overlayremove', {layer: obj});
+    },
+
+    toggle: function () {
+        if (!this.map.hasLayer(this)) {
+            this.display();
+        }
+        else {
+            this.hide();
+        }
+    },
+
+    zoomTo: function () {
+        var bounds = this.getBounds();
+        if (bounds.isValid()) {
+            this.map.fitBounds(bounds);
         }
     }
 

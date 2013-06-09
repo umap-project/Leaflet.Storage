@@ -134,6 +134,7 @@ L.Storage.FeatureMixin = {
         if (!this.storage_id) {
             this.storage_id = feature.id;
         }
+        this.name = feature.properties.name;
         this.storage_options = feature.properties.options;
     },
 
@@ -204,6 +205,7 @@ L.Storage.FeatureMixin = {
         }
         this.map.panTo(latlng);
     }
+
 };
 
 L.Storage.Marker = L.Marker.extend({
@@ -357,6 +359,10 @@ L.Storage.Marker = L.Marker.extend({
             iconClass: this.getIconClass()
         });
         L.Storage.FeatureMixin.listenEditForm.call(this);
+    },
+
+    getClassName: function () {
+        return 'marker';
     }
 
 });
@@ -503,6 +509,10 @@ L.Storage.Polyline = L.Polyline.extend({
             type: "LineString",
             coordinates: coords
         };
+    },
+
+    getClassName: function () {
+        return 'polyline';
     }
 
 });
@@ -555,6 +565,10 @@ L.Storage.Polygon = L.Polygon.extend({
             type: "Polygon",
             coordinates: [coords]
         };
+    },
+
+    getClassName: function () {
+        return 'polygon';
     }
 
 });

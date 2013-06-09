@@ -271,61 +271,166 @@ L.Storage.Map.addInitHook(function () {
     }
 });
 
-L.Storage.ControlLayers = L.Control.Layers.extend({
-    options: {},
+L.Storage.DataLayersControl = L.Control.extend({
 
     onAdd: function (map) {
-        var container = L.Control.Layers.prototype.onAdd.call(this, map);
-        this._createNewDataLayerButton(map, container);
+        var className = 'leaflet-control-browse',
+            container = L.DomUtil.create('div', className),
+            actions = L.DomUtil.create('div', 'storage-browse-actions', container);
+        this._datalayers_container = L.DomUtil.create('ul', 'storage-browse-datalayers', actions);
+
+        var link = L.DomUtil.create('a', "storage-browse-link", actions);
+        link.href = '#';
+        link.title = link.innerHTML = L._("Browse data");
+
+        var add = L.DomUtil.create('a', "show-on-edit block add-datalayer", actions);
+        add.href = '#';
+        add.innerHTML = link.title = L._('Add a layer');
+
+        var toggle = L.DomUtil.create('a', "storage-browse-toggle", container);
+        toggle.href = '#';
+
+        L.DomEvent
+            .on(toggle, 'click', L.DomEvent.stop);
+
+        L.DomEvent
+            .on(link, 'click', L.DomEvent.stop)
+            .on(link, 'click', this.openBrowser, this);
+
+        L.DomEvent
+            .on(add, 'click', L.DomEvent.stop)
+            .on(add, 'click', this.newDataLayer, this);
+
+        map.whenReady(function () {
+            this.update();
+        }, this);
+
         return container;
     },
 
-    _addItem: function (obj) {
-        // Obj is and object {storage_layer, name, (bool)overlay}
-        var label = L.Control.Layers.prototype._addItem.call(this, obj),
-            map = this._map,
-            self = this;
-
-        if (obj.overlay) {
-            var link = L.DomUtil.create('a', "edit-datalayer", label);
-            link.innerHTML = link.title = L._('Edit');
-            link.href = '#';
-            link.id = 'edit_datalayer_' + obj.layer.storage_id;
-            var fn = function (e) {
-                var url = obj.layer.getEditUrl();
-                L.Storage.Xhr.get(url, {
-                    'callback': function (data) {return obj.layer._handleEditResponse(data);}
-                });
-            };
-            L.DomEvent
-                .on(link, 'click', L.DomEvent.stopPropagation)
-                .on(link, 'click', L.DomEvent.preventDefault)
-                .on(link, 'click', fn, map);
+    update: function () {
+        if (this._datalayers_container) {
+            this._datalayers_container.innerHTML = '';
+            for(var idx in this._map.datalayers) {
+                this.addDataLayer(this._map.datalayers[idx]);
+            }
         }
-        return label;
     },
 
-    _createNewDataLayerButton: function (map, container) {
-        var link = L.DomUtil.create('a', "edit-datalayer add-datalayer", container);
-        link.innerHTML = link.title = L._('Add a layer');
-        link.href = '#';
-        var self = this;
-        var fn = function (e) {
-            var url = L.Util.template(this.options.urls.datalayer_add, {'map_id': map.options.storage_id});
+    initBrowserLayout: function () {
+        this._browser_container = L.DomUtil.create('div', 'storage-browse-data');
+        var features_title = L.DomUtil.create('h3', 'storage-browse-title', this._browser_container);
+        this._features_container = L.DomUtil.create('div', 'storage-browse-features', this._browser_container);
+        features_title.innerHTML = L._("Browse {map} data", {map: this._map.name});
+        return this._browser_container;
+    },
+
+    openBrowser: function () {
+        this.initBrowserLayout();
+        var datalayer;
+        for(var idx in this._map.datalayers) {
+            this.addFeatures(this._map.datalayers[idx]);
+        }
+        L.Storage.fire('ui:start', {data: {html: this._browser_container}});
+    },
+
+    toggleDataLayer: function (datalayer) {
+        var toggle = L.DomUtil.get("browse_data_toggle_" + datalayer.storage_id);
+        if (this._map.hasLayer(datalayer)) {
+            datalayer.hide();
+            this.removeFeatures(datalayer);
+            L.DomUtil.addClass(toggle, 'off');
+        } else {
+            datalayer.display();
+            datalayer.whenLoaded(function () {
+                this.addFeatures(datalayer);
+                L.DomUtil.removeClass(toggle, 'off');
+            }, this);
+        }
+    },
+
+    addDataLayer: function (datalayer) {
+        var datalayer_li = L.DomUtil.create('li', '', this._datalayers_container),
+            toggle = L.DomUtil.create('span', 'layer-toggle', datalayer_li),
+            zoom_to = L.DomUtil.create('span', 'layer-zoom_to', datalayer_li),
+            edit = L.DomUtil.create('span', "layer-edit show-on-edit", datalayer_li);
+            title = L.DomUtil.create('span', 'layer-title', datalayer_li);
+
+        datalayer_li.id = "browse_data_toggle_" + datalayer.storage_id;
+        L.DomUtil.addClass(datalayer_li, this._map.hasLayer(datalayer) ? 'on': 'off');
+
+        edit.title = L._('Edit');
+        edit.href = '#';
+        edit.id = 'edit_datalayer_' + datalayer.storage_id;
+
+        title.innerHTML = datalayer.storage_name;
+        L.DomEvent.on(toggle, 'click', function (e) { this.toggleDataLayer(datalayer); }, this);
+        L.DomEvent.on(zoom_to, 'click', datalayer.zoomTo, datalayer);
+        var do_edit = function (e) {
+            var url = datalayer.getEditUrl();
             L.Storage.Xhr.get(url, {
-                'callback': function (data) {
-                    var datalayer = map._createDataLayer({});
-                    return datalayer._handleEditResponse(data);
-                }
+                'callback': function (data) {return datalayer._handleEditResponse(data);}
             });
         };
-        L.DomEvent
-            .on(link, 'click', L.DomEvent.stopPropagation)
-            .on(link, 'click', L.DomEvent.preventDefault)
-            .on(link, 'click', fn, map)
-            .on(link, 'dblclick', L.DomEvent.stopPropagation);
+        L.DomEvent.on(edit, 'click', do_edit, this._map);
+    },
+
+    addFeatures: function (datalayer) {
+        var id = 'browse_data_datalayer_' + datalayer.storage_id;
+        var container = L.DomUtil.get(id);
+        if (!container) {
+            container = L.DomUtil.create('div', '', this._features_container);
+            container.id = id;
+        }
+        if (this._map.hasLayer(datalayer)) {
+            var title = L.DomUtil.create('h5', '', container),
+                ul = L.DomUtil.create('ul', '', container);
+            title.innerHTML = datalayer.storage_name;
+            for (var j in datalayer._layers) {
+                ul.appendChild(this.addFeature(datalayer._layers[j]));
+            }
+        }
+    },
+
+    addFeature: function (feature) {
+        var feature_li = L.DomUtil.create('li', feature.getClassName()),
+            zoom_to = L.DomUtil.create('span', 'feature-zoom_to', feature_li),
+            color = L.DomUtil.create('span', 'feature-color', feature_li),
+            title = L.DomUtil.create('span', 'feature-title', feature_li),
+            symbol = feature._getIconUrl ? feature._getIconUrl(): null;
+        title.innerHTML = feature.name;
+        color.style.backgroundColor = feature.getOption('color');
+        if (symbol) {
+            color.style.backgroundImage = 'url(' + symbol + ')';
+        }
+        L.DomEvent.on(zoom_to, 'click', function () {
+            this.bringToCenter();
+            this.view({latlng: this.getCenter()});
+        }, feature);
+        return feature_li;
+    },
+
+    removeFeatures: function (datalayer) {
+        var el = L.DomUtil.get('browse_data_datalayer_' + datalayer.storage_id);
+        if (el) {
+            el.innerHTML = '';
+        }
+    },
+
+
+    newDataLayer: function (e) {
+        var map = this._map,
+            url = L.Util.template(map.options.urls.datalayer_add, {'map_id': map.options.storage_id});
+        L.Storage.Xhr.get(url, {
+            'callback': function (data) {
+                var datalayer = map._createDataLayer({});
+                return datalayer._handleEditResponse(data);
+            }
+        });
     }
+
 });
+
 
 L.Storage.AttributionControl = L.Control.extend({
 
