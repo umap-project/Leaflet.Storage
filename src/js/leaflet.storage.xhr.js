@@ -1,4 +1,27 @@
 L.Storage.Xhr = {
+
+    _wrapper: function () {
+        if (window.XMLHttpRequest === undefined) {
+            wrapper = function() {
+                try {
+                    return new ActiveXObject("Microsoft.XMLHTTP.6.0");
+                }
+                catch (e1) {
+                    try {
+                        return new ActiveXObject("Microsoft.XMLHTTP.3.0");
+                    }
+                    catch (e2) {
+                        throw new Error("XMLHttpRequest is not supported");
+                    }
+                }
+            };
+        }
+        else {
+            wrapper = window.XMLHttpRequest;
+        }
+        return new wrapper();
+    },
+
     // supports only JSON as response data type
     _ajax: function (verb, uri, options) {
         var args = arguments,
@@ -12,42 +35,44 @@ L.Storage.Xhr = {
         };
         var settings = L.Util.extend({}, default_options, options);
 
-        var xhr = new XMLHttpRequest();
+        var response, xhr = this._wrapper();
         xhr.open(verb, uri, settings.async);
         // xhr.responseType = "text"; Does not work
 
-        xhr.onload = function(e) {
-            if (this.status == 200) {
-                var data;
-                try {
-                    data = JSON.parse(this.response);
-                }
-                catch (err) {
-                    console.log(err);
-                    L.Storage.fire("ui:alert", {"content": L._("Problem in the response format"), "level": "error"});
-                }
-                if (data.login_required) {
-                    // login_required should be an URL for the login form
-                    if (settings.login_callback) {
-                        settings.login_callback(data);
+        xhr.onreadystatechange = function(e) {
+            if (xhr.readyState === 4) {
+                if (xhr.status == 200) {
+                    var data;
+                    try {
+                        data = JSON.parse(xhr.responseText);
+                    }
+                    catch (err) {
+                        console.log(err);
+                        L.Storage.fire("ui:alert", {"content": L._("Problem in the response format"), "level": "error"});
+                    }
+                    if (data.login_required) {
+                        // login_required should be an URL for the login form
+                        if (settings.login_callback) {
+                            settings.login_callback(data);
+                        }
+                        else {
+                            self.login(data, args);
+                        }
                     }
                     else {
-                        self.login(data, args);
+                        if (settings.callback) {
+                            settings.callback(data);
+                        } else {
+                            self.default_callback(data, settings);
+                        }
                     }
+                }
+                else if (xhr.status === 403) {
+                    L.Storage.fire("ui:alert", {"content": L._("Action not allowed :("), "level": "error"});
                 }
                 else {
-                    if (settings.callback) {
-                        settings.callback(data);
-                    } else {
-                        self.default_callback(data, settings);
-                    }
+                    L.Storage.fire("ui:alert", {"content": L._("Problem in the response"), "level": "error"});
                 }
-            }
-            else if (this.status == 403) {
-                L.Storage.fire("ui:alert", {"content": L._("Action not allowed :("), "level": "error"});
-            }
-            else {
-                L.Storage.fire("ui:alert", {"content": L._("Problem in the response"), "level": "error"});
             }
         };
 
