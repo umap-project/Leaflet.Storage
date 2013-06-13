@@ -179,6 +179,9 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
 
     reset: function () {
         this.map.removeLayer(this);
+        if (this.storage_id && this.storage_id in this.map.datalayers) {
+            delete this.map.datalayers[this.storage_id];
+        }
         this.map.datalayers_control.update();
         this._geojson = null;
         this._layers = {};

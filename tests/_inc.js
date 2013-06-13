@@ -58,9 +58,11 @@ casper.fillAndSubmitUploadDataForm = function (vals) {
 
 
 casper.getDataLayerEditForm = function (id) {
-    this.mouseEvent('mouseover', 'div.leaflet-control-layers');
-    this.test.assertVisible('a#edit_datalayer_' + id, 'Edit datalayer button is visibile when edit enabled');
-    this.click('a#edit_datalayer_' + id);
+    this.mouseEvent('mouseover', 'div.leaflet-control-browse');
+    // this.test.assertVisible('.storage-browse-actions', 'Datalayer actions are visibile on mouseover');
+    this.test.assertExists('span#edit_datalayer_' + id, 'Edit datalayer button exists when edit enabled');
+    // this.test.assertVisible('span#edit_datalayer_' + id, 'Edit datalayer button is visibile when edit enabled');
+    this.click('span#edit_datalayer_' + id);
 };
 
 casper.datalayerResponsePOST = function (settings) {

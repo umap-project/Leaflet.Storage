@@ -4,9 +4,10 @@ var datalayer_edit_path = '/map/42/datalayer/edit/62/';
 
 casper.then(function () {
     this.toggleEditButton();
-    this.test.assertExists('a#edit_datalayer_62', 'Edit datalayer button exists');
-    this.test.assertExists('input.leaflet-control-layers-selector[type="checkbox"]', 'Display datalayer checkbox exists');
-    this.test.assertElementsCount('input.leaflet-control-layers-selector[type="checkbox"]', 1);
+    this.test.assertExists('.leaflet-control-browse #browse_data_toggle_62.on', 'The datalayer 62 is active');
+    this.test.assertExists('span#edit_datalayer_62', 'Edit datalayer button exists');
+    this.test.assertExists('.leaflet-control-browse span.layer-toggle', 'Toggle datalayer button exists');
+    this.test.assertElementsCount('.leaflet-control-browse span.layer-toggle', 1);
     this.server.watchPath(datalayer_edit_path, {filePath: 'map_datalayer_update_GET'});
     this.getDataLayerEditForm(62);
 });
@@ -88,7 +89,7 @@ casper.thenClick('a#delete_datalayer_button', function () {
 });
 
 casper.thenClick('form#datalayer_delete input[type="submit"]', function () {
-    this.test.assertNotExists('input.leaflet-control-layers-selector[type="checkbox"]', 'Display datalayer checkbox does not exist after datalayer has been deleted');
+    this.test.assertNotExists('.leaflet-control-browse .layer-toggle', 'Toggle datalayer button does not exist after datalayer has been deleted');
     this.test.assertNotExists('div.icon_container', 'icon container is not found after datalayer has been deleted');
 });
 
