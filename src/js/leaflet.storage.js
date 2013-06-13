@@ -64,16 +64,22 @@ L.Storage.Map.include({
         }
 
         var edited_feature = null;
-        this.__defineGetter__("edited_feature", function(){
-            return edited_feature;
-        });
-
-        this.__defineSetter__("edited_feature", function(feature){
-            if (edited_feature && edited_feature != feature) {
-                edited_feature.endEdit();
-            }
-            edited_feature = feature;
-        });
+        try {
+            Object.defineProperty(this, 'edited_feature', {
+                get: function () {
+                    return edited_feature;
+                },
+                set: function (feature) {
+                    if (edited_feature && edited_feature != feature) {
+                        edited_feature.endEdit();
+                    }
+                    edited_feature = feature;
+                }
+            });
+        }
+        catch (e) {
+            // Certainly IE8, which has a limited version of defineProperty
+        }
 
         if (this.options.allowEdit) {
             // Layer for items added by users
