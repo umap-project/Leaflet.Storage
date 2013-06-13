@@ -402,6 +402,7 @@ a.update-map-settings {
     width: 12px;
 }
 .storage-ball-icon .icon_container {
+    background: darkblue;
     background: radial-gradient(circle at 6px 38% , white -4px, darkblue 8px) repeat scroll 0 0 transparent;
     border-radius: 8px 8px 8px 8px;
     box-shadow: 1px 21px 6px -3px black;
