@@ -283,7 +283,7 @@ L.Storage.Marker = L.Marker.extend({
         this.on("dragend", this.edit);
         this.on("click", this._onClick);
         this.on("mouseover", this._enableDragging);
-        this.on("mouseout", this._disableDragging);
+        this.on("mouseout", this._onMouseOut);
     },
 
     populate: function (feature) {
@@ -301,6 +301,13 @@ L.Storage.Marker = L.Marker.extend({
             if(!this._popup) {
                 this.view(e);
             }
+        }
+    },
+
+    _onMouseOut: function (e) {
+        if(!this.dragging._draggable._moving) {
+            // Do not disable if the mouse went out while dragging
+            this._disableDragging();
         }
     },
 
