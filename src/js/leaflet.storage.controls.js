@@ -444,6 +444,57 @@ L.Storage.DataLayersControl = L.Control.extend({
 
 });
 
+L.Storage.TileLayerControl = L.Control.extend({
+    options: {
+        position: 'topright'
+    },
+
+    onAdd: function (map) {
+        var className = 'leaflet-control-tilelayers',
+            container = L.DomUtil.create('div', className);
+
+        var link = L.DomUtil.create('a', "", container);
+        link.href = '#';
+        link.title = L._("Change map background");
+
+        L.DomEvent
+            .on(link, 'click', L.DomEvent.stopPropagation)
+            .on(link, 'click', L.DomEvent.preventDefault)
+            .on(link, 'click', this.openSwitcher, this)
+            .on(link, 'dblclick', L.DomEvent.stopPropagation);
+
+        return container;
+    },
+
+    openSwitcher: function () {
+        var self = this;
+        this._tilelayers_container = L.DomUtil.create('ul', 'storage-tilelayer-switcher-container');
+        this.buildList();
+    },
+
+    buildList: function () {
+        for (var i=0,l=this._map.tilelayers.length;i<l;i++) {
+            this.addTileLayerElement(this._map.tilelayers[i]);
+        }
+        L.Storage.fire("ui:start", {data: {html: this._tilelayers_container}});
+    },
+
+    addTileLayerElement: function (tilelayer) {
+        var selectedClass = this._map.hasLayer(tilelayer) ? 'selected': '',
+            el = L.DomUtil.create('li', selectedClass, this._tilelayers_container),
+            img = L.DomUtil.create('img', '', el),
+            name = L.DomUtil.create('div', '', el);
+        img.src = L.Util.template(tilelayer.options.url_template, this._map.demoTileInfos);
+        name.innerHTML = tilelayer.options.name;
+        L.DomEvent.on(el, 'click', function (e) {
+            this._map.selectTileLayer(tilelayer);
+            L.S.fire('ui:end')
+        }, this);
+    }
+
+
+});
+
 
 L.Storage.AttributionControl = L.Control.extend({
 

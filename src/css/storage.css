@@ -16,7 +16,7 @@
 /* Controls    */
 /* *********** */
 
-.leaflet-control-embed > a,
+.leaflet-control-embed > a, .leaflet-control-tilelayers a,
 .leaflet-control-infos > a, .leaflet-control-home,
 .leaflet-control-locate, .storage-browse-toggle,
 .leaflet-control-search, .leaflet-control-edit-toggle {
@@ -64,6 +64,7 @@
 }
 .leaflet-control-embed a,
 .leaflet-control-infos a,
+.leaflet-control-tilelayers a,
 .leaflet-control-browse > a,
 .leaflet-control-locate a,
 .leaflet-control-home a,
@@ -75,6 +76,7 @@
     width: 36px;
     display: block;
 }
+.leaflet-control-tilelayers a,
 .leaflet-control-embed a,
 .leaflet-control-infos a {
     height: 46px;
@@ -83,6 +85,9 @@
 }
 .leaflet-control-embed a {
     background-image: url("../img/embed.png");
+}
+.leaflet-control-tilelayers a {
+    background-image: url("../img/tilelayers-24.png");
 }
 .leaflet-control-infos a {
     background-image: url("../img/map-infos.png");
@@ -127,7 +132,7 @@ a.update-map-extent {
     background-image: url("../img/update-extent.png");
 }
 a.update-map-tilelayers {
-    background-image: url("../img/layers.png");
+    background-image: url("../img/tilelayers-24.png");
 }
 a.update-map-infos {
     background-image: url("../img/map-infos.png");
@@ -189,7 +194,7 @@ a.update-map-settings {
     margin: 0;
 }
 .leaflet-control-browse .storage-browse-toggle {
-    background-image: url("../img/layers.png");
+    background-image: url("../img/datalayers-24.png");
     width: 46px;
     height: 46px;
 }
@@ -319,6 +324,40 @@ a.update-map-settings {
     font-size: 0.9em;
     margin-bottom: 14px;
 }
+.storage-tilelayer-switcher-container li {
+    border: 1px solid rgb(116, 116, 116);
+    border-radius: 4px 4px 4px 4px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    position: relative;
+    width: 256px;
+    cursor: pointer;
+    height: 200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.storage-tilelayer-switcher-container li div {
+    background-color: rgb(116, 116, 116);
+    bottom: 0;
+    color: rgb(247, 246, 241);
+    height: 56px;
+    line-height: 56px;
+    opacity: 0.9;
+    padding-left: 10px;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+}
+.storage-tilelayer-switcher-container li:hover div:before,
+.storage-tilelayer-switcher-container .selected div:before {
+    content: "✓";
+    font-size: 1.3em;
+    line-height: 56px;
+    padding-right: 7px;
+    position: absolute;
+    left: 7px;
+}
+
 /* Popup footer */
 .storage-popup-footer {
     background-color: rgb(68, 68, 68);

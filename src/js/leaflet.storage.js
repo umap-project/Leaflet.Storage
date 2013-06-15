@@ -30,7 +30,9 @@ L.Map.mergeOptions({
     name: '',
     description: '',
     displayPopupFooter: false,
-    displayDataBrowserOnLoad: false
+    displayDataBrowserOnLoad: false,
+    demoTileInfos: {s:'a', z:9, x:265, y:181},
+    tileLayersControl: true
 });
 
 L.Storage.Map.include({
@@ -46,6 +48,7 @@ L.Storage.Map.include({
         L.Map.prototype.initialize.call(this, el, options);
         this.name = this.options.name;
         this.description = this.options.description;
+        this.demoTileInfos = this.options.demoTileInfos;
         this.options.center = center;
         if (this.options.storageZoomControl) {
             // Calling parent has called the initHook, we can now add the
@@ -114,6 +117,7 @@ L.Storage.Map.include({
         // Control is added as an initHook, to keep the order
         // with other controls
         this.datalayers_control = new L.Storage.DataLayersControl();
+        this.tilelayers_control = new L.Storage.TileLayerControl();
         this.populateTileLayers(this.options.tilelayers);
 
         // Global storage for retrieving datalayers
@@ -124,6 +128,9 @@ L.Storage.Map.include({
             if(this.options.datalayers.hasOwnProperty(j)){
                 this._createDataLayer(this.options.datalayers[j]);
             }
+        }
+        if (this.options.tileLayersControl) {
+            this.tilelayers_control.addTo(this);
         }
         if (this.options.layersControl) {
             this.datalayers_control.addTo(this);
@@ -140,7 +147,7 @@ L.Storage.Map.include({
     },
 
     populateTileLayers: function (tilelayers) {
-        this.tilelayers = {};
+        this.tilelayers = Array();
         for(var i in tilelayers) {
             if(tilelayers.hasOwnProperty(i)) {
                 this.addTileLayer(tilelayers[i]);
@@ -156,23 +163,25 @@ L.Storage.Map.include({
         }
     },
 
-    createTileLayer: function (options) {
-        return new L.TileLayer(
-            options.tilelayer.url_template,
-            {
-                attribution: options.tilelayer.attribution,
-                minZoom: options.tilelayer.minZoom,
-                maxZoom: options.tilelayer.maxZoom
-            }
-        );
+    createTileLayer: function (tilelayer) {
+        return new L.TileLayer(tilelayer.url_template, tilelayer);
+    },
+
+    selectTileLayer: function (tilelayer) {
+        this.addLayer(tilelayer);
+        if (this.selected_tilelayer) {
+            this.removeLayer(this.selected_tilelayer);
+        }
+        this.selected_tilelayer = tilelayer;
+        this.fire('baselayerchange', {layer: tilelayer});
     },
 
     addTileLayer: function (options) {
         var tilelayer = this.createTileLayer(options);
         // Add only the first to the map, to make it visible,
         // and the other only when user click on them
-        if(options.rank == 1) {
-            this.addLayer(tilelayer);
+        if(options.selected) {
+            this.selectTileLayer(tilelayer);
             if (this.options.miniMap) {
                 if (typeof this.miniMap === "object") {
                     this.removeControl(this.miniMap);
@@ -182,7 +191,7 @@ L.Storage.Map.include({
                 });
             }
         }
-        this.tilelayers[options.tilelayer.name] = tilelayer;
+        this.tilelayers.push(tilelayer);
     },
 
     initCenter: function () {
