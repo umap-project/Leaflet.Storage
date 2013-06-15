@@ -1,5 +1,10 @@
 # Leaflet.Storage changelog
 
+## 0.4.x
+- add a data browser
+- add a popup footer with navigation between features
+- some work on IE compat
+
 ## 0.3.x
 
 - add a setting to display map caption on map load (cf #50)
