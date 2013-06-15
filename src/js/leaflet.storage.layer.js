@@ -24,6 +24,7 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
     connectToMap: function () {
         if (this.storage_id) {
             this.map.datalayers[this.storage_id] = this;
+            this.map.datalayers_index.push(this);
             if(this.display_on_load) {
                 this.map.addLayer(this);
             }
@@ -181,10 +182,12 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         this.map.removeLayer(this);
         if (this.storage_id && this.storage_id in this.map.datalayers) {
             delete this.map.datalayers[this.storage_id];
+            this.map.datalayers_index.splice(this.map.datalayers_index.indexOf(this), 1);
         }
         this.map.datalayers_control.update();
         this._geojson = null;
         this._layers = {};
+        this._index = Array();
     },
 
     _handleEditResponse: function(data) {
@@ -257,18 +260,47 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         }
     },
 
-    getNext: function (feature) {
-        if (this._index.length <= 1) { return null; }
-        var id = this._index.indexOf(L.stamp(feature)),
-            nextId = this._index[id + 1] || this._index[0];
-        return this._layers[nextId];
+    isVisible: function () {
+        return this.map.hasLayer(this);
     },
 
-    getPrevious: function (feature) {
+    getFeatureByIndex: function (index) {
+        if (index === -1) {
+            index = this._index.length - 1;
+        }
+        var id = this._index[index];
+        return this._layers[id];
+    },
+
+    getNextFeature: function (feature) {
+        var id = this._index.indexOf(L.stamp(feature)),
+            nextId = this._index[id + 1];
+        return nextId? this._layers[nextId]: this.getNextVisible().getFeatureByIndex(0);
+    },
+
+    getPreviousFeature: function (feature) {
         if (this._index <= 1) { return null; }
         var id = this._index.indexOf(L.stamp(feature)),
-            previousId = this._index[id - 1] || this._index[this._index.length - 1];
-        return this._layers[previousId];
+            previousId = this._index[id - 1];
+        return previousId? this._layers[previousId]: this.getPreviousVisible().getFeatureByIndex(-1);
+    },
+
+    getNextVisible: function () {
+        var id = this.map.datalayers_index.indexOf(this),
+            next = this.map.datalayers_index[id + 1] || this.map.datalayers_index[0];
+        while(!next.isVisible() || next._index.length === 0) {
+            next = next.getNextVisible();
+        }
+        return next;
+    },
+
+    getPreviousVisible: function () {
+        var id = this.map.datalayers_index.indexOf(this),
+            prev = this.map.datalayers_index[id - 1] || this.map.datalayers_index[this.map.datalayers_index.length - 1];
+        while(!prev.isVisible() || prev._index.length === 0) {
+            prev = prev.getPreviousVisible();
+        }
+        return prev;
     }
 
 });

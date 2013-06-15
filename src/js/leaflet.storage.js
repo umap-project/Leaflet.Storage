@@ -116,7 +116,7 @@ L.Storage.Map.include({
 
         // Global storage for retrieving datalayers
         this.datalayers = {};
-        this.feature_to_datalayer = {};
+        this.datalayers_index = Array();
         // create datalayers
         for(var j in this.options.datalayers) {
             if(this.options.datalayers.hasOwnProperty(j)){

@@ -96,14 +96,12 @@ L.Storage.FeatureMixin = {
         var id = L.Util.stamp(this); // Id leaflet, not storage
                                      // as new marker will be added too
         this.datalayer = datalayer;
-        this.map.feature_to_datalayer[id] = datalayer;
     },
 
     disconnectFromDataLayer: function (datalayer) {
         var id = L.Util.stamp(this); // Id leaflet, not storage
                                       // as new marker will be added too
         this.datalayer = null;
-        delete this.map.feature_to_datalayer[id];
     },
 
     listenEditForm: function() {
@@ -244,11 +242,11 @@ L.Storage.FeatureMixin = {
     },
 
     getNext: function () {
-        return this.datalayer.getNext(this);
+        return this.datalayer.getNextFeature(this);
     },
 
     getPrevious: function () {
-        return this.datalayer.getPrevious(this);
+        return this.datalayer.getPreviousFeature(this);
     }
 
 };
