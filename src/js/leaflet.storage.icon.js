@@ -127,7 +127,10 @@ L.Storage.Icon.Ball = L.Storage.Icon.Default.extend({
     _setColor: function() {
         var color = this._getColor("color"),
             background;
-        if (L.Browser.webkit) {
+        if (L.Browser.ielt9) {
+            background = color;
+        }
+        else if (L.Browser.webkit) {
             background ="-webkit-gradient( radial, 6 38%, 0, 6 38%, 8, from(white), to(" + color + ") )";
         }
         else {

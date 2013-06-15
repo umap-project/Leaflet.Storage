@@ -31,7 +31,7 @@ L.Storage.FeatureMixin = {
     populatePopup: function (html) {
         var wrapper = L.DomUtil.create('div', '');
         wrapper.innerHTML = html;
-        if (this.map.options.displayPopupFooter) {
+        if (this.map.options.displayPopupFooter && !L.Browser.ielt9) {
             var footer = L.DomUtil.create('ul', 'storage-popup-footer', wrapper),
                 previous_li = L.DomUtil.create('li', 'previous', footer),
                 zoom_li = L.DomUtil.create('li', 'zoom', footer),

@@ -13,7 +13,7 @@ L.Storage.on('ui:start', function (e) {
     // by previous ui processes...
     div.className = "";
     div.innerHTML = "";
-    if (e.data.html instanceof HTMLElement) {
+    if (e.data.html.nodeType && e.data.html.nodeType === 1) {
         div.appendChild(e.data.html);
     }
     else {
