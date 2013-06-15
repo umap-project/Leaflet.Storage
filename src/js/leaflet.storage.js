@@ -28,6 +28,7 @@ L.Map.mergeOptions({
     miniMap: false,
     displayCaptionOnLoad: false,
     name: '',
+    description: '',
     displayPopupFooter: false,
     displayDataBrowserOnLoad: false
 });
@@ -44,6 +45,7 @@ L.Storage.Map.include({
         delete options.editInOSMControl;
         L.Map.prototype.initialize.call(this, el, options);
         this.name = this.options.name;
+        this.description = this.options.description;
         this.options.center = center;
         if (this.options.storageZoomControl) {
             // Calling parent has called the initHook, we can now add the

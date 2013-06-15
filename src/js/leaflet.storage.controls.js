@@ -319,9 +319,14 @@ L.Storage.DataLayersControl = L.Control.extend({
 
     initBrowserLayout: function () {
         this._browser_container = L.DomUtil.create('div', 'storage-browse-data');
-        var features_title = L.DomUtil.create('h3', 'storage-browse-title', this._browser_container);
+        var title = L.DomUtil.create('h3', 'storage-browse-title', this._browser_container);
+        var description = L.DomUtil.create('div', '', this._browser_container);
         this._features_container = L.DomUtil.create('div', 'storage-browse-features', this._browser_container);
-        features_title.innerHTML = L._("Browse {map} data", {map: this._map.name});
+        title.innerHTML = this._map.name;
+        if (this._map.description) {
+            var content = L.DomUtil.create('div', 'storage-browse-description', description);
+            content.innerHTML = this._map.description;
+        }
         return this._browser_container;
     },
 

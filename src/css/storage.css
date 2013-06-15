@@ -314,6 +314,11 @@ a.update-map-settings {
 .storage-edit-enabled .show-on-edit.block {
     display: block!important;
 }
+
+.storage-browse-description {
+    font-size: 0.9em;
+    margin-bottom: 14px;
+}
 /* Popup footer */
 .storage-popup-footer {
     background-color: rgb(68, 68, 68);
