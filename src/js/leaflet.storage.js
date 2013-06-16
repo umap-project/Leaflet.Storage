@@ -183,11 +183,8 @@ L.Storage.Map.include({
         if(options.selected) {
             this.selectTileLayer(tilelayer);
             if (this.options.miniMap) {
-                if (typeof this.miniMap === "object") {
-                    this.removeControl(this.miniMap);
-                }
                 this.whenReady(function () {
-                    this.miniMap = new L.Control.MiniMap(this.createTileLayer(options)).addTo(this);
+                    this.miniMap = new L.Control.MiniMap(tilelayer, {listenBaseLayerChange: true}).addTo(this);
                 });
             }
         }
