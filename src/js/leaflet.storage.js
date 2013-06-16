@@ -155,14 +155,6 @@ L.Storage.Map.include({
         }
     },
 
-    resetTileLayers: function () {
-        for(var i in this.tilelayers) {
-            if(this.tilelayers.hasOwnProperty(i)) {
-                this.removeLayer(this.tilelayers[i]);
-            }
-        }
-    },
-
     createTileLayer: function (tilelayer) {
         return new L.TileLayer(tilelayer.url_template, tilelayer);
     },
@@ -245,26 +237,13 @@ L.Storage.Map.include({
     },
 
     updateTileLayers: function () {
-        var url = L.Util.template(this.options.urls.map_update_tilelayers, {'map_id': this.options.storage_id}),
-            self = this;
-        L.Storage.Xhr.get(url, {
-            "listen_form": {
-                'id': 'map_edit',
-                'options': {
-                    'success': function (data) {
-                        if (data.tilelayers) {
-                            self.resetTileLayers();
-                            self.populateTileLayers(data.tilelayers);
-                            L.Storage.fire('ui:end');
-                            L.Storage.fire('ui:alert', {'content': L._('Successfully updated tilelayers'), 'level': 'info'});
-                        }
-                        else {
-                            L.Storage.fire('ui:alert', {'content': 'Invalid response', 'level': 'error'});
-                        }
-                    }
-                }
-            }
-        });
+        var url = L.Util.template(this.options.urls.map_update_tilelayer, {'map_id': this.options.storage_id}),
+            callback = function (tilelayer) {
+                var formData = new FormData();
+                formData.append('tilelayer', tilelayer.options.id);
+                L.Storage.Xhr.post(url, {data: formData});
+            };
+        this.tilelayers_control.openSwitcher({callback: callback});
     },
 
     updateInfos: function () {

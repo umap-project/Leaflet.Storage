@@ -466,20 +466,20 @@ L.Storage.TileLayerControl = L.Control.extend({
         return container;
     },
 
-    openSwitcher: function () {
+    openSwitcher: function (options) {
         var self = this;
         this._tilelayers_container = L.DomUtil.create('ul', 'storage-tilelayer-switcher-container');
-        this.buildList();
+        this.buildList(options);
     },
 
-    buildList: function () {
+    buildList: function (options) {
         for (var i=0,l=this._map.tilelayers.length;i<l;i++) {
-            this.addTileLayerElement(this._map.tilelayers[i]);
+            this.addTileLayerElement(this._map.tilelayers[i], options);
         }
         L.Storage.fire("ui:start", {data: {html: this._tilelayers_container}});
     },
 
-    addTileLayerElement: function (tilelayer) {
+    addTileLayerElement: function (tilelayer, options) {
         var selectedClass = this._map.hasLayer(tilelayer) ? 'selected': '',
             el = L.DomUtil.create('li', selectedClass, this._tilelayers_container),
             img = L.DomUtil.create('img', '', el),
@@ -488,7 +488,10 @@ L.Storage.TileLayerControl = L.Control.extend({
         name.innerHTML = tilelayer.options.name;
         L.DomEvent.on(el, 'click', function (e) {
             this._map.selectTileLayer(tilelayer);
-            L.S.fire('ui:end')
+            L.S.fire('ui:end');
+            if (options && options.callback) {
+                options.callback(tilelayer);
+            }
         }, this);
     }
 

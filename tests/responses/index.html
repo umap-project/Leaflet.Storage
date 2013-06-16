@@ -45,7 +45,7 @@
                     "polyline": "/polyline/{pk}/",
                     "marker": "/marker/{pk}/",
                     "datalayer_add": "/map/{map_id}/datalayer/add/",
-                    "map_update_tilelayers": "/map/{map_id}/update/tilelayers/",
+                    "map_update_tilelayer": "/map/{map_id}/update/tilelayer/",
                     "datalayer_update": "/map/{map_id}/datalayer/edit/{pk}/",
                     "marker_add": "/map/{map_id}/marker/add/",
                     "polygon": "/polygon/{pk}/",
@@ -71,14 +71,13 @@
                 "default_iconUrl": "/src/img/marker.png",
                 "zoom": 6,
                 "tilelayers": [{
-                    "tilelayer": {
                         "attribution": "\u00a9 OSM Contributors",
                         "name": "OpenStreetMap",
                         "url_template": "http://localhost:20008/tile/openriverboatmap/{z}/{x}/{y}.png",
                         "minZoom": 0,
                         "maxZoom": 18,
-                        "id": 1
-                    }, "rank": 1
+                        "id": 1,
+                        "selected": true
                 }],
                 "allowEdit": 1,
                 "embedControl": 1,
