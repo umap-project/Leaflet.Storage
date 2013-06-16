@@ -269,7 +269,7 @@ a.update-map-settings {
     margin-top: 14px;
     padding: 0 5px;
     text-align: right;
-    min-width: 107px;
+    min-width: 160px;
     border-radius: 2px;
 }
 .leaflet-control-browse a.add-datalayer {
