@@ -4,6 +4,7 @@
 - add a data browser
 - add a popup footer with navigation between features
 - some work on IE compat
+- new tilelayer visual switcher
 
 ## 0.3.x
 
