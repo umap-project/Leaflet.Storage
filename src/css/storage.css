@@ -283,6 +283,14 @@ a.update-map-settings {
     border-top: 2px solid rgb(68, 68, 68);
     margin-bottom: 14px;
 }
+.storage-browse-features h5 {
+    background-image: url("../img/datalayers-24.png");
+    background-position: 7px center;
+    background-repeat: no-repeat;
+    text-indent: 38px;
+    height: 24px;
+    line-height: 24px;
+}
 .storage-browse-features li {
     padding: 2px 0;
     border-bottom: 1px dotted rgb(179, 179, 179);
