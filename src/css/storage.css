@@ -21,8 +21,7 @@
 .leaflet-control-locate, .storage-browse-toggle,
 .leaflet-control-search, .leaflet-control-edit-toggle {
     background: none no-repeat scroll center center #F8F8F9;
-    border: 1px solid #888888;
-    border-radius: 5px 5px 5px 5px;
+    border-radius: 4px;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
 }
 .leaflet-draw a {
