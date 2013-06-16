@@ -160,6 +160,7 @@ L.Storage.Map.include({
     },
 
     selectTileLayer: function (tilelayer) {
+        if (tilelayer === this.selected_tilelayer) { return; }
         this.addLayer(tilelayer);
         if (this.selected_tilelayer) {
             this.removeLayer(this.selected_tilelayer);
