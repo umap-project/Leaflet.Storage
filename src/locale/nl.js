@@ -26,7 +26,15 @@ var nl = {
     "Jump to location": "Spring naar locatie",
     "Remove icon shape": "Verwijder icoon vorm",
     "Remove icon symbol": "Verwijder icoon symbool",
-    "Sorry, no location found for {location}": "Helaas, geen locatie gevonden voor {location}"
+    "Sorry, no location found for {location}": "Helaas, geen locatie gevonden voor {location}",
+    "Bring feature to center": "",
+    "Browse data": "",
+    "Change map background": "",
+    "Draw a marker": "",
+    "Go to «{feature}»": "",
+    "Show/hide layer": "",
+    "Zoom to layer extent": "",
+    "Zoom to this feature": ""
 };
 
 L.registerLocale("nl", nl);

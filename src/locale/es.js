@@ -26,7 +26,15 @@ var es = {
     "Successfully updated tilelayers": "",
     "Unkown geometry.type: {type}": "",
     "Update permissions and editors": "",
-    "Upload data": ""
+    "Upload data": "",
+    "Bring feature to center": "",
+    "Browse data": "",
+    "Change map background": "",
+    "Draw a marker": "",
+    "Go to «{feature}»": "",
+    "Show/hide layer": "",
+    "Zoom to layer extent": "",
+    "Zoom to this feature": ""
 };
 
 L.registerLocale("es", es);

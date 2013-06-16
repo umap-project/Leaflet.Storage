@@ -26,7 +26,15 @@ var it = {
     "Choose a shape": "Schegli la forma",
     "Edit map settings": "Modifia le impostazioni",
     "Remove icon shape": "Rimovi la forma",
-    "Remove icon symbol": "Rimovi il simbolo"
+    "Remove icon symbol": "Rimovi il simbolo",
+    "Bring feature to center": "",
+    "Browse data": "",
+    "Change map background": "",
+    "Draw a marker": "",
+    "Go to «{feature}»": "",
+    "Show/hide layer": "",
+    "Zoom to layer extent": "",
+    "Zoom to this feature": ""
 };
 
 L.registerLocale("it", it);

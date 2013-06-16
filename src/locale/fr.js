@@ -26,7 +26,15 @@ var fr = {
     "Choose a shape": "Choisir une forme",
     "Edit map settings": "Éditer les paramètres",
     "Remove icon shape": "Annuler la forme",
-    "Remove icon symbol": "Annuler le picto"
+    "Remove icon symbol": "Annuler le picto",
+    "Bring feature to center": "Centrer la carte sur cet objet",
+    "Browse data": "Visualiser les données",
+    "Change map background": "Changer le fond de carte",
+    "Draw a marker": "Ajouter un marqueur",
+    "Go to «{feature}»": "Naviguer jusqu'à «{feature}»",
+    "Show/hide layer": "Montrer/masquer un calque",
+    "Zoom to layer extent": "Zoomer jusqu'à voir les données du calque",
+    "Zoom to this feature": "Zoomer sur cet objet"
 };
 
 L.registerLocale("fr", fr);

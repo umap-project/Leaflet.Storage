@@ -26,7 +26,15 @@ var de = {
     "Jump to location": "",
     "Remove icon shape": "",
     "Remove icon symbol": "",
-    "Sorry, no location found for {location}": ""
+    "Sorry, no location found for {location}": "",
+    "Bring feature to center": "",
+    "Browse data": "",
+    "Change map background": "",
+    "Draw a marker": "",
+    "Go to «{feature}»": "",
+    "Show/hide layer": "",
+    "Zoom to layer extent": "",
+    "Zoom to this feature": ""
 };
 
 L.registerLocale("de", de);
