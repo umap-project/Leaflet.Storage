@@ -144,6 +144,14 @@ L.Storage.Map.include({
                 this.datalayers_control.openBrowser();
             });
         }
+
+        L.Storage.on('ui:ready', function () {
+            this.invalidateSize(false, false);
+        }, this);
+
+        L.Storage.on('ui:closed', function () {
+            this.invalidateSize(false, false);
+        }, this);
     },
 
     populateTileLayers: function (tilelayers) {

@@ -39,6 +39,7 @@ L.Storage.on('ui:end', function (e) {
     var body = document.getElementsByTagName('body')[0];
     div.innerHTML = "";
     L.DomUtil.removeClass(body, 'storage-ui');
+    L.Storage.fire('ui:closed');
 });
 
 /*
