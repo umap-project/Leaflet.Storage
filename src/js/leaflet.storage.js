@@ -146,11 +146,11 @@ L.Storage.Map.include({
         }
 
         L.Storage.on('ui:ready', function () {
-            this.invalidateSize(false, false);
+            this.invalidateSize({pan: false});
         }, this);
 
         L.Storage.on('ui:closed', function () {
-            this.invalidateSize(false, false);
+            this.invalidateSize({pan: false});
         }, this);
     },
 
