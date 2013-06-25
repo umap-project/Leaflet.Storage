@@ -118,9 +118,9 @@ L.Storage.Xhr = {
         var link = L.DomUtil.get(link_id);
         if (link) {
             L.DomEvent
-                .on(link, 'click', L.DomEvent.stopPropagation)
-                .on(link, 'click', L.DomEvent.preventDefault)
+                .on(link, 'click', L.DomEvent.stop)
                 .on(link, 'click', function (e) {
+                    if (options.confirm && !confirm(options.confirm)) { return;}
                     L.Storage.Xhr.get(link.href, options);
                 });
         }
@@ -145,7 +145,8 @@ L.Storage.Xhr = {
             L.Storage.fire("ui:alert", {"content": data.error, "level": "error"});
         }
         else if (data.html) {
-            var ui_options = {'data': data};
+            var ui_options = {'data': data},
+                listen_options;
             if (options.cssClass) {
                 ui_options['cssClass'] = options.cssClass;
             }
@@ -156,10 +157,12 @@ L.Storage.Xhr = {
                 listen_options = L.Util.extend({}, options, options.listen_form.options);
                 L.Storage.Xhr.listen_form(options.listen_form.id, listen_options);
             }
-            if (options.listen_link) { // Allow an array?
-                // Listen link again
-                listen_options = L.Util.extend({}, options, options.listen_link.options);
-                L.Storage.Xhr.listen_link(options.listen_link.id, listen_options);
+            if (options.listen_link) {
+                for (var i=0, l=options.listen_link.length; i<l; i++) {
+                    // Listen link again
+                    listen_options = L.Util.extend({}, options, options.listen_link[i].options);
+                    L.Storage.Xhr.listen_link(options.listen_link[i].id, listen_options);
+                }
             }
         }
         else if (options.success) {

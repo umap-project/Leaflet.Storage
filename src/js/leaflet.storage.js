@@ -259,13 +259,19 @@ L.Storage.Map.include({
         var url = L.Util.template(this.options.urls.map_update, {'map_id': this.options.storage_id});
         L.Storage.Xhr.get(url, {
             'listen_form': {'id': 'map_edit'},  // 1. edit form
-            'listen_link': {
+            'listen_link': [{
                 'id': 'delete_map_button',  // 2. delete link
                 'options': {
                     'listen_form': {'id': 'map_delete'},  // 3. confirm delete form
                     'cssClass': 'warning'
                 }
-            }
+            },
+            {
+                id: 'clone_map_button',
+                options: {
+                    confirm: L._('Are you sure you want to clone this map?')
+                }
+            }]
         });
     },
 
