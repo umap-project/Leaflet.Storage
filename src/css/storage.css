@@ -24,7 +24,7 @@
     border-radius: 4px;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
 }
-.leaflet-draw a {
+.leaflet-draw a, .leaflet-draw a:hover {
     height: 46px;
     width: 46px;
     display: none;
@@ -584,7 +584,7 @@ a.update-map-settings {
 /* Overriding leaflet defaults */
 /* *************************** */
 
-.leaflet-control-zoom a {
+.leaflet-control-zoom a, .leaflet-control-zoom a:hover {
     height: 36px;
     width: 36px;
     line-height: 36px;
