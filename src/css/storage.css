@@ -364,6 +364,27 @@ a.update-map-settings {
     position: absolute;
     left: 7px;
 }
+/* Edit medatada */
+#clone_map_button, #delete_map_button,
+#delete_datalayer_button {
+    background-position: 7px center;
+    background-repeat: no-repeat;
+    text-indent: 38px;
+    height: 24px;
+    line-height: 24px;
+    display: inline-block;    
+}
+#clone_map_button {
+    background-image: url("../img/clone-24.png");
+}
+#delete_map_button {
+    background-image: url("../img/delete-24.png");
+    color: rgb(198, 15, 19);
+}
+#delete_datalayer_button {
+    background-image: url("../img/delete-datalayer-24.png");
+    color: rgb(198, 15, 19);
+}
 
 /* Popup footer */
 .storage-popup-footer {

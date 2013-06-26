@@ -269,7 +269,7 @@ L.Storage.Map.include({
             {
                 id: 'clone_map_button',
                 options: {
-                    confirm: L._('Are you sure you want to clone this map?')
+                    confirm: L._('Are you sure you want to clone this map and all its datalayers and features?')
                 }
             }]
         });
