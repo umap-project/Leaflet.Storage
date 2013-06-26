@@ -34,7 +34,8 @@ var fi = {
     "Go to «{feature}»": "",
     "Show/hide layer": "",
     "Zoom to layer extent": "",
-    "Zoom to this feature": ""
+    "Zoom to this feature": "",
+    "Are you sure you want to clone this map and all its datalayers and features?": ""
 };
 
 L.registerLocale("fi", fi);

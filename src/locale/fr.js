@@ -34,7 +34,8 @@ var fr = {
     "Go to «{feature}»": "Naviguer jusqu'à «{feature}»",
     "Show/hide layer": "Montrer/masquer un calque",
     "Zoom to layer extent": "Zoomer jusqu'à voir les données du calque",
-    "Zoom to this feature": "Zoomer sur cet objet"
+    "Zoom to this feature": "Zoomer sur cet objet",
+    "Are you sure you want to clone this map and all its datalayers and features?": "Êtes-vous sûr de vouloir dupliquer cette carte, ainsi que tous ses cartes et les marqueurs?"
 };
 
 L.registerLocale("fr", fr);

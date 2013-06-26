@@ -34,7 +34,8 @@ var es = {
     "Go to «{feature}»": "ir a «{feature}»",
     "Show/hide layer": "Mostrar/Esconder capa",
     "Zoom to layer extent": "Hacer zoom a nivel de la capa",
-    "Zoom to this feature": "Hacer zoom a nivel de característica"
+    "Zoom to this feature": "Hacer zoom a nivel de característica",
+    "Are you sure you want to clone this map and all its datalayers and features?": ""
 };
 
 L.registerLocale("es", es);
