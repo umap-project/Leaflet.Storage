@@ -660,3 +660,20 @@ L.Storage.Map.addInitHook(function () {
         this.jumpToLocationControl = (new L.Storage.JumpToLocationControl()).addTo(this);
     }
 });
+
+L.Control.MiniMap.include({
+
+    onMainMapBaseLayerChange: function (e) {
+        var layer = this._cloneLayer(e.layer);
+        if (this._miniMap.hasLayer(this._layer)) {
+            this._miniMap.removeLayer(this._layer);
+        }
+        this._layer = layer;
+        this._miniMap.addLayer(this._layer);
+    },
+
+    _cloneLayer: function (layer) {
+        return new L.TileLayer(layer._url, layer.options);
+    }
+
+});

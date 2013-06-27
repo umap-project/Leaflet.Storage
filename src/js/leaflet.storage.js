@@ -185,7 +185,8 @@ L.Storage.Map.include({
             this.selectTileLayer(tilelayer);
             if (this.options.miniMap) {
                 this.whenReady(function () {
-                    this.miniMap = new L.Control.MiniMap(tilelayer, {listenBaseLayerChange: true}).addTo(this);
+                    this.miniMap = new L.Control.MiniMap(this.createTileLayer(options), {listenBaseLayerChange: true}).addTo(this);
+                    this.on('baselayerchange', this.miniMap.onMainMapBaseLayerChange, this.miniMap);
                 });
             }
         }
