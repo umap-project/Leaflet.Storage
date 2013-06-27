@@ -5,6 +5,7 @@
 - add a popup footer with navigation between features
 - some work on IE compat
 - new tilelayer visual switcher
+- Spanish translation, thanks to @ikks
 
 ## 0.3.x
 
