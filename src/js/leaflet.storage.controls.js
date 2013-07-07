@@ -305,6 +305,12 @@ L.Storage.DataLayersControl = L.Control.extend({
             this.update();
         }, this);
 
+        if (!L.Browser.touch) {
+            L.DomEvent.disableClickPropagation(container);
+            L.DomEvent.on(container, 'mousewheel', L.DomEvent.stopPropagation);
+        } else {
+            L.DomEvent.on(container, 'click', L.DomEvent.stopPropagation);
+        }
         return container;
     },
 

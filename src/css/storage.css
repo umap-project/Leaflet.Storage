@@ -204,6 +204,10 @@ a.update-map-settings {
     line-height: 24px;
     border-radius: 2px;
 }
+.leaflet-control-browse .storage-browse-datalayers {
+    max-height: 10em;
+    overflow-y: auto;
+}
 .storage-browse-features span,
 .leaflet-control-browse .storage-browse-datalayers span {
     width: 24px;
