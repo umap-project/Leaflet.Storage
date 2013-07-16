@@ -514,7 +514,7 @@ L.Control.Attribution.include({
     _update: function () {
         this._updateOrig();
         var link = L.DomUtil.create('a', '', this._container);
-        link.innerHTML = ' — ' + L._('More');
+        link.innerHTML = ' — ' + L._('About');
         L.DomEvent
             .on(link, 'click', L.DomEvent.stop)
             .on(link, 'click', this._map.displayCaption, this._map)
