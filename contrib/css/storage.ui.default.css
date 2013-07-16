@@ -12,7 +12,7 @@
     bottom: 0;
     right: 0;
     padding: 20px;
-    border-left: 1px solid rgb(221, 221, 221);
+    border-left: 1px solid #bbb;
     display: none;
     overflow-x: auto;
     z-index: 10;

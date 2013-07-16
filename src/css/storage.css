@@ -22,7 +22,7 @@
 .leaflet-control-search, .leaflet-control-edit-toggle {
     background: none no-repeat scroll center center #F8F8F9;
     border-radius: 4px;
-    border: 1px solid rgb(221, 221, 221);
+    border: 1px solid #bbb;
 }
 .leaflet-draw a, .leaflet-draw a:hover {
     height: 44px;
@@ -608,7 +608,7 @@ a.update-map-settings {
     border-radius: 4px;
 }
 .leaflet-bar {
-    border: 1px solid rgb(221, 221, 221);
+    border: 1px solid #bbb;
     box-shadow: none;
 }
 
