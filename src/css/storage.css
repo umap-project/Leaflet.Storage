@@ -112,6 +112,11 @@
 .leaflet-control-edit-in-osm .leaflet-control-edit-in-osm-toggle {
     background-image: url("../img/edit-in-osm.png");
 }
+.leaflet-control-edit-in-osm {
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    box-shadow: none;
+}
 .leaflet-control-search input {
     display: none;
 }
