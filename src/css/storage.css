@@ -22,17 +22,16 @@
 .leaflet-control-search, .leaflet-control-edit-toggle {
     background: none no-repeat scroll center center #F8F8F9;
     border-radius: 4px;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgb(221, 221, 221);
 }
 .leaflet-draw a, .leaflet-draw a:hover {
-    height: 46px;
-    width: 46px;
+    height: 44px;
+    width: 44px;
     display: none;
     margin-top: 0;
-    margin-bottom: -5px; /*inline-blocks show spaces*/
+    vertical-align: top;
     border-bottom: none;
-    /*background-color: transparent;*/
-    border-right: 1px solid #AAAAAA;
+    border-right: 1px solid #eee;
     background-position: 50% 50%;
     background-repeat: no-repeat;
 }
@@ -191,6 +190,8 @@ a.update-map-settings {
     display: inline-block;
     float: right;
     margin: 0;
+    height: 46px;
+    width: 46px;
 }
 .leaflet-control-browse .storage-browse-toggle {
     background-image: url("../img/datalayers-24.png");
@@ -605,6 +606,10 @@ a.update-map-settings {
 }
 .leaflet-popup-content-wrapper {
     border-radius: 4px;
+}
+.leaflet-bar {
+    border: 1px solid rgb(221, 221, 221);
+    box-shadow: none;
 }
 
 /* ****** */
