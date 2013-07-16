@@ -14,8 +14,7 @@ L.Map.mergeOptions({
     default_fill: true,
     default_weight: 3,
     default_iconClass: "Default",
-    attributionControl: false,
-    storageAttributionControl: true,
+    attributionControl: true,
     allowEdit: true,
     homeControl: true,
     zoomControl: false,  // Not to activate initHook, which make zoom comes before homeControl

@@ -505,36 +505,24 @@ L.Storage.TileLayerControl = L.Control.extend({
 
 });
 
+L.Control.Attribution.prototype._updateOrig = L.Control.Attribution.prototype._update;
+L.Control.Attribution.mergeOptions({
+    prefix: ''
+});
+L.Control.Attribution.include({
 
-L.Storage.AttributionControl = L.Control.extend({
-
-    options: {
-        position: 'topright'
-    },
-
-    onAdd: function (map) {
-        var className = 'leaflet-control-infos',
-            container = L.DomUtil.create('div', className);
-
-        var link = L.DomUtil.create('a', "", container);
-        link.href = '#';
-        link.title = L._("Caption and credits");
-
+    _update: function () {
+        this._updateOrig();
+        var link = L.DomUtil.create('a', '', this._container);
+        link.innerHTML = ' — ' + L._('More');
         L.DomEvent
-            .on(link, 'click', L.DomEvent.stopPropagation)
-            .on(link, 'click', L.DomEvent.preventDefault)
-            .on(link, 'click', map.displayCaption, map)
-            .on(link, 'dblclick', L.DomEvent.stopPropagation);
-
-        return container;
+            .on(link, 'click', L.DomEvent.stop)
+            .on(link, 'click', this._map.displayCaption, this._map)
+            .on(link, 'dblclick', L.DomEvent.stop);
     }
+
 });
 
-L.Storage.Map.addInitHook(function () {
-    if (this.options.storageAttributionControl) {
-        this.attributionControl = (new L.Storage.AttributionControl()).addTo(this);
-    }
-});
 
 L.Storage.HomeControl = L.Control.extend({
 
