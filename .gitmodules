@@ -7,9 +7,6 @@
 [submodule "reqs/leaflet"]
 	path = reqs/leaflet
 	url = git://github.com/Leaflet/Leaflet.git
-[submodule "tests/casperserver"]
-	path = tests/casperserver
-	url = git://github.com/yohanboniface/casperserver.git
 [submodule "reqs/minimap"]
 	path = reqs/minimap
 	url = git://github.com/Norkart/Leaflet-MiniMap.git

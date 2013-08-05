@@ -1,3 +1,0 @@
-{
-    "html": "<form method='post' action='/map/42/delete/' id='map_delete' onsubmit='return false;'> <input type='hidden' name='confirm' value='yes' /> <input type='submit' value='yes' class='button' /></form>"
-}

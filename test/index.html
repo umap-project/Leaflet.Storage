@@ -1,0 +1,74 @@
+<html>
+    <head>
+        <title>My test page</title>
+        <script src="../reqs/leaflet/dist/leaflet-src.js"></script>
+        <script src="../reqs/draw/dist/leaflet.draw-src.js"></script>
+        <script src="../reqs/hash/leaflet-hash.js"></script>
+        <script src="../reqs/i18n/Leaflet.i18n.js"></script>
+        <script src="../reqs/edit_in_osm/Leaflet.EditInOSM.js"></script>
+        <script src="../reqs/minimap/src/Control.MiniMap.js"></script>
+        <script src="../src/js/leaflet.storage.core.js"></script>
+        <script src="../src/js/leaflet.storage.xhr.js"></script>
+        <script src="../src/js/leaflet.storage.forms.js"></script>
+        <script src="../src/js/leaflet.lazygeojson.js"></script>
+        <script src="../src/js/leaflet.storage.icon.js"></script>
+        <script src="../src/js/leaflet.storage.features.js"></script>
+        <script src="../src/js/leaflet.storage.layer.js"></script>
+        <script src="../src/js/leaflet.storage.controls.js"></script>
+        <script src="../src/js/leaflet.storage.js"></script>
+        <script src="../contrib/js/storage.ui.default.js"></script>
+        <link rel="stylesheet" href="../reqs/leaflet/dist/leaflet.css" />
+        <!--[if lte IE 8]>
+            <link rel="stylesheet" href="../reqs/leaflet/dist/leaflet.ie.css" />
+        <![endif]-->
+        <link rel="stylesheet" href="../reqs/draw/dist/leaflet.draw.css" />
+        <link rel="stylesheet" href="../reqs/minimap/src/Control.MiniMap.css" />
+        <link rel="stylesheet" href="../reqs/edit_in_osm/Leaflet.EditInOSM.css" />
+        <link rel="stylesheet" href="../src/css/storage.css" />
+        <link rel="stylesheet" href="../contrib/css/storage.ui.default.css" />
+
+        <script src="../node_modules/sinon/lib/sinon.js"></script>
+        <script src="../node_modules/sinon/lib/sinon/util/event.js"></script>
+        <script src="../node_modules/sinon/lib/sinon/util/fake_xml_http_request.js"></script>
+        <script src="../node_modules/sinon/lib/sinon/util/fake_server.js"></script>
+        <script src="../node_modules/mocha/mocha.js"></script>
+        <script src="../node_modules/chai/chai.js"></script>
+        <script src="../node_modules/happen/src/happen.js"></script>
+        <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
+        <script>mocha.setup('bdd')</script>
+        <script type="text/javascript">
+            expect = chai.expect;
+            assert = chai.assert;
+        </script>
+        <script src="./_pre.js"></script>
+        <script src="./Map.js"></script>
+        <script src="./DataLayer.js"></script>
+        <script src="./Poly.js"></script>
+        <style type="text/css">
+        #mocha {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 10000;
+            background-color: white;
+            box-shadow: 0px 0px 8px 0px black;
+            overflow-y: auto;
+        }
+        #mocha-stats {
+            position: absolute;
+        }
+        </style>
+    </head>
+    <body>
+        <div id="mocha"></div>
+        <div id="map"></div>
+        <div id="storage-ui-container"></div>
+        <div id="storage-alert-container"></div>
+        <div id="storage-tooltip-container"></div>
+        <script>
+          mocha.run();
+        </script>
+    </body>
+</html>
