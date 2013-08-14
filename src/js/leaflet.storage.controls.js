@@ -435,7 +435,7 @@ L.Storage.DataLayersControl = L.Control.extend({
             title = L.DomUtil.create('span', 'feature-title', feature_li),
             symbol = feature._getIconUrl ? feature._getIconUrl(): null;
         zoom_to.title = L._("Bring feature to center");
-        title.innerHTML = feature.name;
+        title.innerHTML = feature.properties.name;
         color.style.backgroundColor = feature.getOption('color');
         if (symbol) {
             color.style.backgroundImage = 'url(' + symbol + ')';
