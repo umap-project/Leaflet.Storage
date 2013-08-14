@@ -379,7 +379,9 @@ L.Storage.Map.include({
 
     save: function () {
         this.eachDataLayer(function (datalayer) {
-            datalayer.save();
+            if (datalayer.isDirty) {
+                datalayer.save();
+            }
         });
         this.isDirty = false;
         L.S.fire('ui:end');

@@ -362,9 +362,7 @@ L.Storage.Marker = L.Marker.extend({
     },
 
     _onClick: function(e){
-        this._popup = true; // prevent Leaflet from binding event on bindPopup
-                            // How to handle this the clean way?
-                            // manage _popupHandlersAdded upstream?
+        this._popupHandlersAdded = true; // prevent Leaflet from binding event on bindPopup
         if(this.map.editEnabled) {
             this.edit(e);
         }

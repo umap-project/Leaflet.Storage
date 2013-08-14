@@ -312,10 +312,7 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         this.eachLayer(function (layer) {
             features.push(layer.toGeoJSON());
         });
-        return {
-            type: 'FeatureCollection',
-            features: features
-        };
+        return features;
     },
 
     fetchData: function () {
