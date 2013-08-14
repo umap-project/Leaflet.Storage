@@ -87,18 +87,24 @@ L.Storage.Map.include({
 
         if (this.options.allowEdit) {
             // Layer for items added by users
-            var drawnItems = new L.LayerGroup();
             this.on('draw:created', function (e) {
-                drawnItems.addLayer(e.layer);
+                var datalayer = this.defaultDataLayer();
+                datalayer.addLayer(e.layer);
                 if (e.layerType == L.Draw.Polyline.TYPE || e.layerType == L.Draw.Polygon.TYPE) {
                     e.layer.editing.enable();
                     if (!e.latlng) {
                         e.latlng = e.layer._latlngs[e.layer._latlngs.length-1];
                     }
                 }
+                e.layer.isDirty = true;
                 e.layer.edit(e);
+            }, this);
+            this.on('draw:edited', function (e) {
+                e.layer.isDirty = true;
             });
-            this.addLayer(drawnItems);
+            this.on('draw:start', function (e) {
+                e.layer.isDirty = true;
+            });
             L.Storage.on('ui:end', function (e) {
                 this.edited_feature = null;
             }, this);
@@ -151,6 +157,30 @@ L.Storage.Map.include({
         L.Storage.on('ui:closed', function () {
             this.invalidateSize({pan: false});
         }, this);
+
+        var isDirty = false,
+            self = this;
+        try {
+            Object.defineProperty(this, 'isDirty', {
+                get: function () {
+                    return isDirty;
+                },
+                set: function (status) {
+                    if (!isDirty && status) {
+                        self.fire('isdirty');
+                    }
+                    if (status) {
+                        L.DomUtil.addClass(this._container, "storage-is-dirty");
+                    } else {
+                        L.DomUtil.removeClass(this._container, "storage-is-dirty");
+                    }
+                    isDirty = status;
+                }
+            });
+        }
+        catch (e) {
+            // Certainly IE8, which has a limited version of defineProperty
+        }
     },
 
     populateTileLayers: function (tilelayers) {
@@ -184,7 +214,7 @@ L.Storage.Map.include({
             this.selectTileLayer(tilelayer);
             if (this.options.miniMap) {
                 this.whenReady(function () {
-                    this.miniMap = new L.Control.MiniMap(this.createTileLayer(options), {listenBaseLayerChange: true}).addTo(this);
+                    this.miniMap = new L.Control.MiniMap(this.createTileLayer(options)).addTo(this);
                     this.on('baselayerchange', this.miniMap.onMainMapBaseLayerChange, this.miniMap);
                 });
             }
@@ -328,6 +358,49 @@ L.Storage.Map.include({
     displayCaption: function () {
         var url = L.Util.template(this.options.urls.map_infos, {'map_id': this.options.storage_id});
         L.Storage.Xhr.get(url);
+    },
+
+    eachDataLayer: function (method, context) {
+        for (var i in this.datalayers) {
+            if (this.datalayers.hasOwnProperty(i)) {
+                method.call(context, this.datalayers[i]);
+            }
+        }
+    },
+
+    reset: function () {
+        this.eachDataLayer(function (datalayer) {
+            if (datalayer.isDirty) {
+                datalayer.reset();
+            }
+        });
+        this.isDirty = false;
+    },
+
+    save: function () {
+        this.eachDataLayer(function (datalayer) {
+            datalayer.save();
+        });
+        this.isDirty = false;
+        L.S.fire('ui:end');
+    },
+
+    defaultDataLayer: function () {
+        var self = this,
+            datalayer;
+        for (var i in this.datalayers) {
+            if (this.datalayers.hasOwnProperty(i)) {
+                datalayer = this.datalayers[i];
+                if (this.hasLayer(datalayer)) {
+                    return datalayer;
+                }
+            }
+        }
+        if (datalayer) {
+            // No datalayer visibile, let's force one
+            this.addLayer(datalayer);
+            return datalayer;
+        }
     }
 
 });

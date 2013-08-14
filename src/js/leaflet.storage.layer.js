@@ -7,6 +7,25 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
             options = {};
         }
         L.LazyGeoJSON.prototype.initialize.call(this, this._dataGetter, options);
+        var isDirty = false,
+            self = this;
+        try {
+            Object.defineProperty(this, 'isDirty', {
+                get: function () {
+                    return isDirty;
+                },
+                set: function (status) {
+                    if (!isDirty && status) {
+                        self.fire('isdirty');
+                    }
+                    isDirty = status;
+                    self.map.isDirty = status;
+                }
+            });
+        }
+        catch (e) {
+            // Certainly IE8, which has a limited version of defineProperty
+        }
         this.populate(datalayer);
         this.connectToMap();
     },
@@ -14,27 +33,30 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
     populate: function (datalayer) {
         // Datalayer is null when listening creation form
         this.storage_id = datalayer.pk || null;
-        this.storage_name = datalayer.name || "";
-        this.storage_icon_class = datalayer.icon_class || this.map.getDefaultOption('iconClass');
-        this.iconUrl = datalayer.pictogram_url || null;
-        this.display_on_load = datalayer.display_on_load || false;
+        this.options.name = datalayer.name || "layer no name";
+        this.options.description = datalayer.description || "";
+        this.options.iconClass = datalayer.icon_class || this.map.getDefaultOption('iconClass');
+        this.options.iconUrl = datalayer.pictogram_url || null;
+        this.options.displayOnLoad = datalayer.display_on_load || false;
         L.Util.extend(this.options, datalayer.options);
-    },
-
-    connectToMap: function () {
-        if (this.storage_id) {
-            this.map.datalayers[this.storage_id] = this;
-            this.map.datalayers_index.push(this);
-            if(this.display_on_load) {
-                this.map.addLayer(this);
-            }
-            this.map.datalayers_control.update();
+        if (!this.storage_id) {
+            this.isDirty = true;
         }
     },
 
+    connectToMap: function () {
+        var id = L.stamp(this);
+        this.map.datalayers[id] = this;
+        this.map.datalayers_index.push(this);
+        if(this.options.displayOnLoad) {
+            this.map.addLayer(this);
+        }
+        this.map.datalayers_control.update();
+    },
+
     _dataUrl: function() {
-        var template = this.map.options.urls.feature_geojson_list;
-        return L.Util.template(template, {"datalayer_id": this.storage_id});
+        var template = this.map.options.urls.datalayer_view;
+        return L.Util.template(template, {"pk": this.storage_id});
     },
 
     _dataGetter: function (callback) {
@@ -97,7 +119,6 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         }
         return L.storage_marker(
             this.map,
-            geojson.id,
             latlng,
             {"geojson": geojson, "datalayer": this}
         );
@@ -106,16 +127,14 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
     _lineToLayer: function(geojson, latlngs) {
         return new L.Storage.Polyline(
             this.map,
-            geojson.id,
             latlngs,
-            {"geojson": geojson, "datalayer": this}
+            {"geojson": geojson, "datalayer": this, color: null}
         );
     },
 
     _polygonToLayer: function(geojson, latlngs) {
         return new L.Storage.Polygon(
             this.map,
-            geojson.id,
             latlngs,
             {"geojson": geojson, "datalayer": this}
         );
@@ -127,8 +146,8 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
 
     getIconClass: function () {
         var iconClass = this.map.getDefaultOption('iconClass');
-        if(L.Storage.Icon[this.storage_icon_class]) {
-            iconClass = this.storage_icon_class;
+        if(L.Storage.Icon[this.options.iconClass]) {
+            iconClass = this.options.iconClass;
         }
         return iconClass;
     },
@@ -178,16 +197,61 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         this.reset();
     },
 
-    reset: function () {
+    erase: function () {
         this.map.removeLayer(this);
-        if (this.storage_id && this.storage_id in this.map.datalayers) {
-            delete this.map.datalayers[this.storage_id];
-            this.map.datalayers_index.splice(this.map.datalayers_index.indexOf(this), 1);
-        }
+        delete this.map.datalayers[L.stamp(this)];
+        this.map.datalayers_index.splice(this.map.datalayers_index.indexOf(this), 1);
         this.map.datalayers_control.update();
         this._geojson = null;
         this._layers = {};
         this._index = Array();
+    },
+
+    reset: function () {
+        if (this.storage_id) {
+            this.map.removeLayer(this);
+            this.clearLayers();
+            if (this._geojson) {
+                this.fromGeoJSON(this._geojson);
+                this.map.addLayer(this);
+            }
+        } else {
+            this.erase();
+        }
+    },
+
+    redraw: function () {
+        this.map.removeLayer(this);
+        this.map.addLayer(this);
+    },
+
+    edit: function () {
+        if(!this.map.editEnabled) return;
+        var self = this,
+            container = L.DomUtil.create('div'),
+            metadata_fields = [
+                'options.name',
+                'options.description'
+            ];
+        var builder = new L.S.FormBuilder(this, metadata_fields, {
+            callback: function () { this.map.datalayers_control.update(); },
+            callbackContext: this
+        });
+        form = builder.build();
+        container.appendChild(form);
+        var options_fields = [
+            ['options.color', 'ColorPicker'],
+            ['options.iconClass', 'IconClassSwitcher'],
+            ['options.iconUrl', 'iconUrl']
+        ];
+        builder = new L.S.FormBuilder(this, options_fields, {
+            callback: this.redraw,
+            callbackContext: this
+        });
+        form = builder.build();
+        container.appendChild(form);
+        L.S.fire('ui:start', {data: {html: container}});
+
     },
 
     _handleEditResponse: function(data) {
@@ -203,6 +267,7 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         var colorHelper = new L.Storage.FormHelper.Color(this.map, form_id, {
             color: this.options.color || this.map.getDefaultOption('color')
         });
+        console.log(this.featuresToGeoJSON());
         L.Storage.Xhr.listen_form(form_id, {
             'callback': function (data) {
                 if (data.datalayer) {
@@ -214,7 +279,7 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
                     self.populate(data.datalayer);
                     // force display_on_load not to get the layer hidden while
                     // working on it
-                    self.display_on_load = true;
+                    self.options.displayOnLoad = true;
                     self.connectToMap();
                     L.Storage.fire('ui:alert', {'content': L._("Layer successfuly edited"), 'level': 'info'});
                     L.Storage.fire('ui:end');
@@ -232,6 +297,24 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
                 .on(delete_link, 'click', L.DomEvent.preventDefault)
                 .on(delete_link, 'click', this.confirmDelete, this);
         }
+    },
+
+    featuresToGeoJSON: function () {
+        var features = [];
+        this.eachLayer(function (layer) {
+            features.push(layer.toGeoJSON());
+        });
+        return {
+            type: 'FeatureCollection',
+            features: features
+        };
+    },
+
+    fetchData: function () {
+        if (!this.storage_id) {
+            return;
+        }
+        L.LazyGeoJSON.prototype.fetchData.call(this);
     },
 
     display: function () {
@@ -301,6 +384,17 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
             prev = prev.getPreviousVisible();
         }
         return prev;
+    },
+
+    save: function () {
+        var geojson = {
+            type: "FeatureCollection",
+            features: this.featuresToGeoJSON(),
+            _storage: this.options
+        };
+        this._geojson = geojson;
+        // save in db
+        console.log("saving", geojson);
     }
 
 });

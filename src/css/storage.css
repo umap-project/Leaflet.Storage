@@ -19,7 +19,7 @@
 .leaflet-control-embed > a, .leaflet-control-tilelayers a,
 .leaflet-control-infos > a, .leaflet-control-home,
 .leaflet-control-locate, .storage-browse-toggle,
-.leaflet-control-search, .leaflet-control-edit-toggle {
+.leaflet-control-search {
     background: none no-repeat scroll center center #F8F8F9;
     border-radius: 4px;
     border: 1px solid #bbb;
@@ -190,13 +190,51 @@ a.update-map-settings {
     position: absolute;
     top: -8px;
 }
-.leaflet-draw a.leaflet-control-edit-toggle {
-    background-image: url("../img/toggle-edit.png");
-    display: inline-block;
+.leaflet-draw .leaflet-control-edit-toggle {
     float: right;
-    margin: 0;
-    height: 46px;
+    margin: 0;    
     width: 46px;
+    min-height: 23px;
+    border: 1px solid #444;
+    border-radius: 2px;
+    background-color: #fff;
+}
+.leaflet-draw a.leaflet-control-edit-save,
+.leaflet-draw a.leaflet-control-edit-cancel,
+.leaflet-draw a.leaflet-control-edit-disable,
+.leaflet-draw a.leaflet-control-edit-enable {
+    display: inline-block;
+    height: 22px;
+    line-height: 22px;
+    background-color: #666;
+    color: #f8f8f8;
+    border: none;
+    font-size: 10px;
+}
+.leaflet-draw a.leaflet-control-edit-cancel {
+    background-color: #C60F13;
+}
+.leaflet-draw a.leaflet-control-edit-save {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.storage-is-dirty a.leaflet-control-edit-save {
+    opacity: 1;
+    cursor: pointer;
+}
+.leaflet-draw a.leaflet-control-edit-save,
+.leaflet-draw a.leaflet-control-edit-cancel,
+.leaflet-draw a.leaflet-control-edit-disable,
+.storage-edit-enabled a.leaflet-control-edit-enable {
+    display: none;
+}
+.storage-edit-enabled a.leaflet-control-edit-save,
+.storage-edit-enabled a.leaflet-control-edit-disable,
+.storage-edit-enabled.storage-is-dirty a.leaflet-control-edit-cancel {
+    display: block;
+}
+.storage-is-dirty a.leaflet-control-edit-disable {
+    display: none;
 }
 .leaflet-control-browse .storage-browse-toggle {
     background-image: url("../img/datalayers-24.png");

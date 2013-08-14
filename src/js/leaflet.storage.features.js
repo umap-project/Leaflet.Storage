@@ -4,28 +4,65 @@ L.Storage.FeatureMixin = {
     static_options: {},
 
     view: function(e) {
-        var url = this.getViewURL();
-        var self = this;
-        L.Storage.Xhr.get(url, {
-            "callback": function(data){
-                self.populatePopup(data.html);
-                self.openPopup(e.latlng);
-            }
-        });
+        // var url = this.getViewURL();
+        console.log(this.properties);
     },
 
     edit: function(e) {
         if(!this.map.editEnabled) return;
         this.map.edited_feature = this;
-        var url = this.getEditURL();
-        var self = this;
-        L.Storage.Xhr.get(url, {
-            "callback": function(data){
-                self.bringToCenter(e);
-                L.Storage.fire('ui:start', {'data': data});
-                self.listenEditForm();
+        var self = this,
+            container = L.DomUtil.create('div'),
+            form = L.DomUtil.create('form', '', container),
+            select = L.DomUtil.create('select', '', form),
+            option,
+            datalayer_id = L.stamp(this.datalayer);
+        this.map.eachDataLayer(function (datalayer) {
+            var id = L.stamp(datalayer);
+            option = L.DomUtil.create('option', '', select);
+            option.value = id;
+            option.innerHTML = datalayer.options.name;
+            if (id === datalayer_id) {
+                option.selected = "selected";
             }
         });
+        L.DomEvent.on(select, 'change', function (e) {
+            var id = select[select.selectedIndex].value,
+                datalayer = this.map.datalayers[id];
+            this.changeDataLayer(datalayer);
+        }, this);
+        console.log(this.properties)
+        var properties = [];
+        for (var i in this.properties) {
+            if (i === "_storage_options") {continue;}
+            properties.push('properties.' + i);
+        }
+        if (!properties.length) {
+            properties = ['properties.name', 'properties.description'];
+        }
+        console.log(properties);
+        var builder = new L.S.FormBuilder(this, properties);
+        form = builder.build();
+        container.appendChild(form);
+        var options_fields = this.getStyleOptions();
+        builder = new L.S.FormBuilder(this, options_fields, {
+            callback: this._redraw,
+            callbackContext: this
+        });
+        form = builder.build();
+        container.appendChild(form);
+        L.S.fire('ui:start', {data: {html: container}});
+        this.bringToCenter();
+
+        // var url = this.getEditURL();
+        // var self = this;
+        // L.Storage.Xhr.get(url, {
+        //     "callback": function(data){
+        //         self.bringToCenter(e);
+        //         L.Storage.fire('ui:start', {'data': data});
+        //         self.listenEditForm();
+        //     }
+        // });
     },
 
     populatePopup: function (html) {
@@ -66,9 +103,9 @@ L.Storage.FeatureMixin = {
     },
 
     endEdit: function () {
-        if (!this.storage_id) {
-            this._delete();
-        }
+        // if (!this.storage_id) {
+        //     this._delete();
+        // }
     },
 
     confirmDelete: function() {
@@ -93,15 +130,13 @@ L.Storage.FeatureMixin = {
     },
 
     connectToDataLayer: function (datalayer) {
-        var id = L.Util.stamp(this); // Id leaflet, not storage
-                                     // as new marker will be added too
         this.datalayer = datalayer;
     },
 
     disconnectFromDataLayer: function (datalayer) {
-        var id = L.Util.stamp(this); // Id leaflet, not storage
-                                      // as new marker will be added too
-        this.datalayer = null;
+        if (this.datalayer === datalayer) {
+            this.datalayer = null;
+        }
     },
 
     listenEditForm: function() {
@@ -166,11 +201,8 @@ L.Storage.FeatureMixin = {
     },
 
     populate: function (feature) {
-        if (!this.storage_id) {
-            this.storage_id = feature.id;
-        }
-        this.name = feature.properties.name;
-        this.storage_options = feature.properties.options;
+        this.properties = L.extend({}, feature.properties);
+        this.properties._storage_options = this.properties._storage_options || {};
     },
 
     updateFromBackEnd: function (feature) {
@@ -190,9 +222,11 @@ L.Storage.FeatureMixin = {
 
     changeDataLayer: function(datalayer) {
         if(this.datalayer) {
+            this.datalayer.isDirty = true;
             this.datalayer.removeLayer(this);
         }
         datalayer.addLayer(this);
+        datalayer.isDirty = true;
     },
 
     getViewURL: function () {
@@ -215,11 +249,11 @@ L.Storage.FeatureMixin = {
 
     getOption: function (option) {
         var value = null;
-        if (typeof this.static_options[option] !== "undefined") {
-            value = this.static_options[option];
+        if (this.usableOption(this.properties._storage_options, option)) {
+            value = this.properties._storage_options[option];
         }
-        else if (this.usableOption(this.storage_options, option)) {
-            value = this.storage_options[option];
+        else if (typeof this.static_options[option] !== "undefined") {
+            value = this.static_options[option];
         }
         else if (this.datalayer && this.usableOption(this.datalayer.options, option)) {
             value = this.datalayer.options[option];
@@ -247,6 +281,40 @@ L.Storage.FeatureMixin = {
 
     getPrevious: function () {
         return this.datalayer.getPreviousFeature(this);
+    },
+
+    toGeoJSON: function () {
+        return {
+            type: "Feature",
+            geometry: this.geometry(),
+            properties: this.properties
+        };
+    },
+
+    initialize: function () {
+        var isDirty = false,
+            self = this,
+            options = L.extend({}, this.options);
+        try {
+            Object.defineProperty(this, 'isDirty', {
+                get: function () {
+                    return isDirty;
+                },
+                set: function (status) {
+                    if (!isDirty && status) {
+                        self.fire('isdirty');
+                    }
+                    isDirty = status;
+                    if (self.datalayer) {
+                        self.datalayer.isDirty = status;
+                    }
+                }
+            });
+        }
+        catch (e) {
+            console.log(e);
+            // Certainly IE8, which has a limited version of defineProperty
+        }
     }
 
 };
@@ -254,22 +322,20 @@ L.Storage.FeatureMixin = {
 L.Storage.Marker = L.Marker.extend({
     includes: [L.Storage.FeatureMixin, L.Mixin.Events],
 
-    initialize: function(map, storage_id, latlng, options) {
+    initialize: function(map, latlng, options) {
         this.map = map;
         if(typeof options == "undefined") {
             options = {};
         }
         // DataLayer the marker belongs to
         this.datalayer = options.datalayer || null;
-        this.storage_options = {};
+        this.properties = {_storage_options:{}};
         if (options.geojson) {
             this.populate(options.geojson);
         }
         this.setIcon(this.getIcon());
         L.Marker.prototype.initialize.call(this, latlng, options);
-
-        // Use a null storage_id when you want to create a new Marker
-        this.storage_id = storage_id;
+        L.Storage.FeatureMixin.initialize.call(this);
 
         // URL templates
         this.view_url_template = this.map.options.urls.marker;
@@ -278,7 +344,10 @@ L.Storage.Marker = L.Marker.extend({
         this.delete_url_template = this.map.options.urls.marker_delete;
 
         // Events
-        this.on("dragend", this.edit);
+        this.on("dragend", function (e) {
+            this.isDirty = true;
+            this.edit(e);
+        }, this);
         this.on("click", this._onClick);
         this.on("mouseover", this._enableDragging);
         this.on("mouseout", this._onMouseOut);
@@ -286,8 +355,8 @@ L.Storage.Marker = L.Marker.extend({
 
     populate: function (feature) {
         L.Storage.FeatureMixin.populate.call(this, feature);
-        this.storage_icon_class = feature.properties.icon['class'];
-        this.iconUrl = feature.properties.icon.url;
+        this.options.iconClass = feature.properties._storage_options.icon['class'];
+        this.options.iconUrl = feature.properties._storage_options.icon.url;
         this.options.title = feature.properties.name;
     },
 
@@ -329,9 +398,15 @@ L.Storage.Marker = L.Marker.extend({
     },
 
     _redraw: function() {
-        this.setIcon(this.getIcon());
-        this._initIcon();
-        this.update();
+        if (this.datalayer && this.map.hasLayer(this.datalayer)) {
+            this._initIcon();
+            this.update();
+        }
+    },
+
+    _initIcon: function () {
+        this.options.icon = this.getIcon();
+        L.Marker.prototype._initIcon.call(this);
     },
 
     changeDataLayer: function(layer) {
@@ -370,16 +445,16 @@ L.Storage.Marker = L.Marker.extend({
         if (this[name + 'Url']) {
             url = this[name + 'Url'];
         }
-        else if(this.datalayer && this.datalayer[name + 'Url']) {
-            url = this.datalayer[name + 'Url'];
+        else if(this.datalayer && this.datalayer.options[name + 'Url']) {
+            url = this.datalayer.options[name + 'Url'];
         }
         return url;
     },
 
     getIconClass: function () {
         var iconClass = this.map.getDefaultOption('iconClass');
-        if (this.storage_icon_class) {
-            iconClass = this.storage_icon_class;
+        if (this.options.iconClass) {
+            iconClass = this.options.iconClass;
         }
         else if (this.datalayer) {
             iconClass = this.datalayer.getIconClass();
@@ -388,7 +463,8 @@ L.Storage.Marker = L.Marker.extend({
     },
 
     getIcon: function () {
-        return new L.Storage.Icon[this.getIconClass()](this.map, {feature: this});
+        var Class = L.Storage.Icon[this.getIconClass()] || L.Storage.Icon.Default;
+        return new Class(this.map, {feature: this});
     },
 
     getCenter: function () {
@@ -413,13 +489,21 @@ L.Storage.Marker = L.Marker.extend({
 
     getClassName: function () {
         return 'marker';
+    },
+
+    getStyleOptions: function () {
+        return [
+            ['options.color', 'ColorPicker'],
+            ['options.iconClass', 'IconClassSwitcher'],
+            ['options.iconUrl', 'IconUrl']
+        ];
     }
 
 });
 
 
-L.storage_marker = function (map, storage_id, latlng, options) {
-    return new L.Storage.Marker(map, storage_id, latlng, options);
+L.storage_marker = function (map, latlng, options) {
+    return new L.Storage.Marker(map, latlng, options);
 };
 
 L.Storage.PathMixin = {
@@ -429,8 +513,6 @@ L.Storage.PathMixin = {
         magnetize: true,
         magnetPoint: null
     },  // reset path options
-
-    storage_options: {},
 
   _onClick: function(e){
         this._popupHandlersAdded = true;  // Prevent leaflet from managing event
@@ -458,23 +540,38 @@ L.Storage.PathMixin = {
         this.map.closePopup(this._popup);
     },
 
+    styleOptions: [
+        'smoothFactor',
+        'color',
+        'opacity',
+        'stroke',
+        'weight',
+        'fill',
+        'fillColor',
+        'fillOpacity',
+        'dashArray'
+    ],
+
     _setStyleOptions: function () {
-        var option,
-            style_options = [
-            'smoothFactor',
-            'color',
-            'opacity',
-            'stroke',
-            'weight',
-            'fill',
-            'fillColor',
-            'fillOpacity',
-            'dashArray'
-        ];
-        for (var idx in style_options) {
-            option = style_options[idx];
+        var option;
+        for (var idx in this.styleOptions) {
+            option = this.styleOptions[idx];
             this.options[option] = this.getOption(option);
         }
+    },
+
+    getStyleOptions: function () {
+        return [
+            'properties._storage_options.smoothFactor',
+            ['properties._storage_options.color', 'ColorPicker'],
+            'properties._storage_options.opacity',
+            ['properties._storage_options.stroke', 'NullableBoolean'],
+            'properties._storage_options.weight',
+            ['properties._storage_options.fill', 'NullableBoolean'],
+            ['properties._storage_options.fillColor', 'ColorPicker'],
+            'properties._storage_options.fillOpacity',
+            'properties._storage_options.dashArray'
+        ];
     },
 
     _updateStyle: function () {
@@ -516,22 +613,19 @@ L.Storage.Polyline = L.Polyline.extend({
         fill: false
     },
 
-    initialize: function(map, storage_id, latlngs, options) {
+    initialize: function(map, latlngs, options) {
         this.map = map;
         if(typeof options == "undefined") {
             options = {};
         }
         // DataLayer the marker belongs to
         this.datalayer = options.datalayer || null;
-        this.storage_options = {};
+        this.properties = {_storage_options:{}};
         if (options.geojson) {
             this.populate(options.geojson);
         }
         L.Polyline.prototype.initialize.call(this, latlngs, options);
-
-        // Use a null storage_id when you want to create a new Marker
-        this.storage_id = storage_id;
-
+        L.Storage.FeatureMixin.initialize.call(this);
 
         // URL templates
         this.view_url_template = this.map.options.urls.polyline;
@@ -570,21 +664,20 @@ L.Storage.Polyline = L.Polyline.extend({
 L.Storage.Polygon = L.Polygon.extend({
     includes: [L.Storage.FeatureMixin, L.Storage.PathMixin, L.Mixin.Events],
 
-    initialize: function(map, storage_id, latlngs, options) {
+    initialize: function(map, latlngs, options) {
         this.map = map;
         if(typeof options == "undefined") {
             options = {};
         }
+        this.properties = {};
         // DataLayer the marker belongs to
         this.datalayer = options.datalayer || null;
-        this.storage_options = {};
+        this.properties = {_storage_options:{}};
         if (options.geojson) {
             this.populate(options.geojson);
         }
         L.Polygon.prototype.initialize.call(this, latlngs, options);
-
-        // Use a null storage_id when you want to create a new Marker
-        this.storage_id = storage_id;
+        L.Storage.FeatureMixin.initialize.call(this);
 
         // URL templates
         this.view_url_template = this.map.options.urls.polygon;

@@ -22,10 +22,14 @@ L.LazyGeoJSON = L.GeoJSON.extend({
     fetchData: function () {
         var self = this;
         this.geojson_getter(function (geojson) {
-            self.addData(geojson);
-            self._geojson = geojson;
-            self.fire('dataloaded');
+            self.fromGeoJSON(geojson);
         });
+    },
+
+    fromGeoJSON: function (geojson) {
+        this.addData(geojson);
+        this._geojson = geojson;
+        this.fire('dataloaded');
     },
 
     whenLoaded: function (callback, context) {

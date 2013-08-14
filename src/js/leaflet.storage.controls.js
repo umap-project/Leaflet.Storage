@@ -179,23 +179,46 @@ L.Storage.EditControl = L.Control.Draw.extend({
     },
 
     _createToggleButton: function (map, container) {
-        var self = this;
-        var link = L.DomUtil.create('a', "leaflet-draw-section leaflet-control-edit-toggle", container);
-        link.href = '#';
-        link.title = L._("Enable/disable editing");
+        var buttons = L.DomUtil.create('div', 'leaflet-draw-section leaflet-control-edit-toggle', container);
+        var edit = L.DomUtil.create('a', 'leaflet-control-edit-enable', buttons);
+        edit.href = '#';
+        edit.title = L._("Enable editing");
+        edit.innerHTML = L._('Edit');
+        var save = L.DomUtil.create('a', "leaflet-control-edit-save", buttons);
+        save.href = '#';
+        save.title = L._("Save current edits");
+        save.innerHTML = L._('Save');
+        var cancel = L.DomUtil.create('a', "leaflet-control-edit-cancel", buttons);
+        cancel.href = '#';
+        cancel.title = L._("Cancel editing");
+        cancel.innerHTML = L._('Cancel');
+        var disable = L.DomUtil.create('a', "leaflet-control-edit-disable", buttons);
+        disable.href = '#';
+        disable.title = L._("Disable editing");
+        disable.innerHTML = L._('disable');
 
-        var fn = function (e) {
-            if(map.editEnabled) {
-                self._disableEdit(e, map);
-            }
-            else {
-                self._enableEdit(e, map);
-            }
-        };
         L.DomEvent
-        .addListener(link, 'click', L.DomEvent.stopPropagation)
-        .addListener(link, 'click', L.DomEvent.preventDefault)
-        .addListener(link, 'click', fn);
+            .addListener(disable, 'click', L.DomEvent.stop)
+            .addListener(disable, 'click', function (e) {
+                this._disableEdit(e, map);
+                L.S.fire('ui:end');
+            }, this);
+
+        L.DomEvent
+            .addListener(edit, 'click', L.DomEvent.stop)
+            .addListener(edit, 'click', function (e) { this._enableEdit(e, map);}, this);
+
+        L.DomEvent
+            .addListener(save, 'click', L.DomEvent.stop)
+            .addListener(save, 'click', map.save, map);
+
+        L.DomEvent
+            .addListener(cancel, 'click', L.DomEvent.stop)
+            .addListener(cancel, 'click', function (e) {
+                this._disableEdit(e, map);
+                L.S.fire('ui:end');
+                map.reset();
+            }, this);
     }
 
 });
@@ -215,7 +238,7 @@ L.Draw.Marker.include({
     _fireCreatedEvent: function () {
         // Overriding to instanciate our own Marker class
         // How to do it in a cleaner way? Asking upstream to add a hook?
-        var marker = new L.Storage.Marker(this._map, null, this._marker.getLatLng());
+        var marker = new L.Storage.Marker(this._map, this._marker.getLatLng());
         L.Draw.Feature.prototype._fireCreatedEvent.call(this, marker);
     }
 });
@@ -223,7 +246,7 @@ L.Draw.Marker.include({
 L.Draw.Polyline.include({
 
     _fireCreatedEvent: function () {
-        var poly = new L.Storage.Polyline(this._map, null, this._poly.getLatLngs(), this.options.shapeOptions);
+        var poly = new L.Storage.Polyline(this._map, this._poly.getLatLngs());
         L.Draw.Feature.prototype._fireCreatedEvent.call(this, poly);
     }
 
@@ -232,7 +255,7 @@ L.Draw.Polyline.include({
 L.Draw.Polygon.include({
 
     _fireCreatedEvent: function () {
-        var poly = new L.Storage.Polygon(this._map, null, this._poly.getLatLngs(), this.options.shapeOptions);
+        var poly = new L.Storage.Polygon(this._map, this._poly.getLatLngs());
         L.Draw.Feature.prototype._fireCreatedEvent.call(this, poly);
     }
 
@@ -379,16 +402,10 @@ L.Storage.DataLayersControl = L.Control.extend({
         edit.href = '#';
         edit.id = 'edit_datalayer_' + datalayer.storage_id;
 
-        title.innerHTML = datalayer.storage_name;
+        title.innerHTML = datalayer.options.name;
         L.DomEvent.on(toggle, 'click', function (e) { this.toggleDataLayer(datalayer); }, this);
         L.DomEvent.on(zoom_to, 'click', datalayer.zoomTo, datalayer);
-        var do_edit = function (e) {
-            var url = datalayer.getEditUrl();
-            L.Storage.Xhr.get(url, {
-                'callback': function (data) {return datalayer._handleEditResponse(data);}
-            });
-        };
-        L.DomEvent.on(edit, 'click', do_edit, this._map);
+        L.DomEvent.on(edit, 'click', datalayer.edit, datalayer);
     },
 
     addFeatures: function (datalayer) {
@@ -403,7 +420,7 @@ L.Storage.DataLayersControl = L.Control.extend({
             if (this._map.hasLayer(datalayer)) {
                 var title = L.DomUtil.create('h5', '', container),
                     ul = L.DomUtil.create('ul', '', container);
-                title.innerHTML = datalayer.storage_name;
+                title.innerHTML = datalayer.options.name;
                 for (var j in datalayer._layers) {
                     ul.appendChild(this.addFeature(datalayer._layers[j]));
                 }
@@ -439,14 +456,16 @@ L.Storage.DataLayersControl = L.Control.extend({
 
 
     newDataLayer: function (e) {
-        var map = this._map,
-            url = L.Util.template(map.options.urls.datalayer_add, {'map_id': map.options.storage_id});
-        L.Storage.Xhr.get(url, {
-            'callback': function (data) {
-                var datalayer = map._createDataLayer({});
-                return datalayer._handleEditResponse(data);
-            }
-        });
+        var datalayer = this._map._createDataLayer({});
+        datalayer.connectToMap();
+        datalayer.edit();
+        // var map = this._map,
+        //     url = L.Util.template(map.options.urls.datalayer_add, {'map_id': map.options.storage_id});
+        // L.Storage.Xhr.get(url, {
+        //     'callback': function (data) {
+        //         return datalayer._handleEditResponse(data);
+        //     }
+        // });
     }
 
 });

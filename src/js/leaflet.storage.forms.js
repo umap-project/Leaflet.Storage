@@ -35,7 +35,7 @@ L.Storage.FormHelper = L.Class.extend({
         if (typeof this["init_" + element.name] === "function") {
             this["init_" + element.name]();
         }
-        var events = ['change', 'click', 'focus', 'blur'];
+        var events = ['change', 'click', 'focus', 'blur', 'input'];
         for (var idx in events) {
             this.addEventListener(element, events[idx]);
         }
@@ -80,154 +80,87 @@ L.Storage.FormHelper = L.Class.extend({
 
 });
 
-L.Storage.FormHelper.IconField = L.Storage.FormHelper.extend({
 
-    iconClasses: ["Default", "Circle", "Drop", "Ball"],
+L.Storage.FormHelper.ImportURL = L.Storage.FormHelper.extend({
 
-    initForm: function () {
-        this.parentContainer = L.DomUtil.get('storage-form-iconfield');
-        this.headerContainer = L.DomUtil.create("div", "", this.parentContainer);
-        this.shapesContainer = L.DomUtil.create("div", "storage-icon-list", this.parentContainer);
-        this.pictogramsContainer = L.DomUtil.create("div", "storage-pictogram-list", this.parentContainer);
-        this.iconContainer =  L.DomUtil.create('div', "storage-icon-choice", this.headerContainer);
-    },
-
-    populateTableList: function (container, input, element, value) {
-        var baseClass = "storage-icon-choice";
-        var className = value == input.value ? baseClass + " selected" : baseClass;
-        var iconContainer = L.DomUtil.create('div', className, container);
-        iconContainer.appendChild(element);
-        L.DomEvent.on(iconContainer, "click", function (e) {
-            input.value = value;
-            input.onchange();
-            this.unselectAll(container);
-            L.DomUtil.addClass(iconContainer, "selected");
-        }, this);
-    },
-
-    createIcon: function (iconClass, iconUrl, iconColor) {
-        var icon = new L.Storage.Icon[iconClass](this.map);
-        icon.options.color = iconColor;
-        icon.options.iconUrl = iconUrl;
-        icon = icon.createIcon();
-        icon.style[L.DomUtil.TRANSFORM] = L.DomUtil.getTranslateString(new L.Point(0, 50));
-        return icon;
-    },
-
-    initDemoIcon: function () {
-        var iconElement = this.createIcon(this.getOption("iconClass"), this.getOption("iconUrl"), this.getOption("iconColor"));
-        this.iconContainer.innerHTML = "";
-        this.iconContainer.appendChild(iconElement);
-    },
-
-    init_icon_class: function () {
-        var self = this;
-        this.initDemoIcon();
-        this.buttonsContainer = L.DomUtil.create('div', '', this.headerContainer);
-        this.buttonsContainer.style.float = "left";
-        var changeClassButton = L.DomUtil.create('a', '', this.buttonsContainer);
-        changeClassButton.innerHTML = L._('Change shape');
-        changeClassButton.href = "#";
-        changeClassButton.style.display = "block";
-        var addShape = function (_iconClass) {
-            var icon = self.createIcon(_iconClass, self.options.iconUrl, self.options.iconColor);
-            self.populateTableList(self.shapesContainer, self.element_icon_class, icon, _iconClass);
+    onsubmit: function (e) {
+        var replace = {
+            bbox: this.map.getBounds().toBBoxString(),
+            north: this.map.getBounds().getNorthEast().lat,
+            east: this.map.getBounds().getNorthEast().lng,
+            south: this.map.getBounds().getSouthWest().lat,
+            west: this.map.getBounds().getNorthEast().lng,
+            lat: this.map.getCenter().lat,
+            lng: this.map.getCenter().lng,
+            zoom: this.map.getZoom()
         };
-        var removeShape = function () {
-            self.element_icon_class.value = "";
-            self.element_icon_class.onchange();
-            self.unselectAll(self.shapesContainer);
-        };
-        L.DomEvent
-            .on(changeClassButton, "click", L.DomEvent.stop)
-            .on(changeClassButton, "click", function (e) {
-                this.shapesContainer.innerHTML = "";
-                this.pictogramsContainer.innerHTML = "";
-                var title = L.DomUtil.create('h5', '', this.shapesContainer);
-                title.innerHTML = L._("Choose a shape");
-                for (var idx in this.iconClasses) {
-                    addShape(this.iconClasses[idx]);
-                }
-                var deleteButton = L.DomUtil.create("a", "storage-delete-button", self.shapesContainer);
-                deleteButton.innerHTML = L._('Remove icon shape');
-                deleteButton.href = "#";
-                deleteButton.style.display = "block";
-                deleteButton.style.clear = "both";
-                L.DomEvent
-                    .on(deleteButton, "click", L.DomEvent.stop)
-                    .on(deleteButton, "click", removeShape);
-            }, this);
+        replace['left'] = replace['west'];
+        replace['bottom'] = replace['south'];
+        replace['right'] = replace['east'];
+        replace['top'] = replace['north'];
+        this.element_data_url.value = L.Util.template(this.element_data_url.value, replace);
+    }
+
+});
+
+L.Storage.ElementHelper = L.Class.extend({
+    includes: [L.Mixin.Events],
+
+    initialize: function (formBuilder, field) {
+        this.formBuilder = formBuilder;
+        this.form = this.formBuilder.form;
+        this.field = field;
+        this.fieldEls = this.field.split('.');
+        this.name = this.fieldEls[this.fieldEls.length-1];
+        this.build();
     },
 
-    init_pictogram: function () {
-        var changePictoButton = L.DomUtil.create('a', '', this.buttonsContainer),
-            self = this;
-        changePictoButton.innerHTML = L._('Change symbol');
-        changePictoButton.style.display = "block";
-        changePictoButton.href = "#";
-        var addPictogram = function (pictogram) {
-            var img = L.DomUtil.create('img', '');
-            img.src = pictogram.src;
-            img.title = pictogram.name + " — © " + pictogram.attribution;
-            self.populateTableList(self.pictogramsContainer, self.element_pictogram, img, pictogram.id);
-        };
-        var removePictogram = function () {
-            self.element_pictogram.value = "";
-            self.element_pictogram.onchange();
-            self.unselectAll(self.pictogramsContainer);
-        };
-        var retrievePictograms = function (e) {
-            L.Storage.Xhr.get(self.map.options.urls.pictogram_list_json, {
-                callback: function (data) {
-                    var pictogram;
-                    self.pictograms = {};
-                    self.pictogramsContainer.innerHTML = "";
-                    self.shapesContainer.innerHTML = "";
-                    var title = L.DomUtil.create('h5', '', self.pictogramsContainer);
-                    title.innerHTML = "Choose a symbol";
-                    for (var idx in data.pictogram_list) {
-                        pictogram = data.pictogram_list[idx];
-                        self.pictograms[pictogram.id] = pictogram;
-                        addPictogram(pictogram);
-                    }
-                    var deleteButton = L.DomUtil.create("a", "", self.pictogramsContainer);
-                    deleteButton.innerHTML = L._('Remove icon symbol');
-                    deleteButton.href = "#";
-                    deleteButton.style.display = "block";
-                    deleteButton.style.clear = "both";
-                    L.DomEvent
-                        .on(deleteButton, "click", L.DomEvent.stop)
-                        .on(deleteButton, "click", removePictogram);
-                }
-            });
-        };
-        L.DomEvent
-            .on(changePictoButton, "click", L.DomEvent.stop)
-            .on(changePictoButton, "click", retrievePictograms);
+    get: function () {
+        return this.cast(this.formBuilder.getter(this.field));
     },
 
-    on_color_change: function () {
-        this.options.iconColor = this.element_color.value;
-        this.initDemoIcon();
+    cast: function (value) {
+        return value;
     },
 
-    on_pictogram_change: function () {
-        if (this.element_pictogram.value) {
-            this.options.iconUrl = this.pictograms[this.element_pictogram.value].src;
-        }
-        else {
-            this.options.iconUrl = null;
-        }
-        this.initDemoIcon();
+    sync: function () {
+        this.set();
+        this.fire('synced');
     },
 
-    on_icon_class_change: function () {
-        this.options.iconClass = this.element_icon_class.value;
-        this.initDemoIcon();
+    set: function () {
+        this.formBuilder.setter(this.field, this.value());
+    },
+
+    buildLabel: function () {
+        this.label = L.DomUtil.create('label', '', this.formBuilder.form);
+        this.label.innerHTML = this.name;
+    }
+
+});
+
+L.Storage.ElementHelper.Input = L.S.ElementHelper.extend({
+
+    build: function () {
+        this.buildLabel();
+        this.input = L.DomUtil.create('input', '', this.formBuilder.form);
+        this.input.value = this.backup = this.get() || null;
+        this.input.type = this.guessType();
+        this.input.name = this.label.innerHTML = this.name;
+        this.input._helper = this;
+        L.DomEvent.on(this.input, 'input', this.sync, this);
+    },
+
+    guessType: function () {
+        return 'text';
+    },
+
+    value: function () {
+        return this.input.value;
     }
 });
 
-L.Storage.FormHelper.Color = L.Storage.FormHelper.extend({
+L.S.ElementHelper.ColorPicker = L.S.ElementHelper.Input.extend({
     colors: [
         "Black", "Navy", "DarkBlue", "MediumBlue", "Blue", "DarkGreen",
         "Green", "Teal", "DarkCyan", "DeepSkyBlue", "DarkTurquoise",
@@ -262,68 +195,294 @@ L.Storage.FormHelper.Color = L.Storage.FormHelper.extend({
         "Ivory", "White"
     ],
 
-    init_color: function () {
+    build: function () {
+        L.S.ElementHelper.Input.prototype.build.call(this);
+        this.input.placeholder = L._('Inherit');
         this.container = L.DomUtil.create('div', 'storage-color-picker');
         this.container.style.display = "none";
-        this.element_color.parentNode.insertBefore(this.container, this.element_color.nextSibling);
+        this.input.parentNode.insertBefore(this.container, this.input.nextSibling);
         for (var idx in this.colors) {
             this.addColor(this.colors[idx]);
         }
-        this.on_color_change();
+        this.spreadColor();
+        this.input.autocomplete = "off";
+        L.DomEvent.on(this.input, 'focus', this.onFocus, this);
+        L.DomEvent.on(this.input, 'blur', this.onBlur, this);
+        L.DomEvent.on(this.input, 'change', this.onChange, this);
+        L.DomEvent.off(this.input, 'input', this.sync, this);
+        L.DomEvent.on(this.input, 'input', this.onChange, this);
     },
 
-    on_color_focus: function () {
+    onFocus: function () {
         this.container.style.display = "block";
     },
 
-    on_color_blur: function () {
+    onBlur: function () {
         var self = this,
             closePicker = function () {
-            self.container.style.display = "none";
-        };
+                self.container.style.display = "none";
+            };
         // We must leave time for the click to be listened
         window.setTimeout(closePicker, 100);
     },
 
-    on_color_change: function () {
-        this.options.color = this.element_color.value;
-        this.element_color.style.backgroundColor = this.getOption('color');
+    onChange: function () {
+        this.spreadColor();
+        this.sync();
+    },
+
+    spreadColor: function () {
+        if (this.input.value) {
+            this.input.style.backgroundColor = this.input.value;
+        } else {
+            this.input.style.backgroundColor = "inherit";
+        }
     },
 
     addColor: function (colorName) {
-            var span = L.DomUtil.create('span', '', this.container);
-            span.style.backgroundColor = colorName;
-            span.title = colorName;
-            var updateColorInput = function (e) {
-                this.element_color.value = colorName;
-                this.options.color = colorName;
-                this.element_color.onchange();
-                this.container.style.display = "none";
-            };
-            L.DomEvent.on(span, "mousedown", updateColorInput, this);
+        var span = L.DomUtil.create('span', '', this.container);
+        span.style.backgroundColor = span.title = colorName;
+        var updateColorInput = function (e) {
+            this.input.value = colorName;
+            this.onChange();
+            this.container.style.display = "none";
+        };
+        L.DomEvent.on(span, "mousedown", updateColorInput, this);
+    }
+
+});
+
+L.S.ElementHelper.SelectAbstract = L.S.ElementHelper.extend({
+
+    selectOptions: [
+        "value", "label"
+    ],
+
+    build: function () {
+        this.buildLabel();
+        this.select = L.DomUtil.create('select', '', this.form);
+        this.buildOptions();
+        L.DomEvent.on(this.select, 'change', this.sync, this);
+    },
+
+    buildOptions: function (options) {
+        options = options || this.selectOptions;
+        for (var i=0, l=options.length; i<l; i++) {
+            this.buildOption(options[i][0], options[i][1]);
+        }
+    },
+
+    buildOption: function (value, label) {
+        var option = L.DomUtil.create('option', '', this.select);
+        option.value = value;
+        option.innerHTML = label;
+        if (this.get() === value) {
+            option.selected = "selected";
+        }
+    },
+
+    value: function () {
+        return this.cast(this.select[this.select.selectedIndex].value);
+    }
+
+});
+
+L.S.ElementHelper.IconClassSwitcher = L.S.ElementHelper.SelectAbstract.extend({
+
+    selectOptions: [
+        [undefined, L._('inherit')],
+        ["Default", L._('Default')],
+        ["Circle", L._('Circle')],
+        ["Drop", L._('Drop')],
+        ["Ball", L._('Ball')]
+    ],
+
+    cast: function (value) {
+        switch(value) {
+            case "Default":
+            case "Circle":
+            case "Drop":
+            case "Ball":
+                break;
+            default:
+                value = undefined;
+        }
+        return value;
+    }
+
+});
+
+L.S.ElementHelper.NullableBoolean = L.S.ElementHelper.SelectAbstract.extend({
+    selectOptions: [
+        [undefined, L._('inherit')],
+        [true, L._('yes')],
+        [false, L._('no')]
+    ],
+
+    cast: function (value) {
+        switch (value) {
+            case "true":
+            case true:
+                value = true;
+                break;
+            case "false":
+            case false:
+                value = false;
+                break;
+            default:
+                value = undefined;
+        }
+        return value;
+    }
+
+});
+
+L.S.ElementHelper.IconUrl = L.S.ElementHelper.Input.extend({
+
+    guessType: function () {
+        return "hidden";
+    },
+
+    build: function () {
+        L.S.ElementHelper.Input.prototype.build.call(this);
+        this.parentContainer = L.DomUtil.create('div', 'storage-form-iconfield', this.form);
+        this.headerContainer = L.DomUtil.create("div", "", this.parentContainer);
+        this.pictogramsContainer = L.DomUtil.create("div", "storage-pictogram-list", this.parentContainer);
+        this.input.type = "hidden";
+        this.label.style.display = "none";
+        this.button = L.DomUtil.create('a', 'button', this.form);
+        var self = this;
+        this.button.innerHTML = L._('Change symbol');
+        this.button.href = "#";
+        L.DomEvent
+            .on(this.button, "click", L.DomEvent.stop)
+            .on(this.button, "click", this.fetch, this);
+    },
+
+    addIconPreview: function (pictogram) {
+        var baseClass = "storage-icon-choice",
+            value = pictogram.src,
+            className = value === this.value() ? baseClass + " selected" : baseClass,
+            container = L.DomUtil.create('div', className, this.pictogramsContainer),
+            img = L.DomUtil.create('img', '', container);
+        img.src = pictogram.src;
+        img.title = pictogram.name + " — © " + pictogram.attribution;
+        L.DomEvent.on(container, "click", function (e) {
+            this.input.value = value;
+            this.sync();
+            this.unselectAll(container);
+            L.DomUtil.addClass(container, "selected");
+        }, this);
+    },
+
+    empty: function () {
+        this.input.value = "";
+        this.unselectAll(this.pictogramsContainer);
+        this.sync();
+    },
+
+    fetch: function (e) {
+        var self = this;
+        L.Storage.Xhr.get(this.formBuilder.obj.map.options.urls.pictogram_list_json, {
+            callback: function (data) {
+                self.pictogramsContainer.innerHTML = "";
+                var title = L.DomUtil.create('h5', '', self.pictogramsContainer);
+                title.innerHTML = L._("Choose a symbol");
+                for (var idx in data.pictogram_list) {
+                    self.addIconPreview(data.pictogram_list[idx]);
+                }
+                var deleteButton = L.DomUtil.create("a", "", self.pictogramsContainer);
+                deleteButton.innerHTML = L._('Remove icon symbol');
+                deleteButton.href = "#";
+                deleteButton.style.display = "block";
+                deleteButton.style.clear = "both";
+                L.DomEvent
+                    .on(deleteButton, "click", L.DomEvent.stop)
+                    .on(deleteButton, "click", self.empty, this);
+            }
+        });
     }
 
 });
 
 
-L.Storage.FormHelper.ImportURL = L.Storage.FormHelper.extend({
+L.Storage.FormBuilder = L.Class.extend({
 
-    onsubmit: function (e) {
-        var replace = {
-            bbox: this.map.getBounds().toBBoxString(),
-            north: this.map.getBounds().getNorthEast().lat,
-            east: this.map.getBounds().getNorthEast().lng,
-            south: this.map.getBounds().getSouthWest().lat,
-            west: this.map.getBounds().getNorthEast().lng,
-            lat: this.map.getCenter().lat,
-            lng: this.map.getCenter().lng,
-            zoom: this.map.getZoom()
-        };
-        replace['left'] = replace['west'];
-        replace['bottom'] = replace['south'];
-        replace['right'] = replace['east'];
-        replace['top'] = replace['north'];
-        this.element_data_url.value = L.Util.template(this.element_data_url.value, replace);
+    initialize: function (obj, fields, options) {
+        this.obj = obj;
+        this.fields = fields;
+        this.form = L.DomUtil.create('form');
+        this.helpers = {};
+        this.options = options || {};
+    },
+
+    build: function () {
+        this.form.innerHTML = "";
+        for (var idx in this.fields) {
+            this.buildField(this.fields[idx]);
+        }
+        return this.form;
+    },
+
+    buildField: function (field) {
+        var type, helper;
+        if (field instanceof Array) {
+            type = field[1];
+            field = field[0];
+        } else {
+            type = "Input";
+        }
+        if (L.S.ElementHelper[type]) {
+            helper = new L.S.ElementHelper[type](this, field);
+        } else {
+            console.log('No element helper for ' + type);
+            return;
+        }
+        this.helpers[field] = helper;
+        helper.on('synced', function () {
+            if (this.options.callback) {
+                this.options.callback.call(this.callbackContext || this.obj);
+            }
+        }, this);
+        // L.DomEvent.on(input, 'keydown', function (e) {
+        //     var key = e.keyCode,
+        //         ESC = 27;
+        //     if (key === ESC) {
+        //         this.resetField(field);
+        //         L.DomEvent.stop(e);
+        //     }
+        // }, this);
+    },
+
+    getter: function (field) {
+        var path = field.split('.'),
+            value = this.obj;
+        for (var i=0, l=path.length; i<l; i++) {
+            value = value[path[i]];
+        }
+        return value;
+    },
+
+    setter: function (field, value) {
+        var path = field.split('.'),
+            obj = this.obj,
+                what;
+        for (var i=0, l=path.length; i<l; i++) {
+            what = path[i];
+            if (what === path[l-1]) {
+                obj[what] = value;
+            } else {
+                obj = obj[what];
+            }
+        }
+        this.obj.isDirty = true;
+    },
+
+    resetField: function (field) {
+        var backup = this.backup[field],
+            input = this.inputs[field];
+        input.value = backup;
+        this.setter(field, backup);
     }
 
 });
