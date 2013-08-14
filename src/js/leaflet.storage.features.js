@@ -39,7 +39,6 @@ L.Storage.FeatureMixin = {
         if (!properties.length) {
             properties = ['properties.name', 'properties.description'];
         }
-        console.log(properties);
         var builder = new L.S.FormBuilder(this, properties);
         form = builder.build();
         container.appendChild(form);
@@ -50,18 +49,16 @@ L.Storage.FeatureMixin = {
         });
         form = builder.build();
         container.appendChild(form);
+        var deleteLink = L.DomUtil.create('a', 'delete-feature-button', container);
+        deleteLink.href = "#";
+        deleteLink.innerHTML = L._('Delete');
+        L.DomEvent.on(deleteLink, "click", function (e) {
+            if (confirm(L._('Are you sure you want to delete the feature?'))) {
+                this._delete();
+            }
+        }, this);
         L.S.fire('ui:start', {data: {html: container}});
         this.bringToCenter();
-
-        // var url = this.getEditURL();
-        // var self = this;
-        // L.Storage.Xhr.get(url, {
-        //     "callback": function(data){
-        //         self.bringToCenter(e);
-        //         L.Storage.fire('ui:start', {'data': data});
-        //         self.listenEditForm();
-        //     }
-        // });
     },
 
     populatePopup: function () {
@@ -124,6 +121,7 @@ L.Storage.FeatureMixin = {
     },
 
     _delete: function () {
+        this.isDirty = true;
         this.map.closePopup();
         if (this.datalayer) {
             this.datalayer.removeLayer(this);
