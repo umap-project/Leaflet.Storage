@@ -4,8 +4,8 @@ L.Storage.FeatureMixin = {
     static_options: {},
 
     view: function(e) {
-        // var url = this.getViewURL();
-        console.log(this.properties);
+        this.populatePopup();
+        this.openPopup(e.latlng);
     },
 
     edit: function(e) {
@@ -31,7 +31,6 @@ L.Storage.FeatureMixin = {
                 datalayer = this.map.datalayers[id];
             this.changeDataLayer(datalayer);
         }, this);
-        console.log(this.properties)
         var properties = [];
         for (var i in this.properties) {
             if (i === "_storage_options") {continue;}
@@ -65,11 +64,15 @@ L.Storage.FeatureMixin = {
         // });
     },
 
-    populatePopup: function (html) {
-        var wrapper = L.DomUtil.create('div', '');
-        wrapper.innerHTML = html;
+    populatePopup: function () {
+        var container = L.DomUtil.create('div', ''),
+            title = L.DomUtil.create('h4', '', container),
+            content = L.DomUtil.create('div', '', container);
+        // TODO manage popup template, and handle other properties
+        title.innerHTML = this.properties.name;
+        content.innerHTML = this.properties.description;
         if (this.map.options.displayPopupFooter && !L.Browser.ielt9) {
-            var footer = L.DomUtil.create('ul', 'storage-popup-footer', wrapper),
+            var footer = L.DomUtil.create('ul', 'storage-popup-footer', container),
                 previous_li = L.DomUtil.create('li', 'previous', footer),
                 zoom_li = L.DomUtil.create('li', 'zoom', footer),
                 next_li = L.DomUtil.create('li', 'next', footer),
@@ -99,7 +102,7 @@ L.Storage.FeatureMixin = {
                 this.bringToCenter();
             }, this);
         }
-        this.bindPopup(wrapper);
+        this.bindPopup(container);
     },
 
     endEdit: function () {
@@ -361,13 +364,14 @@ L.Storage.Marker = L.Marker.extend({
     },
 
     _onClick: function(e){
+        this._popup = true; // prevent Leaflet from binding event on bindPopup
+                            // How to handle this the clean way?
+                            // manage _popupHandlersAdded upstream?
         if(this.map.editEnabled) {
             this.edit(e);
         }
         else {
-            if(!this._popup) {
-                this.view(e);
-            }
+            this.view(e);
         }
     },
 
@@ -514,7 +518,7 @@ L.Storage.PathMixin = {
         magnetPoint: null
     },  // reset path options
 
-  _onClick: function(e){
+    _onClick: function(e){
         this._popupHandlersAdded = true;  // Prevent leaflet from managing event
         if(!this.map.editEnabled) {
             this.view(e);
