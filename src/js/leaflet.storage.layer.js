@@ -242,7 +242,15 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         var options_fields = [
             ['options.color', 'ColorPicker'],
             ['options.iconClass', 'IconClassSwitcher'],
-            ['options.iconUrl', 'iconUrl']
+            ['options.iconUrl', 'iconUrl'],
+            'options.smoothFactor',
+            'options.opacity',
+            ['options.stroke', 'NullableBoolean'],
+            'options.weight',
+            ['options.fill', 'NullableBoolean'],
+            ['options.fillColor', 'ColorPicker'],
+            'options.fillOpacity',
+            'options.dashArray'
         ];
         builder = new L.S.FormBuilder(this, options_fields, {
             callback: this.redraw,
