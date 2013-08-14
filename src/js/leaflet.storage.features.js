@@ -203,7 +203,7 @@ L.Storage.FeatureMixin = {
 
     populate: function (feature) {
         this.properties = L.extend({}, feature.properties);
-        this.properties._storage_options = this.properties._storage_options || {};
+        if (!this.properties._storage_options) { this.properties._storage_options = {};}
     },
 
     updateFromBackEnd: function (feature) {
@@ -330,7 +330,7 @@ L.Storage.Marker = L.Marker.extend({
         }
         // DataLayer the marker belongs to
         this.datalayer = options.datalayer || null;
-        this.properties = {_storage_options:{}};
+        this.properties = {_storage_options: {}};
         if (options.geojson) {
             this.populate(options.geojson);
         }
@@ -442,8 +442,8 @@ L.Storage.Marker = L.Marker.extend({
             name = "icon";
         }
         var url = null;
-        if (this[name + 'Url']) {
-            url = this[name + 'Url'];
+        if (this.properties._storage_options[name + 'Url']) {
+            url = this.properties._storage_options[name + 'Url'];
         }
         else if(this.datalayer && this.datalayer.options[name + 'Url']) {
             url = this.datalayer.options[name + 'Url'];
@@ -453,8 +453,8 @@ L.Storage.Marker = L.Marker.extend({
 
     getIconClass: function () {
         var iconClass = this.map.getDefaultOption('iconClass');
-        if (this.options.iconClass) {
-            iconClass = this.options.iconClass;
+        if (this.properties._storage_options.iconClass) {
+            iconClass = this.properties._storage_options.iconClass;
         }
         else if (this.datalayer) {
             iconClass = this.datalayer.getIconClass();
@@ -478,24 +478,15 @@ L.Storage.Marker = L.Marker.extend({
         L.Marker.prototype.openPopup.call(this);
     },
 
-    listenEditForm: function () {
-        var iconHelper = new L.Storage.FormHelper.IconField(this.map, this.form_id, {
-            iconUrl: this._getIconUrl() || this.map.getDefaultOption('iconUrl'),
-            iconColor: this.getOption('color'),
-            iconClass: this.getIconClass()
-        });
-        L.Storage.FeatureMixin.listenEditForm.call(this);
-    },
-
     getClassName: function () {
         return 'marker';
     },
 
     getStyleOptions: function () {
         return [
-            ['options.color', 'ColorPicker'],
-            ['options.iconClass', 'IconClassSwitcher'],
-            ['options.iconUrl', 'IconUrl']
+            ['properties._storage_options.color', 'ColorPicker'],
+            ['properties._storage_options.iconClass', 'IconClassSwitcher'],
+            ['properties._storage_options.iconUrl', 'IconUrl']
         ];
     }
 
@@ -620,7 +611,7 @@ L.Storage.Polyline = L.Polyline.extend({
         }
         // DataLayer the marker belongs to
         this.datalayer = options.datalayer || null;
-        this.properties = {_storage_options:{}};
+        this.properties = {_storage_options: {}};
         if (options.geojson) {
             this.populate(options.geojson);
         }
@@ -669,10 +660,9 @@ L.Storage.Polygon = L.Polygon.extend({
         if(typeof options == "undefined") {
             options = {};
         }
-        this.properties = {};
         // DataLayer the marker belongs to
         this.datalayer = options.datalayer || null;
-        this.properties = {_storage_options:{}};
+        this.properties = {_storage_options: {}};
         if (options.geojson) {
             this.populate(options.geojson);
         }

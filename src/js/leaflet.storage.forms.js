@@ -370,7 +370,7 @@ L.S.ElementHelper.IconUrl = L.S.ElementHelper.Input.extend({
         L.DomEvent.on(container, "click", function (e) {
             this.input.value = value;
             this.sync();
-            this.unselectAll(container);
+            this.unselectAll(this.pictogramsContainer);
             L.DomUtil.addClass(container, "selected");
         }, this);
     },
@@ -401,6 +401,15 @@ L.S.ElementHelper.IconUrl = L.S.ElementHelper.Input.extend({
                     .on(deleteButton, "click", self.empty, this);
             }
         });
+    },
+
+    unselectAll: function (container) {
+        var els = container.querySelectorAll('div.selected');
+        for (var el in els) {
+            if (els.hasOwnProperty(el)) {
+                L.DomUtil.removeClass(els[el], "selected");
+            }
+        }
     }
 
 });
