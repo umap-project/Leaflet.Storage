@@ -130,7 +130,7 @@ L.Storage.FeatureMixin = {
 
     populate: function (feature) {
         this.properties = L.extend({}, feature.properties);
-        if (!this.properties._storage_options) { this.properties._storage_options = {};}
+        this.properties._storage_options = L.extend({}, this.properties._storage_options);
     },
 
     changeDataLayer: function(datalayer) {
