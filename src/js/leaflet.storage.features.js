@@ -108,18 +108,6 @@ L.Storage.FeatureMixin = {
         // }
     },
 
-    confirmDelete: function() {
-        if(!this.map.editEnabled) return;
-        var url = this.getDeleteURL();
-        var self = this;
-        L.Storage.Xhr.get(url, {
-            "callback": function(data){
-                L.Storage.fire('ui:start', {'data': data, cssClass: 'warning'});
-                self.listenDeleteForm();
-            }
-        });
-    },
-
     _delete: function () {
         this.isDirty = true;
         this.map.closePopup();
@@ -140,85 +128,9 @@ L.Storage.FeatureMixin = {
         }
     },
 
-    listenEditForm: function() {
-        var self = this;
-        var form = L.DomUtil.get(this.form_id);
-        var colorHelper = new L.Storage.FormHelper.Color(this.map, this.form_id, {
-            color: this.getOption('color')
-        });
-        var manage_ajax_return = function (data) {
-            if(data.html) {
-                // We have HTML, put it in the popup
-                L.Storage.fire('ui:start', {'data': data});
-                self.listenEditForm();
-            }
-            else {
-                // Guess its a geojson here
-                // Update object, if it's new
-                self.updateFromBackEnd(data);
-                L.Storage.fire('ui:end');
-                L.Storage.fire("ui:alert", {"content": L._("Feature updated with success!"), "level": "info"});
-            }
-        };
-        var submit = function (e) {
-            L.DomEvent.off(form, 'submit', submit);
-            // Always update field value with current position
-            // We use JSON, GEOSGeometry is aware of it
-            form.latlng.value = JSON.stringify(self.geometry());
-            // Update action in case of creation (do it in python?)
-            form.action = self.getEditURL();
-            L.Storage.Xhr.submit_form(form, {"callback": function(data) { manage_ajax_return(data);}});
-            L.DomEvent.stop(e);
-            return false;
-        };
-        L.DomEvent.on(form, 'submit', submit);
-        var delete_link = L.DomUtil.get("delete_feature_button");
-        if (delete_link) {
-            L.DomEvent
-                .on(delete_link, 'click', L.DomEvent.stopPropagation)
-                .on(delete_link, 'click', L.DomEvent.preventDefault)
-                .on(delete_link, 'click', this.confirmDelete, this);
-        }
-    },
-
-    listenDeleteForm: function() {
-        var form = L.DomUtil.get("feature_delete");
-        var self = this;
-        var manage_ajax_return = function (data) {
-            if (data.error) {
-                L.Storage.fire('ui:alert', {'content': data.error, 'level': 'error'});
-            }
-            else if (data.info) {
-                self._delete();
-                L.Storage.fire('ui:alert', {'content': data.info, 'level': 'info'});
-                L.Storage.fire('ui:end');
-            }
-        };
-        var submit = function (e) {
-            form.action = self.getDeleteURL();
-            L.Storage.Xhr.submit_form(form, {"callback": function(data) { manage_ajax_return(data);}});
-        };
-        L.DomEvent.on(form, 'submit', submit);
-    },
-
     populate: function (feature) {
         this.properties = L.extend({}, feature.properties);
         if (!this.properties._storage_options) { this.properties._storage_options = {};}
-    },
-
-    updateFromBackEnd: function (feature) {
-        this.populate(feature);
-        var newDataLayer = this.map.datalayers[feature.properties.datalayer_id];
-        if(this.datalayer !== newDataLayer) {
-            this.changeDataLayer(newDataLayer);
-        } else {
-            // Needed only if datalayer hasn't changed because
-            // changeDataLayer method already make the style to be
-            // updated
-            this._redraw();
-        }
-        // Force refetch of the popup content
-        this._popup = null;
     },
 
     changeDataLayer: function(datalayer) {
@@ -228,20 +140,6 @@ L.Storage.FeatureMixin = {
         }
         datalayer.addLayer(this);
         datalayer.isDirty = true;
-    },
-
-    getViewURL: function () {
-        return L.Util.template(this.view_url_template, {'pk': this.storage_id});
-    },
-
-    getEditURL: function() {
-        return this.storage_id?
-            L.Util.template(this.update_url_template, {'pk': this.storage_id, 'map_id': this.map.options.storage_id}):
-            L.Util.template(this.add_url_template, {'map_id': this.map.options.storage_id});
-    },
-
-    getDeleteURL: function() {
-        return L.Util.template(this.delete_url_template, {'pk': this.storage_id, 'map_id': this.map.options.storage_id});
     },
 
     usableOption: function (options, option) {
