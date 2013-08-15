@@ -252,7 +252,7 @@ L.Storage.Map.include({
         var tilelayer = this.createTileLayer(options);
         // Add only the first to the map, to make it visible,
         // and the other only when user click on them
-        if(options.selected) {
+        if(this.options.tilelayer && this.options.tilelayer.url_template === tilelayer._url) {
             this.selectTileLayer(tilelayer);
         }
         this.tilelayers.push(tilelayer);
@@ -300,11 +300,9 @@ L.Storage.Map.include({
     },
 
     updateTileLayers: function () {
-        var url = L.Util.template(this.options.urls.map_update_tilelayer, {'map_id': this.options.storage_id}),
+        var self = this,
             callback = function (tilelayer) {
-                var formData = new FormData();
-                formData.append('tilelayer', tilelayer.options.id);
-                L.Storage.Xhr.post(url, {data: formData});
+                self.options.tilelayer = tilelayer.toJSON();
             };
         if (this._controls.tilelayersControl) {
             this._controls.tilelayersControl.openSwitcher({callback: callback});

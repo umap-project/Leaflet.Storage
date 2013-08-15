@@ -403,3 +403,15 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
     }
 
 });
+
+L.TileLayer.include({
+
+    toJSON: function () {
+        return {
+            minZoom: this.options.minZoom,
+            maxZoom: this.options.maxZoom,
+            attribution: this.options.attribution,
+            url_template: this._url
+        };
+    }
+});
