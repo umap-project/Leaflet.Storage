@@ -259,16 +259,12 @@ L.Control.Embed = L.Control.extend({
 
         var link = L.DomUtil.create('a', "", container);
         link.href = '#';
-        link.title = L._("Embed this map");
-        var fn = function (e) {
-            var url = L.Util.template(this.options.urls.map_embed, {'map_id': map.options.storage_id});
-            L.Storage.Xhr.get(url);
-        };
+        link.title = L._("Embed and share this map");
 
         L.DomEvent
             .on(link, 'click', L.DomEvent.stopPropagation)
             .on(link, 'click', L.DomEvent.preventDefault)
-            .on(link, 'click', fn, map)
+            .on(link, 'click', map.renderShareBox, map)
             .on(link, 'dblclick', L.DomEvent.stopPropagation);
 
         return container;

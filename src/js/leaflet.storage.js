@@ -292,7 +292,6 @@ L.Storage.Map.include({
     },
 
     updateExtent: function() {
-        // Save in db the current center and zoom
         this.options.center = this.getCenter();
         this.options.zoom = this.getZoom();
         this.isDirty = true;
@@ -309,35 +308,36 @@ L.Storage.Map.include({
         }
     },
 
-    updateInfos: function () {
-        var url = L.Util.template(this.options.urls.map_update, {'map_id': this.options.storage_id});
-        L.Storage.Xhr.get(url, {
-            'listen_form': {'id': 'map_edit'},  // 1. edit form
-            'listen_link': [{
-                'id': 'delete_map_button',  // 2. delete link
-                'options': {
-                    'listen_form': {'id': 'map_delete'},  // 3. confirm delete form
-                    'cssClass': 'warning'
-                }
-            },
-            {
-                id: 'clone_map_button',
-                options: {
-                    confirm: L._('Are you sure you want to clone this map and all its datalayers and features?')
-                }
-            }]
+    renderShareBox: function () {
+        var container = L.DomUtil.create('div', 'storage-share'),
+            iframe = L.DomUtil.create('textarea', 'storage-share-iframe', container);
+        iframeCode = '<iframe width="500" height="300" frameBorder="0" src="{location}?locateControl=0&scaleControl=0&miniMap=0&homeControl=0&scrollWheelZoom=0&allowEdit=0&editInOSMControl=0&tileLayersControl=0&jumpToLocationControl=0&embedControl=0"></iframe><p><a href="http://u.osmfr.org/en/map/demo_1">See full screen</a></p>';
+        iframe.innerHTML = L.Util.template(iframeCode, {location: window.location});
+        if (this.options.shortUrl) {
+            var shortUrl = L.DomUtil.create('input', 'storage-short-url', container);
+            shortUrl.type = "text";
+            shortUrl.value = this.options.shortUrl;
+        }
+        var download = L.DomUtil.create('a', 'button', container);
+        var features = [];
+        this.eachDataLayer(function (datalayer) {
+            features = features.concat(datalayer.featuresToGeoJSON());
         });
+        var geojson = {
+            type: "FeatureCollection",
+            features: features
+        };
+        var content = JSON.stringify(geojson, null, 2);
+        window.URL = window.URL || window.webkitURL;
+        var blob = new Blob([content], {type: 'application/json'});
+        download.href = window.URL.createObjectURL(blob);
+        download.innerHTML = L._('Download data');
+        download.download = "features.geojson";
+        L.S.fire('ui:start', {data:{html:container}});
     },
 
     updatePermissions: function () {
         var url = L.Util.template(this.options.urls.map_update_permissions, {'map_id': this.options.storage_id});
-        L.Storage.Xhr.get(url, {
-            'listen_form': {'id': 'map_edit'}
-        });
-    },
-
-    updateSettings: function () {
-        var url = L.Util.template(this.options.urls.map_update_settings, {'map_id': this.options.storage_id});
         L.Storage.Xhr.get(url, {
             'listen_form': {'id': 'map_edit'}
         });
