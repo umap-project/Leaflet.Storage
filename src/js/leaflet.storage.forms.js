@@ -252,6 +252,29 @@ L.S.ElementHelper.ColorPicker = L.S.ElementHelper.Input.extend({
 
 });
 
+L.S.ElementHelper.CheckBox = L.S.ElementHelper.extend({
+
+    build: function () {
+        this.buildLabel();
+        this.input = L.DomUtil.create('input', '', this.form);
+        this.backup = this.get();
+        this.input.checked = this.backup === true;
+        this.input.type = "checkbox";
+        this.input.name = this.label.innerHTML = this.name;
+        this.input._helper = this;
+        L.DomEvent.on(this.input, 'change', this.sync, this);
+    },
+
+    value: function () {
+        return this.input.checked;
+    },
+
+    cast: function (value) {
+        return [1, true].indexOf(value) !== -1;
+    }
+
+});
+
 L.S.ElementHelper.SelectAbstract = L.S.ElementHelper.extend({
 
     selectOptions: [

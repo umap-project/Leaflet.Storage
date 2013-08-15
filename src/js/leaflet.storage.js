@@ -5,7 +5,7 @@ L.Map.mergeOptions({
     zoom: 10,
     hash: true,
     embedControl: true,
-    layersControl: true,
+    datalayersControl: true,
     default_color: "DarkBlue",
     default_smoothFactor: 1.0,
     default_opacity: 0.5,
@@ -17,8 +17,7 @@ L.Map.mergeOptions({
     attributionControl: true,
     allowEdit: true,
     homeControl: true,
-    zoomControl: false,  // Not to activate initHook, which make zoom comes before homeControl
-    storageZoomControl: true,
+    zoomControl: true,
     locateControl: true,
     jumpToLocationControl: true,
     editInOSMControl: false,
@@ -31,7 +30,7 @@ L.Map.mergeOptions({
     displayPopupFooter: false,
     displayDataBrowserOnLoad: false,
     demoTileInfos: {s:'a', z:9, x:265, y:181},
-    tileLayersControl: true
+    tilelayersControl: true
 });
 
 L.Storage.Map.include({
@@ -44,23 +43,16 @@ L.Storage.Map.include({
         delete options.center;
         var editInOSMControl = options.editInOSMControl;
         delete options.editInOSMControl;
+        var zoomControl = typeof options.zoomControl !== "undefined" ? options.zoomControl : true;
+        options.zoomControl = false;
         L.Map.prototype.initialize.call(this, el, options);
         this.name = this.options.name;
         this.description = this.options.description;
         this.demoTileInfos = this.options.demoTileInfos;
         this.options.center = center;
-        if (this.options.storageZoomControl) {
-            // Calling parent has called the initHook, we can now add the
-            // zoom control
-            this.zoomControl = new L.Control.Zoom();
-            this.addControl(this.zoomControl);
-        }
-        if (editInOSMControl) {
-            this.editInOSMControl = (new L.Control.EditInOSM(this.options.editInOSMControlOptions)).addTo(this);
-        }
-        if (this.options.scaleControl) {
-            this.scaleControl = L.control.scale().addTo(this);
-        }
+        this.options.editInOSMControl = editInOSMControl;
+        this.options.zoomControl = zoomControl;
+        this.initControls();
 
         // User must provide a pk
         if (typeof this.options.storage_id == "undefined") {
@@ -121,8 +113,6 @@ L.Storage.Map.include({
         // It will be populated while creating the datalayers
         // Control is added as an initHook, to keep the order
         // with other controls
-        this.datalayers_control = new L.Storage.DataLayersControl();
-        this.tilelayers_control = new L.Storage.TileLayerControl();
         this.populateTileLayers(this.options.tilelayers);
 
         // Global storage for retrieving datalayers
@@ -134,19 +124,14 @@ L.Storage.Map.include({
                 this._createDataLayer(this.options.datalayers[j]);
             }
         }
-        if (this.options.tileLayersControl) {
-            this.tilelayers_control.addTo(this);
-        }
-        if (this.options.layersControl) {
-            this.datalayers_control.addTo(this);
-        }
-
         if (options.displayCaptionOnLoad) {
             this.displayCaption();
         }
-        else if (options.displayDataBrowserOnLoad && this.options.layersControl) {
+        else if (this.options.displayDataBrowserOnLoad && this.options.datalayersControl) {
             this.whenReady(function () {
-                this.datalayers_control.openBrowser();
+                if (this.controls.datalayersControl) {
+                this._controls.datalayersControl.openBrowser();
+                }
             });
         }
 
@@ -181,7 +166,59 @@ L.Storage.Map.include({
         catch (e) {
             // Certainly IE8, which has a limited version of defineProperty
         }
+        this.on('baselayerchange', function (e) {
+            if (this._controls.miniMap) {
+                this._controls.miniMap.onMainMapBaseLayerChange(e);
+            }
+        }, this);
         this.backupOptions();
+    },
+
+    initControls: function () {
+        this._controls = this._controls || {};
+        for (var i in this._controls) {
+            this.removeControl(this._controls[i]);
+            delete this._controls[i];
+        }
+        if (this.options.homeControl) {
+            this._controls.homeControl = (new L.Storage.HomeControl()).addTo(this);
+        }
+        if (this.options.locateControl) {
+            this._controls.locateControl = (new L.Storage.LocateControl()).addTo(this);
+        }
+        if (this.options.jumpToLocationControl) {
+            this._controls.jumpToLocationControl = (new L.Storage.JumpToLocationControl()).addTo(this);
+        }
+        if (this.options.zoomControl) {
+            this._controls.zoomControl = (new L.Control.Zoom()).addTo(this);
+        }
+        if (this.options.scaleControl) {
+            this._controls.scaleControl = L.control.scale().addTo(this);
+        }
+        if (this.options.embedControl) {
+            this._controls.embedControl = (new L.Control.Embed(this, this.options.embedOptions)).addTo(this);
+        }
+        if (this.options.tilelayersControl) {
+            this._controls.tilelayersControl = new L.Storage.TileLayerControl().addTo(this);
+        }
+        if (this.options.editInOSMControl) {
+            this._controls.editInOSMControl = (new L.Control.EditInOSM(this.options.editInOSMControlOptions)).addTo(this);
+        }
+        if (this.options.datalayersControl) {
+            this._controls.datalayersControl = new L.Storage.DataLayersControl().addTo(this);
+        }
+        if (this.options.miniMap) {
+            this.whenReady(function () {
+                this._controls.miniMap = new L.Control.MiniMap(this.selected_tilelayer).addTo(this);
+            });
+        }
+
+    },
+
+    updateDatalayersControl: function () {
+        if (this._controls.datalayersControl) {
+            this._controls.datalayersControl.update();
+        }
     },
 
     backupOptions: function () {
@@ -217,12 +254,6 @@ L.Storage.Map.include({
         // and the other only when user click on them
         if(options.selected) {
             this.selectTileLayer(tilelayer);
-            if (this.options.miniMap) {
-                this.whenReady(function () {
-                    this.miniMap = new L.Control.MiniMap(this.createTileLayer(options)).addTo(this);
-                    this.on('baselayerchange', this.miniMap.onMainMapBaseLayerChange, this.miniMap);
-                });
-            }
         }
         this.tilelayers.push(tilelayer);
     },
@@ -275,7 +306,9 @@ L.Storage.Map.include({
                 formData.append('tilelayer', tilelayer.options.id);
                 L.Storage.Xhr.post(url, {data: formData});
             };
-        this.tilelayers_control.openSwitcher({callback: callback});
+        if (this._controls.tilelayersControl) {
+            this._controls.tilelayersControl.openSwitcher({callback: callback});
+        }
     },
 
     updateInfos: function () {
@@ -367,6 +400,8 @@ L.Storage.Map.include({
                 datalayer.reset();
             }
         });
+        this.options = L.extend({}, this._backupOptions);
+        this.initControls();
         this.isDirty = false;
     },
 
@@ -387,9 +422,10 @@ L.Storage.Map.include({
         // save options to DB
         var editableOptions = [
             'zoom',
+            'homeControl',
             'embedControl',
-            'layersControl',
-            'storageZoomControl',
+            'datalayersControl',
+            'zoomControl',
             'locateControl',
             'jumpToLocationControl',
             'editInOSMControl',
@@ -398,7 +434,7 @@ L.Storage.Map.include({
             'displayCaptionOnLoad',
             'displayPopupFooter',
             'displayDataBrowserOnLoad',
-            'tileLayersControl',
+            'tilelayersControl',
             'name',
             'description'
         ],
@@ -451,13 +487,33 @@ L.Storage.Map.include({
         if(!this.editEnabled) return;
         var self = this,
             container = L.DomUtil.create('div'),
-            metadata_fields = [
+            metadataFields = [
                 'options.name',
                 'options.description'
             ];
-        var builder = new L.S.FormBuilder(this, metadata_fields);
+        var builder = new L.S.FormBuilder(this, metadataFields);
         form = builder.build();
         container.appendChild(form);
+        var UIFields = [
+            ['options.homeControl', 'CheckBox'],
+            ['options.embedControl', 'CheckBox'],
+            ['options.datalayersControl', 'CheckBox'],
+            ['options.tilelayersControl', 'CheckBox'],
+            ['options.zoomControl', 'CheckBox'],
+            ['options.miniMap', 'CheckBox'],
+            ['options.editInOSMControl', 'CheckBox'],
+            ['options.scaleControl', 'CheckBox'],
+            ['options.locateControl', 'CheckBox'],
+            ['options.jumpToLocationControl', 'CheckBox'],
+            ['options.displayCaptionOnLoad', 'CheckBox'],
+            ['options.displayDataBrowserOnLoad', 'CheckBox'],
+            ['options.displayPopupFooter', 'CheckBox']
+        ];
+        builder = new L.S.FormBuilder(this, UIFields, {
+            callback: this.initControls,
+            callbackContext: this
+        });
+        container.appendChild(builder.build());
         L.S.fire('ui:start', {data: {html: container}});
     }
 

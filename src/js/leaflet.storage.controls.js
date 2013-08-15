@@ -275,13 +275,6 @@ L.Control.Embed = L.Control.extend({
     }
 });
 
-L.Storage.Map.addInitHook(function () {
-    if (this.options.embedControl) {
-        var options = this.options.embedOptions ? this.options.embedOptions : {};
-        this.embedControl = new L.Control.Embed(this, options);
-        this.addControl(this.embedControl);
-    }
-});
 
 L.Storage.DataLayersControl = L.Control.extend({
 
@@ -549,11 +542,6 @@ L.Storage.HomeControl = L.Control.extend({
         return container;
     }
 });
-L.Storage.Map.addInitHook(function () {
-    if (this.options.homeControl) {
-        this.homeControl = (new L.Storage.HomeControl()).addTo(this);
-    }
-});
 
 
 L.Storage.LocateControl = L.Control.extend({
@@ -582,11 +570,6 @@ L.Storage.LocateControl = L.Control.extend({
             .on(link, 'dblclick', L.DomEvent.stopPropagation);
 
         return container;    }
-});
-L.Storage.Map.addInitHook(function () {
-    if (this.options.locateControl) {
-        this.locateControl = (new L.Storage.LocateControl()).addTo(this);
-    }
 });
 
 
@@ -658,13 +641,14 @@ L.Storage.JumpToLocationControl = L.Control.extend({
 
         return container;    }
 });
-L.Storage.Map.addInitHook(function () {
-    if (this.options.jumpToLocationControl) {
-        this.jumpToLocationControl = (new L.Storage.JumpToLocationControl()).addTo(this);
-    }
-});
+
 
 L.Control.MiniMap.include({
+
+    initialize: function (layer, options) {
+        L.Util.setOptions(this, options);
+        this._layer = this._cloneLayer(layer);
+    },
 
     onMainMapBaseLayerChange: function (e) {
         var layer = this._cloneLayer(e.layer);

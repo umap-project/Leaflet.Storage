@@ -51,7 +51,7 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         if(this.options.displayOnLoad) {
             this.map.addLayer(this);
         }
-        this.map.datalayers_control.update();
+        this.map.updateDatalayersControl();
     },
 
     _dataUrl: function() {
@@ -201,7 +201,7 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         this.map.removeLayer(this);
         delete this.map.datalayers[L.stamp(this)];
         this.map.datalayers_index.splice(this.map.datalayers_index.indexOf(this), 1);
-        this.map.datalayers_control.update();
+        this.map.updateDatalayersControl();
         this._geojson = null;
         this._layers = {};
         this._index = Array();
@@ -234,7 +234,7 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
                 'options.description'
             ];
         var builder = new L.S.FormBuilder(this, metadata_fields, {
-            callback: function () { this.map.datalayers_control.update(); },
+            callback: function () { this.map.updateDatalayersControl(); },
             callbackContext: this
         });
         form = builder.build();
