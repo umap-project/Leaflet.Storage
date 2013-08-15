@@ -242,7 +242,7 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         var options_fields = [
             ['options.color', 'ColorPicker'],
             ['options.iconClass', 'IconClassSwitcher'],
-            ['options.iconUrl', 'iconUrl'],
+            ['options.iconUrl', 'IconUrl'],
             'options.smoothFactor',
             'options.opacity',
             ['options.stroke', 'NullableBoolean'],
