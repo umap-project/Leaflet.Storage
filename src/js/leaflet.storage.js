@@ -159,7 +159,6 @@ L.Storage.Map.include({
         }, this);
 
         var isDirty = false, // global status
-            isSelfDirty = false, // self status
             self = this;
         try {
             Object.defineProperty(this, 'isDirty', {
@@ -176,17 +175,6 @@ L.Storage.Map.include({
                         L.DomUtil.removeClass(this._container, "storage-is-dirty");
                     }
                     isDirty = status;
-                }
-            });
-            Object.defineProperty(this, 'isSelfDirty', {
-                get: function () {
-                    return isSelfDirty;
-                },
-                set: function (status) {
-                    if(!self.isDirty && status) {
-                        self.isDirty = status;
-                    }
-                    isSelfDirty = status;
                 }
             });
         }
@@ -276,7 +264,7 @@ L.Storage.Map.include({
         // Save in db the current center and zoom
         this.options.center = this.getCenter();
         this.options.zoom = this.getZoom();
-        this.isSelfDirty = true;
+        this.isDirty = true;
         L.Storage.fire("ui:alert", {"content": L._('The zoom and center have been setted.'), "level": "info"});
     },
 
@@ -388,7 +376,7 @@ L.Storage.Map.include({
                 datalayer.save();
             }
         });
-        if (this.isSelfDirty) {
+        if (this.isDirty) {
             this.selfSave();
         }
         this.isDirty = false;
@@ -457,6 +445,20 @@ L.Storage.Map.include({
             this.addLayer(datalayer);
             return datalayer;
         }
+    },
+
+    edit: function () {
+        if(!this.editEnabled) return;
+        var self = this,
+            container = L.DomUtil.create('div'),
+            metadata_fields = [
+                'options.name',
+                'options.description'
+            ];
+        var builder = new L.S.FormBuilder(this, metadata_fields);
+        form = builder.build();
+        container.appendChild(form);
+        L.S.fire('ui:start', {data: {html: container}});
     }
 
 });

@@ -52,7 +52,6 @@ L.Storage.SettingsToolbar = L.Toolbar.extend({
         this._createUpdateMapExtentButton(map, this._toolbarContainer);
         this._createUpdateMapTileLayersButton(map, this._toolbarContainer);
         this._createUpdateMapPermissionsButton(map, this._toolbarContainer);
-        this._createUpdateMapInfosButton(map, this._toolbarContainer);
         this._createUpdateMapSettingsButton(map, this._toolbarContainer);
 
         container.appendChild(this._toolbarContainer);
@@ -74,17 +73,7 @@ L.Storage.SettingsToolbar = L.Toolbar.extend({
             title: L._('Edit map settings'),
             className: 'update-map-settings',
             container: container,
-            callback: map.updateSettings,
-            context: map
-        });
-    },
-
-    _createUpdateMapInfosButton: function(map, container) {
-        this._createButton({
-            title: L._('Edit map infos'),
-            className: 'update-map-infos',
-            container: container,
-            callback: map.updateInfos,
+            callback: map.edit,
             context: map
         });
     },
