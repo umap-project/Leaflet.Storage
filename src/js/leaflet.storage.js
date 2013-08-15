@@ -158,7 +158,8 @@ L.Storage.Map.include({
             this.invalidateSize({pan: false});
         }, this);
 
-        var isDirty = false,
+        var isDirty = false, // global status
+            isSelfDirty = false, // self status
             self = this;
         try {
             Object.defineProperty(this, 'isDirty', {
@@ -177,10 +178,26 @@ L.Storage.Map.include({
                     isDirty = status;
                 }
             });
+            Object.defineProperty(this, 'isSelfDirty', {
+                get: function () {
+                    return isSelfDirty;
+                },
+                set: function (status) {
+                    if(!self.isDirty && status) {
+                        self.isDirty = status;
+                    }
+                    isSelfDirty = status;
+                }
+            });
         }
         catch (e) {
             // Certainly IE8, which has a limited version of defineProperty
         }
+        this.backupOptions();
+    },
+
+    backupOptions: function () {
+        this._backupOptions = L.extend({}, this.options);
     },
 
     populateTileLayers: function (tilelayers) {
@@ -257,22 +274,10 @@ L.Storage.Map.include({
 
     updateExtent: function() {
         // Save in db the current center and zoom
-        var latlng = this.getCenter(),
-            zoom = this.getZoom(),
-            center = {
-                type: "Point",
-                coordinates: [
-                    latlng.lng,
-                    latlng.lat
-                ]
-            },
-            url = L.Util.template(this.options.urls.map_update_extent, {'map_id': this.options.storage_id}),
-            formData = new FormData();
-            formData.append('center', JSON.stringify(center));
-            formData.append('zoom', zoom);
-        L.Storage.Xhr.post(url, {
-            'data': formData
-        });
+        this.options.center = this.getCenter();
+        this.options.zoom = this.getZoom();
+        this.isSelfDirty = true;
+        L.Storage.fire("ui:alert", {"content": L._('The zoom and center have been setted.'), "level": "info"});
     },
 
     updateTileLayers: function () {
@@ -383,8 +388,57 @@ L.Storage.Map.include({
                 datalayer.save();
             }
         });
+        if (this.isSelfDirty) {
+            this.selfSave();
+        }
         this.isDirty = false;
         L.S.fire('ui:end');
+    },
+
+    selfSave: function () {
+        // save options to DB
+        var editableOptions = [
+            'zoom',
+            'embedControl',
+            'layersControl',
+            'storageZoomControl',
+            'locateControl',
+            'jumpToLocationControl',
+            'editInOSMControl',
+            'scaleControl',
+            'miniMap',
+            'displayCaptionOnLoad',
+            'displayPopupFooter',
+            'displayDataBrowserOnLoad',
+            'tileLayersControl',
+            'name',
+            'description'
+        ],
+            properties = {};
+        for (var i = editableOptions.length - 1; i >= 0; i--) {
+            if (typeof this.options[editableOptions[i]] !== "undefined") {
+                properties[editableOptions[i]] = this.options[editableOptions[i]];
+            }
+        }
+        var geojson = {
+            type: "Feature",
+            geometry: this.geometry(),
+            properties: properties
+        };
+        this.backupOptions();
+        console.log(geojson);
+    },
+
+    geometry: function() {
+        /* Return a GeoJSON geometry Object */
+        var latlng = this.latLng(this.options.center || this.getCenter());
+        return {
+            type: "Point",
+            coordinates: [
+                latlng.lng,
+                latlng.lat
+            ]
+        };
     },
 
     defaultDataLayer: function () {
