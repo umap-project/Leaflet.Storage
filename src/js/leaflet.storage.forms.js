@@ -11,11 +11,15 @@ L.Storage.ElementHelper = L.Class.extend({
     },
 
     get: function () {
-        return this.cast(this.formBuilder.getter(this.field));
+        return this.formBuilder.getter(this.field);
     },
 
-    cast: function (value) {
-        return value;
+    toHTML: function () {
+        return this.get();
+    },
+
+    toJS: function () {
+        return this.value();
     },
 
     sync: function () {
@@ -24,7 +28,7 @@ L.Storage.ElementHelper = L.Class.extend({
     },
 
     set: function () {
-        this.formBuilder.setter(this.field, this.value());
+        this.formBuilder.setter(this.field, this.toJS());
     },
 
     buildLabel: function () {
@@ -39,7 +43,7 @@ L.Storage.ElementHelper.Input = L.S.ElementHelper.extend({
     build: function () {
         this.buildLabel();
         this.input = L.DomUtil.create('input', '', this.formBuilder.form);
-        this.input.value = this.backup = this.get() || null;
+        this.input.value = this.backup = this.toHTML() || null;
         this.input.type = this.guessType();
         this.input.name = this.label.innerHTML = this.name;
         this.input._helper = this;
@@ -164,8 +168,8 @@ L.S.ElementHelper.CheckBox = L.S.ElementHelper.extend({
         return this.input.checked;
     },
 
-    cast: function (value) {
-        return [1, true].indexOf(value) !== -1;
+    toHTML: function () {
+        return [1, true].indexOf(this.get()) !== -1;
     }
 
 });
@@ -183,8 +187,12 @@ L.S.ElementHelper.SelectAbstract = L.S.ElementHelper.extend({
         L.DomEvent.on(this.select, 'change', this.sync, this);
     },
 
+    getOptions: function () {
+        return this.selectOptions;
+    },
+
     buildOptions: function (options) {
-        options = options || this.selectOptions;
+        options = options || this.getOptions();
         for (var i=0, l=options.length; i<l; i++) {
             this.buildOption(options[i][0], options[i][1]);
         }
@@ -194,13 +202,13 @@ L.S.ElementHelper.SelectAbstract = L.S.ElementHelper.extend({
         var option = L.DomUtil.create('option', '', this.select);
         option.value = value;
         option.innerHTML = label;
-        if (this.get() === value) {
+        if (this.toHTML() === value) {
             option.selected = "selected";
         }
     },
 
     value: function () {
-        return this.cast(this.select[this.select.selectedIndex].value);
+        return this.select[this.select.selectedIndex].value;
     }
 
 });
@@ -215,7 +223,8 @@ L.S.ElementHelper.IconClassSwitcher = L.S.ElementHelper.SelectAbstract.extend({
         ["Ball", L._('Ball')]
     ],
 
-    cast: function (value) {
+    toJS: function () {
+        var value = this.value();
         switch(value) {
             case "Default":
             case "Circle":
@@ -230,6 +239,29 @@ L.S.ElementHelper.IconClassSwitcher = L.S.ElementHelper.SelectAbstract.extend({
 
 });
 
+L.S.ElementHelper.LicenceChooser = L.S.ElementHelper.SelectAbstract.extend({
+
+    getOptions: function () {
+        var licences = [],
+            licencesList = this.formBuilder.obj.options.licences,
+            licence;
+        for (var i in licencesList) {
+            licence = licencesList[i];
+            licences.push([i, licence.name]);
+        }
+        return licences;
+    },
+
+    toHTML: function () {
+        return this.get().name;
+    },
+
+    toJS: function () {
+        return this.formBuilder.obj.options.licences[this.value()];
+    }
+
+});
+
 L.S.ElementHelper.NullableBoolean = L.S.ElementHelper.SelectAbstract.extend({
     selectOptions: [
         [undefined, L._('inherit')],
@@ -237,7 +269,7 @@ L.S.ElementHelper.NullableBoolean = L.S.ElementHelper.SelectAbstract.extend({
         [false, L._('no')]
     ],
 
-    cast: function (value) {
+    toJS: function (value) {
         switch (value) {
             case "true":
             case true:

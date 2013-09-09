@@ -30,7 +30,9 @@ L.Map.mergeOptions({
     displayPopupFooter: false,
     displayDataBrowserOnLoad: false,
     demoTileInfos: {s:'a', z:9, x:265, y:181},
-    tilelayersControl: true
+    tilelayersControl: true,
+    licences: [],
+    licence: ''
 });
 
 L.Storage.Map.include({
@@ -493,8 +495,51 @@ L.Storage.Map.include({
     },
 
     displayCaption: function () {
-        var url = L.Util.template(this.options.urls.map_infos, {'map_id': this.options.storage_id});
-        L.Storage.Xhr.get(url);
+        var container = L.DomUtil.create('div', 'storage-caption'),
+            title = L.DomUtil.create('h4', '', container);
+        title.innerHTML = this.options.name;
+        if (this.options.description) {
+            var description = L.DomUtil.create('div', 'storage-map-description', container);
+            description.innerHTML = this.options.description;
+        }
+        this.eachDataLayer(function (datalayer) {
+            var p = L.DomUtil.create('p', '', container),
+                color = L.DomUtil.create('span', 'datalayer_color', p),
+                title = L.DomUtil.create('strong', '', p),
+                description = L.DomUtil.create('span', '', p);
+            if (datalayer.options.color) {
+                color.backgroundColor = datalayer.options.color;
+            }
+            title.innerHTML = datalayer.options.name + ' ';
+            description.innerHTML = datalayer.options.description;
+        });
+        L.DomUtil.create('hr', '', container);
+        title = L.DomUtil.create('h5', '', container);
+        title.innerHTML = L._('User content credits');
+        var contentCredit = L.DomUtil.create('p', '', container),
+            licence = L.DomUtil.create('a', '', contentCredit);
+        licence.innerHTML = this.options.licence.name;
+        licence.href = this.options.licence.url;
+        contentCredit.innerHTML =  L._('Map user content has been published under licence')
+                                   + ' ' + contentCredit.innerHTML;
+        L.DomUtil.create('hr', '', container);
+        title = L.DomUtil.create('h5', '', container);
+        title.innerHTML = L._('Map background credits');
+        var tilelayerCredit = L.DomUtil.create('p', '', container),
+            name = L.DomUtil.create('strong', '', tilelayerCredit),
+            attribution = L.DomUtil.create('span', '', tilelayerCredit);
+        name.innerHTML = this.selected_tilelayer.options.name + ' ';
+        attribution.innerHTML = this.selected_tilelayer.options.attribution;
+        L.DomUtil.create('hr', '', container);
+        var umapCredit = L.DomUtil.create('p', '', container),
+            urls = {
+                leaflet: 'http://leafletjs.com',
+                django: 'https://www.djangoproject.com',
+                umap: 'http://wiki.openstreetmap.org/wiki/UMap'
+            };
+        umapCredit.innerHTML = L._("Powered by <a href='{leaflet}'>Leaflet</a> and <a href='{django}'>Django</a>, glued by <a href='{umap}'>uMap project</a>.", urls);
+
+        L.S.fire('ui:start', {data: {html: container}});
     },
 
     eachDataLayer: function (method, context) {
@@ -600,7 +645,8 @@ L.Storage.Map.include({
             container = L.DomUtil.create('div'),
             metadataFields = [
                 'options.name',
-                'options.description'
+                'options.description',
+                ['options.licence', 'LicenceChooser']
             ];
         var builder = new L.S.FormBuilder(this, metadataFields);
         form = builder.build();
