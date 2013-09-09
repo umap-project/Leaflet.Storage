@@ -302,6 +302,7 @@ L.Storage.Map.include({
         var self = this,
             callback = function (tilelayer) {
                 self.options.tilelayer = tilelayer.toJSON();
+                self.isDirty = true;
             };
         if (this._controls.tilelayersControl) {
             this._controls.tilelayersControl.openSwitcher({callback: callback});
@@ -344,39 +345,151 @@ L.Storage.Map.include({
     },
 
     uploadData: function () {
-        var map = this;
-        var handle_response = function (data) {
-            L.Storage.fire("ui:start", {'data': data, "cssClass": "upload-data"});
-            var form_id = "upload_data",
-                urlHelper = new L.Storage.FormHelper.ImportURL(map, form_id, {});
-            L.Storage.Xhr.listen_form(form_id, {
-                'callback': function (data) {
-                    if (data.datalayer) {
-                        var layer = map.datalayers[data.datalayer.pk];
-                        layer.on('dataloaded', function (e) {
-                            layer.zoomTo();
-                        });
-                        layer.clearLayers();
-                        layer.fetchData();
-                        L.Storage.fire('ui:end');
-                        if (data.info) {
-                            L.Storage.fire("ui:alert", {"content": data.info, "level": "info"});
-                        }
+        var container = L.DomUtil.create('div', 'storage-upload'),
+            fileInput = L.DomUtil.create('input', '', container),
+            urlInput = L.DomUtil.create('input', '', container),
+            rawInput = L.DomUtil.create('textarea', '', container),
+            typeInput = L.DomUtil.create('select', '', container),
+            layerInput = L.DomUtil.create('select', '', container),
+            submitInput = L.DomUtil.create('input', '', container),
+            map = this, option,
+            types = ['geojson', 'csv', 'gpx', 'kml'];
+        fileInput.type = "file";
+        submitInput.type = "button";
+        submitInput.value = L._('Import');
+        submitInput.className = "button";
+        urlInput.type = "text";
+        urlInput.placeholder = L._('Provide an URL here');
+        rawInput.placeholder = L._('Paste here your data');
+        this.eachDataLayer(function (datalayer) {
+            var id = L.stamp(datalayer);
+            option = L.DomUtil.create('option', '', layerInput);
+            option.value = id;
+            option.innerHTML = datalayer.options.name;
+        });
+        for (var i = 0; i < types.length; i++) {
+            option = L.DomUtil.create('option', '', typeInput);
+            option.value = option.innerHTML = types[i];
+        }
+
+        var toFeatures = function (geojson) {
+            var layerId = layerInput[layerInput.selectedIndex].value;
+            layer = map.datalayers[layerId];
+            layer.addData(geojson);
+            layer.isDirty = true;
+            L.S.fire('ui:end');
+            layer.zoomTo();
+        };
+
+        var toDom = function (x) {
+            return (new DOMParser()).parseFromString(x, 'text/xml');
+        };
+
+        var detectType = function (f) {
+            var filename = f.name ? escape(f.name.toLowerCase()) : '';
+            function ext(_) {
+                return filename.indexOf(_) !== -1;
+            }
+            if (f.type === 'application/vnd.google-earth.kml+xml' || ext('.kml')) {
+                return 'kml';
+            }
+            if (ext('.gpx')) return 'gpx';
+            if (ext('.geojson') || ext('.json')) return 'geojson';
+            if (f.type === 'text/csv' || ext('.csv') || ext('.tsv') || ext('.dsv')) {
+                return 'dsv';
+            }
+            if (ext('.xml')) return 'xml';
+        };
+
+        var processContent = function (c) {
+            var type = typeInput.value;
+            if (type === "csv") {
+                csv2geojson.csv2geojson(c, {
+                    delimiter: 'auto'
+                }, function(err, result) {
+                    if (err) {
+                        L.S.fire('ui:alert', {content: 'error in csv', level: 'error'});
+                    } else {
+                        toFeatures(result);
                     }
-                    else if (data.error) {
-                        L.Storage.fire("ui:alert", {"content": data.error, "level": "error"});
-                    }
-                    else {
-                        // start again
-                        handle_response(data);
-                    }
+                });
+            } else if (type === 'gpx') {
+                toFeatures(toGeoJSON.gpx(toDom(c)));
+            } else if (type === 'kml') {
+                toFeatures(toGeoJSON.kml(toDom(c)));
+            } else if (type === 'xml') {
+                toFeatures(osm_geojson.osm2geojson(toDom(c)));
+            } else if (type === "geojson") {
+                try {
+                    gj = JSON.parse(c);
+                    toFeatures(gj);
+                } catch(err) {
+                    L.S.fire('ui:alert', {content: 'Invalid JSON file: ' + err});
+                    return;
                 }
+            }
+        };
+
+        var processFile = function () {
+            var files = fileInput.files,
+                output = [],
+                reader, content, geojson, layer;
+
+            var process = function (f) {
+                reader = new FileReader();
+                reader.readAsText(f);
+                reader.onload = function (e) {
+                    processContent(e.target.result);
+                };
+            };
+
+            for (var i = 0, f; f = files[i]; i++) {
+                process(f);
+            }
+        };
+
+        var processUrl = function () {
+            var url = urlInput.value,
+                replace = {
+                    bbox: map.getBounds().toBBoxString(),
+                    north: map.getBounds().getNorthEast().lat,
+                    east: map.getBounds().getNorthEast().lng,
+                    south: map.getBounds().getSouthWest().lat,
+                    west: map.getBounds().getNorthEast().lng,
+                    lat: map.getCenter().lat,
+                    lng: map.getCenter().lng,
+                    zoom: map.getZoom()
+                };
+            replace['left'] = replace['west'];
+            replace['bottom'] = replace['south'];
+            replace['right'] = replace['east'];
+            replace['top'] = replace['north'];
+            url = L.Util.template(url, replace);
+            L.S.Xhr._ajax('GET', url, null, function (data) {
+                processContent(data);
             });
         };
-        var url = L.Util.template(this.options.urls.upload_data, {'map_id': this.options.storage_id});
-        L.Storage.Xhr.get(url, {
-            'callback': handle_response
-        });
+
+        var submit = function () {
+            if (fileInput.files) {
+                processFile();
+            }
+            if (rawInput.value) {
+                processContent(rawInput.value);
+            }
+            if (urlInput.value) {
+                processUrl();
+            }
+        };
+        L.DomEvent.on(submitInput, 'click', submit, this);
+        L.DomEvent.on(fileInput, 'change', function (e) {
+            var f = e.target.files[0],
+                type = detectType(f);
+            if (type) {
+                typeInput.value = type;
+            }
+        }, this);
+        L.S.fire('ui:start', {data: {html: container}});
     },
 
     displayCaption: function () {

@@ -16,3 +16,12 @@
 [submodule "reqs/i18n"]
 	path = reqs/i18n
 	url = git://github.com/yohanboniface/Leaflet.i18n.git
+[submodule "reqs/csv2geojson"]
+	path = reqs/csv2geojson
+	url = https://github.com/mapbox/csv2geojson.git
+[submodule "reqs/togeojson"]
+	path = reqs/togeojson
+	url = https://github.com/mapbox/togeojson.git
+[submodule "reqs/osmtogeojson"]
+	path = reqs/osmtogeojson
+	url = https://github.com/aaronlidman/osm-and-geojson.git

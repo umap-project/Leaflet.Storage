@@ -22,8 +22,30 @@ L.Storage.Xhr = {
         return new wrapper();
     },
 
+    _ajax: function (verb, uri, data, callback) {
+        var response, xhr = this._wrapper();
+        xhr.open(verb, uri, true);
+        // xhr.responseType = "text"; Does not work
+
+        xhr.onreadystatechange = function(e) {
+            if (xhr.readyState === 4) {
+                if (xhr.status == 200) {
+                    callback(xhr.responseText);
+                }
+                else if (xhr.status === 403) {
+                    L.Storage.fire("ui:alert", {"content": L._("Action not allowed :("), "level": "error"});
+                }
+                else {
+                    L.Storage.fire("ui:alert", {"content": L._("Problem in the response"), "level": "error"});
+                }
+            }
+        };
+
+        xhr.send(data);
+    },
+
     // supports only JSON as response data type
-    _ajax: function (verb, uri, options) {
+    _json: function (verb, uri, options) {
         var args = arguments,
             self = this;
         var default_options = {
@@ -35,56 +57,42 @@ L.Storage.Xhr = {
         };
         var settings = L.Util.extend({}, default_options, options);
 
-        var response, xhr = this._wrapper();
-        xhr.open(verb, uri, settings.async);
-        // xhr.responseType = "text"; Does not work
-
-        xhr.onreadystatechange = function(e) {
-            if (xhr.readyState === 4) {
-                if (xhr.status == 200) {
-                    var data;
-                    try {
-                        data = JSON.parse(xhr.responseText);
-                    }
-                    catch (err) {
-                        console.log(err);
-                        L.Storage.fire("ui:alert", {"content": L._("Problem in the response format"), "level": "error"});
-                    }
-                    if (data.login_required) {
-                        // login_required should be an URL for the login form
-                        if (settings.login_callback) {
-                            settings.login_callback(data);
-                        }
-                        else {
-                            self.login(data, args);
-                        }
-                    }
-                    else {
-                        if (settings.callback) {
-                            settings.callback(data);
-                        } else {
-                            self.default_callback(data, settings);
-                        }
-                    }
-                }
-                else if (xhr.status === 403) {
-                    L.Storage.fire("ui:alert", {"content": L._("Action not allowed :("), "level": "error"});
+        var callback = function(responseText) {
+            var data;
+            try {
+                data = JSON.parse(responseText);
+            }
+            catch (err) {
+                console.log(err);
+                L.Storage.fire("ui:alert", {"content": L._("Problem in the response format"), "level": "error"});
+            }
+            if (data.login_required) {
+                // login_required should be an URL for the login form
+                if (settings.login_callback) {
+                    settings.login_callback(data);
                 }
                 else {
-                    L.Storage.fire("ui:alert", {"content": L._("Problem in the response"), "level": "error"});
+                    self.login(data, args);
+                }
+            }
+            else {
+                if (settings.callback) {
+                    settings.callback(data);
+                } else {
+                    self.default_callback(data, settings);
                 }
             }
         };
 
-        xhr.send(settings.data);
+        this._ajax(verb, uri, settings.data, callback);
     },
 
     get: function(uri, options) {
-        L.Storage.Xhr._ajax("GET", uri, options);
+        L.Storage.Xhr._json("GET", uri, options);
     },
 
     post: function(uri, options) {
-        L.Storage.Xhr._ajax("POST", uri, options);
+        L.Storage.Xhr._json("POST", uri, options);
     },
 
     submit_form: function(form_id, options) {
@@ -173,12 +181,12 @@ L.Storage.Xhr = {
 
     login: function (data, args) {
         // data.html: login form
-        // args: args of the first _ajax call, to call again at process end
+        // args: args of the first _json call, to call again at process end
         var self = this;
         var proceed = function () {
             L.Storage.fire('ui:end');
             if (typeof args !== "undefined") {
-                L.Storage.Xhr._ajax.apply(self, args);
+                L.Storage.Xhr._json.apply(self, args);
             }
             else {
                 self.default_callback(data, {});

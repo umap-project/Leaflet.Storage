@@ -254,8 +254,10 @@ L.Storage.Marker = L.Marker.extend({
 
     populate: function (feature) {
         L.Storage.FeatureMixin.populate.call(this, feature);
-        this.options.iconClass = feature.properties._storage_options.icon['class'];
-        this.options.iconUrl = feature.properties._storage_options.icon.url;
+        if (feature.properties._storage_options && feature.properties._storage_options.icon) {
+            this.options.iconClass = feature.properties._storage_options.icon['class'];
+            this.options.iconUrl = feature.properties._storage_options.icon.url;
+        }
         this.options.title = feature.properties.name;
     },
 
