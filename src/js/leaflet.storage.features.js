@@ -186,7 +186,7 @@ L.Storage.FeatureMixin = {
         return {
             type: "Feature",
             geometry: this.geometry(),
-            properties: this.properties
+            properties: L.extend({}, this.properties)
         };
     },
 
