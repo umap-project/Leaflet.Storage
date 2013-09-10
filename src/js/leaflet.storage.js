@@ -592,7 +592,8 @@ L.Storage.Map.include({
             'displayDataBrowserOnLoad',
             'tilelayersControl',
             'name',
-            'description'
+            'description',
+            'licence'
         ],
             properties = {};
         for (var i = editableOptions.length - 1; i >= 0; i--) {
