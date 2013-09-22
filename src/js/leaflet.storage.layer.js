@@ -34,7 +34,7 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
 
     populate: function (datalayer) {
         // Datalayer is null when listening creation form
-        if (!this.storage_id && datalayer.pk) {
+        if (!this.storage_id && datalayer && datalayer.pk) {
             this.storage_id = datalayer.pk || null;
         }
         L.Util.extend(this.options, datalayer || {});
@@ -352,7 +352,7 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         formData.append("data", JSON.stringify(geojson));
         L.Storage.Xhr.post(this.getSaveUrl(), {
             data: formData,
-            callback: function (data) {this.populate(data._storage);},
+            callback: function (data) {this.populate(data);},
             context: this
         });
     },
