@@ -204,6 +204,7 @@ L.Storage.EditControl = L.Control.Draw.extend({
         L.DomEvent
             .addListener(cancel, 'click', L.DomEvent.stop)
             .addListener(cancel, 'click', function (e) {
+                if (!confirm(L._("Are you sure you want to cancel your changes?"))) return;
                 this._disableEdit(e, map);
                 L.S.fire('ui:end');
                 map.reset();
