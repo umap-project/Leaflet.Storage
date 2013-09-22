@@ -379,7 +379,9 @@ L.Storage.DataLayersControl = L.Control.extend({
 
         edit.title = L._('Edit');
         edit.href = '#';
-        edit.id = 'edit_datalayer_' + datalayer.storage_id;
+        if (datalayer.storage_id) {  // storage_id is null for non saved ones
+            edit.id = 'edit_datalayer_' + datalayer.storage_id;
+        }
 
         title.innerHTML = datalayer.options.name;
         L.DomEvent.on(toggle, 'click', function (e) { this.toggleDataLayer(datalayer); }, this);

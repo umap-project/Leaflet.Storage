@@ -27,27 +27,26 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
             // Certainly IE8, which has a limited version of defineProperty
         }
         this.populate(datalayer);
-        this.connectToMap();
-    },
-
-    populate: function (datalayer) {
-        // Datalayer is null when listening creation form
-        this.storage_id = datalayer.pk || null;
-        this.options.name = datalayer.name || "layer no name";
-        this.options.description = datalayer.description || "";
-        this.options.iconClass = datalayer.icon_class || this.map.getDefaultOption('iconClass');
-        this.options.iconUrl = datalayer.pictogram_url || null;
-        this.options.displayOnLoad = datalayer.display_on_load || false;
-        L.Util.extend(this.options, datalayer.options);
         if (!this.storage_id) {
             this.isDirty = true;
         }
     },
 
+    populate: function (datalayer) {
+        // Datalayer is null when listening creation form
+        if (!this.storage_id && datalayer.pk) {
+            this.storage_id = datalayer.pk || null;
+        }
+        L.Util.extend(this.options, datalayer || {});
+        this.connectToMap();
+    },
+
     connectToMap: function () {
         var id = L.stamp(this);
-        this.map.datalayers[id] = this;
-        this.map.datalayers_index.push(this);
+        if (!this.map.datalayers[id]) {
+            this.map.datalayers[id] = this;
+            this.map.datalayers_index.push(this);
+        }
         if(this.options.displayOnLoad) {
             this.map.addLayer(this);
         }
@@ -80,12 +79,19 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         // creating Polylines ; currently, only points creation is
         // configurable, with pointToLayer
         // FIXME when more hooks are available in leaflet
+        if (geojson._storage) {
+            this.populate(geojson._storage);
+        }
+        return this.geojsonToFeatures(geojson);
+    },
+
+    geojsonToFeatures: function (geojson) {
         var features = geojson instanceof Array ? geojson : geojson.features,
             i, len;
 
         if (features) {
             for (i = 0, len = features.length; i < len; i++) {
-                this.addData(features[i]);
+                this.geojsonToFeatures(features[i]);
             }
             return this;
         }
@@ -140,8 +146,16 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         );
     },
 
-    getEditUrl: function(){
+    getEditUrl: function() {
         return L.Util.template(this.map.options.urls.datalayer_update, {'map_id': this.map.options.storage_id, 'pk': this.storage_id});
+    },
+
+    getCreateUrl: function() {
+        return L.Util.template(this.map.options.urls.datalayer_create, {'map_id': this.map.options.storage_id});
+    },
+
+    getSaveUrl: function () {
+        return (this.storage_id && this.getEditUrl()) || this.getCreateUrl();
     },
 
     getIconClass: function () {
@@ -156,45 +170,17 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         return new L.Storage.Icon[this.getIconClass()](this.map);
     },
 
-    getDeleteURL: function () {
+    getDeleteUrl: function () {
         return L.Util.template(this.map.options.urls.datalayer_delete, {'pk': this.storage_id, 'map_id': this.map.options.storage_id});
 
     },
 
-    confirmDelete: function() {
-        if(!this.map.editEnabled) return;
-        var url = this.getDeleteURL();
-        var self = this;
-        L.Storage.Xhr.get(url, {
-            "callback": function(data){
-                L.Storage.fire('ui:start', {'data': data, 'cssClass': 'warning'});
-                self.listenDeleteForm();
-            }
-        });
-    },
-
-    listenDeleteForm: function() {
-        var form = L.DomUtil.get("datalayer_delete");
-        var self = this;
-        var manage_ajax_return = function (data) {
-            if (data.error) {
-                L.Storage.fire('ui:alert', {'content': data.error, 'level': 'error'});
-            }
-            else if (data.info) {
-                self._delete();
-                L.Storage.fire('ui:alert', {'content': data.info, 'level': 'info'});
-                L.Storage.fire('ui:end');
-            }
-        };
-        var submit = function (e) {
-            form.action = self.getDeleteURL();
-            L.Storage.Xhr.submit_form(form, {"callback": function(data) { manage_ajax_return(data);}});
-        };
-        L.DomEvent.on(form, 'submit', submit);
-    },
-
     _delete: function () {
-        this.reset();
+        if (this.storage_id) {
+            this.map.deleted_datalayers.push(this);
+        }
+        this.erase();
+        this.isDirty = true;
     },
 
     erase: function () {
@@ -213,8 +199,8 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
             this.clearLayers();
             if (this._geojson) {
                 this.fromGeoJSON(this._geojson);
-                this.map.addLayer(this);
             }
+            this.map.addLayer(this);
         } else {
             this.erase();
         }
@@ -258,53 +244,16 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         });
         form = builder.build();
         container.appendChild(form);
+        var deleteLink = L.DomUtil.create('a', 'delete_datalayer_button', container);
+        deleteLink.innerHTML = L._('Delete');
+        deleteLink.href = "#";
+        L.DomEvent.on(deleteLink, 'click', L.DomEvent.stop)
+                  .on(deleteLink, 'click', function () {
+                    this._delete();
+                    L.S.fire('ui:end');
+                }, this);
         L.S.fire('ui:start', {data: {html: container}});
 
-    },
-
-    _handleEditResponse: function(data) {
-        var map = this.map,
-            form_id = "datalayer_edit",
-            self = this;
-        L.Storage.fire('ui:start', {'data': data});
-        var iconHelper = new L.Storage.FormHelper.IconField(this.map, form_id, {
-            iconUrl: this.iconUrl || this.map.getDefaultOption('iconUrl'),
-            iconColor: this.options.color || this.map.getDefaultOption('color'),
-            iconClass: this.getIconClass()
-        });
-        var colorHelper = new L.Storage.FormHelper.Color(this.map, form_id, {
-            color: this.options.color || this.map.getDefaultOption('color')
-        });
-        console.log(this.featuresToGeoJSON());
-        L.Storage.Xhr.listen_form(form_id, {
-            'callback': function (data) {
-                if (data.datalayer) {
-                    /* Means success */
-                    if (self.storage_id) {
-                        // TODO update instead of removing/recreating
-                        self.reset();
-                    }
-                    self.populate(data.datalayer);
-                    // force display_on_load not to get the layer hidden while
-                    // working on it
-                    self.options.displayOnLoad = true;
-                    self.connectToMap();
-                    L.Storage.fire('ui:alert', {'content': L._("Layer successfuly edited"), 'level': 'info'});
-                    L.Storage.fire('ui:end');
-                }
-                else {
-                    // Let's start again
-                    self._handleEditResponse(data);
-                }
-            }
-        });
-        var delete_link = L.DomUtil.get("delete_datalayer_button");
-        if (delete_link) {
-            L.DomEvent
-                .on(delete_link, 'click', L.DomEvent.stopPropagation)
-                .on(delete_link, 'click', L.DomEvent.preventDefault)
-                .on(delete_link, 'click', this.confirmDelete, this);
-        }
     },
 
     featuresToGeoJSON: function () {
@@ -398,8 +347,18 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
             _storage: this.options
         };
         this._geojson = geojson;
-        // save in db
-        console.log("saving", geojson);
+        var formData = new FormData();
+        formData.append("name", this.options.name);
+        formData.append("data", JSON.stringify(geojson));
+        L.Storage.Xhr.post(this.getSaveUrl(), {
+            data: formData,
+            callback: function (data) {this.populate(data._storage);},
+            context: this
+        });
+    },
+
+    saveDelete: function () {
+        L.S.Xhr.post(this.getDeleteUrl());
     }
 
 });

@@ -3,18 +3,27 @@ describe('L.DataLayer', function () {
 
     before(function () {
         this.server = sinon.fakeServer.create();
-        this.server.respondWith('GET', '/feature/json/datalayer/62/', JSON.stringify(RESPONSES.datalayer62_GET));
+        this.server.respondWith('GET', '/datalayer/62/', JSON.stringify(RESPONSES.datalayer62_GET));
         this.map = initMap({storage_id: 99});
+        this.datalayer = this.map.getDataLayerByStorageId(62);
         this.server.respond();
-        toggleEdit();
+        enableEdit();
     });
     after(function () {
         this.server.restore();
         resetMap();
     });
 
+    describe('#init()', function () {
+
+        it('should be added in datalayers index', function () {
+            assert.notEqual(this.map.datalayers_index.indexOf(this.datalayer), -1);
+        });
+
+    });
+
     describe('#edit()', function () {
-        var editButton, form, submitButton;
+        var editButton, form, input;
 
         it('row in control should be active', function () {
             assert.ok(qs('.leaflet-control-browse #browse_data_toggle_62.on'));
@@ -33,27 +42,118 @@ describe('L.DataLayer', function () {
             assert.equal(document.querySelectorAll('.leaflet-control-browse span.layer-toggle').length, 1);
         });
 
-        it('should load a form on edit button click', function () {
-            this.server.respondWith('GET', path, JSON.stringify(RESPONSES.map_datalayer_update_GET));
+        it('should build a form on edit button click', function () {
             happen.click(editButton);
-            this.server.respond();
-            form = qs('form#datalayer_edit');
-            submitButton = qs('form#datalayer_edit input[type="submit"]');
+            form = qs('form.storage-form');
+            input = qs('form.storage-form input[name="name"]');
             assert.ok(form);
-            assert.ok(submitButton);
+            assert.ok(input);
         });
 
-        it('should make post request on form submit', function () {
-            this.server.respondWith('POST', path, JSON.stringify({datalayer: DEFAULT_DATALAYER}));
-            happen.click(submitButton);
+        it('should update name on input change', function () {
+            var new_name = "This is a new name";
+            input.value = new_name;
+            happen.once(input, {type: 'input'});
+            assert.equal(this.datalayer.options.name, new_name);
+        });
+
+        it('should have made datalayer dirty', function () {
+            assert.ok(this.datalayer.isDirty);
+        });
+
+        it('should have made Map dirty', function () {
+            assert.ok(this.map.isDirty);
+        });
+
+        it('should call datalayer.save on save button click', function () {
+            sinon.spy(this.datalayer, "save");
+            this.server.respondWith('POST', '/map/99/datalayer/update/62/', JSON.stringify(RESPONSES.datalayer62_GET));
+            clickSave();
             this.server.respond();
-            request = this.server.getRequest(path, 'POST');
-            assert.equal(request.status, 200);
+            assert(this.datalayer.save.calledOnce);
+            this.datalayer.save.restore();
         });
 
     });
 
-    describe('#iconClassChange()', function () {
+    describe('#save() new', function () {
+        var newLayerButton, form, input, newDatalayer, editButton;
+
+        it('should have a new layer button', function () {
+            newLayerButton = qs('.leaflet-control-browse .add-datalayer');
+            assert.ok(newLayerButton);
+        });
+
+        it('should build a form on new layer button click', function () {
+            happen.click(newLayerButton);
+            form = qs('form.storage-form');
+            input = qs('form.storage-form input[name="name"]');
+            assert.ok(form);
+            assert.ok(input);
+        });
+
+        it('should have an empty name', function () {
+            assert.notOk(input.value);
+        });
+
+        it('should have created a new datalayer', function () {
+            assert.equal(this.map.datalayers_index.length, 2);
+            newDatalayer = this.map.datalayers_index[1];
+        });
+
+        it('should have made Map dirty', function () {
+            assert.ok(this.map.isDirty);
+        });
+
+        it('should update name on input change', function () {
+            var new_name = "This is a new name";
+            input.value = new_name;
+            happen.once(input, {type: 'input'});
+            assert.equal(newDatalayer.options.name, new_name);
+        });
+
+        it('should set storage_id on save callback', function (done) {
+            assert.notOk(newDatalayer.storage_id);
+            var response = RESPONSES.datalayer62_GET;
+            response._storage.pk = 63;
+            this.server.respondWith('POST', '/map/99/datalayer/create/', JSON.stringify(response));
+            clickSave();
+            this.server.respond();
+            assert.equal(newDatalayer.storage_id, 63);
+            done();
+        });
+
+        it('should have unset map dirty', function () {
+            assert.notOk(this.map.isDirty);
+        });
+
+        it('should have edit button', function () {
+            editButton = qs('span#edit_datalayer_63');
+            assert.ok(editButton);
+        });
+
+        it('should call update if we edit again', function () {
+            happen.click(editButton);
+            assert.notOk(this.map.isDirty);
+            input = qs('form.storage-form input[name="name"]');
+            input.value = "a new name again but we don't care which";
+            happen.once(input, {type: 'input'});
+            assert.ok(this.map.isDirty);
+            var response = function (request) {
+                var resp = RESPONSES.datalayer62_GET;
+                resp._storage.pk = 63;
+                request.respond(200, {}, JSON.stringify(resp));
+            };
+            var spy = sinon.spy(response);
+            this.server.respondWith('POST', '/map/99/datalayer/update/63/', spy);
+            clickSave();
+            this.server.respond();
+            assert.ok(spy.calledOnce);
+        });
+
+    });
+
+    xdescribe('#iconClassChange()', function () {
 
         it('should change icon class', function (done) {
             var response = {
@@ -70,9 +170,9 @@ describe('L.DataLayer', function () {
                 }]
             };
             this.server.flush();
-            this.server.respondWith('GET', '/feature/json/datalayer/62/', JSON.stringify(response));
+            this.server.respondWith('GET', '/datalayer/62/', JSON.stringify(response));
             this.server.respondWith('GET', path, JSON.stringify(RESPONSES.map_datalayer_update_GET));
-            this.server.respondWith('POST', path, JSON.stringify({datalayer: DEFAULT_DATALAYER}));
+            this.server.respondWith('POST', path, JSON.stringify({datalayer: defaultDatalayerData()}));
             happen.click(qs('span#edit_datalayer_62'));
             this.server.respond();
             happen.click(qs('form#datalayer_edit input[type="submit"]'));
@@ -85,31 +185,21 @@ describe('L.DataLayer', function () {
     });
 
     describe('#delete()', function () {
-        var deleteButton, submitButton,
-            deletePath = '/map/99/datalayer/delete/62/';
+        var deleteLink, deletePath = '/map/99/datalayer/delete/62/';
 
         it('should have a delete link in update form', function () {
-            this.server.respondWith('GET', path, JSON.stringify(RESPONSES.map_datalayer_update_GET));
             happen.click(qs('span#edit_datalayer_62'));
-            this.server.respond();
-            deleteButton = qs('a#delete_datalayer_button');
-            assert.ok(deleteButton);
-        });
-
-        it('should ask for confirmation on delete link click', function () {
-            this.server.respondWith('GET', deletePath, JSON.stringify(RESPONSES.map_datalayer_delete_GET));
-            happen.click(deleteButton);
-            this.server.respond();
-            assert.ok(qs('form#datalayer_delete'));
-            submitButton = qs('form#datalayer_delete input[type="submit"]');
-            assert.ok(submitButton);
+            deleteLink = qs('a.delete_datalayer_button');
+            assert.ok(deleteLink);
         });
 
         it('should delete features on datalayer delete', function () {
-            this.server.respondWith('POST', deletePath, JSON.stringify({info: "delete ok"}));
-            happen.click(submitButton);
-            this.server.respond();
+            happen.click(deleteLink);
             assert.notOk(qs('div.icon_container'));
+        });
+
+        it('should have set map dirty', function () {
+            assert.ok(this.map.isDirty);
         });
 
         it('should delete layer control row on delete', function () {
@@ -117,7 +207,17 @@ describe('L.DataLayer', function () {
         });
 
         it('should be removed from map.datalayers_index', function () {
-            assert.equal(this.map.datalayers_index.length, 0);
+            assert.equal(this.map.datalayers_index.indexOf(this.datalayer), -1);
+        });
+
+        it('should be removed from map.datalayers', function () {
+            assert.notOk(this.map.datalayers[L.stamp(this.datalayer)]);
+        });
+
+        it('should be visible again on edit cancel', function () {
+            clickCancel();
+            this.server.respond();
+            assert.ok(qs('div.icon_container'));
         });
 
     });

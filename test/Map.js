@@ -2,7 +2,7 @@ describe('L.Storage.Map', function(){
 
     before(function () {
         this.server = sinon.fakeServer.create();
-        this.server.respondWith('/feature/json/datalayer/62/', JSON.stringify(RESPONSES.datalayer62_GET));
+        this.server.respondWith('/datalayer/62/', JSON.stringify(RESPONSES.datalayer62_GET));
         this.options = {
             storage_id: 99
         };
@@ -21,7 +21,7 @@ describe('L.Storage.Map', function(){
         });
 
         it('should have created the edit toolbar', function(){
-            assert.ok(qs('a.leaflet-control-edit-toggle'));
+            assert.ok(qs('div.leaflet-control-edit-toggle'));
         });
 
         it('should have datalayer control div', function(){
@@ -43,44 +43,49 @@ describe('L.Storage.Map', function(){
         });
 
         it('enable edit on click on toggle button', function () {
-            var el = qs('a.leaflet-control-edit-toggle');
+            var el = qs('a.leaflet-control-edit-enable');
             happen.click(el);
             assert.isTrue(L.DomUtil.hasClass(this.map._container, "storage-edit-enabled"));
         });
 
+        it('should have only one datalayer in its index', function () {
+            assert.equal(this.map.datalayers_index.length, 1);
+        });
     });
 
     describe('#editMetadata()', function () {
-        var form, submit, request,
+        var form, input, request,
             path = '/map/99/update/metadata/';
 
-        it('should open a form on editMetadata control click', function (done) {
-            this.server.respondWith('GET', path, JSON.stringify(RESPONSES.map_update_medatada_GET));
-            var button = qs('a.update-map-infos');
+        it('should build a form on editMetadata control click', function (done) {
+            var button = qs('a.update-map-settings');
             assert.ok(button);
             happen.click(button);
-            this.server.respond();
-            form = qs('form#map_edit');
-            submit = qs('form[id="map_edit"] input[type="submit"]');
+            form = qs('form.storage-form');
+            input = qs('form[class="storage-form"] input[name="name"]');
             assert.ok(form);
-            assert.ok(submit);
+            assert.ok(input);
             done();
         });
 
-        it('should submit form on click', function () {
-            this.server.respondWith('POST', path, '{"redirect": "#redirect"}');
-            form.name.value = "This is a new name";
-            happen.click(submit);
-            this.server.respond();
-            assert.equal(window.location.hash, "#redirect");
-            request = this.server.getRequest(path, 'POST');
-            assert.equal(request.status, 200);
-            // err, no way to inspect FormData...
+        it('should update map name on input change', function () {
+            var new_name = "This is a new name";
+            input.value = new_name;
+            happen.once(input, {type: 'input'});
+            assert.equal(this.map.options.name, new_name);
+        });
+
+        it('should have made Map dirty', function () {
+            assert.ok(this.map.isDirty);
+        });
+
+        it('should have added dirty class on map container', function () {
+            assert.ok(L.DomUtil.hasClass(this.map._container, 'storage-is-dirty'));
         });
 
     });
 
-    describe('#delete()', function () {
+    xdescribe('#delete()', function () {
         var path = "/map/99/delete/",
             submit;
 
@@ -109,7 +114,7 @@ describe('L.Storage.Map', function(){
 
     });
 
-    describe('#uploadData()', function () {
+    xdescribe('#uploadData()', function () {
         var path = '/map/99/import/data/',
             form, submit;
 
@@ -124,7 +129,7 @@ describe('L.Storage.Map', function(){
         });
 
         it('should submit form on click', function () {
-            this.server.respondWith('POST', path, JSON.stringify({datalayer: DEFAULT_DATALAYER, info: 'ok'}));
+            this.server.respondWith('POST', path, JSON.stringify({datalayer: defaultDatalayerData(), info: 'ok'}));
             form.data_url.value = 'http://somewhere.org/test/{bbox}';
             happen.click(submit);
             this.server.respond();

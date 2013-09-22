@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>My test page</title>
+        <title>Leaflet.Storage Tests</title>
         <script src="../reqs/leaflet/dist/leaflet-src.js"></script>
         <script src="../reqs/draw/dist/leaflet.draw-src.js"></script>
         <script src="../reqs/hash/leaflet-hash.js"></script>
@@ -28,14 +28,15 @@
         <link rel="stylesheet" href="../contrib/css/storage.ui.default.css" />
 
         <script src="../node_modules/sinon/lib/sinon.js"></script>
+        <script src="../node_modules/sinon/lib/sinon/spy.js"></script>
         <script src="../node_modules/sinon/lib/sinon/util/event.js"></script>
         <script src="../node_modules/sinon/lib/sinon/util/fake_xml_http_request.js"></script>
         <script src="../node_modules/sinon/lib/sinon/util/fake_server.js"></script>
         <script src="../node_modules/mocha/mocha.js"></script>
         <script src="../node_modules/chai/chai.js"></script>
-        <script src="../node_modules/happen/src/happen.js"></script>
+        <script src="../node_modules/happen/happen.js"></script>
         <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
-        <script>mocha.setup('bdd')</script>
+        <script>mocha.setup({ui: 'bdd', bail: true})</script>
         <script type="text/javascript">
             expect = chai.expect;
             assert = chai.assert;

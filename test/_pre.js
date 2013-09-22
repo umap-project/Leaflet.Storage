@@ -5,17 +5,29 @@ var resetMap = function () {
     delete mapElement._leaflet;
     document.body.className = "";
 };
-var toggleEdit = function () {
-    happen.click(qs('a.leaflet-control-edit-toggle'));
+var enableEdit = function () {
+    happen.click(qs('a.leaflet-control-edit-enable'));
+};
+var clickSave = function () {
+    happen.click(qs('a.leaflet-control-edit-save'));
+};
+var clickCancel = function () {
+    var _confirm = window.confirm;
+    window.confirm = function (text) {
+        return true;
+    };
+    happen.click(qs('a.leaflet-control-edit-cancel'));
+    happen.once(document.body, {type: 'keypress', keyCode: 13});
+    window.confirm = _confirm;
 };
 
-DEFAULT_DATALAYER = {
-    "icon_class": "Default",
-    "name": "Elephants",
-    "display_on_load": true,
-    "pk": 62,
-    "pictogram_url": null,
-    "options": {
+var defaultDatalayerData = function (custom) {
+    var _default = {
+        "icon_class": "Default",
+        "name": "Elephants",
+        "displayOnLoad": true,
+        "pk": 62,
+        "pictogram_url": null,
         "opacity": null,
         "weight": null,
         "fillColor": "",
@@ -25,13 +37,14 @@ DEFAULT_DATALAYER = {
         "dashArray": "",
         "fillOpacity": null,
         "fill": true
-    }
+    };
+    return L.extend({}, _default, custom);
 };
 
 function initMap (options) {
     default_options = {
         "storage_id": 42,
-        "center": { "type": "Point", "coordinates": [ 53.127, 6.097 ] },
+        "center": { "type": "Point", "coordinates": [6.097, 53.127] },
         "datalayers": [],
         "urls": {
             "polygon_update": "/map/{map_id}/polygon/edit/{pk}/",
@@ -44,7 +57,9 @@ function initMap (options) {
             "marker": "/marker/{pk}/",
             "datalayer_add": "/map/{map_id}/datalayer/add/",
             "map_update_tilelayer": "/map/{map_id}/update/tilelayer/",
-            "datalayer_update": "/map/{map_id}/datalayer/edit/{pk}/",
+            "datalayer_update": "/map/{map_id}/datalayer/update/{pk}/",
+            "datalayer_view": "/datalayer/{pk}/",
+            "datalayer_create": "/map/{map_id}/datalayer/create/",
             "marker_add": "/map/{map_id}/marker/add/",
             "polygon": "/polygon/{pk}/",
             "polygon_geojson": "/polygon/json/{pk}/",
@@ -76,7 +91,25 @@ function initMap (options) {
                 "maxZoom": 18,
                 "id": 1,
                 "selected": true
+        },
+        {
+            "attribution": "HOT and friends",
+            "name": "HOT OSM-fr server",
+            "url_template": "http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+            "rank": 99,
+            "minZoom": 0,
+            "maxZoom": 20,
+            "id": 2
         }],
+        "tilelayer": {
+            "attribution": "HOT and friends",
+            "name": "HOT OSM-fr server",
+            "url_template": "http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+            "rank": 99,
+            "minZoom": 0,
+            "maxZoom": 20,
+            "id": 2
+        },
         "allowEdit": 1,
         "embedControl": 1,
         "homeControl": 1,
@@ -89,7 +122,7 @@ function initMap (options) {
         "displayPopupFooter": false,
         "displayDataBrowserOnLoad": false
     };
-    default_options.datalayers.push(DEFAULT_DATALAYER);
+    default_options.datalayers.push(defaultDatalayerData());
     options = L.extend({}, default_options, options);
     return new L.Storage.Map("map", options);
 }
@@ -98,6 +131,7 @@ var RESPONSES = {
     'datalayer62_GET': {
         "crs": null,
         "type": "FeatureCollection",
+        "_storage": defaultDatalayerData(),
         "features": [{
             "geometry": {
                 "type": "Point",

@@ -1,4 +1,4 @@
-describe('L.Storage.Poly', function () {
+xdescribe('L.Storage.Poly', function () {
     var datalayerEditPath = '/map/99/datalayer/edit/62/',
         polygonEditPath = '/map/99/polygon/edit/76/';
 

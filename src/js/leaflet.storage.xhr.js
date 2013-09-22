@@ -22,10 +22,14 @@ L.Storage.Xhr = {
         return new wrapper();
     },
 
-    _ajax: function (verb, uri, data, callback) {
+    _ajax: function (verb, uri, data, callback, headers) {
         var response, xhr = this._wrapper();
         xhr.open(verb, uri, true);
-        // xhr.responseType = "text"; Does not work
+        if (headers) {
+            for (var name in headers) {
+                xhr.setRequestHeader(name, headers[name]);
+            }
+        }
 
         xhr.onreadystatechange = function(e) {
             if (xhr.readyState === 4) {
@@ -77,14 +81,14 @@ L.Storage.Xhr = {
             }
             else {
                 if (settings.callback) {
-                    settings.callback(data);
+                    L.bind(settings.callback, settings.context || this)(data);
                 } else {
                     self.default_callback(data, settings);
                 }
             }
         };
 
-        this._ajax(verb, uri, settings.data, callback);
+        this._ajax(verb, uri, settings.data, callback, settings.headers);
     },
 
     get: function(uri, options) {
@@ -92,6 +96,13 @@ L.Storage.Xhr = {
     },
 
     post: function(uri, options) {
+        options = options || {};
+        // find a way not to make this django specific
+        var token = document.cookie.replace(/(?:(?:^|.*;\s*)csrftoken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+        if (token) {
+            options.headers = options.headers || {};
+            options.headers['X-CSRFToken'] = token;
+        }
         L.Storage.Xhr._json("POST", uri, options);
     },
 

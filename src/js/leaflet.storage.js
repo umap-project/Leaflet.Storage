@@ -120,6 +120,7 @@ L.Storage.Map.include({
         // Global storage for retrieving datalayers
         this.datalayers = {};
         this.datalayers_index = Array();
+        this.deleted_datalayers = Array();
         // create datalayers
         for(var j in this.options.datalayers) {
             if(this.options.datalayers.hasOwnProperty(j)){
@@ -556,6 +557,9 @@ L.Storage.Map.include({
                 datalayer.reset();
             }
         });
+        this.deleted_datalayers.forEach(function (datalayer) {
+            datalayer.reset();
+        });
         this.options = L.extend({}, this._backupOptions);
         this.initControls();
         this.isDirty = false;
@@ -567,6 +571,10 @@ L.Storage.Map.include({
                 datalayer.save();
             }
         });
+        this.deleted_datalayers.forEach(function (datalayer) {
+            datalayer.saveDelete();
+        });
+        this.deleted_datalayers = Array();
         if (this.isDirty) {
             this.selfSave();
         }
@@ -637,6 +645,18 @@ L.Storage.Map.include({
             // No datalayer visibile, let's force one
             this.addLayer(datalayer);
             return datalayer;
+        }
+    },
+
+    getDataLayerByStorageId: function (storage_id) {
+        var datalayer;
+        for (var i in this.datalayers) {
+            if (this.datalayers.hasOwnProperty(i)) {
+                datalayer = this.datalayers[i];
+                if (datalayer.storage_id == storage_id) {
+                    return datalayer;
+                }
+            }
         }
     },
 

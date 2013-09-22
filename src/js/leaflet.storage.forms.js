@@ -370,7 +370,7 @@ L.Storage.FormBuilder = L.Class.extend({
     initialize: function (obj, fields, options) {
         this.obj = obj;
         this.fields = fields;
-        this.form = L.DomUtil.create('form');
+        this.form = L.DomUtil.create('form', 'storage-form');
         this.helpers = {};
         this.options = options || {};
     },
