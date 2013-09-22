@@ -1,5 +1,9 @@
 L.Storage.DataLayer = L.LazyGeoJSON.extend({
 
+    options: {
+        displayOnLoad: true
+    },
+
     initialize: function (map, /* Object from db */ datalayer, options) {
         this.map = map;
         this._index = Array();
@@ -217,7 +221,8 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
             container = L.DomUtil.create('div'),
             metadata_fields = [
                 'options.name',
-                'options.description'
+                'options.description',
+                ['options.displayOnLoad', 'CheckBox']
             ];
         var builder = new L.S.FormBuilder(this, metadata_fields, {
             callback: function () { this.map.updateDatalayersControl(); },
