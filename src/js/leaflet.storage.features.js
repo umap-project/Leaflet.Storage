@@ -67,7 +67,9 @@ L.Storage.FeatureMixin = {
             content = L.DomUtil.create('div', '', container);
         // TODO manage popup template, and handle other properties
         title.innerHTML = this.properties.name;
-        content.innerHTML = this.properties.description;
+        if (this.properties.description) {
+            content.innerHTML = this.properties.description;
+        }
         if (this.map.options.displayPopupFooter && !L.Browser.ielt9) {
             var footer = L.DomUtil.create('ul', 'storage-popup-footer', container),
                 previous_li = L.DomUtil.create('li', 'previous', footer),
