@@ -70,7 +70,10 @@ L.Storage.Xhr = {
                 console.log(err);
                 L.Storage.fire("ui:alert", {"content": L._("Problem in the response format"), "level": "error"});
             }
-            if (data.login_required) {
+            if (data.errors) {
+                console.log(data.errors);
+                L.Storage.fire("ui:alert", {"content": L._("An error occured"), "level": "error"});
+            } else if (data.login_required) {
                 // login_required should be an URL for the login form
                 if (settings.login_callback) {
                     settings.login_callback(data);

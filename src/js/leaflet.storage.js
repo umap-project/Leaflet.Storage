@@ -2,7 +2,8 @@ L.Map.mergeOptions({
     base_layers: null,
     overlay_layers: null,
     datalayers: [],
-    zoom: 10,
+    center: [4, 50],
+    zoom: 6,
     hash: true,
     embedControl: true,
     datalayersControl: true,
@@ -32,34 +33,34 @@ L.Map.mergeOptions({
     demoTileInfos: {s:'a', z:9, x:265, y:181},
     tilelayersControl: true,
     licences: [],
-    licence: ''
+    licence: '',
+    enableMarkerDraw: true,
+    enablePolygonDraw: true,
+    enablePolylineDraw: true
 });
 
 L.Storage.Map.include({
-    initialize: function (/* DOM element or id*/ el, /* Object*/ options) {
+    initialize: function (/* DOM element or id*/ el, /* Object*/ geojson) {
         // We manage it, so don't use Leaflet default behaviour
-        if (options.locale) {
-            L.setLocale(options.locale);
+        if (geojson.properties && geojson.properties.locale) {
+            L.setLocale(geojson.properties.locale);
         }
-        var center = options.center;
-        delete options.center;
-        var editInOSMControl = options.editInOSMControl;
-        delete options.editInOSMControl;
-        var zoomControl = typeof options.zoomControl !== "undefined" ? options.zoomControl : true;
-        options.zoomControl = false;
-        L.Map.prototype.initialize.call(this, el, options);
+        // var center = options.center;
+        // delete options.center;
+        var editInOSMControl = geojson.properties.editInOSMControl;
+        delete geojson.properties.editInOSMControl;
+        var zoomControl = typeof geojson.properties.zoomControl !== "undefined" ? geojson.properties.zoomControl : true;
+        geojson.properties.zoomControl = false;
+        L.Map.prototype.initialize.call(this, el, geojson.properties);
         this.name = this.options.name;
         this.description = this.options.description;
         this.demoTileInfos = this.options.demoTileInfos;
-        this.options.center = center;
+        if (geojson.geometry) {
+            this.options.center = geojson.geometry;
+        }
         this.options.editInOSMControl = editInOSMControl;
         this.options.zoomControl = zoomControl;
         this.initControls();
-
-        // User must provide a pk
-        if (typeof this.options.storage_id == "undefined") {
-            alert("ImplementationError: you must provide a storage_id for Storage.Map.");
-        }
 
         var edited_feature = null;
         try {
@@ -78,32 +79,6 @@ L.Storage.Map.include({
         catch (e) {
             // Certainly IE8, which has a limited version of defineProperty
         }
-
-        if (this.options.allowEdit) {
-            // Layer for items added by users
-            this.on('draw:created', function (e) {
-                var datalayer = this.defaultDataLayer();
-                datalayer.addLayer(e.layer);
-                if (e.layerType == L.Draw.Polyline.TYPE || e.layerType == L.Draw.Polygon.TYPE) {
-                    e.layer.editing.enable();
-                    if (!e.latlng) {
-                        e.latlng = e.layer._latlngs[e.layer._latlngs.length-1];
-                    }
-                }
-                e.layer.isDirty = true;
-                e.layer.edit(e);
-            }, this);
-            this.on('draw:edited', function (e) {
-                e.layer.isDirty = true;
-            });
-            this.on('draw:start', function (e) {
-                e.layer.isDirty = true;
-            });
-            L.Storage.on('ui:end', function (e) {
-                this.edited_feature = null;
-            }, this);
-        }
-
 
         if (this.options.hash) {
             this.addHash();
@@ -127,7 +102,7 @@ L.Storage.Map.include({
                 this._createDataLayer(this.options.datalayers[j]);
             }
         }
-        if (options.displayCaptionOnLoad) {
+        if (this.options.displayCaptionOnLoad) {
             this.displayCaption();
         }
         else if (this.options.displayDataBrowserOnLoad && this.options.datalayersControl) {
@@ -174,6 +149,47 @@ L.Storage.Map.include({
                 this._controls.miniMap.onMainMapBaseLayerChange(e);
             }
         }, this);
+
+        // Creation mode
+        if (!this.options.storage_id) {
+            this.isDirty = true;
+            this.options.name = L._('New map');
+            this.options.allowEdit = true;
+            var datalayer = this._createDataLayer({name: L._('Layer 1')});
+            datalayer.connectToMap();
+            this.enableEdit();
+        }
+
+        if (this.options.allowEdit) {
+            // Layer for items added by users
+            this.on('draw:created', function (e) {
+                var datalayer = this.defaultDataLayer();
+                datalayer.addLayer(e.layer);
+                if (e.layerType == L.Draw.Polyline.TYPE || e.layerType == L.Draw.Polygon.TYPE) {
+                    e.layer.editing.enable();
+                    if (!e.latlng) {
+                        e.latlng = e.layer._latlngs[e.layer._latlngs.length-1];
+                    }
+                }
+                e.layer.isDirty = true;
+                e.layer.edit(e);
+            }, this);
+            this.on('draw:edited', function (e) {
+                e.layer.isDirty = true;
+            });
+            this.on('draw:start', function (e) {
+                e.layer.isDirty = true;
+            });
+            L.Storage.on('ui:end', function (e) {
+                this.edited_feature = null;
+            }, this);
+        }
+
+        window.onbeforeunload = function (e) {
+            if (isDirty) {
+                return true;
+            }
+        };
         this.backupOptions();
     },
 
@@ -212,7 +228,9 @@ L.Storage.Map.include({
         }
         if (this.options.miniMap) {
             this.whenReady(function () {
-                this._controls.miniMap = new L.Control.MiniMap(this.selected_tilelayer).addTo(this);
+                if (this.selected_tilelayer) {
+                    this._controls.miniMap = new L.Control.MiniMap(this.selected_tilelayer).addTo(this);
+                }
             });
         }
 
@@ -234,6 +252,9 @@ L.Storage.Map.include({
             if(tilelayers.hasOwnProperty(i)) {
                 this.addTileLayer(tilelayers[i]);
             }
+        }
+        if (!this.selected_tilelayer) {
+            this.selectTileLayer(this.tilelayers[0]);
         }
     },
 
@@ -315,8 +336,7 @@ L.Storage.Map.include({
     renderShareBox: function () {
         var container = L.DomUtil.create('div', 'storage-share'),
             iframe = L.DomUtil.create('textarea', 'storage-share-iframe', container);
-        iframeCode = '<iframe width="500" height="300" frameBorder="0" src="{location}?locateControl=0&scaleControl=0&miniMap=0&homeControl=0&scrollWheelZoom=0&allowEdit=0&editInOSMControl=0&tileLayersControl=0&jumpToLocationControl=0&embedControl=0"></iframe><p><a href="http://u.osmfr.org/en/map/demo_1">See full screen</a></p>';
-        iframe.innerHTML = L.Util.template(iframeCode, {location: window.location});
+        iframe.innerHTML = '<iframe width="100%" height="300" frameBorder="0" src="' + window.location + '?locateControl=0&scaleControl=0&miniMap=0&homeControl=0&scrollWheelZoom=0&allowEdit=0&editInOSMControl=0&tileLayersControl=0&jumpToLocationControl=0&embedControl=0"></iframe><p><a href="http://u.osmfr.org/en/map/demo_1">See full screen</a></p>';
         if (this.options.shortUrl) {
             var shortUrl = L.DomUtil.create('input', 'storage-short-url', container);
             shortUrl.type = "text";
@@ -565,21 +585,37 @@ L.Storage.Map.include({
         this.isDirty = false;
     },
 
-    save: function () {
+    saveDatalayers: function () {
         this.eachDataLayer(function (datalayer) {
             if (datalayer.isDirty) {
                 datalayer.save();
             }
         });
+    },
+
+    deleteDatalayers: function () {
         this.deleted_datalayers.forEach(function (datalayer) {
             datalayer.saveDelete();
         });
         this.deleted_datalayers = Array();
+    },
+
+    save: function () {
         if (this.isDirty) {
             this.selfSave();
         }
-        this.isDirty = false;
-        L.S.fire('ui:end');
+    },
+
+    getEditUrl: function() {
+        return L.Util.template(this.options.urls.map_update, {'map_id': this.options.storage_id});
+    },
+
+    getCreateUrl: function() {
+        return L.Util.template(this.options.urls.map_create);
+    },
+
+    getSaveUrl: function () {
+        return (this.options.storage_id && this.getEditUrl()) || this.getCreateUrl();
     },
 
     selfSave: function () {
@@ -601,9 +637,9 @@ L.Storage.Map.include({
             'tilelayersControl',
             'name',
             'description',
-            'licence'
-        ],
-            properties = {};
+            'licence',
+            'tilelayer'
+        ], properties = {};
         for (var i = editableOptions.length - 1; i >= 0; i--) {
             if (typeof this.options[editableOptions[i]] !== "undefined") {
                 properties[editableOptions[i]] = this.options[editableOptions[i]];
@@ -615,7 +651,33 @@ L.Storage.Map.include({
             properties: properties
         };
         this.backupOptions();
-        console.log(geojson);
+        var formData = new FormData();
+        formData.append("name", this.options.name);
+        formData.append("center", JSON.stringify(this.geometry()));
+        formData.append("settings", JSON.stringify(geojson));
+        L.Storage.Xhr.post(this.getSaveUrl(), {
+            data: formData,
+            callback: function (data) {
+                var duration = 3000;
+                if (!this.options.storage_id) {
+                    duration = 100000; // we want a longer message at map creation (TODO UGLY)
+                    this.options.storage_id = data.pk;
+                    if (history && history.pushState) {
+                        history.pushState({}, this.options.name, data.url);
+                    } else {
+                        window.location = data.url;
+                    }
+                }
+                this.saveDatalayers();
+                this.deleteDatalayers();
+                if (data.info) {
+                    L.S.fire('ui:alert', {content: data.info, level: 'info', duration: duration});
+                }
+                L.S.fire('ui:end');
+                this.isDirty = false;
+            },
+            context: this
+        });
     },
 
     geometry: function() {
@@ -693,6 +755,16 @@ L.Storage.Map.include({
         });
         container.appendChild(builder.build());
         L.S.fire('ui:start', {data: {html: container}});
+    },
+
+    enableEdit: function(e) {
+        L.DomUtil.addClass(this._container, "storage-edit-enabled");
+        this.editEnabled = true;
+    },
+
+    disableEdit: function(e) {
+        L.DomUtil.removeClass(this._container, "storage-edit-enabled");
+        this.editEnabled = false;
     }
 
 });

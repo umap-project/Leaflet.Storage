@@ -48,6 +48,7 @@ L.Storage.ElementHelper.Input = L.S.ElementHelper.extend({
         this.input.name = this.label.innerHTML = this.name;
         this.input._helper = this;
         L.DomEvent.on(this.input, 'input', this.sync, this);
+        L.DomEvent.on(this.input, 'keypress', this.onKeyPress, this);
     },
 
     guessType: function () {
@@ -56,7 +57,16 @@ L.Storage.ElementHelper.Input = L.S.ElementHelper.extend({
 
     value: function () {
         return this.input.value;
+    },
+
+    onKeyPress: function (e) {
+        var key = e.keyCode,
+            ENTER = 13;
+        if (key == ENTER) {
+            L.S.fire('ui:end');
+        }
     }
+
 });
 
 L.S.ElementHelper.ColorPicker = L.S.ElementHelper.Input.extend({

@@ -156,17 +156,6 @@ L.Storage.EditControl = L.Control.Draw.extend({
         return container;
     },
 
-    _enableEdit: function(e, map) {
-        L.DomUtil.addClass(map._container, "storage-edit-enabled");
-        map.editEnabled = true;
-    },
-
-    _disableEdit: function(e, map, container) {
-        L.DomUtil.removeClass(map._container, "storage-edit-enabled");
-        map.editEnabled = false;
-        // this._disableInactiveModes();
-    },
-
     _createToggleButton: function (map, container) {
         var buttons = L.DomUtil.create('div', 'leaflet-draw-section leaflet-control-edit-toggle', container);
         var edit = L.DomUtil.create('a', 'leaflet-control-edit-enable', buttons);
@@ -189,13 +178,13 @@ L.Storage.EditControl = L.Control.Draw.extend({
         L.DomEvent
             .addListener(disable, 'click', L.DomEvent.stop)
             .addListener(disable, 'click', function (e) {
-                this._disableEdit(e, map);
+                map.disableEdit(e);
                 L.S.fire('ui:end');
             }, this);
 
         L.DomEvent
             .addListener(edit, 'click', L.DomEvent.stop)
-            .addListener(edit, 'click', function (e) { this._enableEdit(e, map);}, this);
+            .addListener(edit, 'click', map.enableEdit, map);
 
         L.DomEvent
             .addListener(save, 'click', L.DomEvent.stop)
