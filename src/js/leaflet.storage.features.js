@@ -219,6 +219,10 @@ L.Storage.FeatureMixin = {
             console.log(e);
             // Certainly IE8, which has a limited version of defineProperty
         }
+    },
+
+    makeDirty: function () {
+        this.isDirty = true;
     }
 
 };
@@ -497,6 +501,14 @@ L.Storage.PathMixin = {
         if (this.map.editEnabled && !this.editing._enabled) {
             L.Storage.fire('ui:tooltip', {content: L._("Double-click to edit")});
         }
+    },
+
+    initialize: function () {
+        this.on("dragend", this.edit);
+        this.on("click", this._onClick);
+        this.on("dblclick", this._toggleEditing);
+        this.on("mouseover", this._onMouseOver);
+        this.on("edit", this.makeDirty);
     }
 
 };
@@ -522,18 +534,13 @@ L.Storage.Polyline = L.Polyline.extend({
         }
         L.Polyline.prototype.initialize.call(this, latlngs, options);
         L.Storage.FeatureMixin.initialize.call(this);
+        L.Storage.PathMixin.initialize.call(this);
 
         // URL templates
         this.view_url_template = this.map.options.urls.polyline;
         this.update_url_template = this.map.options.urls.polyline_update;
         this.add_url_template = this.map.options.urls.polyline_add;
         this.delete_url_template = this.map.options.urls.polyline_delete;
-
-        // Add events
-        this.on("dragend", this.edit);
-        this.on("click", this._onClick);
-        this.on("dblclick", this._toggleEditing);
-        this.on("mouseover", this._onMouseOver);
     },
 
     geometry: function() {
@@ -573,18 +580,13 @@ L.Storage.Polygon = L.Polygon.extend({
         }
         L.Polygon.prototype.initialize.call(this, latlngs, options);
         L.Storage.FeatureMixin.initialize.call(this);
+        L.Storage.PathMixin.initialize.call(this);
 
         // URL templates
         this.view_url_template = this.map.options.urls.polygon;
         this.update_url_template = this.map.options.urls.polygon_update;
         this.add_url_template = this.map.options.urls.polygon_add;
         this.delete_url_template = this.map.options.urls.polygon_delete;
-
-        // Add events
-        this.on("dragend", this.edit);
-        this.on("click", this._onClick);
-        this.on("dblclick", this._toggleEditing);
-        this.on("mouseover", this._onMouseOver);
     },
 
     geometry: function() {
