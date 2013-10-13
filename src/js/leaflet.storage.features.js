@@ -33,16 +33,12 @@ L.Storage.FeatureMixin = {
         }, this);
         var properties = [];
         for (var i in this.properties) {
-            if (i === "_storage_options") {continue;}
+            if (["_storage_options", "name", "description"].indexOf(i) !== -1) {continue;}
             properties.push(['properties.' + i, {label: i}]);
         }
         // We always want name and description for now (properties management to come)
-        if (typeof this.properties.name == "undefined") {
-            properties.unshift('properties.name');
-        }
-        if (typeof this.properties.description == "undefined") {
-            properties.unshift('properties.description');
-        }
+        properties.unshift('properties.description');
+        properties.unshift('properties.name');
         var builder = new L.S.FormBuilder(this, properties);
         form = builder.build();
         container.appendChild(form);

@@ -50,10 +50,24 @@ L.Storage.ElementHelper = L.Class.extend({
 
 });
 
+L.S.ElementHelper.Textarea = L.S.ElementHelper.extend({
+
+    build: function () {
+        this.input = L.DomUtil.create('textarea', '', this.form);
+        this.input.value = this.backup = this.toHTML() || null;
+        L.DomEvent.on(this.input, 'input', this.sync, this);
+    },
+
+    value: function () {
+        return this.input.value;
+    }
+
+});
+
 L.Storage.ElementHelper.Input = L.S.ElementHelper.extend({
 
     build: function () {
-        this.input = L.DomUtil.create('input', '', this.formBuilder.form);
+        this.input = L.DomUtil.create('input', '', this.form);
         this.input.value = this.backup = this.toHTML() || null;
         this.input.type = this.guessType();
         this.input.name = this.name;
@@ -473,7 +487,7 @@ L.Storage.FormBuilder = L.Class.extend({
 
     defaultOptions: {
         name: {label: L._('name')},
-        description: {label: L._('description')},
+        description: {label: L._('description'), handler: 'Textarea'},
         color: {handler: 'ColorPicker', label: L._('color')},
         opacity: {label: L._('opacity'), helpText: L._('Opacity, from 0.1 to 1.0 (opaque).')},
         stroke: {handler: 'NullableBoolean', label: L._('stroke'), helpText: L._('Whether to display or not the Polygon path.')},

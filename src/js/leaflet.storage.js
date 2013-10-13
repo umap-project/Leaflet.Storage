@@ -729,8 +729,8 @@ L.Storage.Map.include({
         var self = this,
             container = L.DomUtil.create('div'),
             metadataFields = [
-                ['options.name', {label: L._('name')}],
-                ['options.description', {label: L._('description')}],
+                'options.name',
+                'options.description',
                 ['options.licence', {handler: 'LicenceChooser', label: L._('licence')}]
             ],
             title = L.DomUtil.create('h4', '', container);
