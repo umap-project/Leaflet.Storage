@@ -1,13 +1,16 @@
 L.Storage.ElementHelper = L.Class.extend({
     includes: [L.Mixin.Events],
 
-    initialize: function (formBuilder, field) {
+    initialize: function (formBuilder, field, options) {
         this.formBuilder = formBuilder;
         this.form = this.formBuilder.form;
         this.field = field;
+        this.options = options;
         this.fieldEls = this.field.split('.');
-        this.name = this.fieldEls[this.fieldEls.length-1];
+        this.name = this.formBuilder.getName(field);
+        this.buildLabel();
         this.build();
+        this.buildHelpText();
     },
 
     get: function () {
@@ -33,7 +36,16 @@ L.Storage.ElementHelper = L.Class.extend({
 
     buildLabel: function () {
         this.label = L.DomUtil.create('label', '', this.formBuilder.form);
-        this.label.innerHTML = this.name;
+        if (this.options.label) {
+            this.label.innerHTML = this.options.label;
+        }
+    },
+
+    buildHelpText: function () {
+        if (this.options.helpText) {
+            var container = L.DomUtil.create('small', 'help-text', this.form);
+            container.innerHTML = this.options.helpText;
+        }
     }
 
 });
@@ -41,11 +53,10 @@ L.Storage.ElementHelper = L.Class.extend({
 L.Storage.ElementHelper.Input = L.S.ElementHelper.extend({
 
     build: function () {
-        this.buildLabel();
         this.input = L.DomUtil.create('input', '', this.formBuilder.form);
         this.input.value = this.backup = this.toHTML() || null;
         this.input.type = this.guessType();
-        this.input.name = this.label.innerHTML = this.name;
+        this.input.name = this.name;
         this.input._helper = this;
         L.DomEvent.on(this.input, 'input', this.sync, this);
         L.DomEvent.on(this.input, 'keypress', this.onKeyPress, this);
@@ -164,12 +175,12 @@ L.S.ElementHelper.ColorPicker = L.S.ElementHelper.Input.extend({
 L.S.ElementHelper.CheckBox = L.S.ElementHelper.extend({
 
     build: function () {
-        this.buildLabel();
-        this.input = L.DomUtil.create('input', '', this.form);
+        var container = L.DomUtil.create('div', 'formbox', this.form);
+        this.input = L.DomUtil.create('input', '', container);
         this.backup = this.get();
         this.input.checked = this.backup === true;
         this.input.type = "checkbox";
-        this.input.name = this.label.innerHTML = this.name;
+        this.input.name = this.name;
         this.input._helper = this;
         L.DomEvent.on(this.input, 'change', this.sync, this);
     },
@@ -191,7 +202,6 @@ L.S.ElementHelper.SelectAbstract = L.S.ElementHelper.extend({
     ],
 
     build: function () {
-        this.buildLabel();
         this.select = L.DomUtil.create('select', '', this.form);
         this.buildOptions();
         L.DomEvent.on(this.select, 'change', this.sync, this);
@@ -394,17 +404,19 @@ L.Storage.FormBuilder = L.Class.extend({
     },
 
     buildField: function (field) {
-        var type, helper;
+        var type, helper, options;
         if (field instanceof Array) {
-            type = field[1];
+            options = field[1];
+            helpText = field[2] || null;
             field = field[0];
         } else {
-            type = "Input";
+            options = this.defaultOptions[this.getName(field)] || {};
         }
+        type = options.handler || "Input";
         if (L.S.ElementHelper[type]) {
-            helper = new L.S.ElementHelper[type](this, field);
+            helper = new L.S.ElementHelper[type](this, field, options);
         } else {
-            console.log('No element helper for ' + type);
+            console.error('No element helper for ' + type);
             return;
         }
         this.helpers[field] = helper;
@@ -452,6 +464,27 @@ L.Storage.FormBuilder = L.Class.extend({
             input = this.inputs[field];
         input.value = backup;
         this.setter(field, backup);
+    },
+
+    getName: function (field) {
+        var fieldEls = field.split('.');
+        return fieldEls[fieldEls.length-1];
+    },
+
+    defaultOptions: {
+        name: {label: L._('name')},
+        description: {label: L._('description')},
+        color: {handler: 'ColorPicker', label: L._('color')},
+        opacity: {label: L._('opacity'), helpText: L._('Opacity, from 0.1 to 1.0 (opaque).')},
+        stroke: {handler: 'NullableBoolean', label: L._('stroke'), helpText: L._('Whether to display or not the Polygon path.')},
+        weight: {label: L._('weight'), helpText: L._('Path weight in pixels. From 0 to 10.')},
+        fill: {handler: 'NullableBoolean', label: L._('fill'), helpText: L._('Whether to fill the path with color.')},
+        fillColor: {handler: 'ColorPicker', label: L._('fill color'), helpText: L._('Optional. Same as color if not set.')},
+        fillOpacity: {label: L._('fill opacity'), helpText: L._('Fill opacity, from 0.1 to 1.0 (opaque).')},
+        smoothFactor: {label: L._('smooth factor'), helpText: L._("How much to simplify the polyline on each zoom level (more = better performance and smoother look, less = more accurate)")},
+        dashArray: {label: L._('dash array'), helpText: L._("A string that defines the stroke dash pattern. Ex.: '5, 10, 15'.")},
+        iconClass: {handler: 'IconClassSwitcher', label: L._('type of icon')},
+        iconUrl: {handler: 'IconUrl', label: L._('symbol of the icon')}
     }
 
 });

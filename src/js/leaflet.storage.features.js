@@ -34,10 +34,14 @@ L.Storage.FeatureMixin = {
         var properties = [];
         for (var i in this.properties) {
             if (i === "_storage_options") {continue;}
-            properties.push('properties.' + i);
+            properties.push(['properties.' + i, {label: i}]);
         }
-        if (!properties.length) {
-            properties = ['properties.name', 'properties.description'];
+        // We always want name and description for now (properties management to come)
+        if (typeof this.properties.name == "undefined") {
+            properties.unshift('properties.name');
+        }
+        if (typeof this.properties.description == "undefined") {
+            properties.unshift('properties.description');
         }
         var builder = new L.S.FormBuilder(this, properties);
         form = builder.build();
@@ -47,8 +51,11 @@ L.Storage.FeatureMixin = {
             callback: this._redraw,
             callbackContext: this
         });
+        var advancedProperties = L.DomUtil.create('fieldset', 'toggle', container);
+        var advancedPropertiesTitle = L.DomUtil.create('legend', 'style_options_toggle', advancedProperties);
+        advancedPropertiesTitle.innerHTML = L._('Advanced properties');
         form = builder.build();
-        container.appendChild(form);
+        advancedProperties.appendChild(form);
         var deleteLink = L.DomUtil.create('a', 'delete-feature-button', container);
         deleteLink.href = "#";
         deleteLink.innerHTML = L._('Delete');
@@ -386,9 +393,9 @@ L.Storage.Marker = L.Marker.extend({
 
     getStyleOptions: function () {
         return [
-            ['properties._storage_options.color', 'ColorPicker'],
-            ['properties._storage_options.iconClass', 'IconClassSwitcher'],
-            ['properties._storage_options.iconUrl', 'IconUrl']
+            'properties._storage_options.color',
+            'properties._storage_options.iconClass',
+            'properties._storage_options.iconUrl'
         ];
     }
 
@@ -455,14 +462,14 @@ L.Storage.PathMixin = {
 
     getStyleOptions: function () {
         return [
-            'properties._storage_options.smoothFactor',
-            ['properties._storage_options.color', 'ColorPicker'],
+            'properties._storage_options.color',
             'properties._storage_options.opacity',
-            ['properties._storage_options.stroke', 'NullableBoolean'],
+            'properties._storage_options.stroke',
             'properties._storage_options.weight',
-            ['properties._storage_options.fill', 'NullableBoolean'],
-            ['properties._storage_options.fillColor', 'ColorPicker'],
+            'properties._storage_options.fill',
+            'properties._storage_options.fillColor',
             'properties._storage_options.fillOpacity',
+            'properties._storage_options.smoothFactor',
             'properties._storage_options.dashArray'
         ];
     },

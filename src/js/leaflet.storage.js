@@ -22,7 +22,7 @@ L.Map.mergeOptions({
     locateControl: true,
     jumpToLocationControl: true,
     editInOSMControl: false,
-    editInOSMControlOptions: {},
+    editInOSMControlOptions: false,
     scaleControl: true,
     miniMap: false,
     displayCaptionOnLoad: false,
@@ -58,7 +58,9 @@ L.Storage.Map.include({
         if (geojson.geometry) {
             this.options.center = geojson.geometry;
         }
-        this.options.editInOSMControl = editInOSMControl;
+        if (editInOSMControl) {
+            this.options.editInOSMControlOptions = {};
+        }
         this.options.zoomControl = zoomControl;
         this.initControls();
 
@@ -727,27 +729,30 @@ L.Storage.Map.include({
         var self = this,
             container = L.DomUtil.create('div'),
             metadataFields = [
-                'options.name',
-                'options.description',
-                ['options.licence', 'LicenceChooser']
-            ];
+                ['options.name', {label: L._('name')}],
+                ['options.description', {label: L._('description')}],
+                ['options.licence', {handler: 'LicenceChooser', label: L._('licence')}]
+            ],
+            title = L.DomUtil.create('h4', '', container);
+        title.innerHTML = L._('Edit map properties');
         var builder = new L.S.FormBuilder(this, metadataFields);
         form = builder.build();
         container.appendChild(form);
         var UIFields = [
-            ['options.homeControl', 'CheckBox'],
-            ['options.embedControl', 'CheckBox'],
-            ['options.datalayersControl', 'CheckBox'],
-            ['options.tilelayersControl', 'CheckBox'],
-            ['options.zoomControl', 'CheckBox'],
-            ['options.miniMap', 'CheckBox'],
-            ['options.editInOSMControl', 'CheckBox'],
-            ['options.scaleControl', 'CheckBox'],
-            ['options.locateControl', 'CheckBox'],
-            ['options.jumpToLocationControl', 'CheckBox'],
-            ['options.displayCaptionOnLoad', 'CheckBox'],
-            ['options.displayDataBrowserOnLoad', 'CheckBox'],
-            ['options.displayPopupFooter', 'CheckBox']
+            ['options.homeControl', {handler: 'CheckBox', helpText: L._("Do you want to display the 'back to home page' control?")}],
+            ['options.embedControl', {handler: 'CheckBox', helpText: L._("Do you want to display the embed/export control?")}],
+            ['options.datalayersControl', {handler: 'CheckBox', helpText: L._("Do you want to display the data layers control?")}],
+            ['options.tilelayersControl', {handler: 'CheckBox', helpText: L._("Do you want to display a tilelayer switcher?")}],
+            ['options.zoomControl', {handler: 'CheckBox', helpText: L._("Do you want to display zoom control?")}],
+            ['options.scrollWheelZoom', {handler: 'CheckBox', helpText: L._("Allow scroll wheel zoom?")}],
+            ['options.miniMap', {handler: 'CheckBox', helpText: L._("Do you want to display a minimap?")}],
+            ['options.editInOSMControl', {handler: 'CheckBox', helpText: L._("Do you want to display control with links to edit in OSM?")}],
+            ['options.scaleControl', {handler: 'CheckBox', helpText: L._("Do you want to display the scale control?")}],
+            ['options.locateControl', {handler: 'CheckBox', helpText: L._("Do you want to display the locate control?")}],
+            ['options.jumpToLocationControl', {handler: 'CheckBox', helpText: L._("Do you want to display the 'quick search' control?")}],
+            ['options.displayCaptionOnLoad', {handler: 'CheckBox', helpText: L._("Do you want to display map caption on load?")}],
+            ['options.displayDataBrowserOnLoad', {handler: 'CheckBox', helpText: L._("Do you want to display data browser on load?")}],
+            ['options.displayPopupFooter', {handler: 'CheckBox', helpText: L._("Do you want to display popup footer?")}]
         ];
         builder = new L.S.FormBuilder(this, UIFields, {
             callback: this.initControls,

@@ -231,15 +231,15 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         form = builder.build();
         container.appendChild(form);
         var options_fields = [
-            ['options.color', 'ColorPicker'],
-            ['options.iconClass', 'IconClassSwitcher'],
-            ['options.iconUrl', 'IconUrl'],
+            'options.color',
+            'options.iconClass',
+            'options.iconUrl',
             'options.smoothFactor',
             'options.opacity',
-            ['options.stroke', 'NullableBoolean'],
+            'options.stroke',
             'options.weight',
-            ['options.fill', 'NullableBoolean'],
-            ['options.fillColor', 'ColorPicker'],
+            'options.fill',
+            'options.fillColor',
             'options.fillOpacity',
             'options.dashArray'
         ];
@@ -247,8 +247,11 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
             callback: this.redraw,
             callbackContext: this
         });
+        var advancedProperties = L.DomUtil.create('fieldset', 'toggle', container);
+        var advancedPropertiesTitle = L.DomUtil.create('legend', 'style_options_toggle', advancedProperties);
+        advancedPropertiesTitle.innerHTML = L._('Advanced properties');
         form = builder.build();
-        container.appendChild(form);
+        advancedProperties.appendChild(form);
         var deleteLink = L.DomUtil.create('a', 'delete_datalayer_button', container);
         deleteLink.innerHTML = L._('Delete');
         deleteLink.href = "#";
