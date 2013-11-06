@@ -181,7 +181,24 @@ L.Storage.Map.include({
             L.Storage.on('ui:end', function (e) {
                 this.edited_feature = null;
             }, this);
-            this.editBar();
+            this.initEditBar();
+            var editShortcuts = function (e) {
+                var key = e.keyCode,
+                    S = 83,
+                    E = 69;
+                if (key == E && e.ctrlKey && !this.editEnabled) {
+                    L.DomEvent.stop(e);
+                    this.enableEdit();
+                } else if (key == E && e.ctrlKey && this.editEnabled && !this.isDirty) {
+                    L.DomEvent.stop(e);
+                    this.disableEdit();
+                }
+                if (key == S && e.ctrlKey && this.isDirty) {
+                    L.DomEvent.stop(e);
+                    this.save();
+                }
+            };
+            L.DomEvent.addListener(document, 'keydown', editShortcuts, this);
         }
 
         window.onbeforeunload = function (e) {
@@ -766,7 +783,7 @@ L.Storage.Map.include({
         this.editEnabled = false;
     },
 
-    editBar: function () {
+    initEditBar: function () {
         var container = L.DomUtil.create('div', 'storage-main-edit-toolbox', this._controlContainer),
             title = L.DomUtil.create('h3', '', container);
         title.innerHTML = L._("Editing ");
