@@ -40,15 +40,12 @@ L.Map.mergeOptions({
 });
 
 L.Storage.Map.include({
+
     initialize: function (/* DOM element or id*/ el, /* Object*/ geojson) {
         // We manage it, so don't use Leaflet default behaviour
         if (geojson.properties && geojson.properties.locale) {
             L.setLocale(geojson.properties.locale);
         }
-        // var center = options.center;
-        // delete options.center;
-        var editInOSMControl = geojson.properties.editInOSMControl;
-        delete geojson.properties.editInOSMControl;
         var zoomControl = typeof geojson.properties.zoomControl !== "undefined" ? geojson.properties.zoomControl : true;
         geojson.properties.zoomControl = false;
         L.Map.prototype.initialize.call(this, el, geojson.properties);
@@ -58,10 +55,17 @@ L.Storage.Map.include({
         if (geojson.geometry) {
             this.options.center = geojson.geometry;
         }
-        if (editInOSMControl) {
-            this.options.editInOSMControlOptions = {};
+        if (typeof this.options.moreControl === "undefined") {
+            this.options.moreControl = true;
         }
         this.options.zoomControl = zoomControl;
+        this.overrideBooleanOptionFromQueryString("zoomControl");
+        this.overrideBooleanOptionFromQueryString("moreControl");
+        this.overrideBooleanOptionFromQueryString("miniMap");
+        this.overrideBooleanOptionFromQueryString("scrollWheelZoom");
+        this.overrideBooleanOptionFromQueryString("scaleControl");
+        this.overrideBooleanOptionFromQueryString("allowEdit");
+        this.overrideBooleanOptionFromQueryString("datalayersControl");
         this.initControls();
 
         var edited_feature = null;
@@ -114,10 +118,6 @@ L.Storage.Map.include({
                 }
             });
         }
-
-        L.Storage.on('ui:ready', function () {
-            this.invalidateSize({pan: false});
-        }, this);
 
         L.Storage.on('ui:closed', function () {
             this.invalidateSize({pan: false});
@@ -185,6 +185,7 @@ L.Storage.Map.include({
             L.Storage.on('ui:end', function (e) {
                 this.edited_feature = null;
             }, this);
+            this.editBar();
         }
 
         window.onbeforeunload = function (e) {
@@ -195,38 +196,41 @@ L.Storage.Map.include({
         this.backupOptions();
     },
 
+    overrideBooleanOptionFromQueryString: function (name) {
+        L.Util.setBooleanFromQueryString(this.options, name);
+    },
+
     initControls: function () {
         this._controls = this._controls || {};
         for (var i in this._controls) {
             this.removeControl(this._controls[i]);
             delete this._controls[i];
         }
-        if (this.options.homeControl) {
-            this._controls.homeControl = (new L.Storage.HomeControl()).addTo(this);
-        }
-        if (this.options.locateControl) {
-            this._controls.locateControl = (new L.Storage.LocateControl()).addTo(this);
-        }
-        if (this.options.jumpToLocationControl) {
-            this._controls.jumpToLocationControl = (new L.Storage.JumpToLocationControl()).addTo(this);
-        }
+
         if (this.options.zoomControl) {
             this._controls.zoomControl = (new L.Control.Zoom()).addTo(this);
         }
-        if (this.options.scaleControl) {
-            this._controls.scaleControl = L.control.scale().addTo(this);
-        }
-        if (this.options.embedControl) {
-            this._controls.embedControl = (new L.Control.Embed(this, this.options.embedOptions)).addTo(this);
-        }
-        if (this.options.tilelayersControl) {
-            this._controls.tilelayersControl = new L.Storage.TileLayerControl().addTo(this);
-        }
-        if (this.options.editInOSMControl) {
-            this._controls.editInOSMControl = (new L.Control.EditInOSM(this.options.editInOSMControlOptions)).addTo(this);
-        }
         if (this.options.datalayersControl) {
             this._controls.datalayersControl = new L.Storage.DataLayersControl().addTo(this);
+        }
+        if (this.options.allowEdit) {
+            this.toggleEditControl = new L.Storage.EditControl(this);
+            this.addControl(this.toggleEditControl);
+            var options = this.options.editOptions ? this.options.editOptions : {};
+            this.drawControl = new L.Storage.DrawControl(this, options);
+            this.addControl(this.drawControl);
+        }
+        if (this.options.moreControl) {
+            this._controls.moreControl = (new L.Storage.MoreControls()).addTo(this);
+            this._controls.homeControl = (new L.Storage.HomeControl()).addTo(this);
+            this._controls.locateControl = (new L.Storage.LocateControl()).addTo(this);
+            this._controls.jumpToLocationControl = (new L.Storage.JumpToLocationControl()).addTo(this);
+            this._controls.embedControl = (new L.Control.Embed(this, this.options.embedOptions)).addTo(this);
+            this._controls.tilelayersControl = new L.Storage.TileLayerControl().addTo(this);
+            this._controls.editInOSMControl = (new L.Control.EditInOSM({position: 'topleft'})).addTo(this);
+        }
+        if (this.options.scaleControl) {
+            this._controls.scaleControl = L.control.scale().addTo(this);
         }
         if (this.options.miniMap) {
             this.whenReady(function () {
@@ -235,6 +239,7 @@ L.Storage.Map.include({
                 }
             });
         }
+
 
     },
 
@@ -337,8 +342,9 @@ L.Storage.Map.include({
 
     renderShareBox: function () {
         var container = L.DomUtil.create('div', 'storage-share'),
-            iframe = L.DomUtil.create('textarea', 'storage-share-iframe', container);
-        iframe.innerHTML = '<iframe width="100%" height="300" frameBorder="0" src="' + window.location + '?locateControl=0&scaleControl=0&miniMap=0&homeControl=0&scrollWheelZoom=0&allowEdit=0&editInOSMControl=0&tileLayersControl=0&jumpToLocationControl=0&embedControl=0"></iframe><p><a href="http://u.osmfr.org/en/map/demo_1">See full screen</a></p>';
+            iframe = L.DomUtil.create('textarea', 'storage-share-iframe', container),
+            url = window.location.protocol + '//' + window.location.host + window.location.pathname + '?scaleControl=0&miniMap=0&scrollWheelZoom=0&allowEdit=0';
+        iframe.innerHTML = '<iframe width="100%" height="300" frameBorder="0" src="' + url +'"></iframe><p><a href="http://u.osmfr.org/en/map/demo_1">See full screen</a></p>';
         if (this.options.shortUrl) {
             var shortUrl = L.DomUtil.create('input', 'storage-short-url', container);
             shortUrl.type = "text";
@@ -624,14 +630,10 @@ L.Storage.Map.include({
         // save options to DB
         var editableOptions = [
             'zoom',
-            'homeControl',
-            'embedControl',
             'datalayersControl',
             'zoomControl',
-            'locateControl',
-            'jumpToLocationControl',
-            'editInOSMControl',
             'scaleControl',
+            'moreControl',
             'miniMap',
             'displayCaptionOnLoad',
             'displayPopupFooter',
@@ -739,17 +741,12 @@ L.Storage.Map.include({
         form = builder.build();
         container.appendChild(form);
         var UIFields = [
-            ['options.homeControl', {handler: 'CheckBox', helpText: L._("Do you want to display the 'back to home page' control?")}],
-            ['options.embedControl', {handler: 'CheckBox', helpText: L._("Do you want to display the embed/export control?")}],
+            ['options.moreControl', {handler: 'CheckBox', helpText: L._("Do you want to display the 'more' control?")}],
             ['options.datalayersControl', {handler: 'CheckBox', helpText: L._("Do you want to display the data layers control?")}],
-            ['options.tilelayersControl', {handler: 'CheckBox', helpText: L._("Do you want to display a tilelayer switcher?")}],
             ['options.zoomControl', {handler: 'CheckBox', helpText: L._("Do you want to display zoom control?")}],
             ['options.scrollWheelZoom', {handler: 'CheckBox', helpText: L._("Allow scroll wheel zoom?")}],
             ['options.miniMap', {handler: 'CheckBox', helpText: L._("Do you want to display a minimap?")}],
-            ['options.editInOSMControl', {handler: 'CheckBox', helpText: L._("Do you want to display control with links to edit in OSM?")}],
             ['options.scaleControl', {handler: 'CheckBox', helpText: L._("Do you want to display the scale control?")}],
-            ['options.locateControl', {handler: 'CheckBox', helpText: L._("Do you want to display the locate control?")}],
-            ['options.jumpToLocationControl', {handler: 'CheckBox', helpText: L._("Do you want to display the 'quick search' control?")}],
             ['options.displayCaptionOnLoad', {handler: 'CheckBox', helpText: L._("Do you want to display map caption on load?")}],
             ['options.displayDataBrowserOnLoad', {handler: 'CheckBox', helpText: L._("Do you want to display data browser on load?")}],
             ['options.displayPopupFooter', {handler: 'CheckBox', helpText: L._("Do you want to display popup footer?")}]
@@ -763,13 +760,140 @@ L.Storage.Map.include({
     },
 
     enableEdit: function(e) {
-        L.DomUtil.addClass(this._container, "storage-edit-enabled");
+        L.DomUtil.addClass(document.body, "storage-edit-enabled");
         this.editEnabled = true;
     },
 
     disableEdit: function(e) {
-        L.DomUtil.removeClass(this._container, "storage-edit-enabled");
+        L.DomUtil.removeClass(document.body, "storage-edit-enabled");
         this.editEnabled = false;
+    },
+
+    editBar: function () {
+        var container = L.DomUtil.create('div', 'storage-main-edit-toolbox', this._controlContainer),
+            title = L.DomUtil.create('h3', '', container);
+        title.innerHTML = L._("Editing ");
+        var name = L.DomUtil.create('a', 'storage-click-to-edit', title);
+        var setName = function () {
+            name.innerHTML = this.options.name || L._('Untitled map');
+        };
+        L.bind(setName, this)();
+        L.DomEvent.on(name, 'click', this.edit, this);
+        this.on('synced', L.bind(setName, this));
+        var help = L.DomUtil.create('a', 'storage-help', container);
+        help.href = "#";
+        help.title = help.innerHTML = L._('help');
+        L.DomEvent
+            .on(help, 'click', L.DomEvent.stop)
+            .on(help, 'click', this.editHelp, this);
+        var save = L.DomUtil.create('a', "leaflet-control-edit-save button", container);
+        save.href = '#';
+        save.title = L._("Save current edits");
+        save.innerHTML = L._('Save');
+        var cancel = L.DomUtil.create('a', "leaflet-control-edit-cancel button", container);
+        cancel.href = '#';
+        cancel.title = L._("Cancel edits");
+        cancel.innerHTML = L._('Cancel');
+        var disable = L.DomUtil.create('a', "leaflet-control-edit-disable", container);
+        disable.href = '#';
+        disable.title = disable.innerHTML = L._('Disable editing');
+
+
+        L.DomEvent
+            .addListener(disable, 'click', L.DomEvent.stop)
+            .addListener(disable, 'click', function (e) {
+                this.disableEdit(e);
+                L.S.fire('ui:end');
+            }, this);
+
+        L.DomEvent
+            .addListener(save, 'click', L.DomEvent.stop)
+            .addListener(save, 'click', this.save, this);
+
+        L.DomEvent
+            .addListener(cancel, 'click', L.DomEvent.stop)
+            .addListener(cancel, 'click', function (e) {
+                if (!confirm(L._("Are you sure you want to cancel your changes?"))) return;
+                this.disableEdit(e);
+                L.S.fire('ui:end');
+                this.reset();
+            }, this);
+    },
+
+    editHelp: function () {
+        var container = L.DomUtil.create('div', ''),
+            title = L.DomUtil.create('h3', '', container),
+            actionsContainer = L.DomUtil.create('ul', 'storage-edit-actions', container);
+        var addAction = function (action) {
+            var actionContainer = L.DomUtil.create('li', action.className, actionsContainer);
+            actionContainer.innerHTML = action.title;
+            L.DomEvent.on(actionContainer, 'click', action.callback, action.context);
+        };
+        title.innerHTML = L._('With a little help from my friends');
+        var actions = this.getEditActions();
+        actions.unshift(
+            {
+                title: L._('Draw a polyline'),
+                className: 'leaflet-draw-draw-polyline',
+                callback: this.drawControl.startPolyline,
+                context: this.drawControl
+            },
+            {
+                title: L._('Draw a polygon'),
+                className: 'leaflet-draw-draw-polygon',
+                callback: this.drawControl.startPolygon,
+                context: this.drawControl
+            },
+            {
+                title: L._('Draw a marker'),
+                className: 'leaflet-draw-draw-marker',
+                callback: this.drawControl.startMarker,
+                context: this.drawControl
+            }
+        );
+        for (var i = 0; i < actions.length; i++) {
+            addAction(actions[i]);
+        }
+        L.S.fire('ui:start', {data: {html: container}});
+    },
+
+    getEditActions: function () {
+
+        return [
+            {
+                title: L._('Upload data'),
+                className: 'upload-data',
+                callback: this.uploadData,
+                context: this
+            },
+            {
+                title: L._('Edit map settings'),
+                className: 'update-map-settings',
+                callback: this.edit,
+                context: this
+            },
+
+            {
+                title: L._('Update permissions and editors'),
+                className: 'update-map-permissions',
+                callback: this.updatePermissions,
+                context: this
+            },
+
+            {
+                title: L._('Change tilelayers'),
+                className: 'update-map-tilelayers',
+                callback: this.updateTileLayers,
+                context: this
+            },
+
+            {
+                title: L._('Save this center and zoom'),
+                className: 'update-map-extent',
+                callback: this.updateExtent,
+                context: this
+            }
+        ];
     }
 
 });

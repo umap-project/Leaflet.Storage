@@ -15,30 +15,31 @@ L.Toolbar.include({
         return button;
     },
 
-    _showActionsToolbar: function () {
-        var buttonIndex = this._activeMode.buttonIndex,
-        lastButtonIndex = this._lastButtonIndex,
-        buttonWidth = 46, // TODO: this should be calculated
-        borderWidth = 1, // TODO: this should also be calculated
-        toolbarPosition = (buttonIndex * buttonWidth) + (buttonIndex * borderWidth) + 10;
+    // _showActionsToolbar: function () {
+    //     var buttonIndex = this._activeMode.buttonIndex,
+    //     lastButtonIndex = this._lastButtonIndex,
+    //     buttonWidth = 46, // TODO: this should be calculated
+    //     borderWidth = 1, // TODO: this should also be calculated
+    //     toolbarPosition = (buttonIndex * buttonWidth) + (buttonIndex * borderWidth) + 10;
 
-        // Correctly position the cancel button
-        this._actionsContainer.style.left = toolbarPosition + 'px';
+    //     // Correctly position the cancel button
+    //     this._actionsContainer.style.left = toolbarPosition + 'px';
 
-        if (buttonIndex === 0) {
-            L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
-            L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-top');
-        }
+    //     if (buttonIndex === 0) {
+    //         L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
+    //         L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-top');
+    //     }
 
-        if (buttonIndex === lastButtonIndex) {
-            L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
-            L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
-        }
+    //     if (buttonIndex === lastButtonIndex) {
+    //         L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
+    //         L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
+    //     }
 
-        this._actionsContainer.style.display = 'block';
-    }
+    //     this._actionsContainer.style.display = 'block';
+    // }
 
 });
+
 
 L.Storage.SettingsToolbar = L.Toolbar.extend({
 
@@ -47,70 +48,41 @@ L.Storage.SettingsToolbar = L.Toolbar.extend({
         buttonIndex = 0,
         buttonClassPrefix = 'leaflet-draw-draw';
         this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar');
-
-        this._createUploadButton(map, this._toolbarContainer);
-        this._createUpdateMapExtentButton(map, this._toolbarContainer);
-        this._createUpdateMapTileLayersButton(map, this._toolbarContainer);
-        this._createUpdateMapPermissionsButton(map, this._toolbarContainer);
-        this._createUpdateMapSettingsButton(map, this._toolbarContainer);
+        var actions = map.getEditActions(), action;
+        for (var i = 0; i < actions.length; i++) {
+            action = actions[i];
+            action.container = this._toolbarContainer;
+            this._createButton(action);
+        }
 
         container.appendChild(this._toolbarContainer);
         return container;
-    },
-
-    _createUploadButton: function(map, container) {
-        this._createButton({
-            title: L._('Upload data'),
-            className: 'upload-data',
-            container: container,
-            callback: map.uploadData,
-            context: map
-        });
-    },
-
-    _createUpdateMapSettingsButton: function(map, container) {
-        this._createButton({
-            title: L._('Edit map settings'),
-            className: 'update-map-settings',
-            container: container,
-            callback: map.edit,
-            context: map
-        });
-    },
-
-    _createUpdateMapPermissionsButton: function(map, container) {
-        this._createButton({
-            title: L._('Update permissions and editors'),
-            className: 'update-map-permissions',
-            container: container,
-            callback: map.updatePermissions,
-            context: map
-        });
-    },
-
-    _createUpdateMapTileLayersButton: function(map, container) {
-        this._createButton({
-            title: L._('Change tilelayers'),
-            className: 'update-map-tilelayers',
-            container: container,
-            callback: map.updateTileLayers,
-            context: map
-        });
-    },
-
-    _createUpdateMapExtentButton: function(map, container) {
-        this._createButton({
-            title: L._('Save this center and zoom'),
-            className: 'update-map-extent',
-            container: container,
-            callback: map.updateExtent,
-            context: map
-        });
     }
 
 });
 
-L.Storage.EditControl = L.Control.Draw.extend({
+L.Storage.EditControl = L.Control.extend({
+
+    options: {
+        position: 'topleft'
+    },
+
+    onAdd: function (map) {
+        var container = L.DomUtil.create('div', 'leaflet-control-edit-enable'),
+            edit = L.DomUtil.create('a', 'storage-control-text', container);
+        edit.href = '#';
+        edit.title = L._("Enable editing");
+        edit.innerHTML = L._('Edit');
+
+        L.DomEvent
+            .addListener(edit, 'click', L.DomEvent.stop)
+            .addListener(edit, 'click', map.enableEdit, map);
+        return container;
+    }
+
+});
+
+L.Storage.DrawControl = L.Control.Draw.extend({
     options: {
         position: 'topright',
         draw: {
@@ -150,66 +122,27 @@ L.Storage.EditControl = L.Control.Draw.extend({
         this._toolbars[id].on('enable', this._toolbarEnabled, this);
     },
 
-    onAdd: function (map) {
-        var container = L.Control.Draw.prototype.onAdd.call(this, map);
-        this._createToggleButton(map, container);
-        return container;
+    getDrawToolbar: function () {
+        for (var toolbarId in this._toolbars) {
+            if (this._toolbars[toolbarId] instanceof L.DrawToolbar) {
+                return this._toolbars[toolbarId];
+            }
+        }
     },
 
-    _createToggleButton: function (map, container) {
-        var buttons = L.DomUtil.create('div', 'leaflet-draw-section leaflet-control-edit-toggle', container);
-        var edit = L.DomUtil.create('a', 'leaflet-control-edit-enable', buttons);
-        edit.href = '#';
-        edit.title = L._("Enable editing");
-        edit.innerHTML = L._('Edit');
-        var save = L.DomUtil.create('a', "leaflet-control-edit-save", buttons);
-        save.href = '#';
-        save.title = L._("Save current edits");
-        save.innerHTML = L._('Save');
-        var cancel = L.DomUtil.create('a', "leaflet-control-edit-cancel", buttons);
-        cancel.href = '#';
-        cancel.title = L._("Cancel editing");
-        cancel.innerHTML = L._('Cancel');
-        var disable = L.DomUtil.create('a', "leaflet-control-edit-disable", buttons);
-        disable.href = '#';
-        disable.title = L._("Disable editing");
-        disable.innerHTML = L._('disable');
+    startMarker: function () {
+        this.getDrawToolbar()._modes.marker.handler.enable();
+    },
 
-        L.DomEvent
-            .addListener(disable, 'click', L.DomEvent.stop)
-            .addListener(disable, 'click', function (e) {
-                map.disableEdit(e);
-                L.S.fire('ui:end');
-            }, this);
+    startPolygon: function () {
+        this.getDrawToolbar()._modes.polygon.handler.enable();
+    },
 
-        L.DomEvent
-            .addListener(edit, 'click', L.DomEvent.stop)
-            .addListener(edit, 'click', map.enableEdit, map);
-
-        L.DomEvent
-            .addListener(save, 'click', L.DomEvent.stop)
-            .addListener(save, 'click', map.save, map);
-
-        L.DomEvent
-            .addListener(cancel, 'click', L.DomEvent.stop)
-            .addListener(cancel, 'click', function (e) {
-                if (!confirm(L._("Are you sure you want to cancel your changes?"))) return;
-                map.disableEdit(e);
-                L.S.fire('ui:end');
-                map.reset();
-            }, this);
+    startPolyline: function () {
+        this.getDrawToolbar()._modes.polyline.handler.enable();
     }
 
 });
-
-L.Storage.Map.addInitHook(function () {
-    if (this.options.allowEdit) {
-        var options = this.options.editOptions ? this.options.editOptions : {};
-        this.toggleEditControl = new L.Storage.EditControl(this, options);
-        this.addControl(this.toggleEditControl);
-    }
-});
-
 
 
 L.Draw.Marker.include({
@@ -243,6 +176,10 @@ L.Draw.Polygon.include({
 /* Share control */
 L.Control.Embed = L.Control.extend({
 
+    options: {
+        position: "topleft"
+    },
+
     onAdd: function (map) {
         var className = 'leaflet-control-embed',
             container = L.DomUtil.create('div', className);
@@ -261,8 +198,54 @@ L.Control.Embed = L.Control.extend({
     }
 });
 
+L.Storage.MoreControls = L.Control.extend({
+
+    options: {
+        position: "topleft"
+    },
+
+    onAdd: function (map) {
+        var container = L.DomUtil.create('div', ''),
+            more = L.DomUtil.create('a', 'storage-control-more storage-control-text', container),
+            less = L.DomUtil.create('a', 'storage-control-less storage-control-text', container);
+        more.href = '#';
+        more.title = L._("More controls");
+        more.innerHTML = L._('More');
+
+        L.DomEvent
+            .on(more, 'click', L.DomEvent.stop)
+            .on(more, 'click', this.toggle, this);
+
+        less.href = '#';
+        less.title = L._("Hide controls");
+        less.innerHTML = L._('Less');
+
+        L.DomEvent
+            .on(less, 'click', L.DomEvent.stop)
+            .on(less, 'click', this.toggle, this);
+
+        return container;
+    },
+
+    toggle: function () {
+        var pos = this.getPosition(),
+            corner = this._map._controlCorners[pos],
+            className = 'storage-more-controls';
+        if (L.DomUtil.hasClass(corner, className)) {
+            L.DomUtil.removeClass(corner, className);
+        } else {
+            L.DomUtil.addClass(corner, className);
+        }
+    }
+
+});
+
 
 L.Storage.DataLayersControl = L.Control.extend({
+
+    options: {
+        position: "topleft"
+    },
 
     onAdd: function (map) {
         var className = 'leaflet-control-browse',
@@ -442,7 +425,7 @@ L.Storage.DataLayersControl = L.Control.extend({
 
 L.Storage.TileLayerControl = L.Control.extend({
     options: {
-        position: 'topright'
+        position: 'topleft'
     },
 
     onAdd: function (map) {

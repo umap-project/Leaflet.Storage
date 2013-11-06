@@ -438,6 +438,7 @@ L.Storage.FormBuilder = L.Class.extend({
             if (this.options.callback) {
                 this.options.callback.call(this.callbackContext || this.obj);
             }
+            this.obj.fire('synced', {field: field});
         }, this);
         // L.DomEvent.on(input, 'keydown', function (e) {
         //     var key = e.keyCode,
