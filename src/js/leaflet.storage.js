@@ -66,7 +66,6 @@ L.Storage.Map.include({
         this.overrideBooleanOptionFromQueryString("scaleControl");
         this.overrideBooleanOptionFromQueryString("allowEdit");
         this.overrideBooleanOptionFromQueryString("datalayersControl");
-        this.initControls();
 
         var edited_feature = null;
         try {
@@ -91,12 +90,8 @@ L.Storage.Map.include({
         }
         this.initCenter();
 
-
-        // Init control layers
-        // It will be populated while creating the datalayers
-        // Control is added as an initHook, to keep the order
-        // with other controls
         this.populateTileLayers(this.options.tilelayers);
+        this.initControls();
 
         // Global storage for retrieving datalayers
         this.datalayers = {};
@@ -236,6 +231,7 @@ L.Storage.Map.include({
             this.whenReady(function () {
                 if (this.selected_tilelayer) {
                     this._controls.miniMap = new L.Control.MiniMap(this.selected_tilelayer).addTo(this);
+                    this._controls.miniMap._miniMap.invalidateSize();
                 }
             });
         }

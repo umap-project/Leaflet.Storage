@@ -631,7 +631,7 @@ L.Control.MiniMap.include({
     },
 
     _cloneLayer: function (layer) {
-        return new L.TileLayer(layer._url, layer.options);
+        return new L.TileLayer(layer._url, L.Util.extend({}, layer.options));
     }
 
 });
