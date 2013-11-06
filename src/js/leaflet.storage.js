@@ -150,11 +150,12 @@ L.Storage.Map.include({
         // Creation mode
         if (!this.options.storage_id) {
             this.isDirty = true;
-            this.options.name = L._('New map');
+            this.options.name = L._('Untitled map');
             this.options.allowEdit = true;
             var datalayer = this._createDataLayer({name: L._('Layer 1')});
             datalayer.connectToMap();
             this.enableEdit();
+            this.editHelp();
         }
 
         if (this.options.allowEdit) {
@@ -825,7 +826,7 @@ L.Storage.Map.include({
             actionContainer.innerHTML = action.title;
             L.DomEvent.on(actionContainer, 'click', action.callback, action.context);
         };
-        title.innerHTML = L._('With a little help from my friends');
+        title.innerHTML = L._('Where do we go from here?');
         var actions = this.getEditActions();
         actions.unshift(
             {

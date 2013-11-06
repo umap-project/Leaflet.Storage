@@ -4,7 +4,7 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         displayOnLoad: true
     },
 
-    initialize: function (map, /* Object from db */ datalayer, options) {
+    initialize: function (map, datalayer, options) {
         this.map = map;
         this._index = Array();
         if(typeof options == "undefined") {
@@ -38,8 +38,8 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
 
     populate: function (datalayer) {
         // Datalayer is null when listening creation form
-        if (!this.storage_id && datalayer && datalayer.pk) {
-            this.storage_id = datalayer.pk || null;
+        if (!this.storage_id && datalayer && datalayer.id) {
+            this.storage_id = datalayer.id || null;
         }
         L.Util.extend(this.options, datalayer || {});
         this.connectToMap();
@@ -222,7 +222,7 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
             metadata_fields = [
                 'options.name',
                 'options.description',
-                ['options.displayOnLoad', 'CheckBox']
+                ['options.displayOnLoad', {label: L._('Display on load'), handler: 'CheckBox'}]
             ];
         var builder = new L.S.FormBuilder(this, metadata_fields, {
             callback: function () { this.map.updateDatalayersControl(); },
@@ -357,7 +357,10 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         this._geojson = geojson;
         var formData = new FormData();
         formData.append("name", this.options.name);
-        formData.append("data", JSON.stringify(geojson));
+        formData.append("display_on_load", this.options.displayOnLoad);
+        // filename support is shaky, don't do it for now
+        var blob = new Blob([JSON.stringify(geojson)], {type: 'application/json'});
+        formData.append("geojson", blob);
         L.Storage.Xhr.post(this.getSaveUrl(), {
             data: formData,
             callback: function (data) {this.populate(data);},
