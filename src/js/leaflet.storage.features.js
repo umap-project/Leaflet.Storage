@@ -52,7 +52,10 @@ L.Storage.FeatureMixin = {
         advancedPropertiesTitle.innerHTML = L._('Advanced properties');
         form = builder.build();
         advancedProperties.appendChild(form);
-        var deleteLink = L.DomUtil.create('a', 'delete-feature-button', container);
+        var advancedActions = L.DomUtil.create('fieldset', 'toggle', container);
+        var advancedActionsTitle = L.DomUtil.create('legend', 'style_options_toggle', advancedActions);
+        advancedActionsTitle.innerHTML = L._('Advanced actions');
+        var deleteLink = L.DomUtil.create('a', 'storage-delete', advancedActions);
         deleteLink.href = "#";
         deleteLink.innerHTML = L._('Delete');
         L.DomEvent.on(deleteLink, "click", function (e) {

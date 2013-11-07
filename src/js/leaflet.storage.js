@@ -769,7 +769,19 @@ L.Storage.Map.include({
             callback: this.initControls,
             callbackContext: this
         });
-        container.appendChild(builder.build());
+        var controlsOptions = L.DomUtil.create('fieldset', 'toggle', container);
+        var controlsOptionsTitle = L.DomUtil.create('legend', 'style_options_toggle', controlsOptions);
+        controlsOptionsTitle.innerHTML = L._('Display options');
+        controlsOptions.appendChild(builder.build());
+        var advancedActions = L.DomUtil.create('fieldset', 'toggle', container);
+        var advancedActionsTitle = L.DomUtil.create('legend', 'style_options_toggle', advancedActions);
+        advancedActionsTitle.innerHTML = L._('Advanced actions');
+        var del = L.DomUtil.create('a', 'storage-delete', advancedActions);
+        del.href = "#";
+        del.innerHTML = L._('Delete');
+        L.DomEvent
+            .on(del, 'click', L.DomEvent.stop)
+            .on(del, 'click', this.del, this);
         L.S.fire('ui:start', {data: {html: container}});
     },
 
@@ -908,6 +920,13 @@ L.Storage.Map.include({
                 context: this
             }
         ];
+    },
+
+    del: function () {
+        if (confirm(L._('Are you sure you want to delete this map?'))) {
+            var url = L.Util.template(this.options.urls.map_delete, {'map_id': this.options.storage_id});
+            L.S.Xhr.post(url);
+        }
     }
 
 });

@@ -431,6 +431,7 @@ a.storage-control-text {
     left: 7px;
 }
 /* Edit medatada */
+.storage-delete,
 .clone_map_button, .delete_map_button,
 .delete_datalayer_button {
     background-position: 7px center;
@@ -443,6 +444,7 @@ a.storage-control-text {
 .clone_map_button {
     background-image: url("../img/clone-24.png");
 }
+.storage-delete,
 .delete_map_button {
     background-image: url("../img/delete-24.png");
     color: rgb(198, 15, 19);

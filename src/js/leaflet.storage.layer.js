@@ -252,7 +252,10 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         advancedPropertiesTitle.innerHTML = L._('Advanced properties');
         form = builder.build();
         advancedProperties.appendChild(form);
-        var deleteLink = L.DomUtil.create('a', 'delete_datalayer_button', container);
+        var advancedActions = L.DomUtil.create('fieldset', 'toggle', container);
+        var advancedActionsTitle = L.DomUtil.create('legend', 'style_options_toggle', advancedActions);
+        advancedActionsTitle.innerHTML = L._('Advanced actions');
+        var deleteLink = L.DomUtil.create('a', 'delete_datalayer_button', advancedActions);
         deleteLink.innerHTML = L._('Delete');
         deleteLink.href = "#";
         L.DomEvent.on(deleteLink, 'click', L.DomEvent.stop)
