@@ -21,6 +21,7 @@
 .leaflet-control-home,
 .leaflet-control-locate,
 .storage-browse-toggle,
+.leaflet-control-edit-enable,
 .leaflet-control-search {
     background: none no-repeat scroll center center #F8F8F9;
     border-radius: 4px;
@@ -45,6 +46,7 @@
 .leaflet-control-home a,
 .leaflet-control-locate a,
 .leaflet-control-browse > a,
+.leaflet-control-edit-enable a,
 .leaflet-control-search a {
     background-position: 50% 50%;
     background-repeat: no-repeat;
@@ -234,6 +236,9 @@ a.storage-control-text {
 .storage-is-dirty a.leaflet-control-edit-save {
     opacity: 1;
     cursor: pointer;
+}
+.leaflet-control-edit-enable a {
+    background-image: url('../img/edit-24.png');
 }
 .leaflet-container a.leaflet-control-edit-save,
 .leaflet-container a.leaflet-control-edit-cancel,

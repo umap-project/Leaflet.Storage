@@ -64,15 +64,14 @@ L.Storage.SettingsToolbar = L.Toolbar.extend({
 L.Storage.EditControl = L.Control.extend({
 
     options: {
-        position: 'topleft'
+        position: 'topright'
     },
 
     onAdd: function (map) {
         var container = L.DomUtil.create('div', 'leaflet-control-edit-enable'),
-            edit = L.DomUtil.create('a', 'storage-control-text', container);
+            edit = L.DomUtil.create('a', '', container);
         edit.href = '#';
         edit.title = L._("Enable editing");
-        edit.innerHTML = L._('Edit');
 
         L.DomEvent
             .addListener(edit, 'click', L.DomEvent.stop)
