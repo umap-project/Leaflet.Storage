@@ -61,6 +61,15 @@ L.Storage.Xhr = {
         };
         var settings = L.Util.extend({}, default_options, options);
 
+        if (verb == "POST") {
+            // find a way not to make this django specific
+            var token = document.cookie.replace(/(?:(?:^|.*;\s*)csrftoken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+            if (token) {
+                settings.headers = settings.headers || {};
+                settings.headers['X-CSRFToken'] = token;
+            }
+        }
+
         var callback = function(responseText) {
             var data;
             try {
@@ -99,13 +108,6 @@ L.Storage.Xhr = {
     },
 
     post: function(uri, options) {
-        options = options || {};
-        // find a way not to make this django specific
-        var token = document.cookie.replace(/(?:(?:^|.*;\s*)csrftoken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-        if (token) {
-            options.headers = options.headers || {};
-            options.headers['X-CSRFToken'] = token;
-        }
         L.Storage.Xhr._json("POST", uri, options);
     },
 
