@@ -432,7 +432,7 @@ a.storage-control-text {
 }
 /* Edit medatada */
 .storage-delete,
-.clone_map_button, .delete_map_button,
+.clone-map-button, .delete_map_button,
 .delete_datalayer_button {
     background-position: 7px center;
     background-repeat: no-repeat;
@@ -441,7 +441,7 @@ a.storage-control-text {
     line-height: 24px;
     display: inline-block;    
 }
-.clone_map_button {
+.clone-map-button {
     background-image: url("../img/clone-24.png");
 }
 .storage-delete,

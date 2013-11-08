@@ -782,6 +782,12 @@ L.Storage.Map.include({
         L.DomEvent
             .on(del, 'click', L.DomEvent.stop)
             .on(del, 'click', this.del, this);
+        var clone = L.DomUtil.create('a', 'clone-map-button', advancedActions);
+        clone.href = "#";
+        clone.innerHTML = L._('Clone this map');
+        L.DomEvent
+            .on(clone, 'click', L.DomEvent.stop)
+            .on(clone, 'click', this.clone, this);
         L.S.fire('ui:start', {data: {html: container}});
     },
 
@@ -925,6 +931,13 @@ L.Storage.Map.include({
     del: function () {
         if (confirm(L._('Are you sure you want to delete this map?'))) {
             var url = L.Util.template(this.options.urls.map_delete, {'map_id': this.options.storage_id});
+            L.S.Xhr.post(url);
+        }
+    },
+
+    clone: function () {
+        if (confirm(L._('Are you sure you want to clone this map and all its datalayers?'))) {
+            var url = L.Util.template(this.options.urls.map_clone, {'map_id': this.options.storage_id});
             L.S.Xhr.post(url);
         }
     }
