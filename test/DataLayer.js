@@ -65,13 +65,16 @@ describe('L.DataLayer', function () {
             assert.ok(this.map.isDirty);
         });
 
-        it('should call datalayer.save on save button click', function () {
+        it('should call datalayer.save on save button click', function (done) {
+            console.log(this.datalayer.getSaveUrl());
             sinon.spy(this.datalayer, "save");
-            this.server.respondWith('POST', '/map/99/datalayer/update/62/', JSON.stringify(RESPONSES.datalayer62_GET));
+            this.server.respondWith('POST', '/map/99/update/settings/', JSON.stringify({id: 99}));
+            this.server.respondWith('POST', '/map/99/datalayer/update/62/', JSON.stringify(defaultDatalayerData()));
             clickSave();
             this.server.respond();
             assert(this.datalayer.save.calledOnce);
             this.datalayer.save.restore();
+            done();
         });
 
     });
@@ -114,7 +117,7 @@ describe('L.DataLayer', function () {
 
         it('should set storage_id on save callback', function (done) {
             assert.notOk(newDatalayer.storage_id);
-            this.server.respondWith('POST', '/map/99/datalayer/create/', JSON.stringify(defaultDatalayerData({pk: 63})));
+            this.server.respondWith('POST', '/map/99/datalayer/create/', JSON.stringify(defaultDatalayerData({id: 63})));
             clickSave();
             this.server.respond();
             assert.equal(newDatalayer.storage_id, 63);

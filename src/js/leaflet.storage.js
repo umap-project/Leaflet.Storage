@@ -680,7 +680,7 @@ L.Storage.Map.include({
                 var duration = 3000;
                 if (!this.options.storage_id) {
                     duration = 100000; // we want a longer message at map creation (TODO UGLY)
-                    this.options.storage_id = data.pk;
+                    this.options.storage_id = data.id;
                     if (history && history.pushState) {
                         history.pushState({}, this.options.name, data.url);
                     } else {

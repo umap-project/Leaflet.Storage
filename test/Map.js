@@ -20,8 +20,8 @@ describe('L.Storage.Map', function(){
             assert.equal(this.map.options.storage_id, 99);
         });
 
-        it('should have created the edit toolbar', function(){
-            assert.ok(qs('div.leaflet-control-edit-toggle'));
+        it('should have created the edit button', function(){
+            assert.ok(qs('div.leaflet-control-edit-enable'));
         });
 
         it('should have datalayer control div', function(){
@@ -43,9 +43,9 @@ describe('L.Storage.Map', function(){
         });
 
         it('enable edit on click on toggle button', function () {
-            var el = qs('a.leaflet-control-edit-enable');
+            var el = qs('div.leaflet-control-edit-enable a');
             happen.click(el);
-            assert.isTrue(L.DomUtil.hasClass(this.map._container, "storage-edit-enabled"));
+            assert.isTrue(L.DomUtil.hasClass(document.body, "storage-edit-enabled"));
         });
 
         it('should have only one datalayer in its index', function () {
