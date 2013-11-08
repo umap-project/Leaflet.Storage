@@ -85,30 +85,34 @@ describe('L.Storage.Map', function(){
 
     });
 
-    xdescribe('#delete()', function () {
+    describe('#delete()', function () {
         var path = "/map/99/delete/",
-            submit;
+            submit, oldConfirm,
+            newConfirm = function () {
+                return true;
+            };
 
-        it('should ask for confirmation on delete link click', function () {
-            var button = qs('a.update-map-infos');
-            assert.ok(button, 'update map info button exists');
-            happen.click(button);
-            this.server.respond();
-            var deleteLink = qs('a#delete_map_button');
-            assert.ok(deleteLink, 'delete map button exists');
-            this.server.respondWith("GET", path, JSON.stringify(RESPONSES.map_delete_GET));
-            happen.click(deleteLink);
-            this.server.respond();
-            assert.ok(qs('form#map_delete'));
-            submit = qs('form#map_delete input[type="submit"]');
-            assert.ok(submit);
+        before(function () {
+            var self = this;
+            oldConfirm = window.confirm;
+            window.confirm = newConfirm;
+        });
+        after(function () {
+            window.confirm = oldConfirm;
         });
 
-        it('should redirect after map delete', function (done) {
-            this.server.respondWith('POST', path, '{"redirect": "#deleted"}');
-            happen.click(submit);
+        it('should ask for confirmation on delete link click', function (done) {
+            var button = qs('a.update-map-settings');
+            assert.ok(button, 'update map info button exists');
+            happen.click(button);
+            var deleteLink = qs('a.storage-delete');
+            assert.ok(deleteLink, 'delete map button exists');
+            sinon.spy(window, "confirm");
+            this.server.respondWith("POST", path, JSON.stringify({redirect: "#"}));
+            happen.click(deleteLink);
             this.server.respond();
-            assert.equal(window.location.hash, "#deleted");
+            assert(window.confirm.calledOnce);
+            window.confirm.restore();
             done();
         });
 
