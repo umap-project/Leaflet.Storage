@@ -94,6 +94,9 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
             i, len;
 
         if (features) {
+            features.sort(function (a, b) {
+                return a.properties.name.localeCompare(b.properties.name);
+            });
             for (i = 0, len = features.length; i < len; i++) {
                 this.geojsonToFeatures(features[i]);
             }
@@ -366,7 +369,11 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         formData.append("geojson", blob);
         L.Storage.Xhr.post(this.getSaveUrl(), {
             data: formData,
-            callback: function (data) {this.populate(data);},
+            callback: function (data) {
+                this.populate(data);
+                this.reset();  // Needed for reordering features
+                               // What for layer with many features?
+            },
             context: this
         });
     },
