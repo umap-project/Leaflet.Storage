@@ -192,6 +192,7 @@ L.Storage.Map.include({
                 } else if (key == E && e.ctrlKey && this.editEnabled && !this.isDirty) {
                     L.DomEvent.stop(e);
                     this.disableEdit();
+                    L.S.fire('ui:end');
                 }
                 if (key == S && e.ctrlKey && this.isDirty) {
                     L.DomEvent.stop(e);
@@ -543,7 +544,7 @@ L.Storage.Map.include({
         title.innerHTML = this.options.name;
         if (this.options.description) {
             var description = L.DomUtil.create('div', 'storage-map-description', container);
-            description.innerHTML = this.options.description;
+            description.innerHTML = L.Util.toHTML(this.options.description);
         }
         this.eachDataLayer(function (datalayer) {
             var p = L.DomUtil.create('p', '', container),
