@@ -61,6 +61,7 @@ L.Storage.FeatureMixin = {
         L.DomEvent.on(deleteLink, "click", function (e) {
             if (confirm(L._('Are you sure you want to delete the feature?'))) {
                 this._delete();
+                L.S.fire('ui:end');
             }
         }, this);
         L.S.fire('ui:start', {data: {html: container}});
