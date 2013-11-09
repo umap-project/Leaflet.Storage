@@ -184,19 +184,36 @@ L.Storage.Map.include({
             this.initEditBar();
             var editShortcuts = function (e) {
                 var key = e.keyCode,
-                    S = 83,
-                    E = 69;
-                if (key == E && e.ctrlKey && !this.editEnabled) {
+                chars = {
+                    S: 83,
+                    L: 76,
+                    M: 77,
+                    P: 80,
+                    E: 69
+                };
+                if (key == chars.E && e.ctrlKey && !this.editEnabled) {
                     L.DomEvent.stop(e);
                     this.enableEdit();
-                } else if (key == E && e.ctrlKey && this.editEnabled && !this.isDirty) {
+                } else if (key == chars.E && e.ctrlKey && this.editEnabled && !this.isDirty) {
                     L.DomEvent.stop(e);
                     this.disableEdit();
                     L.S.fire('ui:end');
                 }
-                if (key == S && e.ctrlKey && this.isDirty) {
+                if (key == chars.S && e.ctrlKey && this.isDirty) {
                     L.DomEvent.stop(e);
                     this.save();
+                }
+                if (key == chars.M && e.ctrlKey && this.editEnabled) {
+                    L.DomEvent.stop(e);
+                    this.drawControl.startMarker();
+                }
+                if (key == chars.P && e.ctrlKey && this.editEnabled) {
+                    L.DomEvent.stop(e);
+                    this.drawControl.startPolygon();
+                }
+                if (key == chars.L && e.ctrlKey && this.editEnabled) {
+                    L.DomEvent.stop(e);
+                    this.drawControl.startPolyline();
                 }
             };
             L.DomEvent.addListener(document, 'keydown', editShortcuts, this);
