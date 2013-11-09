@@ -185,11 +185,12 @@ L.Storage.Map.include({
             var editShortcuts = function (e) {
                 var key = e.keyCode,
                 chars = {
-                    S: 83,
+                    E: 69,
+                    I: 73,
                     L: 76,
                     M: 77,
                     P: 80,
-                    E: 69
+                    S: 83
                 };
                 if (key == chars.E && e.ctrlKey && !this.editEnabled) {
                     L.DomEvent.stop(e);
@@ -214,6 +215,10 @@ L.Storage.Map.include({
                 if (key == chars.L && e.ctrlKey && this.editEnabled) {
                     L.DomEvent.stop(e);
                     this.drawControl.startPolyline();
+                }
+                if (key == chars.I && e.ctrlKey && this.editEnabled) {
+                    L.DomEvent.stop(e);
+                    this.importPanel();
                 }
             };
             L.DomEvent.addListener(document, 'keydown', editShortcuts, this);
@@ -407,7 +412,7 @@ L.Storage.Map.include({
         });
     },
 
-    uploadData: function () {
+    importPanel: function () {
         var container = L.DomUtil.create('div', 'storage-upload'),
             title = L.DomUtil.create('h4', '', container),
             fileBox = L.DomUtil.create('div', 'formbox', container),
@@ -843,7 +848,7 @@ L.Storage.Map.include({
             .on(help, 'click', this.editHelp, this);
         var save = L.DomUtil.create('a', "leaflet-control-edit-save button", container);
         save.href = '#';
-        save.title = L._("Save current edits");
+        save.title = L._("Save current edits") + ' (Ctrl-S)';
         save.innerHTML = L._('Save');
         var cancel = L.DomUtil.create('a', "leaflet-control-edit-cancel button", container);
         cancel.href = '#';
@@ -888,19 +893,19 @@ L.Storage.Map.include({
         var actions = this.getEditActions();
         actions.unshift(
             {
-                title: L._('Draw a polyline'),
+                title: L._('Draw a polyline') + ' (Ctrl+P)',
                 className: 'leaflet-draw-draw-polyline',
                 callback: this.drawControl.startPolyline,
                 context: this.drawControl
             },
             {
-                title: L._('Draw a polygon'),
+                title: L._('Draw a polygon') + ' (Ctrl+L)',
                 className: 'leaflet-draw-draw-polygon',
                 callback: this.drawControl.startPolygon,
                 context: this.drawControl
             },
             {
-                title: L._('Draw a marker'),
+                title: L._('Draw a marker') + ' (Ctrl+M)',
                 className: 'leaflet-draw-draw-marker',
                 callback: this.drawControl.startMarker,
                 context: this.drawControl
@@ -916,9 +921,9 @@ L.Storage.Map.include({
 
         return [
             {
-                title: L._('Upload data'),
+                title: L._('Import data') + ' (Ctrl+I)',
                 className: 'upload-data',
-                callback: this.uploadData,
+                callback: this.importPanel,
                 context: this
             },
             {

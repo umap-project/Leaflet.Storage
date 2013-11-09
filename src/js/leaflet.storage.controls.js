@@ -71,7 +71,7 @@ L.Storage.EditControl = L.Control.extend({
         var container = L.DomUtil.create('div', 'leaflet-control-edit-enable storage-control'),
             edit = L.DomUtil.create('a', '', container);
         edit.href = '#';
-        edit.title = L._("Enable editing");
+        edit.title = L._("Enable editing") + ' (Ctrl-E)';
 
         L.DomEvent
             .addListener(edit, 'click', L.DomEvent.stop)
