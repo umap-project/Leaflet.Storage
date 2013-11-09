@@ -8,6 +8,7 @@ describe('L.Storage.Map', function(){
         };
         this.map = initMap({storage_id: 99});
         this.server.respond();
+        this.datalayer = this.map.getDataLayerByStorageId(62);
     });
     after(function () {
         this.server.restore();
@@ -118,27 +119,65 @@ describe('L.Storage.Map', function(){
 
     });
 
-    xdescribe('#uploadData()', function () {
+    describe('#uploadData()', function () {
         var path = '/map/99/import/data/',
-            form, submit;
+            fileInput, textarea, submit, formatSelect, layerSelect;
 
-        it('should load a form on click', function () {
-            this.server.respondWith('GET', path, JSON.stringify(RESPONSES.map_upload_data_GET));
+        it('should build a form on click', function () {
             happen.click(qs('a.upload-data'));
-            this.server.respond();
-            form = qs('form#upload_data');
-            submit = qs('form#upload_data input[type="submit"]');
-            assert.ok(form);
+            fileInput = qs('.storage-upload input[type="file"]');
+            textarea = qs('.storage-upload textarea');
+            submit = qs('.storage-upload input[type="button"]');
+            formatSelect = qs('.storage-upload select[name="format"]');
+            layerSelect = qs('.storage-upload select[name="datalayer"]');
+            assert.ok(fileInput);
             assert.ok(submit);
+            assert.ok(textarea);
+            assert.ok(formatSelect);
+            assert.ok(layerSelect);
         });
 
-        it('should submit form on click', function () {
-            this.server.respondWith('POST', path, JSON.stringify({datalayer: defaultDatalayerData(), info: 'ok'}));
-            form.data_url.value = 'http://somewhere.org/test/{bbox}';
+        it('should import geojson from textarea', function () {
+            assert.equal(this.datalayer._index.length, 3);
+            textarea.value = '{"type": "FeatureCollection", "features": [{"geometry": {"type": "Point", "coordinates": [6.922931671142578, 47.481161607175736]}, "type": "Feature", "properties": {"color": "", "name": "Chez R\u00e9my", "description": ""}}, {"geometry": {"type": "LineString", "coordinates": [[2.4609375, 48.88639177703194], [2.48291015625, 48.76343113791796], [2.164306640625, 48.719961222646276]]}, "type": "Feature", "properties": {"color": "", "name": "P\u00e9rif", "description": ""}}]}';
             happen.click(submit);
-            this.server.respond();
-            request = this.server.getRequest(path, 'POST');
-            assert.equal(request.status, 200);
+            assert.equal(this.datalayer._index.length, 5);
+        });
+
+        it('should import kml from textarea', function () {
+            happen.click(qs('a.upload-data'));
+            textarea = qs('.storage-upload textarea');
+            submit = qs('.storage-upload input[type="button"]');
+            formatSelect = qs('.storage-upload select[name="format"]');
+            assert.equal(this.datalayer._index.length, 5);
+            textarea.value = kml_example;
+            formatSelect.selectedIndex = 3;
+            happen.click(submit);
+            assert.equal(this.datalayer._index.length, 8);
+        });
+
+        it('should import gpx from textarea', function () {
+            happen.click(qs('a.upload-data'));
+            textarea = qs('.storage-upload textarea');
+            submit = qs('.storage-upload input[type="button"]');
+            formatSelect = qs('.storage-upload select[name="format"]');
+            assert.equal(this.datalayer._index.length, 8);
+            textarea.value = gpx_example;
+            formatSelect.selectedIndex = 2;
+            happen.click(submit);
+            assert.equal(this.datalayer._index.length, 10);
+        });
+
+        it('should import csv from textarea', function () {
+            happen.click(qs('a.upload-data'));
+            textarea = qs('.storage-upload textarea');
+            submit = qs('.storage-upload input[type="button"]');
+            formatSelect = qs('.storage-upload select[name="format"]');
+            assert.equal(this.datalayer._index.length, 10);
+            textarea.value = csv_example;
+            formatSelect.selectedIndex = 1;
+            happen.click(submit);
+            assert.equal(this.datalayer._index.length, 11);
         });
 
     });

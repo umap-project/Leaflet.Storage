@@ -186,3 +186,59 @@ sinon.fakeServer.getRequest = function (path, method) {
 sinon.fakeServer.flush = function () {
     this.responses = [];
 };
+
+
+var kml_example = '<?xml version="1.0" encoding="UTF-8"?>' +
+'<kml xmlns="http://www.opengis.net/kml/2.2">' +
+'<Placemark>'+
+'<name>Simple point</name>'+
+'<description>Here is a simple description.</description>'+
+'<Point>'+
+'<coordinates>-122.0822035425683,37.42228990140251,0</coordinates>'+
+'</Point>'+
+'</Placemark>'+
+'<Placemark>'+
+'<name>Simple path</name>'+
+'<description>Simple description</description>'+
+'<LineString>'+
+'<coordinates>-112.2550785337791,36.07954952145647,2357 -112.2549277039738,36.08117083492122,2357 -112.2552505069063,36.08260761307279,2357</coordinates>'+
+'</LineString>'+
+'</Placemark>'+
+'<Placemark>'+
+'<name>Simple polygon</name>'+
+'<description>A description.</description>'+
+'<Polygon>'+
+'<outerBoundaryIs>'+
+'<LinearRing>'+
+'<coordinates>'+
+'            -77.05788457660967,38.87253259892824,100 '+
+'            -77.05465973756702,38.87291016281703,100 '+
+'            -77.05315536854791,38.87053267794386,100 '+
+'            -77.05788457660967,38.87253259892824,100 '+
+'</coordinates>'+
+'</LinearRing>'+
+'</outerBoundaryIs>'+
+'</Polygon>'+
+'</Placemark>'+
+'</kml>';
+
+var gpx_example = '<gpx' +
+'  version="1.1"' +
+'  creator="GPSBabel - http://www.gpsbabel.org"' +
+'  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+'  xmlns="http://www.topografix.com/GPX/1/1"' +
+'  xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">' +
+'  <wpt lat="45.44283" lon="-121.72904"><ele>1374</ele><name>Simple Point</name><desc>Simple description</desc></wpt>' +
+'  <trk>' +
+'    <name>Simple path</name>' +
+'    <desc>Simple description</desc>' +
+'    <trkseg>' +
+'      <trkpt lat="45.4431641" lon="-121.7295456"></trkpt>' +
+'      <trkpt lat="45.4428615" lon="-121.7290800"></trkpt>' +
+'      <trkpt lat="45.4425697" lon="-121.7279085"></trkpt>' +
+'    </trkseg>' +
+'  </trk>' +
+'</gpx>';
+
+var csv_example = 'Foo,Latitude,Longitude,title,description\n' +
+'bar,41.34,122.86,a point somewhere,the description of this point';

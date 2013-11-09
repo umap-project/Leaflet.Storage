@@ -404,6 +404,8 @@ L.Storage.Map.include({
         submitInput.type = "button";
         submitInput.value = L._('Import');
         submitInput.className = "button";
+        typeInput.name = "format";
+        layerInput.name = "datalayer";
         urlInput.type = "text";
         urlInput.placeholder = L._('Provide an URL here');
         rawInput.placeholder = L._('Paste here your data');
