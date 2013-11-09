@@ -409,7 +409,9 @@ L.Storage.Map.include({
 
     uploadData: function () {
         var container = L.DomUtil.create('div', 'storage-upload'),
-            fileInput = L.DomUtil.create('input', '', container),
+            title = L.DomUtil.create('h4', '', container),
+            fileBox = L.DomUtil.create('div', 'formbox', container),
+            fileInput = L.DomUtil.create('input', '', fileBox),
             urlInput = L.DomUtil.create('input', '', container),
             rawInput = L.DomUtil.create('textarea', '', container),
             typeInput = L.DomUtil.create('select', '', container),
@@ -417,6 +419,7 @@ L.Storage.Map.include({
             submitInput = L.DomUtil.create('input', '', container),
             map = this, option,
             types = ['geojson', 'csv', 'gpx', 'kml'];
+        title.innerHTML = L._('Import data');
         fileInput.type = "file";
         submitInput.type = "button";
         submitInput.value = L._('Import');
