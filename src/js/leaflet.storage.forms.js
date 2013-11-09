@@ -56,10 +56,20 @@ L.S.ElementHelper.Textarea = L.S.ElementHelper.extend({
         this.input = L.DomUtil.create('textarea', '', this.form);
         this.input.value = this.backup = this.toHTML() || null;
         L.DomEvent.on(this.input, 'input', this.sync, this);
+        L.DomEvent.on(this.input, 'keypress', this.onKeyPress, this);
     },
 
     value: function () {
         return this.input.value;
+    },
+
+    onKeyPress: function (e) {
+        var key = e.keyCode,
+            ENTER = 13;
+        if (key == ENTER && e.shiftKey) {
+            L.DomEvent.stop(e);
+            L.S.fire('ui:end');
+        }
     }
 
 });
