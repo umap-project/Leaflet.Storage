@@ -65,7 +65,9 @@
 .storage-alert #storage-alert-container {
     display: block;
 }
-
+.storage-alert div.storage-main-edit-toolbox {
+    display: none;
+}
 /* *********** */
 /*   Tooltip   */
 /* *********** */
@@ -95,7 +97,7 @@
 /* *********** */
 .storage-close-link {
     position: absolute;
-    top: 5px;
+    top: 13px;
     right: 20px;
     color: #fff;
     line-height: 20px;

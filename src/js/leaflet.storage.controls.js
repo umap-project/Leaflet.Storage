@@ -68,7 +68,7 @@ L.Storage.EditControl = L.Control.extend({
     },
 
     onAdd: function (map) {
-        var container = L.DomUtil.create('div', 'leaflet-control-edit-enable'),
+        var container = L.DomUtil.create('div', 'leaflet-control-edit-enable storage-control'),
             edit = L.DomUtil.create('a', '', container);
         edit.href = '#';
         edit.title = L._("Enable editing");
@@ -180,10 +180,9 @@ L.Control.Embed = L.Control.extend({
     },
 
     onAdd: function (map) {
-        var className = 'leaflet-control-embed',
-            container = L.DomUtil.create('div', className);
+        var container = L.DomUtil.create('div', 'leaflet-control-embed storage-control');
 
-        var link = L.DomUtil.create('a', "", container);
+        var link = L.DomUtil.create('a', '', container);
         link.href = '#';
         link.title = L._("Embed and share this map");
 
@@ -247,8 +246,7 @@ L.Storage.DataLayersControl = L.Control.extend({
     },
 
     onAdd: function (map) {
-        var className = 'leaflet-control-browse',
-            container = L.DomUtil.create('div', className),
+        var container = L.DomUtil.create('div', 'leaflet-control-browse storage-control'),
             actions = L.DomUtil.create('div', 'storage-browse-actions', container);
         this._datalayers_container = L.DomUtil.create('ul', 'storage-browse-datalayers', actions);
 
@@ -411,13 +409,6 @@ L.Storage.DataLayersControl = L.Control.extend({
         var datalayer = this._map._createDataLayer({});
         datalayer.connectToMap();
         datalayer.edit();
-        // var map = this._map,
-        //     url = L.Util.template(map.options.urls.datalayer_add, {'map_id': map.options.storage_id});
-        // L.Storage.Xhr.get(url, {
-        //     'callback': function (data) {
-        //         return datalayer._handleEditResponse(data);
-        //     }
-        // });
     }
 
 });
@@ -428,8 +419,7 @@ L.Storage.TileLayerControl = L.Control.extend({
     },
 
     onAdd: function (map) {
-        var className = 'leaflet-control-tilelayers',
-            container = L.DomUtil.create('div', className);
+        var container = L.DomUtil.create('div', 'leaflet-control-tilelayers storage-control');
 
         var link = L.DomUtil.create('a', "", container);
         link.href = '#';
@@ -502,8 +492,7 @@ L.Storage.HomeControl = L.Control.extend({
     },
 
     onAdd: function (map) {
-        var className = 'leaflet-control-home',
-            container = L.DomUtil.create('div', className),
+        var container = L.DomUtil.create('div', 'leaflet-control-home storage-control'),
             link = L.DomUtil.create('a', "", container);
 
         link.href = '/';
@@ -521,8 +510,7 @@ L.Storage.LocateControl = L.Control.extend({
     },
 
     onAdd: function (map) {
-        var className = 'leaflet-control-locate',
-            container = L.DomUtil.create('div', className),
+        var container = L.DomUtil.create('div', 'leaflet-control-locate storage-control'),
             link = L.DomUtil.create('a', "", container);
         link.href = '#';
         link.title = L._("Center map on your location");
@@ -551,8 +539,7 @@ L.Storage.JumpToLocationControl = L.Control.extend({
     },
 
     onAdd: function (map) {
-        var className = 'leaflet-control-search',
-            container = L.DomUtil.create('div', className),
+        var container = L.DomUtil.create('div', 'leaflet-control-search storage-control'),
             self = this;
 
         L.DomEvent.disableClickPropagation(container);

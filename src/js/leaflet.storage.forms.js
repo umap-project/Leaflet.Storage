@@ -88,6 +88,7 @@ L.Storage.ElementHelper.Input = L.S.ElementHelper.extend({
         var key = e.keyCode,
             ENTER = 13;
         if (key == ENTER) {
+            L.DomEvent.stop(e);
             L.S.fire('ui:end');
         }
     }
