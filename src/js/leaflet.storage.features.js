@@ -272,6 +272,7 @@ L.Storage.Marker = L.Marker.extend({
         this.on("click", this._onClick);
         this.on("mouseover", this._enableDragging);
         this.on("mouseout", this._onMouseOut);
+        this._popupHandlersAdded = true; // prevent Leaflet from binding event on bindPopup
     },
 
     populate: function (feature) {
@@ -284,7 +285,6 @@ L.Storage.Marker = L.Marker.extend({
     },
 
     _onClick: function(e){
-        this._popupHandlersAdded = true; // prevent Leaflet from binding event on bindPopup
         if(this.map.editEnabled) {
             this.edit(e);
         }
