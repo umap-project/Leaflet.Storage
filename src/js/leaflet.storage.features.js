@@ -258,12 +258,6 @@ L.Storage.Marker = L.Marker.extend({
         L.Marker.prototype.initialize.call(this, latlng, options);
         L.Storage.FeatureMixin.initialize.call(this);
 
-        // URL templates
-        this.view_url_template = this.map.options.urls.marker;
-        this.update_url_template = this.map.options.urls.marker_update;
-        this.add_url_template = this.map.options.urls.marker_add;
-        this.delete_url_template = this.map.options.urls.marker_delete;
-
         // Events
         this.on("dragend", function (e) {
             this.isDirty = true;
@@ -548,12 +542,6 @@ L.Storage.Polyline = L.Polyline.extend({
         L.Polyline.prototype.initialize.call(this, latlngs, options);
         L.Storage.FeatureMixin.initialize.call(this);
         L.Storage.PathMixin.initialize.call(this);
-
-        // URL templates
-        this.view_url_template = this.map.options.urls.polyline;
-        this.update_url_template = this.map.options.urls.polyline_update;
-        this.add_url_template = this.map.options.urls.polyline_add;
-        this.delete_url_template = this.map.options.urls.polyline_delete;
     },
 
     geometry: function() {
@@ -594,12 +582,6 @@ L.Storage.Polygon = L.Polygon.extend({
         L.Polygon.prototype.initialize.call(this, latlngs, options);
         L.Storage.FeatureMixin.initialize.call(this);
         L.Storage.PathMixin.initialize.call(this);
-
-        // URL templates
-        this.view_url_template = this.map.options.urls.polygon;
-        this.update_url_template = this.map.options.urls.polygon_update;
-        this.add_url_template = this.map.options.urls.polygon_add;
-        this.delete_url_template = this.map.options.urls.polygon_delete;
     },
 
     geometry: function() {
