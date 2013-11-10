@@ -85,7 +85,6 @@ L.Util.toHTML = function (r) {
     return r;
 };
 
-
 /*
 * Global events
 */

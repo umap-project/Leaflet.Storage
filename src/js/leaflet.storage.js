@@ -49,6 +49,7 @@ L.Storage.Map.include({
         var zoomControl = typeof geojson.properties.zoomControl !== "undefined" ? geojson.properties.zoomControl : true;
         geojson.properties.zoomControl = false;
         L.Map.prototype.initialize.call(this, el, geojson.properties);
+        this.initLoader();
         this.name = this.options.name;
         this.description = this.options.description;
         this.demoTileInfos = this.options.demoTileInfos;
@@ -277,7 +278,6 @@ L.Storage.Map.include({
             });
         }
 
-
     },
 
     updateDatalayersControl: function () {
@@ -308,12 +308,12 @@ L.Storage.Map.include({
 
     selectTileLayer: function (tilelayer) {
         if (tilelayer === this.selected_tilelayer) { return; }
+        this.fire('baselayerchange', {layer: tilelayer});
         this.addLayer(tilelayer);
         if (this.selected_tilelayer) {
             this.removeLayer(this.selected_tilelayer);
         }
         this.selected_tilelayer = tilelayer;
-        this.fire('baselayerchange', {layer: tilelayer});
     },
 
     addTileLayer: function (options) {
@@ -407,7 +407,7 @@ L.Storage.Map.include({
 
     updatePermissions: function () {
         var url = L.Util.template(this.options.urls.map_update_permissions, {'map_id': this.options.storage_id});
-        L.Storage.Xhr.get(url, {
+        this.get(url, {
             'listen_form': {'id': 'map_edit'}
         });
     },
@@ -701,7 +701,7 @@ L.Storage.Map.include({
         formData.append("name", this.options.name);
         formData.append("center", JSON.stringify(this.geometry()));
         formData.append("settings", JSON.stringify(geojson));
-        L.Storage.Xhr.post(this.getSaveUrl(), {
+        this.post(this.getSaveUrl(), {
             data: formData,
             callback: function (data) {
                 var duration = 3000;
@@ -959,15 +959,32 @@ L.Storage.Map.include({
     del: function () {
         if (confirm(L._('Are you sure you want to delete this map?'))) {
             var url = L.Util.template(this.options.urls.map_delete, {'map_id': this.options.storage_id});
-            L.S.Xhr.post(url);
+            this.post(url);
         }
     },
 
     clone: function () {
         if (confirm(L._('Are you sure you want to clone this map and all its datalayers?'))) {
             var url = L.Util.template(this.options.urls.map_clone, {'map_id': this.options.storage_id});
-            L.S.Xhr.post(url);
+            this.post(url);
         }
+    },
+
+    initLoader: function () {
+        this.loader = new L.Control.Loading();
+        this.loader.onAdd(this);
+    },
+
+    post: function (url, options) {
+        options = options || {};
+        options.listener = this;
+        L.S.Xhr.post(url, options);
+    },
+
+    get: function (url, options) {
+        options = options || {};
+        options.listener = this;
+        L.S.Xhr.get(url, options);
     }
 
 });

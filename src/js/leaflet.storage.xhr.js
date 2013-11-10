@@ -22,19 +22,20 @@ L.Storage.Xhr = {
         return new wrapper();
     },
 
-    _ajax: function (verb, uri, data, callback, headers) {
+    _ajax: function (settings) {
+        if (settings.listener) settings.listener.fire('dataloading');
         var response, xhr = this._wrapper();
-        xhr.open(verb, uri, true);
-        if (headers) {
-            for (var name in headers) {
-                xhr.setRequestHeader(name, headers[name]);
+        xhr.open(settings.verb, settings.uri, true);
+        if (settings.headers) {
+            for (var name in settings.headers) {
+                xhr.setRequestHeader(name, settings.headers[name]);
             }
         }
 
         xhr.onreadystatechange = function(e) {
             if (xhr.readyState === 4) {
                 if (xhr.status == 200) {
-                    callback(xhr.responseText);
+                    settings.callback(xhr.responseText);
                 }
                 else if (xhr.status === 403) {
                     L.Storage.fire("ui:alert", {"content": L._("Action not allowed :("), "level": "error"});
@@ -42,10 +43,11 @@ L.Storage.Xhr = {
                 else {
                     L.Storage.fire("ui:alert", {"content": L._("Problem in the response"), "level": "error"});
                 }
+                if (settings.listener) settings.listener.fire('dataload');
             }
         };
 
-        xhr.send(data);
+        xhr.send(settings.data);
     },
 
     // supports only JSON as response data type
@@ -100,7 +102,14 @@ L.Storage.Xhr = {
             }
         };
 
-        this._ajax(verb, uri, settings.data, callback, settings.headers);
+        this._ajax({
+            verb: verb,
+            uri: uri,
+            data: settings.data,
+            callback: callback,
+            headers: settings.headers,
+            listener: settings.listener
+        });
     },
 
     get: function(uri, options) {

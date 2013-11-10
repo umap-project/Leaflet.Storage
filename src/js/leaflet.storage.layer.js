@@ -63,7 +63,7 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
     },
 
     _dataGetter: function (callback) {
-        L.Storage.Xhr.get(this._dataUrl(), {"callback": callback});
+        this.map.get(this._dataUrl(), {"callback": callback});
     },
 
     addLayer: function (feature) {
@@ -367,7 +367,7 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         // filename support is shaky, don't do it for now
         var blob = new Blob([JSON.stringify(geojson)], {type: 'application/json'});
         formData.append("geojson", blob);
-        L.Storage.Xhr.post(this.getSaveUrl(), {
+        this.map.post(this.getSaveUrl(), {
             data: formData,
             callback: function (data) {
                 this.populate(data);

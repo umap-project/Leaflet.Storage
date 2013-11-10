@@ -25,3 +25,6 @@
 [submodule "reqs/osmtogeojson"]
 	path = reqs/osmtogeojson
 	url = https://github.com/aaronlidman/osm-and-geojson.git
+[submodule "reqs/loading"]
+	path = reqs/loading
+	url = https://github.com/ebrelsford/Leaflet.loading.git
