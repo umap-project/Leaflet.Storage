@@ -173,12 +173,6 @@ a.storage-control-text {
 /*   Third party plugin override     */
 /* ********************************* */
 
-.leaflet-control-edit-in-osm a.osm-editor,
-.leaflet-control-edit-in-osm .leaflet-control-edit-in-osm-toggle {
-    height: 34px;
-    width: 34px;
-    line-height: 34px;
-}
 .leaflet-control-edit-in-osm .leaflet-control-edit-in-osm-toggle {
     background-image: url("../img/edit-in-osm.png");
 }
