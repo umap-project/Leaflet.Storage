@@ -59,14 +59,15 @@ L.Storage.FeatureMixin = {
         deleteLink.href = "#";
         deleteLink.innerHTML = L._('Delete');
         L.DomEvent.on(deleteLink, "click", function (e) {
-            if (confirm(L._('Are you sure you want to delete the feature?'))) {
-                this._delete();
+            if (this.confirmDelete()) {
                 L.S.fire('ui:end');
             }
         }, this);
         L.S.fire('ui:start', {data: {html: container}});
         this.bringToCenter();
     },
+
+    endEdit: function () {},
 
     populatePopup: function () {
         var container = L.DomUtil.create('div', ''),
@@ -111,13 +112,15 @@ L.Storage.FeatureMixin = {
         this.bindPopup(container);
     },
 
-    endEdit: function () {
-        // if (!this.storage_id) {
-        //     this._delete();
-        // }
+    confirmDelete: function () {
+        if (confirm(L._('Are you sure you want to delete the feature?'))) {
+            this.del();
+            return true;
+        }
+        return false;
     },
 
-    _delete: function () {
+    del: function () {
         this.isDirty = true;
         this.map.closePopup();
         if (this.datalayer) {
@@ -223,6 +226,12 @@ L.Storage.FeatureMixin = {
             console.log(e);
             // Certainly IE8, which has a limited version of defineProperty
         }
+        this.on('contextmenu', this._showContextMenu, this);
+    },
+
+    _showContextMenu: function (e) {
+        var pt = this._map.mouseEventToContainerPoint(e.originalEvent);
+        this._map.contextmenu.showAt(pt, {relatedTarget: this});
     },
 
     makeDirty: function () {

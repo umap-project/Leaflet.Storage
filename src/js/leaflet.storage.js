@@ -231,6 +231,7 @@ L.Storage.Map.include({
             }
         };
         this.backupOptions();
+        this.initContextMenu();
     },
 
     overrideBooleanOptionFromQueryString: function (name) {
@@ -631,7 +632,6 @@ L.Storage.Map.include({
             datalayer.reset();
         });
         this.options = L.extend({}, this._backupOptions);
-        this.initControls();
         this.isDirty = false;
     },
 
@@ -985,6 +985,73 @@ L.Storage.Map.include({
         options = options || {};
         options.listener = this;
         L.S.Xhr.get(url, options);
+    },
+
+    initContextMenu: function () {
+        this.contextmenu = new L.S.ContextMenu(this);
+        this.contextmenu.enable();
+    },
+
+    setContextMenuItems: function (e) {
+        var items = [
+            {
+                text: L._('Zoom in'),
+                callback: function () {this.zoomIn();}
+            },
+            {
+                text: L._('Zoom out'),
+                callback: function () {this.zoomOut();}
+            }
+        ];
+        if (this.options.allowEdit) {
+            items.push('-');
+            if (this.editEnabled) {
+                if (e && e.relatedTarget) {
+                    if (e.relatedTarget.edit) {
+                        items.push(
+                            {
+                                text: L._('Edit this feature'),
+                                callback: e.relatedTarget.edit,
+                                context: e.relatedTarget
+                            },
+                            {
+                                text: L._('Delete this feature'),
+                                callback: e.relatedTarget.confirmDelete,
+                                context: e.relatedTarget
+                            }
+                        );
+                    }
+                    items.push('-');
+                }
+                items.push(
+                    {
+                        text: L._('Stop editing') + ' (Ctrl+E)',
+                        callback: this.disableEdit
+                    },
+                    {
+                        text: L._('Draw a marker') + ' (Ctrl-M)',
+                        callback: this.drawControl.startMarker,
+                        context: this.drawControl
+                    },
+                    {
+                        text: L._('Draw a polygon') + ' (Ctrl-P)',
+                        callback: this.drawControl.startPolygon,
+                        context: this.drawControl
+                    },
+                    {
+                        text: L._('Draw a line') + ' (Ctrl-L)',
+                        callback: this.drawControl.startPolyline,
+                        context: this.drawControl
+                    }
+                );
+            } else {
+                items.push({
+                    text: L._('Start editing') + ' (Ctrl+E)',
+                    callback: this.enableEdit
+                });
+            }
+        }
+        this.options.contextmenuItems = items;
     }
 
 });

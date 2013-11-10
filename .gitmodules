@@ -28,3 +28,6 @@
 [submodule "reqs/loading"]
 	path = reqs/loading
 	url = https://github.com/ebrelsford/Leaflet.loading.git
+[submodule "reqs/contextmenu"]
+	path = reqs/contextmenu
+	url = https://github.com/aratcliffe/Leaflet.contextmenu.git
