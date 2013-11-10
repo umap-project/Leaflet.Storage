@@ -721,11 +721,11 @@ a.storage-control-text {
 .storage-loading .storage-loader
 {
     display: block;
-    -webkit-animation: shift-rightwards 1s ease-in-out infinite;
-    -moz-animation: shift-rightwards 1s ease-in-out infinite;
-    -ms-animation: shift-rightwards 1s ease-in-out infinite;
-    -o-animation: shift-rightwards 1s ease-in-out infinite;
-    animation: shift-rightwards 1s ease-in-out infinite;
+    -webkit-animation: shift-rightwards 3s ease-in-out infinite;
+    -moz-animation: shift-rightwards 3s ease-in-out infinite;
+    -ms-animation: shift-rightwards 3s ease-in-out infinite;
+    -o-animation: shift-rightwards 3s ease-in-out infinite;
+    animation: shift-rightwards 3s ease-in-out infinite;
     -webkit-animation-delay: .4s;
     -moz-animation-delay: .4s;
     -o-animation-delay: .4s;
