@@ -113,7 +113,7 @@ L.Storage.Map.include({
         }
         else if (this.options.displayDataBrowserOnLoad && this.options.datalayersControl) {
             this.whenReady(function () {
-                if (this.controls.datalayersControl) {
+                if (this._controls.datalayersControl) {
                 this._controls.datalayersControl.openBrowser();
                 }
             });
