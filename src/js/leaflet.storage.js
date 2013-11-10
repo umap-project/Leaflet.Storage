@@ -67,6 +67,10 @@ L.Storage.Map.include({
         this.overrideBooleanOptionFromQueryString("scaleControl");
         this.overrideBooleanOptionFromQueryString("allowEdit");
         this.overrideBooleanOptionFromQueryString("datalayersControl");
+        if (L.Browser.ielt9) {
+            // TODO include ie9
+            this.options.allowEdit = false;
+        }
 
         var edited_feature = null;
         try {
