@@ -207,15 +207,15 @@ L.Storage.Map.include({
                 }
                 if (key == chars.M && e.ctrlKey && this.editEnabled) {
                     L.DomEvent.stop(e);
-                    this.drawControl.startMarker();
+                    this._controls.draw.startMarker();
                 }
                 if (key == chars.P && e.ctrlKey && this.editEnabled) {
                     L.DomEvent.stop(e);
-                    this.drawControl.startPolygon();
+                    this._controls.draw.startPolygon();
                 }
                 if (key == chars.L && e.ctrlKey && this.editEnabled) {
                     L.DomEvent.stop(e);
-                    this.drawControl.startPolyline();
+                    this._controls.draw.startPolyline();
                 }
                 if (key == chars.I && e.ctrlKey && this.editEnabled) {
                     L.DomEvent.stop(e);
@@ -252,11 +252,11 @@ L.Storage.Map.include({
             this._controls.datalayersControl = new L.Storage.DataLayersControl().addTo(this);
         }
         if (this.options.allowEdit) {
-            this.toggleEditControl = new L.Storage.EditControl(this);
-            this.addControl(this.toggleEditControl);
+            this._controls.toggleEdit = new L.Storage.EditControl(this);
+            this.addControl(this._controls.toggleEdit);
             var options = this.options.editOptions ? this.options.editOptions : {};
-            this.drawControl = new L.Storage.DrawControl(this, options);
-            this.addControl(this.drawControl);
+            this._controls.draw = new L.Storage.DrawControl(this, options);
+            this.addControl(this._controls.draw);
         }
         if (this.options.moreControl) {
             this._controls.moreControl = (new L.Storage.MoreControls()).addTo(this);
@@ -895,20 +895,20 @@ L.Storage.Map.include({
             {
                 title: L._('Draw a polyline') + ' (Ctrl+P)',
                 className: 'leaflet-draw-draw-polyline',
-                callback: this.drawControl.startPolyline,
-                context: this.drawControl
+                callback: this._controls.draw.startPolyline,
+                context: this._controls.draw
             },
             {
                 title: L._('Draw a polygon') + ' (Ctrl+L)',
                 className: 'leaflet-draw-draw-polygon',
-                callback: this.drawControl.startPolygon,
-                context: this.drawControl
+                callback: this._controls.draw.startPolygon,
+                context: this._controls.draw
             },
             {
                 title: L._('Draw a marker') + ' (Ctrl+M)',
                 className: 'leaflet-draw-draw-marker',
-                callback: this.drawControl.startMarker,
-                context: this.drawControl
+                callback: this._controls.draw.startMarker,
+                context: this._controls.draw
             }
         );
         for (var i = 0; i < actions.length; i++) {
@@ -1030,18 +1030,18 @@ L.Storage.Map.include({
                     },
                     {
                         text: L._('Draw a marker') + ' (Ctrl-M)',
-                        callback: this.drawControl.startMarker,
-                        context: this.drawControl
+                        callback: this._controls.draw.startMarker,
+                        context: this._controls.draw
                     },
                     {
                         text: L._('Draw a polygon') + ' (Ctrl-P)',
-                        callback: this.drawControl.startPolygon,
-                        context: this.drawControl
+                        callback: this._controls.draw.startPolygon,
+                        context: this._controls.draw
                     },
                     {
                         text: L._('Draw a line') + ' (Ctrl-L)',
-                        callback: this.drawControl.startPolyline,
-                        context: this.drawControl
+                        callback: this._controls.draw.startPolyline,
+                        context: this._controls.draw
                     }
                 );
             } else {

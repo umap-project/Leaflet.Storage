@@ -54,7 +54,10 @@ L.S.ElementHelper.Textarea = L.S.ElementHelper.extend({
 
     build: function () {
         this.input = L.DomUtil.create('textarea', '', this.form);
-        this.input.value = this.backup = this.toHTML() || null;
+        var value = this.backup = this.toHTML();
+        if (value) {
+            this.input.value = value;
+        }
         L.DomEvent.on(this.input, 'input', this.sync, this);
         L.DomEvent.on(this.input, 'keypress', this.onKeyPress, this);
     },
