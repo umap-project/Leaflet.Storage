@@ -72,7 +72,7 @@ L.Storage.FeatureMixin = {
     populatePopup: function () {
         var container = L.DomUtil.create('div', ''),
             title = L.DomUtil.create('h4', '', container),
-            content = L.DomUtil.create('div', '', container);
+            content = L.DomUtil.create('p', '', container);
         // TODO manage popup template, and handle other properties
         title.innerHTML = this.properties.name;
         if (this.properties.description) {
