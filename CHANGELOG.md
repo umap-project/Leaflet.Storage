@@ -1,5 +1,17 @@
 # Leaflet.Storage changelog
 
+## 0.5.x
+- datalayers are now sent to backend as geojson
+- there is now a global "save" button, and also a "cancel changes"
+- added a contextmenu, thanks to https://github.com/aratcliffe/Leaflet.contextmenu
+- added a loader, thanks to https://github.com/ebrelsford/Leaflet.loading
+- import are processed client side, thanks to https://github.com/mapbox/csv2geojson
+  and https://github.com/mapbox/togeojson
+- download is handled client side
+- option "outlink" as been added, to open external URL on polygon click
+- edit shortcuts has been added (Ctrl-E to toggle edit status, Ctrl-S to save, etc.)
+- links in popup now open in a now window
+
 ## 0.4.x
 - add a data browser
 - add a popup footer with navigation between features
