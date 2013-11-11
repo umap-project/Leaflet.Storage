@@ -424,8 +424,8 @@ L.Storage.Map.include({
             fileInput = L.DomUtil.create('input', '', fileBox),
             urlInput = L.DomUtil.create('input', '', container),
             rawInput = L.DomUtil.create('textarea', '', container),
-            typeInput = L.DomUtil.create('select', '', container),
-            layerInput = L.DomUtil.create('select', '', container),
+            typeLabel = L.DomUtil.create('label', '', container),
+            layerLabel = L.DomUtil.create('label', '', container),
             submitInput = L.DomUtil.create('input', '', container),
             map = this, option,
             types = ['geojson', 'csv', 'gpx', 'kml'];
@@ -434,7 +434,11 @@ L.Storage.Map.include({
         submitInput.type = "button";
         submitInput.value = L._('Import');
         submitInput.className = "button";
+        typeLabel.innerHTML = L._('Choose the format of the data to import');
+        var typeInput = L.DomUtil.create('select', '', typeLabel);
         typeInput.name = "format";
+        layerLabel.innerHTML = L._('Choose the layer to import in');
+        var layerInput = L.DomUtil.create('select', '', layerLabel);
         layerInput.name = "datalayer";
         urlInput.type = "text";
         urlInput.placeholder = L._('Provide an URL here');
