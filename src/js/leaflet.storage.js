@@ -587,7 +587,9 @@ L.Storage.Map.include({
                 color.style.backgroundColor = datalayer.options.color;
             }
             title.innerHTML = datalayer.options.name + ' ';
-            description.innerHTML = datalayer.options.description;
+            if (datalayer.options.description) {
+                description.innerHTML = datalayer.options.description;
+            }
         });
         L.DomUtil.create('hr', '', container);
         title = L.DomUtil.create('h5', '', container);
