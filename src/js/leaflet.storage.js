@@ -584,7 +584,7 @@ L.Storage.Map.include({
                 title = L.DomUtil.create('strong', '', p),
                 description = L.DomUtil.create('span', '', p);
             if (datalayer.options.color) {
-                color.backgroundColor = datalayer.options.color;
+                color.style.backgroundColor = datalayer.options.color;
             }
             title.innerHTML = datalayer.options.name + ' ';
             description.innerHTML = datalayer.options.description;
