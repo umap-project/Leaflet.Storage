@@ -57,7 +57,7 @@ L.Util.toHTML = function (r) {
     r = r.replace(/^# (.*)=*/gm, '<h3>$1</h3>');
     r = r.replace(/^[-*][-*][-*]+/gm, '<hr>');
 
-    // bold, italics, and code formatting
+    // bold, italics
     r = r.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     r = r.replace(/\*(.*?)\*/g, '<em>$1</em>');
 
@@ -67,10 +67,13 @@ L.Util.toHTML = function (r) {
     for (ii = 0; ii < 3; ii++) r = r.replace(new RegExp('</ul>' + newline + '<ul>', 'g'), newline);
 
     // links
-    r = r.replace(/\[\[(https?:[^\]|]*?)\]\]/g, '<a target="_blank" href="$1">$1</a>');
-    r = r.replace(/\[\[(https?:[^|]*?)\|(.*?)\]\]/g, '<a target="_blank" href="$1">$2</a>');
+    r = r.replace(/(\[\[http)/g, '[[h_t_t_p');  // Escape for avoiding clash between [[http://xxx]] and http://xxx
+    r = r.replace(/(https?[^ ]*)/g, '<a target="_blank" href="$1">$1</a>');
+    r = r.replace(/\[\[(h_t_t_ps?:[^\]|]*?)\]\]/g, '<a target="_blank" href="$1">$1</a>');
+    r = r.replace(/\[\[(h_t_t_ps?:[^|]*?)\|(.*?)\]\]/g, '<a target="_blank" href="$1">$2</a>');
     r = r.replace(/\[\[([^\]|]*?)\]\]/g, '<a href="$1">$1</a>');
     r = r.replace(/\[\[([^|]*?)\|(.*?)\]\]/g, '<a href="$1">$2</a>');
+    r = r.replace(/(h_t_t_p)/g, 'http');
 
     // images
     r = r.replace(/{{([^\]|]*?)}}/g, '<img src="$1">');

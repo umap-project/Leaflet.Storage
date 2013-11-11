@@ -66,7 +66,6 @@ describe('L.DataLayer', function () {
         });
 
         it('should call datalayer.save on save button click', function (done) {
-            console.log(this.datalayer.getSaveUrl());
             sinon.spy(this.datalayer, "save");
             this.server.respondWith('POST', '/map/99/update/settings/', JSON.stringify({id: 99}));
             this.server.respondWith('POST', '/map/99/datalayer/update/62/', JSON.stringify(defaultDatalayerData()));
