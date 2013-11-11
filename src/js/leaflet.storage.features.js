@@ -142,6 +142,7 @@ L.Storage.FeatureMixin = {
 
     populate: function (feature) {
         this.properties = L.extend({}, feature.properties);
+        this.options.title = feature.properties.name;
         this.properties._storage_options = L.extend({}, this.properties._storage_options);
     },
 
@@ -267,15 +268,6 @@ L.Storage.Marker = L.Marker.extend({
         this.on("mouseover", this._enableDragging);
         this.on("mouseout", this._onMouseOut);
         this._popupHandlersAdded = true; // prevent Leaflet from binding event on bindPopup
-    },
-
-    populate: function (feature) {
-        L.Storage.FeatureMixin.populate.call(this, feature);
-        if (feature.properties._storage_options && feature.properties._storage_options.icon) {
-            this.options.iconClass = feature.properties._storage_options.icon['class'];
-            this.options.iconUrl = feature.properties._storage_options.icon.url;
-        }
-        this.options.title = feature.properties.name;
     },
 
     _onClick: function(e){
