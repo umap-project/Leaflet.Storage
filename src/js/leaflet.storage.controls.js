@@ -303,7 +303,7 @@ L.Storage.DataLayersControl = L.Control.extend({
         title.innerHTML = this._map.name;
         if (this._map.description) {
             var content = L.DomUtil.create('div', 'storage-browse-description', description);
-            content.innerHTML = this._map.description;
+            content.innerHTML = L.Util.toHTML(this._map.description);
         }
         return this._browser_container;
     },
