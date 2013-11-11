@@ -4,6 +4,10 @@ L.Storage.FeatureMixin = {
     static_options: {},
 
     view: function(e) {
+        if (this.properties._storage_options.outlink) {
+            var win = window.open(this.properties._storage_options.outlink);
+            return;
+        }
         this.populatePopup();
         this.openPopup(e.latlng);
     },
@@ -42,7 +46,7 @@ L.Storage.FeatureMixin = {
         var builder = new L.S.FormBuilder(this, properties);
         form = builder.build();
         container.appendChild(form);
-        var options_fields = this.getStyleOptions();
+        var options_fields = this.getAdvancedOptions();
         builder = new L.S.FormBuilder(this, options_fields, {
             callback: this._redraw,
             callbackContext: this
@@ -390,7 +394,7 @@ L.Storage.Marker = L.Marker.extend({
         return 'marker';
     },
 
-    getStyleOptions: function () {
+    getAdvancedOptions: function () {
         return [
             'properties._storage_options.color',
             'properties._storage_options.iconClass',
@@ -459,7 +463,7 @@ L.Storage.PathMixin = {
         }
     },
 
-    getStyleOptions: function () {
+    getAdvancedOptions: function () {
         return [
             'properties._storage_options.color',
             'properties._storage_options.opacity',
@@ -596,6 +600,12 @@ L.Storage.Polygon = L.Polygon.extend({
 
     getClassName: function () {
         return 'polygon';
+    },
+
+    getAdvancedOptions: function () {
+        var options = L.Storage.PathMixin.getAdvancedOptions();
+        options.push(['properties._storage_options.outlink', {label: L._('outlink'), helpText: L._("Define output link to open a new window on polygon click.")}]);
+        return options;
     }
 
 });
