@@ -594,10 +594,12 @@ L.Storage.Map.include({
         title.innerHTML = L._('User content credits');
         var contentCredit = L.DomUtil.create('p', '', container),
             licence = L.DomUtil.create('a', '', contentCredit);
-        licence.innerHTML = this.options.licence.name;
-        licence.href = this.options.licence.url;
-        contentCredit.innerHTML =  L._('Map user content has been published under licence')
-                                   + ' ' + contentCredit.innerHTML;
+        if (this.options.licence) {
+            licence.innerHTML = this.options.licence.name;
+            licence.href = this.options.licence.url;
+            contentCredit.innerHTML =  L._('Map user content has been published under licence')
+                                       + ' ' + contentCredit.innerHTML;
+        }
         L.DomUtil.create('hr', '', container);
         title = L.DomUtil.create('h5', '', container);
         title.innerHTML = L._('Map background credits');
