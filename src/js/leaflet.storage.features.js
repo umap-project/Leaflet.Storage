@@ -241,6 +241,10 @@ L.Storage.FeatureMixin = {
 
     makeDirty: function () {
         this.isDirty = true;
+    },
+
+    getMap: function () {
+        return this._map;
     }
 
 };

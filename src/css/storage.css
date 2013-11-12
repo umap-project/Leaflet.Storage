@@ -550,6 +550,7 @@ a.storage-control-text {
 }
 .storage-div-icon .icon_container img {
     vertical-align: middle;
+    max-width: 24px!important; /* leaflet.css has !important, so... */
 }
 .storage-div-icon .icon_arrow {
     border-left: 8px solid transparent;
@@ -584,6 +585,7 @@ a.storage-control-text {
 }
 .storage-drop-icon .icon_container img {
     vertical-align: middle;
+    max-width: 24px !important;
 }
 .storage-circle-icon {
     border: 1px solid white;
@@ -652,11 +654,12 @@ a.storage-control-text {
 .storage-edit-actions li:hover {
     box-shadow: 0 0 3px 0 #ccc;
 }
-#storage-form-iconfield {
+.storage-form-iconfield {
     position: relative;
     overflow: hidden;
     padding-bottom: 5px;
     padding-top: 5px;
+    line-height: 30px;
 }
 .storage-icon-list, .storage-pictogram-list {
     clear: both;
@@ -664,9 +667,9 @@ a.storage-control-text {
 .storage-icon-choice {
     display: block;
     float: left;
-    width: 60px;
-    height: 60px;
-    line-height: 60px;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
     position: relative;
     cursor: pointer;
     background-image: url("../img/icon-bg.png");
@@ -675,13 +678,9 @@ a.storage-control-text {
     margin-bottom: 5px;
     margin-right: 5px;
 }
-.storage-pictogram-list .storage-icon-choice {
-    width: 30px;
-    height: 30px;
-    line-height: 30px;
-}
-.storage-pictogram-list .storage-icon-choice img {
+.storage-icon-choice img {
     vertical-align: middle;
+    max-width: 24px;
 }
 .storage-icon-choice:hover,
 .storage-icon-choice.selected,

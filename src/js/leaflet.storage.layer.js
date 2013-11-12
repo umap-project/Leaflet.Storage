@@ -380,6 +380,10 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
 
     saveDelete: function () {
         L.S.Xhr.post(this.getDeleteUrl());
+    },
+
+    getMap: function () {
+        return this.map;
     }
 
 });

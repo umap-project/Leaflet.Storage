@@ -1064,6 +1064,10 @@ L.Storage.Map.include({
             }
         }
         this.options.contextmenuItems = items;
+    },
+
+    getMap: function () {
+        return this;
     }
 
 });

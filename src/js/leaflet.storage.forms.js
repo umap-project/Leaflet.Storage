@@ -3,6 +3,7 @@ L.Storage.ElementHelper = L.Class.extend({
 
     initialize: function (formBuilder, field, options) {
         this.formBuilder = formBuilder;
+        this.map = this.formBuilder.obj.getMap();
         this.form = this.formBuilder.form;
         this.field = field;
         this.options = options;
@@ -344,13 +345,21 @@ L.S.ElementHelper.IconUrl = L.S.ElementHelper.Input.extend({
     build: function () {
         L.S.ElementHelper.Input.prototype.build.call(this);
         this.parentContainer = L.DomUtil.create('div', 'storage-form-iconfield', this.form);
-        this.headerContainer = L.DomUtil.create("div", "", this.parentContainer);
+        this.buttonsContainer = L.DomUtil.create("div", "", this.parentContainer);
         this.pictogramsContainer = L.DomUtil.create("div", "storage-pictogram-list", this.parentContainer);
         this.input.type = "hidden";
         this.label.style.display = "none";
-        this.button = L.DomUtil.create('a', 'button', this.form);
-        var self = this;
-        this.button.innerHTML = L._('Change symbol');
+        this.createButtonsBar();
+    },
+
+    createButtonsBar: function () {
+        if (this.value()) {
+            var img = L.DomUtil.create('img', '', L.DomUtil.create('div', "storage-icon-choice", this.buttonsContainer));
+            img.src = this.value();
+            L.DomEvent.on(img, "click", this.fetch, this);
+        }
+        this.button = L.DomUtil.create('a', '', this.buttonsContainer);
+        this.button.innerHTML = this.value() ? L._('Change symbol') : L._('Add symbol');
         this.button.href = "#";
         L.DomEvent
             .on(this.button, "click", L.DomEvent.stop)
@@ -364,12 +373,16 @@ L.S.ElementHelper.IconUrl = L.S.ElementHelper.Input.extend({
             container = L.DomUtil.create('div', className, this.pictogramsContainer),
             img = L.DomUtil.create('img', '', container);
         img.src = pictogram.src;
-        img.title = pictogram.name + " — © " + pictogram.attribution;
+        if (pictogram.name && pictogram.attribution) {
+            img.title = pictogram.name + " — © " + pictogram.attribution;
+        }
         L.DomEvent.on(container, "click", function (e) {
             this.input.value = value;
             this.sync();
             this.unselectAll(this.pictogramsContainer);
             L.DomUtil.addClass(container, "selected");
+            this.pictogramsContainer.innerHTML = "";
+            this.createButtonsBar();
         }, this);
     },
 
@@ -377,27 +390,52 @@ L.S.ElementHelper.IconUrl = L.S.ElementHelper.Input.extend({
         this.input.value = "";
         this.unselectAll(this.pictogramsContainer);
         this.sync();
+        this.pictogramsContainer.innerHTML = "";
+        this.createButtonsBar();
     },
 
     fetch: function (e) {
-        var self = this;
-        L.Storage.Xhr.get(this.formBuilder.obj.map.options.urls.pictogram_list_json, {
+        this.map.get(this.map.options.urls.pictogram_list_json, {
             callback: function (data) {
-                self.pictogramsContainer.innerHTML = "";
-                var title = L.DomUtil.create('h5', '', self.pictogramsContainer);
+                this.pictogramsContainer.innerHTML = "";
+                this.buttonsContainer.innerHTML = "";
+                var title = L.DomUtil.create('h5', '', this.pictogramsContainer);
                 title.innerHTML = L._("Choose a symbol");
                 for (var idx in data.pictogram_list) {
-                    self.addIconPreview(data.pictogram_list[idx]);
+                    this.addIconPreview(data.pictogram_list[idx]);
                 }
-                var deleteButton = L.DomUtil.create("a", "", self.pictogramsContainer);
+                var deleteButton = L.DomUtil.create("a", "", this.pictogramsContainer);
                 deleteButton.innerHTML = L._('Remove icon symbol');
                 deleteButton.href = "#";
                 deleteButton.style.display = "block";
                 deleteButton.style.clear = "both";
                 L.DomEvent
                     .on(deleteButton, "click", L.DomEvent.stop)
-                    .on(deleteButton, "click", self.empty, this);
-            }
+                    .on(deleteButton, "click", this.empty, this);
+                var cancelButton = L.DomUtil.create("a", "", this.pictogramsContainer);
+                cancelButton.innerHTML = L._('Cancel');
+                cancelButton.href = "#";
+                cancelButton.style.display = "block";
+                cancelButton.style.clear = "both";
+                L.DomEvent
+                    .on(cancelButton, "click", L.DomEvent.stop)
+                    .on(cancelButton, "click", function (e) {
+                        this.pictogramsContainer.innerHTML = "";
+                        this.createButtonsBar();
+                    }, this);
+                var customButton = L.DomUtil.create("a", "", this.pictogramsContainer);
+                customButton.innerHTML = L._('Custom');
+                customButton.href = "#";
+                customButton.style.display = "block";
+                customButton.style.clear = "both";
+                L.DomEvent
+                    .on(customButton, "click", L.DomEvent.stop)
+                    .on(customButton, "click", function (e) {
+                        this.input.type = "url";
+                        this.pictogramsContainer.innerHTML = "";
+                    }, this);
+            },
+            context: this
         });
     },
 
