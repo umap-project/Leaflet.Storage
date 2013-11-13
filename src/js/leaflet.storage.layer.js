@@ -251,7 +251,8 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
             'options.fill',
             'options.fillColor',
             'options.fillOpacity',
-            'options.dashArray'
+            'options.dashArray',
+            'options.popupTemplate'
         ];
         builder = new L.S.FormBuilder(this, options_fields, {
             callback: this.redraw,

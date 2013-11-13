@@ -288,6 +288,28 @@ L.S.ElementHelper.IconClassSwitcher = L.S.ElementHelper.SelectAbstract.extend({
 
 });
 
+L.S.ElementHelper.PopupTemplate = L.S.ElementHelper.SelectAbstract.extend({
+
+    selectOptions: [
+        [undefined, L._('inherit')],
+        ["default", L._('name and description')],
+        ["table", L._('table')]
+    ],
+
+    toJS: function () {
+        var value = this.value();
+        switch(value) {
+            case "default":
+            case "table":
+                break;
+            default:
+                value = undefined;
+        }
+        return value;
+    }
+
+});
+
 L.S.ElementHelper.LicenceChooser = L.S.ElementHelper.SelectAbstract.extend({
 
     getOptions: function () {
@@ -551,7 +573,8 @@ L.Storage.FormBuilder = L.Class.extend({
         smoothFactor: {label: L._('smooth factor'), helpText: L._("How much to simplify the polyline on each zoom level (more = better performance and smoother look, less = more accurate)")},
         dashArray: {label: L._('dash array'), helpText: L._("A string that defines the stroke dash pattern. Ex.: '5, 10, 15'.")},
         iconClass: {handler: 'IconClassSwitcher', label: L._('type of icon')},
-        iconUrl: {handler: 'IconUrl', label: L._('symbol of the icon')}
+        iconUrl: {handler: 'IconUrl', label: L._('symbol of the icon')},
+        popupTemplate: {handler: 'PopupTemplate', label: L._('template to use for the popup')}
     }
 
 });

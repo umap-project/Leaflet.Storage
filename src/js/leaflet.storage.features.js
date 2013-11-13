@@ -73,14 +73,43 @@ L.Storage.FeatureMixin = {
 
     endEdit: function () {},
 
+    defaultPopupTemplate: function (container) {
+        var content = L.DomUtil.create('p', '', container);
+        if (this.properties.description) {
+            content.innerHTML = L.Util.toHTML(this.properties.description);
+        }
+
+    },
+
+    tablePopupTemplate: function (container) {
+        var table = L.DomUtil.create('table', '', container);
+
+        var addRow = function (key, value) {
+            var tr = L.DomUtil.create('tr', '', table),
+                th = L.DomUtil.create('th', '', tr),
+                td = L.DomUtil.create('td', '', tr);
+            th.innerHTML = key;
+            td.innerHTML = value;
+        };
+
+        for (var key in this.properties) {
+            if (typeof this.properties[key] === "object") {
+                continue;
+            }
+            // TODO, manage links (url, mailto, wikipedia...)
+            addRow(key, this.properties[key]);
+        }
+    },
+
     populatePopup: function () {
         var container = L.DomUtil.create('div', ''),
             title = L.DomUtil.create('h4', '', container),
-            content = L.DomUtil.create('p', '', container);
-        // TODO manage popup template, and handle other properties
+            template = this.getOption('popupTemplate');
         title.innerHTML = this.properties.name;
-        if (this.properties.description) {
-            content.innerHTML = L.Util.toHTML(this.properties.description);
+        if (template === "table") {
+            this.tablePopupTemplate(container);
+        } else {
+            this.defaultPopupTemplate(container);
         }
         if (this.map.options.displayPopupFooter && !L.Browser.ielt9) {
             var footer = L.DomUtil.create('ul', 'storage-popup-footer', container),
@@ -163,8 +192,8 @@ L.Storage.FeatureMixin = {
         return typeof options[option] !== "undefined" && options[option] !== "" && options[option] !== null;
     },
 
-    getOption: function (option) {
-        var value = null;
+    getOption: function (option, fallback) {
+        var value = fallback || null;
         if (this.usableOption(this.properties._storage_options, option)) {
             value = this.properties._storage_options[option];
         }
@@ -402,7 +431,8 @@ L.Storage.Marker = L.Marker.extend({
         return [
             'properties._storage_options.color',
             'properties._storage_options.iconClass',
-            'properties._storage_options.iconUrl'
+            'properties._storage_options.iconUrl',
+            'properties._storage_options.popupTemplate'
         ];
     }
 
@@ -477,7 +507,8 @@ L.Storage.PathMixin = {
             'properties._storage_options.fillColor',
             'properties._storage_options.fillOpacity',
             'properties._storage_options.smoothFactor',
-            'properties._storage_options.dashArray'
+            'properties._storage_options.dashArray',
+            'properties._storage_options.popupTemplate'
         ];
     },
 
