@@ -11,6 +11,7 @@
 - option "outlink" as been added, to open external URL on polygon click
 - edit shortcuts has been added (Ctrl-E to toggle edit status, Ctrl-S to save, etc.)
 - links in popup now open in a now window
+- possibility to add custom icon symbols
 
 ## 0.4.x
 - add a data browser

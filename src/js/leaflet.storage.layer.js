@@ -95,6 +95,13 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
 
         if (features) {
             features.sort(function (a, b) {
+                if (!a.properties.name && ! b.properties.name) {
+                    return 0;
+                } else if (!a.properties.name) {
+                    return -1;
+                } else if (!b.properties.name) {
+                    return 1;
+                }
                 return a.properties.name.localeCompare(b.properties.name);
             });
             for (i = 0, len = features.length; i < len; i++) {
