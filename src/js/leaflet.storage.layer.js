@@ -36,7 +36,6 @@ L.Storage.DataLayer = L.GeoJSON.extend({
         }
         this.whenLoaded(function () {
             this.map.on('moveend zoomend', function (e) {
-                console.log("zoomend")
                 if (this.isRemoteLayer() && this.options.remoteData.dynamic && this.map.hasLayer(this)) {
                     this.reset();
                 }
