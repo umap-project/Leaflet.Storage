@@ -23,8 +23,8 @@ L.Storage.Xhr = {
     },
 
     _ajax: function (settings) {
-        if (settings.listener) settings.listener.fire('dataloading');
-        var response, xhr = this._wrapper();
+        var response, xhr = this._wrapper(), id = Math.random();
+        if (settings.listener) settings.listener.fire('dataloading', {id: id});
         xhr.open(settings.verb, settings.uri, true);
         if (settings.headers) {
             for (var name in settings.headers) {
@@ -43,7 +43,7 @@ L.Storage.Xhr = {
                 else {
                     L.Storage.fire("ui:alert", {"content": L._("Problem in the response"), "level": "error"});
                 }
-                if (settings.listener) settings.listener.fire('dataload');
+                if (settings.listener) settings.listener.fire('dataload', {id: id});
             }
         };
 

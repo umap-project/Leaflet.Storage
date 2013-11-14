@@ -612,6 +612,9 @@ a.storage-control-text {
     top: -1px;
     width: 2px;
 }
+.storage-edit-enabled .readonly {
+    cursor: not-allowed;
+}
 
 
 /* ********************************* */

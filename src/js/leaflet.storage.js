@@ -454,20 +454,17 @@ L.Storage.Map.include({
             option.value = option.innerHTML = types[i];
         }
 
-        var toFeatures = function (geojson) {
-            var layerId = layerInput[layerInput.selectedIndex].value;
+        var processContent = function (raw) {
+            var type = typeInput.value,
+                layerId = layerInput[layerInput.selectedIndex].value;
             layer = map.datalayers[layerId];
-            layer.addData(geojson);
+            layer.addRawData(raw, type);
             layer.isDirty = true;
             L.S.fire('ui:end');
             layer.zoomTo();
         };
 
-        var toDom = function (x) {
-            return (new DOMParser()).parseFromString(x, 'text/xml');
-        };
-
-        var detectType = function (f) {
+        var detectTypeFromFile = function (f) {
             var filename = f.name ? escape(f.name.toLowerCase()) : '';
             function ext(_) {
                 return filename.indexOf(_) !== -1;
@@ -481,35 +478,6 @@ L.Storage.Map.include({
                 return 'dsv';
             }
             if (ext('.xml')) return 'osm';
-        };
-
-        var processContent = function (c) {
-            var type = typeInput.value;
-            if (type === "csv") {
-                csv2geojson.csv2geojson(c, {
-                    delimiter: 'auto'
-                }, function(err, result) {
-                    if (err) {
-                        L.S.fire('ui:alert', {content: 'error in csv', level: 'error'});
-                    } else {
-                        toFeatures(result);
-                    }
-                });
-            } else if (type === 'gpx') {
-                toFeatures(toGeoJSON.gpx(toDom(c)));
-            } else if (type === 'kml') {
-                toFeatures(toGeoJSON.kml(toDom(c)));
-            } else if (type === 'osm') {
-                toFeatures(osm_geojson.osm2geojson(toDom(c)));
-            } else if (type === "geojson") {
-                try {
-                    gj = JSON.parse(c);
-                    toFeatures(gj);
-                } catch(err) {
-                    L.S.fire('ui:alert', {content: 'Invalid JSON file: ' + err});
-                    return;
-                }
-            }
         };
 
         var processFile = function () {
@@ -531,22 +499,7 @@ L.Storage.Map.include({
         };
 
         var processUrl = function () {
-            var url = urlInput.value,
-                replace = {
-                    bbox: map.getBounds().toBBoxString(),
-                    north: map.getBounds().getNorthEast().lat,
-                    east: map.getBounds().getNorthEast().lng,
-                    south: map.getBounds().getSouthWest().lat,
-                    west: map.getBounds().getNorthEast().lng,
-                    lat: map.getCenter().lat,
-                    lng: map.getCenter().lng,
-                    zoom: map.getZoom()
-                };
-            replace['left'] = replace['west'];
-            replace['bottom'] = replace['south'];
-            replace['right'] = replace['east'];
-            replace['top'] = replace['north'];
-            url = L.Util.template(url, replace);
+            var url = map.localizeUrl(urlInput.value);
             L.S.Xhr._ajax('GET', url, null, function (data) {
                 processContent(data);
             });
@@ -566,7 +519,7 @@ L.Storage.Map.include({
         L.DomEvent.on(submitInput, 'click', submit, this);
         L.DomEvent.on(fileInput, 'change', function (e) {
             var f = e.target.files[0],
-                type = detectType(f);
+                type = detectTypeFromFile(f);
             if (type) {
                 typeInput.value = type;
             }
@@ -999,6 +952,11 @@ L.Storage.Map.include({
         L.S.Xhr.get(url, options);
     },
 
+    ajax: function (options) {
+        options.listener = this;
+        L.S.Xhr._ajax(options);
+    },
+
     initContextMenu: function () {
         this.contextmenu = new L.S.ContextMenu(this);
         this.contextmenu.enable();
@@ -1015,26 +973,14 @@ L.Storage.Map.include({
                 callback: function () {this.zoomOut();}
             }
         ];
+        if (e && e.relatedTarget) {
+            if (e.relatedTarget.getContextMenuItems) {
+                items = items.concat(e.relatedTarget.getContextMenuItems());
+            }
+        }
         if (this.options.allowEdit) {
             items.push('-');
             if (this.editEnabled) {
-                if (e && e.relatedTarget) {
-                    if (e.relatedTarget.edit) {
-                        items.push(
-                            {
-                                text: L._('Edit this feature'),
-                                callback: e.relatedTarget.edit,
-                                context: e.relatedTarget
-                            },
-                            {
-                                text: L._('Delete this feature'),
-                                callback: e.relatedTarget.confirmDelete,
-                                context: e.relatedTarget
-                            }
-                        );
-                    }
-                    items.push('-');
-                }
                 items.push(
                     {
                         text: L._('Stop editing') + ' (Ctrl+E)',
@@ -1068,6 +1014,24 @@ L.Storage.Map.include({
 
     getMap: function () {
         return this;
+    },
+
+    localizeUrl: function (url) {
+        var replace = {
+                bbox: this.getBounds().toBBoxString(),
+                north: this.getBounds().getNorthEast().lat,
+                east: this.getBounds().getNorthEast().lng,
+                south: this.getBounds().getSouthWest().lat,
+                west: this.getBounds().getNorthEast().lng,
+                lat: this.getCenter().lat,
+                lng: this.getCenter().lng,
+                zoom: this.getZoom()
+            };
+        replace['left'] = replace['west'];
+        replace['bottom'] = replace['south'];
+        replace['right'] = replace['east'];
+        replace['top'] = replace['north'];
+        return L.Util.template(url, replace);
     }
 
 });

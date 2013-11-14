@@ -3,6 +3,10 @@ L.Storage.FeatureMixin = {
     form_id: "feature_form",
     static_options: {},
 
+    isReadOnly: function () {
+        return !!this.datalayer.isDynamicLayer();
+    },
+
     view: function(e) {
         if (this.properties._storage_options.outlink) {
             var win = window.open(this.properties._storage_options.outlink);
@@ -13,7 +17,7 @@ L.Storage.FeatureMixin = {
     },
 
     edit: function(e) {
-        if(!this.map.editEnabled) return;
+        if(!this.map.editEnabled || this.isReadOnly()) return;
         this.map.edited_feature = this;
         var self = this,
             container = L.DomUtil.create('div'),
@@ -274,7 +278,32 @@ L.Storage.FeatureMixin = {
 
     getMap: function () {
         return this._map;
+    },
+
+    getContextMenuItems: function () {
+        var items = [];
+        if (this._map.editEnabled && !this.isReadOnly()) {
+            items.push('-',
+                {
+                    text: L._('Edit this feature'),
+                    callback: this.edit,
+                    context: this
+                },
+                {
+                    text: L._("Edit feature's layer"),
+                    callback: this.datalayer.edit,
+                    context: this.datalayer
+                },
+                {
+                    text: L._('Delete this feature'),
+                    callback: this.confirmDelete,
+                    context: this
+                }
+            );
+        }
+        return items;
     }
+
 
 };
 

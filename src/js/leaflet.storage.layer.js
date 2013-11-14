@@ -1,4 +1,4 @@
-L.Storage.DataLayer = L.LazyGeoJSON.extend({
+L.Storage.DataLayer = L.GeoJSON.extend({
 
     options: {
         displayOnLoad: true
@@ -7,10 +7,10 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
     initialize: function (map, datalayer, options) {
         this.map = map;
         this._index = Array();
-        if(typeof options == "undefined") {
-            options = {};
-        }
-        L.LazyGeoJSON.prototype.initialize.call(this, this._dataGetter, options);
+        this._layers = {};
+        this._geojson = null;
+        L.Util.setOptions(this, options);
+
         var isDirty = false,
             self = this;
         try {
@@ -34,6 +34,62 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         if (!this.storage_id) {
             this.isDirty = true;
         }
+    },
+
+    onAdd: function (map, insertAtTheBottom) {
+        // Fetch geojson only at first call
+        if(this._geojson === null) {
+            this.fetchData();
+        }
+
+        // Call parent of GeoJSON
+        L.FeatureGroup.prototype.onAdd.call(this, map, insertAtTheBottom);
+    },
+
+    fetchData: function () {
+        if (!this.storage_id) {
+            return;
+        }
+        var self = this;
+        this.map.get(this._dataUrl(), {
+            callback: function (geojson) {
+                if (geojson._storage) {
+                    this.populate(geojson._storage);
+                }
+                if (this.isDynamicLayer()) {
+                    this.fetchDynamicData();
+                } else {
+                    this.fromGeoJSON(geojson);
+                }
+            },
+            context: this
+        });
+    },
+
+    fromGeoJSON: function (geojson) {
+        this.addData(geojson);
+        this._geojson = geojson;
+        this.fire('dataloaded');
+    },
+
+    fetchDynamicData: function () {
+        var self = this;
+        this.map.ajax({
+            uri: this.options.dynamicData.url,
+            verb: 'GET',
+            callback: function (raw) {
+                self.rawToGeoJSON(raw, self.options.dynamicData.format, function (geojson) {self.fromGeoJSON(geojson);});
+            }
+        });
+    },
+
+    whenLoaded: function (callback, context) {
+        if (this._geojson !== null) {
+            callback.call(context || this, this);
+        } else {
+            this.on('dataloaded', callback, context);
+        }
+        return this;
     },
 
     populate: function (datalayer) {
@@ -62,20 +118,20 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         return L.Util.template(template, {"pk": this.storage_id});
     },
 
-    _dataGetter: function (callback) {
-        this.map.get(this._dataUrl(), {"callback": callback});
+    isDynamicLayer: function () {
+        return this.options.dynamicData && this.options.dynamicData.url && this.options.dynamicData.format;
     },
 
     addLayer: function (feature) {
         feature.connectToDataLayer(this);
         this._index.push(L.stamp(feature));
-        return L.LazyGeoJSON.prototype.addLayer.call(this, feature);
+        return L.GeoJSON.prototype.addLayer.call(this, feature);
     },
 
     removeLayer: function (feature) {
         feature.disconnectFromDataLayer(this);
         this._index.splice(this._index.indexOf(L.stamp(feature)), 1);
-        return L.LazyGeoJSON.prototype.removeLayer.call(this, feature);
+        return L.GeoJSON.prototype.removeLayer.call(this, feature);
     },
 
     addData: function (geojson) {
@@ -87,6 +143,49 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
             this.populate(geojson._storage);
         }
         return this.geojsonToFeatures(geojson);
+    },
+
+
+    addRawData: function (c, type) {
+        var self = this;
+        this.rawToGeoJSON(c, type, function (geojson) {
+            self.addData(geojson);
+        });
+    },
+
+    rawToGeoJSON: function (c, type, callback) {
+        var self = this,
+            toDom = function (x) {
+            return (new DOMParser()).parseFromString(x, 'text/xml');
+        };
+
+        // TODO add a duck typing guessType
+        if (type === "csv") {
+            csv2geojson.csv2geojson(c, {
+                delimiter: 'auto',
+                includeLatLon: false
+            }, function(err, result) {
+                if (err) {
+                    L.S.fire('ui:alert', {content: 'error in csv', level: 'error'});
+                } else {
+                    callback(result);
+                }
+            });
+        } else if (type === 'gpx') {
+            callback(toGeoJSON.gpx(toDom(c)));
+        } else if (type === 'kml') {
+            callback(toGeoJSON.kml(toDom(c)));
+        } else if (type === 'osm') {
+            callback(osm_geojson.osm2geojson(toDom(c)));
+        } else if (type === "geojson") {
+            try {
+                gj = JSON.parse(c);
+                callback(gj);
+            } catch(err) {
+                L.S.fire('ui:alert', {content: 'Invalid JSON file: ' + err});
+                return;
+            }
+        }
     },
 
     geojsonToFeatures: function (geojson) {
@@ -214,6 +313,9 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
             if (this._geojson) {
                 this.fromGeoJSON(this._geojson);
             }
+            if (this.isDynamicLayer()) {
+                this.fetchDynamicData();
+            }
             this.map.addLayer(this);
         } else {
             this.erase();
@@ -240,7 +342,7 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         });
         form = builder.build();
         container.appendChild(form);
-        var options_fields = [
+        var optionsFields = [
             'options.color',
             'options.iconClass',
             'options.iconUrl',
@@ -254,7 +356,8 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
             'options.dashArray',
             'options.popupTemplate'
         ];
-        builder = new L.S.FormBuilder(this, options_fields, {
+
+        builder = new L.S.FormBuilder(this, optionsFields, {
             callback: this.redraw,
             callbackContext: this
         });
@@ -263,6 +366,24 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
         advancedPropertiesTitle.innerHTML = L._('Advanced properties');
         form = builder.build();
         advancedProperties.appendChild(form);
+
+        if (typeof this.options.dynamicData === "undefined") {
+            this.options.dynamicData = {};
+        }
+        var dynamicDataFields = [
+            ['options.dynamicData.url', {handler: 'Url', label: L._('Url')}],
+            ['options.dynamicData.format', {handler: 'DataFormat', label: L._('Format')}],
+            ['options.dynamicData.from', {label: L._('From zoom'), helpText: L._('Optionnal.')}],
+            ['options.dynamicData.to', {label: L._('To zoom'), helpText: L._('Optionnal.')}],
+            ['options.dynamicData.licence', {label: L._('Licence'), helpText: L._('Please be sure the licence is compliant with your use.')}]
+        ];
+
+        var dynamicDataContainer = L.DomUtil.create('fieldset', 'toggle', container);
+        var dynamicDataTitle = L.DomUtil.create('legend', 'style_options_toggle', dynamicDataContainer);
+        dynamicDataTitle.innerHTML = L._('Dynamic data');
+        builder = new L.S.FormBuilder(this, dynamicDataFields);
+        dynamicDataContainer.appendChild(builder.build());
+
         var advancedActions = L.DomUtil.create('fieldset', 'toggle', container);
         var advancedActionsTitle = L.DomUtil.create('legend', 'style_options_toggle', advancedActions);
         advancedActionsTitle.innerHTML = L._('Advanced actions');
@@ -284,13 +405,6 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
             features.push(layer.toGeoJSON());
         });
         return features;
-    },
-
-    fetchData: function () {
-        if (!this.storage_id) {
-            return;
-        }
-        L.LazyGeoJSON.prototype.fetchData.call(this);
     },
 
     display: function () {
@@ -365,7 +479,7 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
     save: function () {
         var geojson = {
             type: "FeatureCollection",
-            features: this.featuresToGeoJSON(),
+            features: this.isDynamicLayer() ? [] : this.featuresToGeoJSON(),
             _storage: this.options
         };
         this._geojson = geojson;
@@ -380,7 +494,6 @@ L.Storage.DataLayer = L.LazyGeoJSON.extend({
             callback: function (data) {
                 this.populate(data);
                 this.reset();  // Needed for reordering features
-                               // What for layer with many features?
             },
             context: this
         });

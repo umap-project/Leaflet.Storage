@@ -83,14 +83,14 @@ L.Storage.ElementHelper.Input = L.S.ElementHelper.extend({
     build: function () {
         this.input = L.DomUtil.create('input', '', this.form);
         this.input.value = this.backup = this.toHTML() || null;
-        this.input.type = this.guessType();
+        this.input.type = this.type();
         this.input.name = this.name;
         this.input._helper = this;
         L.DomEvent.on(this.input, 'input', this.sync, this);
         L.DomEvent.on(this.input, 'keypress', this.onKeyPress, this);
     },
 
-    guessType: function () {
+    type: function () {
         return 'text';
     },
 
@@ -310,6 +310,32 @@ L.S.ElementHelper.PopupTemplate = L.S.ElementHelper.SelectAbstract.extend({
 
 });
 
+L.S.ElementHelper.DataFormat = L.S.ElementHelper.SelectAbstract.extend({
+
+    selectOptions: [
+        ['geojson', 'geojson'],
+        ['osm', 'osm'],
+        ['csv', 'csv'],
+        ['gpx', 'gpx'],
+        ['kml', 'kml']
+    ],
+
+    toJS: function () {
+        var value = this.value();
+        switch(value) {
+            case "osm":
+            case "gpx":
+            case "csv":
+            case "kml":
+                break;
+            default:
+                value = 'geojson';
+        }
+        return value;
+    }
+
+});
+
 L.S.ElementHelper.LicenceChooser = L.S.ElementHelper.SelectAbstract.extend({
 
     getOptions: function () {
@@ -360,7 +386,7 @@ L.S.ElementHelper.NullableBoolean = L.S.ElementHelper.SelectAbstract.extend({
 
 L.S.ElementHelper.IconUrl = L.S.ElementHelper.Input.extend({
 
-    guessType: function () {
+    type: function () {
         return "hidden";
     },
 
@@ -472,6 +498,13 @@ L.S.ElementHelper.IconUrl = L.S.ElementHelper.Input.extend({
 
 });
 
+L.S.ElementHelper.Url = L.S.ElementHelper.Input.extend({
+
+    type: function () {
+        return "url";
+    }
+
+});
 
 L.Storage.FormBuilder = L.Class.extend({
 

@@ -9,6 +9,9 @@ L.Storage.Icon = L.DivIcon.extend({
         options = L.Util.extend({}, default_options, options);
         L.Icon.prototype.initialize.call(this, options);
         this.feature = this.options.feature;
+        if (this.feature && this.feature.isReadOnly()) {
+            this.options.className += " readonly";
+        }
     },
 
     _getIconUrl: function (name) {
@@ -100,7 +103,7 @@ L.Storage.Icon.Circle = L.Storage.Icon.extend({
 });
 
 L.Storage.Icon.Drop = L.Storage.Icon.Default.extend({
-    'default_options': {
+    default_options: {
             iconAnchor: new L.Point(16, 42),
             popupAnchor: new L.Point(0, -42),
             className: "storage-drop-icon"
@@ -108,7 +111,7 @@ L.Storage.Icon.Drop = L.Storage.Icon.Default.extend({
 });
 
 L.Storage.Icon.Ball = L.Storage.Icon.Default.extend({
-    'default_options': {
+    default_options: {
             iconAnchor: new L.Point(8, 30),
             popupAnchor: new L.Point(0, -28),
             className: "storage-ball-icon"
