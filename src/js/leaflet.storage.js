@@ -1022,7 +1022,7 @@ L.Storage.Map.include({
                 north: this.getBounds().getNorthEast().lat,
                 east: this.getBounds().getNorthEast().lng,
                 south: this.getBounds().getSouthWest().lat,
-                west: this.getBounds().getNorthEast().lng,
+                west: this.getBounds().getSouthWest().lng,
                 lat: this.getCenter().lat,
                 lng: this.getCenter().lng,
                 zoom: this.getZoom()

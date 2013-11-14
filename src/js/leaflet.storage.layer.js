@@ -34,16 +34,23 @@ L.Storage.DataLayer = L.GeoJSON.extend({
         if (!this.storage_id) {
             this.isDirty = true;
         }
+        this.whenLoaded(function () {
+            this.map.on('moveend zoomend', function (e) {
+                console.log("zoomend")
+                if (this.isRemoteLayer() && this.options.remoteData.dynamic && this.map.hasLayer(this)) {
+                    this.reset();
+                }
+            }, this);
+        });
     },
 
-    onAdd: function (map, insertAtTheBottom) {
+    onAdd: function (map) {
         // Fetch geojson only at first call
         if(this._geojson === null) {
             this.fetchData();
         }
 
-        // Call parent of GeoJSON
-        L.FeatureGroup.prototype.onAdd.call(this, map, insertAtTheBottom);
+        L.GeoJSON.prototype.onAdd.call(this, map);
     },
 
     fetchData: function () {
@@ -56,8 +63,8 @@ L.Storage.DataLayer = L.GeoJSON.extend({
                 if (geojson._storage) {
                     this.populate(geojson._storage);
                 }
-                if (this.isDynamicLayer()) {
-                    this.fetchDynamicData();
+                if (this.isRemoteLayer()) {
+                    this.fetchRemoteData();
                 } else {
                     this.fromGeoJSON(geojson);
                 }
@@ -72,13 +79,15 @@ L.Storage.DataLayer = L.GeoJSON.extend({
         this.fire('dataloaded');
     },
 
-    fetchDynamicData: function () {
+    fetchRemoteData: function () {
+        if (!isNaN(this.options.remoteData.from) && this.map.getZoom() < this.options.remoteData.from) {return;}
+        if (!isNaN(this.options.remoteData.to) && this.map.getZoom() > this.options.remoteData.to) {return;}
         var self = this;
         this.map.ajax({
-            uri: this.options.dynamicData.url,
+            uri: this.map.localizeUrl(this.options.remoteData.url),
             verb: 'GET',
             callback: function (raw) {
-                self.rawToGeoJSON(raw, self.options.dynamicData.format, function (geojson) {self.fromGeoJSON(geojson);});
+                self.rawToGeoJSON(raw, self.options.remoteData.format, function (geojson) {self.fromGeoJSON(geojson);});
             }
         });
     },
@@ -87,7 +96,7 @@ L.Storage.DataLayer = L.GeoJSON.extend({
         if (this._geojson !== null) {
             callback.call(context || this, this);
         } else {
-            this.on('dataloaded', callback, context);
+            this.once('dataloaded', callback, context);
         }
         return this;
     },
@@ -118,8 +127,8 @@ L.Storage.DataLayer = L.GeoJSON.extend({
         return L.Util.template(template, {"pk": this.storage_id});
     },
 
-    isDynamicLayer: function () {
-        return this.options.dynamicData && this.options.dynamicData.url && this.options.dynamicData.format;
+    isRemoteLayer: function () {
+        return this.options.remoteData && this.options.remoteData.url && this.options.remoteData.format;
     },
 
     addLayer: function (feature) {
@@ -310,11 +319,10 @@ L.Storage.DataLayer = L.GeoJSON.extend({
         if (this.storage_id) {
             this.map.removeLayer(this);
             this.clearLayers();
-            if (this._geojson) {
+            if (this.isRemoteLayer()) {
+                this.fetchRemoteData();
+            } else if (this._geojson) {
                 this.fromGeoJSON(this._geojson);
-            }
-            if (this.isDynamicLayer()) {
-                this.fetchDynamicData();
             }
             this.map.addLayer(this);
         } else {
@@ -367,22 +375,23 @@ L.Storage.DataLayer = L.GeoJSON.extend({
         form = builder.build();
         advancedProperties.appendChild(form);
 
-        if (typeof this.options.dynamicData === "undefined") {
-            this.options.dynamicData = {};
+        if (typeof this.options.remoteData === "undefined") {
+            this.options.remoteData = {};
         }
-        var dynamicDataFields = [
-            ['options.dynamicData.url', {handler: 'Url', label: L._('Url')}],
-            ['options.dynamicData.format', {handler: 'DataFormat', label: L._('Format')}],
-            ['options.dynamicData.from', {label: L._('From zoom'), helpText: L._('Optionnal.')}],
-            ['options.dynamicData.to', {label: L._('To zoom'), helpText: L._('Optionnal.')}],
-            ['options.dynamicData.licence', {label: L._('Licence'), helpText: L._('Please be sure the licence is compliant with your use.')}]
+        var remoteDataFields = [
+            ['options.remoteData.url', {handler: 'Url', label: L._('Url')}],
+            ['options.remoteData.format', {handler: 'DataFormat', label: L._('Format')}],
+            ['options.remoteData.from', {label: L._('From zoom'), helpText: L._('Optionnal.')}],
+            ['options.remoteData.to', {label: L._('To zoom'), helpText: L._('Optionnal.')}],
+            ['options.remoteData.dynamic', {handler: 'CheckBox', label: L._('Dynamic')}],
+            ['options.remoteData.licence', {label: L._('Licence'), helpText: L._('Please be sure the licence is compliant with your use.')}]
         ];
 
-        var dynamicDataContainer = L.DomUtil.create('fieldset', 'toggle', container);
-        var dynamicDataTitle = L.DomUtil.create('legend', 'style_options_toggle', dynamicDataContainer);
-        dynamicDataTitle.innerHTML = L._('Dynamic data');
-        builder = new L.S.FormBuilder(this, dynamicDataFields);
-        dynamicDataContainer.appendChild(builder.build());
+        var remoteDataContainer = L.DomUtil.create('fieldset', 'toggle', container);
+        var remoteDataTitle = L.DomUtil.create('legend', 'style_options_toggle', remoteDataContainer);
+        remoteDataTitle.innerHTML = L._('Remote data');
+        builder = new L.S.FormBuilder(this, remoteDataFields);
+        remoteDataContainer.appendChild(builder.build());
 
         var advancedActions = L.DomUtil.create('fieldset', 'toggle', container);
         var advancedActionsTitle = L.DomUtil.create('legend', 'style_options_toggle', advancedActions);
@@ -479,7 +488,7 @@ L.Storage.DataLayer = L.GeoJSON.extend({
     save: function () {
         var geojson = {
             type: "FeatureCollection",
-            features: this.isDynamicLayer() ? [] : this.featuresToGeoJSON(),
+            features: this.isRemoteLayer() ? [] : this.featuresToGeoJSON(),
             _storage: this.options
         };
         this._geojson = geojson;

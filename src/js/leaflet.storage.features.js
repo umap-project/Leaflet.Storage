@@ -4,7 +4,7 @@ L.Storage.FeatureMixin = {
     static_options: {},
 
     isReadOnly: function () {
-        return !!this.datalayer.isDynamicLayer();
+        return !!this.datalayer.isRemoteLayer();
     },
 
     view: function(e) {
