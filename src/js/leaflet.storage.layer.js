@@ -37,7 +37,7 @@ L.Storage.DataLayer = L.GeoJSON.extend({
         this.whenLoaded(function () {
             this.map.on('moveend zoomend', function (e) {
                 if (this.isRemoteLayer() && this.options.remoteData.dynamic && this.map.hasLayer(this)) {
-                    this.reset();
+                    this.fetchRemoteData();
                 }
             }, this);
         });
@@ -86,6 +86,7 @@ L.Storage.DataLayer = L.GeoJSON.extend({
             uri: this.map.localizeUrl(this.options.remoteData.url),
             verb: 'GET',
             callback: function (raw) {
+                self.clearLayers();
                 self.rawToGeoJSON(raw, self.options.remoteData.format, function (geojson) {self.fromGeoJSON(geojson);});
             }
         });
