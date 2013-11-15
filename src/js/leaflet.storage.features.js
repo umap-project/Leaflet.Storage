@@ -89,11 +89,9 @@ L.Storage.FeatureMixin = {
         var table = L.DomUtil.create('table', '', container);
 
         var addRow = function (key, value) {
-            var tr = L.DomUtil.create('tr', '', table),
-                th = L.DomUtil.create('th', '', tr),
-                td = L.DomUtil.create('td', '', tr);
-            th.innerHTML = key;
-            td.innerHTML = value;
+            var tr = L.DomUtil.create('tr', '', table);
+            L.DomUtil.add('th', '', tr, key);
+            L.DomUtil.add('td', '', tr, value);
         };
 
         for (var key in this.properties) {
@@ -107,9 +105,10 @@ L.Storage.FeatureMixin = {
 
     populatePopup: function () {
         var container = L.DomUtil.create('div', ''),
-            title = L.DomUtil.create('h4', '', container),
             template = this.getOption('popupTemplate');
-        title.innerHTML = this.properties.name;
+        if (this.properties.name) {
+            L.DomUtil.add('h4', '', container, this.properties.name);
+        }
         if (template === "table") {
             this.tablePopupTemplate(container);
         } else {

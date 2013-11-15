@@ -88,6 +88,14 @@ L.Util.toHTML = function (r) {
     return r;
 };
 
+L.DomUtil.add = function (tagName, className, container, content) {
+    var el = L.DomUtil.create(tagName, className, container);
+    if (content) {
+        el.innerHTML = content;
+    }
+    return el;
+};
+
 /*
 * Global events
 */
