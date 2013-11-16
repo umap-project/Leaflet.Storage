@@ -327,7 +327,7 @@ L.Storage.DataLayersControl = L.Control.extend({
             L.DomUtil.addClass(toggle, 'off');
         } else {
             datalayer.display();
-            datalayer.whenLoaded(function () {
+            datalayer.onceLoaded(function () {
                 this.addFeatures(datalayer);
                 L.DomUtil.removeClass(toggle, 'off');
             }, this);
