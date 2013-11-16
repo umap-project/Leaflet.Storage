@@ -713,14 +713,14 @@ L.Storage.Map.include({
         for (var i in this.datalayers) {
             if (this.datalayers.hasOwnProperty(i)) {
                 datalayer = this.datalayers[i];
-                if (this.hasLayer(datalayer)) {
+                if (datalayer.isVisible()) {
                     return datalayer;
                 }
             }
         }
         if (datalayer) {
             // No datalayer visibile, let's force one
-            this.addLayer(datalayer);
+            this.addLayer(datalayer.layer);
             return datalayer;
         }
     },
