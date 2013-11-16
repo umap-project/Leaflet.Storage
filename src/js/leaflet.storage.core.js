@@ -96,6 +96,12 @@ L.DomUtil.add = function (tagName, className, container, content) {
     return el;
 };
 
+L.DomUtil.createFieldset = function (container, legend) {
+    var fieldset = L.DomUtil.create('fieldset', 'toggle', container);
+    L.DomUtil.add('legend', 'style_options_toggle', fieldset, legend);
+    return fieldset;
+};
+
 /*
 * Global events
 */

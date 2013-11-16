@@ -12,6 +12,11 @@
 - edit shortcuts has been added (Ctrl-E to toggle edit status, Ctrl-S to save, etc.)
 - links in popup now open in a now window
 - possibility to add custom icon symbols
+- new option to clusterize markers, thanks to https://github.com/Leaflet/Leaflet.markercluster
+- remote data option added to datalayer: this will fetch data from a given URL
+  instead of from the local database
+- popup window can now display a table with all features properties
+- support of OSM XML format, thanks to https://github.com/tyrasd/osmtogeojson
 
 ## 0.4.x
 - add a data browser

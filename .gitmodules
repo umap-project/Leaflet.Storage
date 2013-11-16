@@ -31,3 +31,6 @@
 [submodule "reqs/contextmenu"]
 	path = reqs/contextmenu
 	url = https://github.com/aratcliffe/Leaflet.contextmenu.git
+[submodule "reqs/markercluster"]
+	path = reqs/markercluster
+	url = https://github.com/Leaflet/Leaflet.markercluster.git

@@ -143,3 +143,24 @@ L.Storage.Icon.Ball = L.Storage.Icon.Default.extend({
     }
 
 });
+
+L.Storage.Icon.Cluster = L.DivIcon.extend({
+    options: {
+        iconSize: [40, 40]
+    },
+
+    initialize: function (datalayer, cluster) {
+        this.datalayer = datalayer;
+        this.cluster = cluster;
+    },
+
+    createIcon: function (oldIcon) {
+        var container = L.DomUtil.create('div', 'leaflet-marker-icon marker-cluster'),
+            div = L.DomUtil.create('div', '', container),
+            span = L.DomUtil.create('span', '', div);
+        span.innerHTML = this.cluster.getChildCount();
+        div.style.backgroundColor = this.datalayer.options.color || this.datalayer.map.getDefaultOption('color');
+        return container;
+    }
+
+});

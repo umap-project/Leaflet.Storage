@@ -112,11 +112,7 @@ L.Storage.Map.include({
             this.displayCaption();
         }
         else if (this.options.displayDataBrowserOnLoad && this.options.datalayersControl) {
-            this.whenReady(function () {
-                if (this._controls.datalayersControl) {
-                this._controls.datalayersControl.openBrowser();
-                }
-            });
+            this.openBrowser();
         }
 
         L.Storage.on('ui:closed', function () {
@@ -525,6 +521,14 @@ L.Storage.Map.include({
             }
         }, this);
         L.S.fire('ui:start', {data: {html: container}});
+    },
+
+    openBrowser: function () {
+        this.whenReady(function () {
+            if (this._controls.datalayersControl) {
+            this._controls.datalayersControl.openBrowser();
+            }
+        });
     },
 
     displayCaption: function () {
@@ -1009,6 +1013,16 @@ L.Storage.Map.include({
                 });
             }
         }
+        items.push('-',
+            {
+                text: L._('Browse data'),
+                callback: this.openBrowser
+            },
+            {
+                text: L._('About'),
+                callback: this.displayCaption
+            }
+        );
         this.options.contextmenuItems = items;
     },
 

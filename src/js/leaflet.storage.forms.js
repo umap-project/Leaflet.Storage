@@ -543,7 +543,7 @@ L.Storage.FormBuilder = L.Class.extend({
         this.helpers[field] = helper;
         helper.on('synced', function () {
             if (this.options.callback) {
-                this.options.callback.call(this.callbackContext || this.obj);
+                this.options.callback.call(this.callbackContext || this.obj, field);
             }
             this.obj.fire('synced', {field: field});
         }, this);

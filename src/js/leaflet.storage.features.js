@@ -103,6 +103,16 @@ L.Storage.FeatureMixin = {
         }
     },
 
+    displayPopupFooter: function () {
+        if (L.Browser.ielt9) {
+            return false;
+        }
+        if (this.datalayer.isRemoteLayer() && this.datalayer.options.remoteData.dynamic) {
+            return false;
+        }
+        return this.map.options.displayPopupFooter;
+    },
+
     populatePopup: function () {
         var container = L.DomUtil.create('div', ''),
             template = this.getOption('popupTemplate');
@@ -114,7 +124,7 @@ L.Storage.FeatureMixin = {
         } else {
             this.defaultPopupTemplate(container);
         }
-        if (this.map.options.displayPopupFooter && !L.Browser.ielt9) {
+        if (this.displayPopupFooter()) {
             var footer = L.DomUtil.create('ul', 'storage-popup-footer', container),
                 previous_li = L.DomUtil.create('li', 'previous', footer),
                 zoom_li = L.DomUtil.create('li', 'zoom', footer),
@@ -371,7 +381,7 @@ L.Storage.Marker = L.Marker.extend({
     },
 
     _redraw: function() {
-        if (this.datalayer && this.map.hasLayer(this.datalayer)) {
+        if (this.datalayer && this.datalayer.isVisible()) {
             this._initIcon();
             this.update();
         }

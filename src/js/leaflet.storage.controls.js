@@ -321,7 +321,7 @@ L.Storage.DataLayersControl = L.Control.extend({
 
     toggleDataLayer: function (datalayer) {
         var toggle = L.DomUtil.get("browse_data_toggle_" + datalayer.storage_id);
-        if (this._map.hasLayer(datalayer)) {
+        if (datalayer.isVisible()) {
             datalayer.hide();
             this.removeFeatures(datalayer);
             L.DomUtil.addClass(toggle, 'off');
@@ -344,7 +344,7 @@ L.Storage.DataLayersControl = L.Control.extend({
         zoom_to.title = L._('Zoom to layer extent');
         toggle.title = L._('Show/hide layer');
         datalayer_li.id = "browse_data_toggle_" + datalayer.storage_id;
-        L.DomUtil.addClass(datalayer_li, this._map.hasLayer(datalayer) ? 'on': 'off');
+        L.DomUtil.addClass(datalayer_li, datalayer.isVisible() ? 'on': 'off');
 
         edit.title = L._('Edit');
         edit.href = '#';
@@ -359,23 +359,29 @@ L.Storage.DataLayersControl = L.Control.extend({
     },
 
     addFeatures: function (datalayer) {
-        var id = 'browse_data_datalayer_' + datalayer.storage_id;
-        var container = L.DomUtil.get(id);
+        var id = 'browse_data_datalayer_' + datalayer.storage_id,
+            self = this,
+            container = L.DomUtil.get(id);
         if (!container) {
             container = L.DomUtil.create('div', '', this._features_container);
             container.id = id;
         }
-        container.innerHTML = "";
-        datalayer.whenLoaded(function () {
-            if (this._map.hasLayer(datalayer)) {
-                var title = L.DomUtil.create('h5', '', container),
-                    ul = L.DomUtil.create('ul', '', container);
-                title.innerHTML = datalayer.options.name;
-                for (var j in datalayer._layers) {
-                    ul.appendChild(this.addFeature(datalayer._layers[j]));
-                }
+        var build = function () {
+            container.innerHTML = "";
+            var title = L.DomUtil.add('h5', '', container, datalayer.options.name),
+                ul = L.DomUtil.create('ul', '', container);
+            for (var j in datalayer._layers) {
+                ul.appendChild(self.addFeature(datalayer._layers[j]));
             }
-        }, this);
+        };
+        if (datalayer.isLoaded() && datalayer.isVisible()) {
+            build();
+        }
+        datalayer.on('dataloaded', function () {
+            if (datalayer.isVisible()) {
+                build();
+            }
+        });
     },
 
     addFeature: function (feature) {

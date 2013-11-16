@@ -1,4 +1,6 @@
-L.Storage.DataLayer = L.GeoJSON.extend({
+L.Storage.DataLayer = L.Class.extend({
+
+    includes: [L.Mixin.Events],
 
     options: {
         displayOnLoad: true
@@ -31,25 +33,56 @@ L.Storage.DataLayer = L.GeoJSON.extend({
             // Certainly IE8, which has a limited version of defineProperty
         }
         this.populate(datalayer);
+        this.connectToMap();
         if (!this.storage_id) {
             this.isDirty = true;
         }
-        this.whenLoaded(function () {
-            this.map.on('moveend zoomend', function (e) {
-                if (this.isRemoteLayer() && this.options.remoteData.dynamic && this.map.hasLayer(this)) {
+        this.onceLoaded(function () {
+            this.map.on('moveend', function (e) {
+                if (this.isRemoteLayer() && this.options.remoteData.dynamic && this.isVisible()) {
                     this.fetchRemoteData();
                 }
             }, this);
         });
     },
 
-    onAdd: function (map) {
-        // Fetch geojson only at first call
-        if(this._geojson === null) {
-            this.fetchData();
+    resetLayer: function () {
+        if (this.layer && ((this.layer instanceof L.MarkerClusterGroup && this.options.markercluster) ||
+            (!this.options.markercluster && !(this.layer instanceof L.MarkerClusterGroup)))) {
+            return;
         }
+        var visible = this.isVisible(), self = this;
+        if (visible) {
+            this.map.removeLayer(this.layer);
+        }
+        if (this.layer) {
+            this.layer.clearLayers();
+        }
+        if (this.options.markercluster) {
+            this.layer = new L.MarkerClusterGroup({
+                polygonOptions: {
+                    color: this.options.color || this.map.getDefaultOption('color')
+                },
+                iconCreateFunction: function (cluster) {
+                    return new L.Storage.Icon.Cluster(self, cluster);
+                }
+            });
+        } else {
+            this.layer = new L.FeatureGroup();
+        }
+        this.eachLayer(function (layer) {
+            this.layer.addLayer(layer);
+        });
+        if (visible) {
+            this.map.addLayer(this.layer);
+        }
+    },
 
-        L.GeoJSON.prototype.onAdd.call(this, map);
+    eachLayer: function (method, context) {
+        for (var i in this._layers) {
+            method.call(context || this, this._layers[i]);
+        }
+        return this;
     },
 
     fetchData: function () {
@@ -78,27 +111,39 @@ L.Storage.DataLayer = L.GeoJSON.extend({
         this.fire('dataloaded');
     },
 
+    clear: function () {
+        this.layer.clearLayers();
+        this._layers = {};
+    },
+
     fetchRemoteData: function () {
-        if (!isNaN(this.options.remoteData.from) && this.map.getZoom() < this.options.remoteData.from) {return;}
-        if (!isNaN(this.options.remoteData.to) && this.map.getZoom() > this.options.remoteData.to) {return;}
+        if ((!isNaN(this.options.remoteData.from) && this.map.getZoom() < this.options.remoteData.from) ||
+            (!isNaN(this.options.remoteData.to) && this.map.getZoom() > this.options.remoteData.to) ) {
+            this.clear();
+            return;
+        }
         var self = this;
         this.map.ajax({
             uri: this.map.localizeUrl(this.options.remoteData.url),
             verb: 'GET',
             callback: function (raw) {
-                self.clearLayers();
+                self.clear();
                 self.rawToGeoJSON(raw, self.options.remoteData.format, function (geojson) {self.fromGeoJSON(geojson);});
             }
         });
     },
 
-    whenLoaded: function (callback, context) {
-        if (this._geojson !== null) {
+    onceLoaded: function (callback, context) {
+        if (this.isLoaded()) {
             callback.call(context || this, this);
         } else {
             this.once('dataloaded', callback, context);
         }
         return this;
+    },
+
+    isLoaded: function () {
+        return this._geojson !== null;
     },
 
     populate: function (datalayer) {
@@ -107,7 +152,7 @@ L.Storage.DataLayer = L.GeoJSON.extend({
             this.storage_id = datalayer.id || null;
         }
         L.Util.extend(this.options, datalayer || {});
-        this.connectToMap();
+        this.resetLayer();
     },
 
     connectToMap: function () {
@@ -117,7 +162,7 @@ L.Storage.DataLayer = L.GeoJSON.extend({
             this.map.datalayers_index.push(this);
         }
         if(this.options.displayOnLoad) {
-            this.map.addLayer(this);
+            this.display();
         }
         this.map.updateDatalayersControl();
     },
@@ -132,22 +177,22 @@ L.Storage.DataLayer = L.GeoJSON.extend({
     },
 
     addLayer: function (feature) {
+        var id = L.stamp(feature);
         feature.connectToDataLayer(this);
-        this._index.push(L.stamp(feature));
-        return L.GeoJSON.prototype.addLayer.call(this, feature);
+        this._index.push(id);
+        this._layers[id] = feature;
+        this.layer.addLayer(feature);
     },
 
     removeLayer: function (feature) {
+        var id = L.stamp(feature);
         feature.disconnectFromDataLayer(this);
-        this._index.splice(this._index.indexOf(L.stamp(feature)), 1);
-        return L.GeoJSON.prototype.removeLayer.call(this, feature);
+        this._index.splice(this._index.indexOf(id), 1);
+        delete this._layers[id];
+        this.layer.removeLayer(feature);
     },
 
     addData: function (geojson) {
-        // We override it, because we need to take control of
-        // creating Polylines ; currently, only points creation is
-        // configurable, with pointToLayer
-        // FIXME when more hooks are available in leaflet
         if (geojson._storage) {
             this.populate(geojson._storage);
         }
@@ -165,8 +210,8 @@ L.Storage.DataLayer = L.GeoJSON.extend({
     rawToGeoJSON: function (c, type, callback) {
         var self = this,
             toDom = function (x) {
-            return (new DOMParser()).parseFromString(x, 'text/xml');
-        };
+                return (new DOMParser()).parseFromString(x, 'text/xml');
+            };
 
         // TODO add a duck typing guessType
         if (type === "csv") {
@@ -306,7 +351,7 @@ L.Storage.DataLayer = L.GeoJSON.extend({
     },
 
     erase: function () {
-        this.map.removeLayer(this);
+        this.hide();
         delete this.map.datalayers[L.stamp(this)];
         this.map.datalayers_index.splice(this.map.datalayers_index.indexOf(this), 1);
         this.map.updateDatalayersControl();
@@ -317,22 +362,22 @@ L.Storage.DataLayer = L.GeoJSON.extend({
 
     reset: function () {
         if (this.storage_id) {
-            this.map.removeLayer(this);
-            this.clearLayers();
+            this.hide();
+            this.clear();
             if (this.isRemoteLayer()) {
                 this.fetchRemoteData();
             } else if (this._geojson) {
                 this.fromGeoJSON(this._geojson);
             }
-            this.map.addLayer(this);
+            this.display();
         } else {
             this.erase();
         }
     },
 
     redraw: function () {
-        this.map.removeLayer(this);
-        this.map.addLayer(this);
+        this.hide();
+        this.display();
     },
 
     edit: function () {
@@ -362,12 +407,18 @@ L.Storage.DataLayer = L.GeoJSON.extend({
             'options.fillColor',
             'options.fillOpacity',
             'options.dashArray',
-            'options.popupTemplate'
+            'options.popupTemplate',
+            ['options.markercluster', {handler: 'CheckBox', label: L._('Cluster markers')}],
         ];
 
         builder = new L.S.FormBuilder(this, optionsFields, {
-            callback: this.redraw,
-            callbackContext: this
+            callback: function (field) {
+                this.hide();
+                if (field === "options.markercluster") {
+                    this.resetLayer();
+                }
+                this.display();
+            }
         });
         var advancedProperties = L.DomUtil.create('fieldset', 'toggle', container);
         var advancedPropertiesTitle = L.DomUtil.create('legend', 'style_options_toggle', advancedProperties);
@@ -387,15 +438,11 @@ L.Storage.DataLayer = L.GeoJSON.extend({
             ['options.remoteData.licence', {label: L._('Licence'), helpText: L._('Please be sure the licence is compliant with your use.')}]
         ];
 
-        var remoteDataContainer = L.DomUtil.create('fieldset', 'toggle', container);
-        var remoteDataTitle = L.DomUtil.create('legend', 'style_options_toggle', remoteDataContainer);
-        remoteDataTitle.innerHTML = L._('Remote data');
+        var remoteDataContainer = L.DomUtil.createFieldset(container, L._('Remote data'));
         builder = new L.S.FormBuilder(this, remoteDataFields);
         remoteDataContainer.appendChild(builder.build());
 
-        var advancedActions = L.DomUtil.create('fieldset', 'toggle', container);
-        var advancedActionsTitle = L.DomUtil.create('legend', 'style_options_toggle', advancedActions);
-        advancedActionsTitle.innerHTML = L._('Advanced actions');
+        var advancedActions = L.DomUtil.createFieldset(container, L._('Advanced actions'));
         var deleteLink = L.DomUtil.create('a', 'delete_datalayer_button', advancedActions);
         deleteLink.innerHTML = L._('Delete');
         deleteLink.href = "#";
@@ -417,17 +464,20 @@ L.Storage.DataLayer = L.GeoJSON.extend({
     },
 
     display: function () {
-        this.map.addLayer(this);
+        if(!this.isLoaded()) {
+            this.fetchData();
+        }
+        this.map.addLayer(this.layer);
         // this._map.fire('overlayadd', {layer: obj});
     },
 
     hide: function () {
-        this.map.removeLayer(this);
+        this.map.removeLayer(this.layer);
         // this._map.fire('overlayremove', {layer: obj});
     },
 
     toggle: function () {
-        if (!this.map.hasLayer(this)) {
+        if (!this.isVisible()) {
             this.display();
         }
         else {
@@ -436,14 +486,14 @@ L.Storage.DataLayer = L.GeoJSON.extend({
     },
 
     zoomTo: function () {
-        var bounds = this.getBounds();
+        var bounds = this.layer.getBounds();
         if (bounds.isValid()) {
             this.map.fitBounds(bounds);
         }
     },
 
     isVisible: function () {
-        return this.map.hasLayer(this);
+        return this.map.hasLayer(this.layer);
     },
 
     getFeatureByIndex: function (index) {
@@ -502,6 +552,7 @@ L.Storage.DataLayer = L.GeoJSON.extend({
             data: formData,
             callback: function (data) {
                 this.populate(data);
+                this.connectToMap();
                 this.reset();  // Needed for reordering features
             },
             context: this

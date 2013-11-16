@@ -391,6 +391,7 @@ a.storage-control-text {
     padding: 0 5px;
     text-align: right;
     min-width: 160px;
+    width: 100%;
     border-radius: 2px;
 }
 .leaflet-control-browse a.add-datalayer {
@@ -722,10 +723,10 @@ a.storage-control-text {
     -ms-animation: shift-rightwards 3s ease-in-out infinite;
     -o-animation: shift-rightwards 3s ease-in-out infinite;
     animation: shift-rightwards 3s ease-in-out infinite;
-    -webkit-animation-delay: .4s;
-    -moz-animation-delay: .4s;
-    -o-animation-delay: .4s;
-    animation-delay: .4s;
+    -webkit-animation-delay: .2s;
+    -moz-animation-delay: .2s;
+    -o-animation-delay: .2s;
+    animation-delay: .2s;
 }
 .storage-loader
 {
@@ -905,9 +906,19 @@ a.storage-control-text {
 .leaflet-popup-content-wrapper {
     border-radius: 4px;
 }
+.leaflet-popup-content {
+    max-height: 300px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
 .leaflet-bar {
     border: 1px solid #bbb;
     box-shadow: none;
+}
+.marker-cluster {
+    background-color: white;
+    width: 40px;
+    height: 40px;
 }
 
 /* ****** */
