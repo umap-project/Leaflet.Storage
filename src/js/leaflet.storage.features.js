@@ -3,6 +3,46 @@ L.Storage.FeatureMixin = {
     form_id: "feature_form",
     static_options: {},
 
+    initialize: function (map, latlng, options) {
+        this.map = map;
+        if(typeof options == "undefined") {
+            options = {};
+        }
+        // DataLayer the marker belongs to
+        this.datalayer = options.datalayer || null;
+        this.properties = {_storage_options: {}};
+        if (options.geojson) {
+            this.populate(options.geojson);
+        }
+        var isDirty = false,
+            self = this;
+        try {
+            Object.defineProperty(this, 'isDirty', {
+                get: function () {
+                    return isDirty;
+                },
+                set: function (status) {
+                    if (!isDirty && status) {
+                        self.fire('isdirty');
+                    }
+                    isDirty = status;
+                    if (self.datalayer) {
+                        self.datalayer.isDirty = status;
+                    }
+                }
+            });
+        }
+        catch (e) {
+            console.log(e);
+            // Certainly IE8, which has a limited version of defineProperty
+        }
+        this.preInit();
+        this.addInteractions();
+        this.parentClass.prototype.initialize.call(this, latlng, options);
+    },
+
+    preInit: function () {},
+
     isReadOnly: function () {
         return this.datalayer && this.datalayer.isRemoteLayer();
     },
@@ -206,7 +246,7 @@ L.Storage.FeatureMixin = {
     },
 
     getOption: function (option, fallback) {
-        var value = fallback || null;
+        var value = fallback || null;
         if (this.usableOption(this.properties._storage_options, option)) {
             value = this.properties._storage_options[option];
         }
@@ -249,36 +289,13 @@ L.Storage.FeatureMixin = {
         };
     },
 
-    initialize: function () {
-        var isDirty = false,
-            self = this,
-            options = L.extend({}, this.options);
-        try {
-            Object.defineProperty(this, 'isDirty', {
-                get: function () {
-                    return isDirty;
-                },
-                set: function (status) {
-                    if (!isDirty && status) {
-                        self.fire('isdirty');
-                    }
-                    isDirty = status;
-                    if (self.datalayer) {
-                        self.datalayer.isDirty = status;
-                    }
-                }
-            });
-        }
-        catch (e) {
-            console.log(e);
-            // Certainly IE8, which has a limited version of defineProperty
-        }
+    addInteractions: function () {
         this.on('contextmenu', this._showContextMenu, this);
     },
 
     _showContextMenu: function (e) {
-        var pt = this._map.mouseEventToContainerPoint(e.originalEvent);
-        this._map.contextmenu.showAt(pt, {relatedTarget: this});
+        var pt = this.map.mouseEventToContainerPoint(e.originalEvent);
+        this.map.contextmenu.showAt(pt, {relatedTarget: this});
     },
 
     makeDirty: function () {
@@ -335,24 +352,14 @@ L.Storage.FeatureMixin = {
 };
 
 L.Storage.Marker = L.Marker.extend({
+    parentClass: L.Marker,
     includes: [L.Storage.FeatureMixin, L.Mixin.Events],
 
-    initialize: function(map, latlng, options) {
-        this.map = map;
-        if(typeof options == "undefined") {
-            options = {};
-        }
-        // DataLayer the marker belongs to
-        this.datalayer = options.datalayer || null;
-        this.properties = {_storage_options: {}};
-        if (options.geojson) {
-            this.populate(options.geojson);
-        }
+    preInit: function () {
         this.setIcon(this.getIcon());
-        L.Marker.prototype.initialize.call(this, latlng, options);
-        L.Storage.FeatureMixin.initialize.call(this);
+    },
 
-        // Events
+    addInteractions: function () {
         this.on("dragend", function (e) {
             this.isDirty = true;
             this.edit(e);
@@ -597,13 +604,13 @@ L.Storage.PathMixin = {
         }
     },
 
-    initialize: function () {
+    addInteractions: function () {
+        L.Storage.FeatureMixin.addInteractions.call(this);
         this.on("dragend", this.edit);
         this.on("click", this._onClick);
         this.on("dblclick", this._toggleEditing);
         this.on("mouseover", this._onMouseOver);
         this.on("edit", this.makeDirty);
-        console.log('path initialize', this.properties.name)
         this.map._controls.measureControl.handler.on('enabled', function () {
             this.showTooltip({text: this.getMeasure()});
         }, this);
@@ -615,27 +622,12 @@ L.Storage.PathMixin = {
 };
 
 L.Storage.Polyline = L.Polyline.extend({
+    parentClass: L.Polyline,
     includes: [L.Storage.FeatureMixin, L.Storage.PathMixin, L.Mixin.Events],
 
     static_options: {
         stroke: true,
         fill: false
-    },
-
-    initialize: function(map, latlngs, options) {
-        this.map = map;
-        if(typeof options == "undefined") {
-            options = {};
-        }
-        // DataLayer the marker belongs to
-        this.datalayer = options.datalayer || null;
-        this.properties = {_storage_options: {}};
-        if (options.geojson) {
-            this.populate(options.geojson);
-        }
-        L.Polyline.prototype.initialize.call(this, latlngs, options);
-        L.Storage.FeatureMixin.initialize.call(this);
-        L.Storage.PathMixin.initialize.call(this);
     },
 
     geometry: function() {
@@ -672,23 +664,8 @@ L.Storage.Polyline = L.Polyline.extend({
 });
 
 L.Storage.Polygon = L.Polygon.extend({
+    parentClass: L.Polygon,
     includes: [L.Storage.FeatureMixin, L.Storage.PathMixin, L.Mixin.Events],
-
-    initialize: function(map, latlngs, options) {
-        this.map = map;
-        if(typeof options == "undefined") {
-            options = {};
-        }
-        // DataLayer the marker belongs to
-        this.datalayer = options.datalayer || null;
-        this.properties = {_storage_options: {}};
-        if (options.geojson) {
-            this.populate(options.geojson);
-        }
-        L.Polygon.prototype.initialize.call(this, latlngs, options);
-        L.Storage.FeatureMixin.initialize.call(this);
-        L.Storage.PathMixin.initialize.call(this);
-    },
 
     geometry: function() {
         /* Return a GeoJSON geometry Object */

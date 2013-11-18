@@ -241,7 +241,7 @@ L.S.ElementHelper.SelectAbstract = L.S.ElementHelper.extend({
     },
 
     buildOptions: function (options) {
-        options = options || this.getOptions();
+        options = options || this.getOptions();
         for (var i=0, l=options.length; i<l; i++) {
             this.buildOption(options[i][0], options[i][1]);
         }
@@ -513,7 +513,7 @@ L.Storage.FormBuilder = L.Class.extend({
         this.fields = fields;
         this.form = L.DomUtil.create('form', 'storage-form');
         this.helpers = {};
-        this.options = options || {};
+        this.options = options || {};
     },
 
     build: function () {
@@ -534,7 +534,7 @@ L.Storage.FormBuilder = L.Class.extend({
             options = this.defaultOptions[this.getName(field)] || {};
         }
         type = options.handler || "Input";
-        if (L.S.ElementHelper[type]) {
+        if (L.S.ElementHelper[type]) {
             helper = new L.S.ElementHelper[type](this, field, options);
         } else {
             console.error('No element helper for ' + type);

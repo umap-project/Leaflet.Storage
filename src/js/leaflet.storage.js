@@ -239,7 +239,7 @@ L.Storage.Map.include({
     },
 
     initControls: function () {
-        this._controls = this._controls || {};
+        this._controls = this._controls || {};
         for (var i in this._controls) {
             this.removeControl(this._controls[i]);
             delete this._controls[i];

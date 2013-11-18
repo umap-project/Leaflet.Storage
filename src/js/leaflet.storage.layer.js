@@ -151,7 +151,7 @@ L.Storage.DataLayer = L.Class.extend({
         if (!this.storage_id && datalayer && datalayer.id) {
             this.storage_id = datalayer.id || null;
         }
-        L.Util.extend(this.options, datalayer || {});
+        L.Util.extend(this.options, datalayer || {});
         this.resetLayer();
     },
 

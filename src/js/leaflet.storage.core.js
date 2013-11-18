@@ -38,7 +38,7 @@ L.Util.setFromQueryString = function (options, name) {
 L.Util.setBooleanFromQueryString = function (options, name) {
     var value = L.Util.queryString(name);
     if (typeof value !== "undefined") {
-        options[name] = value == "1" || value == "true";
+        options[name] = value == "1" || value == "true";
     }
 };
 L.Util.toHTML = function (r) {
