@@ -396,9 +396,8 @@ L.Storage.DataLayersControl = L.Control.extend({
         if (symbol) {
             color.style.backgroundImage = 'url(' + symbol + ')';
         }
-        L.DomEvent.on(zoom_to, 'click', function () {
-            this.bringToCenter();
-            this.view({latlng: this.getCenter()});
+        L.DomEvent.on(zoom_to, 'click', function (e) {
+            this.bringToCenter(e, L.bind(this.view, this, {latlng: this.getCenter()}));
         }, feature);
         return feature_li;
     },

@@ -180,18 +180,16 @@ L.Storage.FeatureMixin = {
             zoom_li.title = L._("Zoom to this feature");
             L.DomEvent.on(next_li, 'click', function (e) {
                 if (next) {
-                    next.bringToCenter();
-                    next.view(next.getCenter());
+                    next.bringToCenter(e, function () {next.view(next.getCenter());});
                 }
             }, this);
             L.DomEvent.on(previous_li, 'click', function (e) {
                 if (prev) {
-                    prev.bringToCenter();
-                    prev.view(prev.getCenter());
+                    prev.bringToCenter(e, function () {prev.view(prev.getCenter());});
                 }
             }, this);
             L.DomEvent.on(zoom_li, 'click', function (e) {
-                this.map.setZoom(16);
+                this.map.setZoom(16);  // Do not hardcode this
                 this.bringToCenter();
             }, this);
         }
@@ -262,7 +260,7 @@ L.Storage.FeatureMixin = {
         return value;
     },
 
-    bringToCenter: function (e) {
+    bringToCenter: function (e, callback) {
         var latlng;
         if (e && e.latlng) {
             latlng = e.latlng;
@@ -271,6 +269,9 @@ L.Storage.FeatureMixin = {
             latlng = this.getCenter();
         }
         this.map.panTo(latlng);
+        if (callback) {
+            callback();
+        }
     },
 
     getNext: function () {
@@ -497,6 +498,15 @@ L.Storage.Marker = L.Marker.extend({
             'properties._storage_options.iconUrl',
             'properties._storage_options.popupTemplate'
         ];
+    },
+
+    bringToCenter: function (e, callback) {
+        callback = callback || function (){};  // mandatory for zoomToShowLayer
+        if (this.datalayer.isClustered() && !this._icon) {
+            this.datalayer.layer.zoomToShowLayer(this, callback);
+        } else {
+            L.Storage.FeatureMixin.bringToCenter.call(this, e, callback);
+        }
     }
 
 });
@@ -611,12 +621,14 @@ L.Storage.PathMixin = {
         this.on("dblclick", this._toggleEditing);
         this.on("mouseover", this._onMouseOver);
         this.on("edit", this.makeDirty);
-        this.map._controls.measureControl.handler.on('enabled', function () {
-            this.showTooltip({text: this.getMeasure()});
-        }, this);
-        this.map._controls.measureControl.handler.on('disabled', function () {
-            this.removeTooltip();
-        }, this);
+        if (this.map._controls.measureControl) {
+            this.map._controls.measureControl.handler.on('enabled', function () {
+                this.showTooltip({text: this.getMeasure()});
+            }, this);
+            this.map._controls.measureControl.handler.on('disabled', function () {
+                this.removeTooltip();
+            }, this);
+        }
     }
 
 };

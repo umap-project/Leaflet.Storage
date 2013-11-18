@@ -47,8 +47,8 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     resetLayer: function () {
-        if (this.layer && ((this.layer instanceof L.MarkerClusterGroup && this.options.markercluster) ||
-            (!this.options.markercluster && !(this.layer instanceof L.MarkerClusterGroup)))) {
+        if (this.layer && ((this.layer instanceof L.MarkerClusterGroup && this.isClustered()) ||
+            (!this.isClustered() && !(this.layer instanceof L.MarkerClusterGroup)))) {
             return;
         }
         var visible = this.isVisible(), self = this;
@@ -58,7 +58,7 @@ L.Storage.DataLayer = L.Class.extend({
         if (this.layer) {
             this.layer.clearLayers();
         }
-        if (this.options.markercluster) {
+        if (this.isClustered()) {
             this.layer = new L.MarkerClusterGroup({
                 polygonOptions: {
                     color: this.options.color || this.map.getDefaultOption('color')
@@ -174,6 +174,10 @@ L.Storage.DataLayer = L.Class.extend({
 
     isRemoteLayer: function () {
         return this.options.remoteData && this.options.remoteData.url && this.options.remoteData.format;
+    },
+
+    isClustered: function () {
+        return !!this.options.markercluster;
     },
 
     addLayer: function (feature) {
