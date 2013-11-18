@@ -35,6 +35,7 @@
 .leaflet-control-locate,
 .leaflet-control-search,
 .leaflet-control-edit-in-osm,
+.storage-measure-control,
 a.storage-control-less {
     display: none;
 }
@@ -44,6 +45,7 @@ a.storage-control-less {
 .storage-more-controls .leaflet-control-locate,
 .storage-more-controls .leaflet-control-search,
 .storage-more-controls .leaflet-control-edit-in-osm,
+.storage-more-controls .storage-measure-control,
 .storage-more-controls .storage-control-less {
     display: block;
 }
@@ -176,10 +178,21 @@ a.storage-control-text {
 .leaflet-control-edit-in-osm .leaflet-control-edit-in-osm-toggle {
     background-image: url("../img/edit-in-osm.png");
 }
+.storage-measure-control,
 .leaflet-control-edit-in-osm {
     border: 1px solid #bbb;
     border-radius: 4px;
     box-shadow: none;
+}
+.storage-measure-control.enabled {
+    box-shadow: 0 0 2px 0 black inset;
+}
+.storage-measure-control a {
+    background-image: url("../img/measure-24.png");
+}
+.storage-measure-edge {
+    background: none repeat scroll 0 0 #2F4F4F;
+    border-radius: 6px;
 }
 
 

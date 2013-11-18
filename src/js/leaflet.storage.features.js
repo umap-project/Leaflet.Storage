@@ -311,6 +311,24 @@ L.Storage.FeatureMixin = {
             );
         }
         return items;
+    },
+
+    showTooltip: function (content) {
+        this.tooltip = new L.Tooltip(this.map);
+        this.tooltip.updateContent(content);
+        this.updateTooltipPosition();
+        // zoomanim?
+        this.map.on('zoomend', this.updateTooltipPosition, this);
+    },
+
+    removeTooltip: function () {
+        this.map.off('zoomend', this.updateTooltipPosition, this);
+        this.tooltip.dispose();
+    },
+
+    updateTooltipPosition: function (e) {
+        if (!this.tooltip) {return;}
+        this.tooltip.updatePosition(this.getCenter());
     }
 
 
@@ -585,6 +603,13 @@ L.Storage.PathMixin = {
         this.on("dblclick", this._toggleEditing);
         this.on("mouseover", this._onMouseOver);
         this.on("edit", this.makeDirty);
+        console.log('path initialize', this.properties.name)
+        this.map._controls.measureControl.handler.on('enabled', function () {
+            this.showTooltip({text: this.getMeasure()});
+        }, this);
+        this.map._controls.measureControl.handler.on('disabled', function () {
+            this.removeTooltip();
+        }, this);
     }
 
 };
@@ -630,6 +655,18 @@ L.Storage.Polyline = L.Polyline.extend({
 
     getClassName: function () {
         return 'polyline';
+    },
+
+    getMeasure: function () {
+        var distance = 0, latlng, latlngs = this.getLatLngs(), previous;
+        for (var i = 0; i < latlngs.length; i++) {
+            latlng = latlngs[i];
+            if (previous) {
+                distance += latlng.distanceTo(previous);
+            }
+            previous = latlng;
+        }
+        return L.GeometryUtil.readableDistance(distance, true);
     }
 
 });
@@ -679,6 +716,31 @@ L.Storage.Polygon = L.Polygon.extend({
         var options = L.Storage.PathMixin.getAdvancedOptions();
         options.push(['properties._storage_options.outlink', {label: L._('outlink'), helpText: L._("Define output link to open a new window on polygon click.")}]);
         return options;
+    },
+
+    getMeasure: function () {
+        var area = L.GeometryUtil.geodesicArea(this.getLatLngs());
+        return L.GeometryUtil.readableArea(area, true);
+    },
+
+    getCenter: function () {
+        var latlngs = this._latlngs,
+            len = latlngs.length,
+            i, j, p1, p2, f, center;
+
+        for (i = 0, j = len - 1, area = 0, lat = 0, lng = 0; i < len; j = i++) {
+            p1 = latlngs[i];
+            p2 = latlngs[j];
+            f = p1.lat * p2.lng - p2.lat * p1.lng;
+            lat += (p1.lat + p2.lat) * f;
+            lng += (p1.lng + p2.lng) * f;
+            area += f / 2;
+        }
+
+        center = area ? new L.LatLng(lat / (6 * area), lng / (6 * area)) : latlngs[0];
+        center.area = area;
+
+        return center;
     }
 
 });

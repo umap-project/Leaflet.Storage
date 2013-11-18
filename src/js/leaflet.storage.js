@@ -266,6 +266,23 @@ L.Storage.Map.include({
             this._controls.embedControl = (new L.Control.Embed(this, this.options.embedOptions)).addTo(this);
             this._controls.tilelayersControl = new L.Storage.TileLayerControl().addTo(this);
             this._controls.editInOSMControl = (new L.Control.EditInOSM({position: 'topleft'})).addTo(this);
+            var measureOptions = {
+                handler: {
+                    icon: new L.DivIcon({
+                        iconSize: new L.Point(8, 8),
+                        className: 'leaflet-div-icon leaflet-editing-icon storage-measure-edge'
+                    }),
+                    shapeOptions: {
+                        stroke: true,
+                        color: 'darkslategray',
+                        weight: 3,
+                        opacity: 0.5,
+                        fill: false,
+                        clickable: false
+                    }
+                }
+            };
+            this._controls.measureControl = (new L.S.MeasureControl(measureOptions).addTo(this));
         }
         if (this.options.scaleControl) {
             this._controls.scaleControl = L.control.scale().addTo(this);

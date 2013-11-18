@@ -17,6 +17,7 @@
   instead of from the local database
 - popup window can now display a table with all features properties
 - support of OSM XML format, thanks to https://github.com/tyrasd/osmtogeojson
+- added a measure control, thanks to https://github.com/makinacorpus/Leaflet.MeasureControl
 
 ## 0.4.x
 - add a data browser

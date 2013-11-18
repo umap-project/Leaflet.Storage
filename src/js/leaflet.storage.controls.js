@@ -667,3 +667,21 @@ L.S.ContextMenu = L.Map.ContextMenu.extend({
     }
 
 });
+
+
+L.S.MeasureControl = L.Control.MeasureControl.extend({
+    statics: {
+        TITLE: L._('Measure distances')
+    },
+
+    onAdd: function (map) {
+        L.Control.MeasureControl.prototype.onAdd.call(this, map);
+        L.DomUtil.removeClass(this._container, 'leaflet-bar');
+        L.DomUtil.addClass(this._container, 'storage-measure-control storage-control');
+        if (map._controls.draw) {
+            map._controls.draw.getDrawToolbar().on('enable', this.handler.disable, this.handler);
+        }
+        return this._container;
+    }
+
+});
