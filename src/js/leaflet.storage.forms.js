@@ -3,7 +3,8 @@ L.Storage.ElementHelper = L.Class.extend({
 
     initialize: function (formBuilder, field, options) {
         this.formBuilder = formBuilder;
-        this.map = this.formBuilder.obj.getMap();
+        this.obj = this.formBuilder.obj;
+        this.map = this.obj.getMap();
         this.form = this.formBuilder.form;
         this.field = field;
         this.options = options;
@@ -227,11 +228,12 @@ L.S.ElementHelper.CheckBox = L.S.ElementHelper.extend({
 L.S.ElementHelper.SelectAbstract = L.S.ElementHelper.extend({
 
     selectOptions: [
-        "value", "label"
+        ["value", "label"]
     ],
 
     build: function () {
         this.select = L.DomUtil.create('select', '', this.form);
+        this.select.name = this.name;
         this.buildOptions();
         L.DomEvent.on(this.select, 'change', this.sync, this);
     },
@@ -309,6 +311,31 @@ L.S.ElementHelper.PopupTemplate = L.S.ElementHelper.SelectAbstract.extend({
     }
 
 });
+
+L.S.ElementHelper.DataLayerSwitcher = L.S.ElementHelper.SelectAbstract.extend({
+
+    getOptions: function () {
+        var options = [];
+        this.map.eachDataLayer(function (datalayer) {
+            options.push([L.stamp(datalayer), datalayer.options.name]);
+        });
+        return options;
+    },
+
+    toHTML: function () {
+        return L.stamp(this.obj.datalayer);
+    },
+
+    toJS: function () {
+        return this.map.datalayers[this.value()];
+    },
+
+    set: function () {
+        this.obj.changeDataLayer(this.toJS());
+    }
+
+});
+
 
 L.S.ElementHelper.DataFormat = L.S.ElementHelper.SelectAbstract.extend({
 
@@ -610,7 +637,8 @@ L.Storage.FormBuilder = L.Class.extend({
         dashArray: {label: L._('dash array'), helpText: L._("A string that defines the stroke dash pattern. Ex.: '5, 10, 15'.")},
         iconClass: {handler: 'IconClassSwitcher', label: L._('type of icon')},
         iconUrl: {handler: 'IconUrl', label: L._('symbol of the icon')},
-        popupTemplate: {handler: 'PopupTemplate', label: L._('template to use for the popup')}
+        popupTemplate: {handler: 'PopupTemplate', label: L._('template to use for the popup')},
+        datalayer: {handler: 'DataLayerSwitcher', label: L._('Choose the layer of the feature')}
     }
 
 });

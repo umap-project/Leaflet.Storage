@@ -119,9 +119,8 @@ describe('L.Storage.Map', function(){
 
     });
 
-    describe('#uploadData()', function () {
-        var path = '/map/99/import/data/',
-            fileInput, textarea, submit, formatSelect, layerSelect;
+    describe('#importData()', function () {
+        var fileInput, textarea, submit, formatSelect, layerSelect;
 
         it('should build a form on click', function () {
             happen.click(qs('a.upload-data'));

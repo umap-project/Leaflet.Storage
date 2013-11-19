@@ -71,4 +71,22 @@ describe('L.Storage.Poly', function () {
 
     });
 
+    describe('#changeDataLayer()', function () {
+
+        it('should change style on datalayer select change', function () {
+            enableEdit();
+            happen.click(qs('.leaflet-control-browse .add-datalayer'));
+            changeInputValue(qs('form.storage-form input[name="name"]'), "New layer");
+            changeInputValue(qs('form#datalayer-advanced-properties input[name=color]'), "MediumAquaMarine");
+            happen.dblclick(qs('path[fill="DarkBlue"]'));
+            var select = document.querySelector('select[name=datalayer]');
+            select.selectedIndex = 1;
+            happen.once(select, {type: 'change'});
+            assert.ok(qs('path[fill="none"]')); // Polyline fill is unchanged
+            assert.notOk(qs('path[fill="DarkBlue"]'));
+            assert.ok(qs('path[fill="MediumAquaMarine"]'));
+        });
+
+    });
+
 });

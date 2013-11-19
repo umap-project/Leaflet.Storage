@@ -60,25 +60,11 @@ L.Storage.FeatureMixin = {
         if(!this.map.editEnabled || this.isReadOnly()) return;
         this.map.edited_feature = this;
         var self = this,
-            container = L.DomUtil.create('div'),
-            form = L.DomUtil.create('form', '', container),
-            select = L.DomUtil.create('select', '', form),
-            option,
-            datalayer_id = L.stamp(this.datalayer);
-        this.map.eachDataLayer(function (datalayer) {
-            var id = L.stamp(datalayer);
-            option = L.DomUtil.create('option', '', select);
-            option.value = id;
-            option.innerHTML = datalayer.options.name;
-            if (id === datalayer_id) {
-                option.selected = "selected";
-            }
-        });
-        L.DomEvent.on(select, 'change', function (e) {
-            var id = select[select.selectedIndex].value,
-                datalayer = this.map.datalayers[id];
-            this.changeDataLayer(datalayer);
-        }, this);
+            container = L.DomUtil.create('div'), form ;
+
+        var builder = new L.S.FormBuilder(this, ['datalayer']);
+        container.appendChild(builder.build());
+
         var properties = [];
         for (var i in this.properties) {
             if (["_storage_options", "name", "description"].indexOf(i) !== -1) {continue;}
@@ -87,7 +73,7 @@ L.Storage.FeatureMixin = {
         // We always want name and description for now (properties management to come)
         properties.unshift('properties.description');
         properties.unshift('properties.name');
-        var builder = new L.S.FormBuilder(this, properties, {id: 'storage-feature-properties'});
+        builder = new L.S.FormBuilder(this, properties, {id: 'storage-feature-properties'});
         form = builder.build();
         container.appendChild(form);
         var options_fields = this.getAdvancedOptions();
