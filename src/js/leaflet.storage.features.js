@@ -33,7 +33,6 @@ L.Storage.FeatureMixin = {
             });
         }
         catch (e) {
-            console.log(e);
             // Certainly IE8, which has a limited version of defineProperty
         }
         this.preInit();
