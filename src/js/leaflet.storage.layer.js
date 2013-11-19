@@ -93,7 +93,7 @@ L.Storage.DataLayer = L.Class.extend({
         this.map.get(this._dataUrl(), {
             callback: function (geojson) {
                 if (geojson._storage) {
-                    this.populate(geojson._storage);
+                    this.resetOptions(geojson._storage);
                 }
                 if (this.isRemoteLayer()) {
                     this.fetchRemoteData();
@@ -151,7 +151,12 @@ L.Storage.DataLayer = L.Class.extend({
         if (!this.storage_id && datalayer && datalayer.id) {
             this.storage_id = datalayer.id || null;
         }
-        L.Util.extend(this.options, datalayer || {});
+        L.Util.setOptions(this, datalayer);
+        this.resetLayer();
+    },
+
+    resetOptions: function (options) {
+        this.options = L.Util.extend({}, options);
         this.resetLayer();
     },
 
@@ -197,12 +202,8 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     addData: function (geojson) {
-        if (geojson._storage) {
-            this.populate(geojson._storage);
-        }
         return this.geojsonToFeatures(geojson);
     },
-
 
     addRawData: function (c, type) {
         var self = this;
@@ -294,7 +295,7 @@ L.Storage.DataLayer = L.Class.extend({
         if(this.options.pointToLayer) {
             return options.pointToLayer(geojson, latlng);
         }
-        return L.storage_marker(
+        return new L.Storage.Marker(
             this.map,
             latlng,
             {"geojson": geojson, "datalayer": this}
@@ -371,6 +372,7 @@ L.Storage.DataLayer = L.Class.extend({
             if (this.isRemoteLayer()) {
                 this.fetchRemoteData();
             } else if (this._geojson) {
+                this.resetOptions(this._geojson._storage);
                 this.fromGeoJSON(this._geojson);
             }
             this.display();
@@ -416,6 +418,7 @@ L.Storage.DataLayer = L.Class.extend({
         ];
 
         builder = new L.S.FormBuilder(this, optionsFields, {
+            id: 'datalayer-advanced-properties',
             callback: function (field) {
                 this.hide();
                 if (field === "options.markercluster") {

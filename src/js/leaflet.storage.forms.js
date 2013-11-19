@@ -514,6 +514,9 @@ L.Storage.FormBuilder = L.Class.extend({
         this.form = L.DomUtil.create('form', 'storage-form');
         this.helpers = {};
         this.options = options || {};
+        if (this.options.id) {
+            this.form.id = this.options.id;
+        }
     },
 
     build: function () {

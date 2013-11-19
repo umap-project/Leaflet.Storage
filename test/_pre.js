@@ -20,7 +20,10 @@ var clickCancel = function () {
     happen.once(document.body, {type: 'keypress', keyCode: 13});
     window.confirm = _confirm;
 };
-
+var changeInputValue = function (input, value) {
+    input.value = value;
+    happen.once(input, {type: 'input'});
+};
 var defaultDatalayerData = function (custom) {
     var _default = {
         "icon_class": "Default",

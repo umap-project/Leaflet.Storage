@@ -87,11 +87,12 @@ L.Storage.FeatureMixin = {
         // We always want name and description for now (properties management to come)
         properties.unshift('properties.description');
         properties.unshift('properties.name');
-        var builder = new L.S.FormBuilder(this, properties);
+        var builder = new L.S.FormBuilder(this, properties, {id: 'storage-feature-properties'});
         form = builder.build();
         container.appendChild(form);
         var options_fields = this.getAdvancedOptions();
         builder = new L.S.FormBuilder(this, options_fields, {
+            id: "storage-feature-advanced-properties",
             callback: this._redraw,
             callbackContext: this
         });
@@ -237,6 +238,7 @@ L.Storage.FeatureMixin = {
         }
         datalayer.addLayer(this);
         datalayer.isDirty = true;
+        this._redraw();
     },
 
     usableOption: function (options, option) {
@@ -418,17 +420,6 @@ L.Storage.Marker = L.Marker.extend({
         L.Marker.prototype._initIcon.call(this);
     },
 
-    changeDataLayer: function(layer) {
-        L.Storage.FeatureMixin.changeDataLayer.call(this, layer);
-        // Icon look depends on datalayer
-        this._redraw();
-    },
-
-    connectToDataLayer: function (datalayer) {
-        // this.options.icon = this.getIcon();
-        L.Storage.FeatureMixin.connectToDataLayer.call(this, datalayer);
-    },
-
     disconnectFromDataLayer: function (datalayer) {
         this.options.icon.datalayer = null;
         L.Storage.FeatureMixin.disconnectFromDataLayer.call(this, datalayer);
@@ -512,10 +503,6 @@ L.Storage.Marker = L.Marker.extend({
 });
 
 
-L.storage_marker = function (map, latlng, options) {
-    return new L.Storage.Marker(map, latlng, options);
-};
-
 L.Storage.PathMixin = {
 
     options: {
@@ -590,13 +577,14 @@ L.Storage.PathMixin = {
         L.Polyline.prototype._updateStyle.call(this);
     },
 
-    changeDataLayer: function(layer) {
-        L.Storage.FeatureMixin.changeDataLayer.call(this, layer);
-        this._redraw();
-    },
-
     _redraw: function () {
         this._updateStyle();
+    },
+
+    onAdd: function (map) {
+        this._container = null;
+        this._setStyleOptions();
+        this.parentClass.prototype.onAdd.call(this, map);
     },
 
     getCenter: function () {
