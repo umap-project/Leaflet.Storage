@@ -67,7 +67,8 @@ L.Storage.FeatureMixin = {
 
         var properties = [];
         for (var i in this.properties) {
-            if (["_storage_options", "name", "description"].indexOf(i) !== -1) {continue;}
+            if (typeof this.properties[i] === "object" ||
+                ["name", "description"].indexOf(i) !== -1) {continue;}
             properties.push(['properties.' + i, {label: i}]);
         }
         // We always want name and description for now (properties management to come)

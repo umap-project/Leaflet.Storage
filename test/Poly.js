@@ -39,6 +39,10 @@ describe('L.Storage.Poly', function () {
             assert.ok(input);
         });
 
+        it('should not handle _storage_options has normal property', function () {
+            assert.notOk(qs('form#storage-feature-properties input[name="_storage_options"]'));
+        });
+
         it('should give precedence to feature style over datalayer styles', function () {
             var input = qs('form#storage-feature-advanced-properties input[name="color"]');
             assert.ok(input);
