@@ -317,7 +317,7 @@ L.S.ElementHelper.DataLayerSwitcher = L.S.ElementHelper.SelectAbstract.extend({
     getOptions: function () {
         var options = [];
         this.map.eachDataLayer(function (datalayer) {
-            options.push([L.stamp(datalayer), datalayer.options.name]);
+            options.push([L.stamp(datalayer), datalayer.getName()]);
         });
         return options;
     },

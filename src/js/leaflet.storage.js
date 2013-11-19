@@ -740,6 +740,7 @@ L.Storage.Map.include({
             this.addLayer(datalayer.layer);
             return datalayer;
         }
+        return new L.S.DataLayer(this, {});
     },
 
     getDataLayerByStorageId: function (storage_id) {
