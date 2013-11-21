@@ -819,7 +819,7 @@ L.Storage.Map.include({
     initEditBar: function () {
         var container = L.DomUtil.create('div', 'storage-main-edit-toolbox', this._controlContainer),
             title = L.DomUtil.create('h3', '', container);
-        title.innerHTML = L._("Editing ");
+        title.innerHTML = L._("Editing") + '&nbsp;';
         var name = L.DomUtil.create('a', 'storage-click-to-edit', title);
         var setName = function () {
             name.innerHTML = this.options.name || L._('Untitled map');
@@ -880,13 +880,13 @@ L.Storage.Map.include({
         var actions = this.getEditActions();
         actions.unshift(
             {
-                title: L._('Draw a polyline') + ' (Ctrl+P)',
+                title: L._('Draw a polyline') + ' (Ctrl+L)',
                 className: 'leaflet-draw-draw-polyline',
                 callback: this._controls.draw.startPolyline,
                 context: this._controls.draw
             },
             {
-                title: L._('Draw a polygon') + ' (Ctrl+L)',
+                title: L._('Draw a polygon') + ' (Ctrl+P)',
                 className: 'leaflet-draw-draw-polygon',
                 callback: this._controls.draw.startPolygon,
                 context: this._controls.draw
