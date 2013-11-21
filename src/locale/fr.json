@@ -88,7 +88,7 @@
     "Format": "Format",
     "From zoom": "À partir du zoom",
     "Hide controls": "Masquer les contrôles",
-    "How much to simplify the polyline on each zoom level (more = better performance and smoother look, less = more accurate)": "",
+    "How much to simplify the polyline on each zoom level (more = better performance and smoother look, less = more accurate)": "Valeur de simplification des lignes pour chaque niveau de zoom (grand nombre = meilleure performance, petit nombre = plus précis)",
     "Import": "Importer",
     "Import data": "Importer des données",
     "Inherit": "Hériter",
@@ -138,7 +138,7 @@
     "no": "non",
     "opacity": "opacité",
     "outlink": "lien externe",
-    "smooth factor": "lisser la géométrie",
+    "smooth factor": "Simplification du tracé",
     "stroke": "trait",
     "symbol of the icon": "symbole pour le marqueur",
     "table": "tableau",
@@ -146,5 +146,6 @@
     "type of icon": "forme de l'icône",
     "weight": "épaisseur",
     "yes": "oui",
-    "Draw a polyline": "Dessiner une ligne"
+    "Draw a polyline": "Dessiner une ligne",
+    "Must be a CSS valid name (eg.: DarkBlue or #123456)": "Doit être une chaîne CSS valide (ex. DarkBlud ou #123456)"
 }

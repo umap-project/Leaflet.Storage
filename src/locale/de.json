@@ -147,5 +147,6 @@
     "type of icon": "",
     "weight": "",
     "yes": "",
-    "Editing": ""
+    "Editing": "",
+    "Must be a CSS valid name (eg.: DarkBlue or #123456)": ""
 }

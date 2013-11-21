@@ -626,7 +626,7 @@ L.Storage.FormBuilder = L.Class.extend({
     defaultOptions: {
         name: {label: L._('name')},
         description: {label: L._('description'), handler: 'Textarea'},
-        color: {handler: 'ColorPicker', label: L._('color')},
+        color: {handler: 'ColorPicker', label: L._('color'), helpText: L._('Must be a CSS valid name (eg.: DarkBlue or #123456)')},
         opacity: {label: L._('opacity'), helpText: L._('Opacity, from 0.1 to 1.0 (opaque).')},
         stroke: {handler: 'NullableBoolean', label: L._('stroke'), helpText: L._('Whether to display or not the Polygon path.')},
         weight: {label: L._('weight'), helpText: L._('Path weight in pixels. From 0 to 10.')},
