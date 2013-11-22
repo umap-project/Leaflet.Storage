@@ -147,5 +147,8 @@
     "weight": "épaisseur",
     "yes": "oui",
     "Draw a polyline": "Dessiner une ligne",
-    "Must be a CSS valid name (eg.: DarkBlue or #123456)": "Doit être une chaîne CSS valide (ex. DarkBlud ou #123456)"
+    "Must be a CSS valid name (eg.: DarkBlue or #123456)": "Doit être une chaîne CSS valide (ex. DarkBlud ou #123456)",
+    "Download raw data (GeoJSON)": "Données brutes (GeoJSON)",
+    "Embed the map": "Embarquer la carte en iframe",
+    "Short URL": "URL courte"
 }

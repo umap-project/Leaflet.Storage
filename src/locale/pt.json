@@ -147,5 +147,8 @@
     "type of icon": "",
     "weight": "",
     "yes": "",
-    "Must be a CSS valid name (eg.: DarkBlue or #123456)": ""
+    "Must be a CSS valid name (eg.: DarkBlue or #123456)": "",
+    "Download raw data (GeoJSON)": "",
+    "Embed the map": "",
+    "Short URL": ""
 }

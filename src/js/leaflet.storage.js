@@ -397,14 +397,17 @@ L.Storage.Map.include({
 
     renderShareBox: function () {
         var container = L.DomUtil.create('div', 'storage-share'),
+            embedTitle = L.DomUtil.add('h4', '', container, L._('Embed the map')),
             iframe = L.DomUtil.create('textarea', 'storage-share-iframe', container),
             url = window.location.protocol + '//' + window.location.host + window.location.pathname + '?scaleControl=0&miniMap=0&scrollWheelZoom=0&allowEdit=0';
         iframe.innerHTML = '<iframe width="100%" height="300" frameBorder="0" src="' + url +'"></iframe><p><a href="http://u.osmfr.org/en/map/demo_1">See full screen</a></p>';
         if (this.options.shortUrl) {
+            L.DomUtil.add('h4', '', container, L._('Short URL'));
             var shortUrl = L.DomUtil.create('input', 'storage-short-url', container);
             shortUrl.type = "text";
             shortUrl.value = this.options.shortUrl;
         }
+        L.DomUtil.add('h4', '', container, L._('Download raw data (GeoJSON)'));
         var download = L.DomUtil.create('a', 'button', container);
         var features = [];
         this.eachDataLayer(function (datalayer) {
