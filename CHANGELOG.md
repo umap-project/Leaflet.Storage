@@ -18,6 +18,7 @@
 - popup window can now display a table with all features properties
 - support of OSM XML format, thanks to https://github.com/tyrasd/osmtogeojson
 - added a measure control, thanks to https://github.com/makinacorpus/Leaflet.MeasureControl
+- added Transifex config
 
 ## 0.4.x
 - add a data browser

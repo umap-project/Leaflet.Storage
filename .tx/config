@@ -1,0 +1,9 @@
+[main]
+host = https://www.transifex.com
+
+[umap.frontend]
+file_filter = src/locale/<lang>.json
+source_file = src/locale/en.json
+source_lang = en
+type = KEYVALUEJSON
+
