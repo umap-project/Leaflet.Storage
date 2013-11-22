@@ -198,6 +198,52 @@ a.storage-control-text {
 
 
 /* ********************************* */
+/*     Help Lightbox                 */
+/* ********************************* */
+.storage-help-container {
+    display: none;
+    z-index: 10001;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+.storage-help-on .storage-help-container {
+    display: block;
+}
+.storage-help-overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #fff;
+    opacity: 0.5;
+}
+.storage-help-box {
+    position: absolute;
+    top: 10%;
+    margin: 0 calc(50% - 400px/2);
+    background-color: #fff;
+    width: 400px;
+    padding: 40px 20px;
+    border: 1px solid #ddd;
+    z-index: 10002;
+    font-size: 0.8em;
+}
+.storage-help-box .storage-close-link {
+    color: #000;
+}
+.storage-help-button:after {
+    display: inline-block;
+    width: 20px;
+    content: "?";
+    padding-left: 5px;
+    font-style: italic;
+}
+
+/* ********************************* */
 /*   Edit Help Panel                 */
 /* ********************************* */
 

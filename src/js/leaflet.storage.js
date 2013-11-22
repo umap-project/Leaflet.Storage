@@ -156,9 +156,9 @@ L.Storage.Map.include({
             var datalayer = this._createDataLayer({name: L._('Layer 1')});
             datalayer.connectToMap();
             this.enableEdit();
-            this.editHelp();
         }
 
+        this.help = new L.Storage.Help(this);
         if (this.options.allowEdit) {
             // Layer for items added by users
             this.on('draw:created', function (e) {
@@ -187,6 +187,7 @@ L.Storage.Map.include({
                 var key = e.keyCode,
                 chars = {
                     E: 69,
+                    H: 72,
                     I: 73,
                     L: 76,
                     M: 77,
@@ -220,6 +221,10 @@ L.Storage.Map.include({
                 if (key == chars.I && e.ctrlKey && this.editEnabled) {
                     L.DomEvent.stop(e);
                     this.importPanel();
+                }
+                if (key == chars.H && e.ctrlKey && this.editEnabled) {
+                    L.DomEvent.stop(e);
+                    this.help.show('edit');
                 }
             };
             L.DomEvent.addListener(document, 'keydown', editShortcuts, this);
@@ -451,8 +456,12 @@ L.Storage.Map.include({
         submitInput.value = L._('Import');
         submitInput.className = "button";
         typeLabel.innerHTML = L._('Choose the format of the data to import');
+        var helpButton = L.DomUtil.create('a', 'storage-help-button', typeLabel);
         var typeInput = L.DomUtil.create('select', '', typeLabel);
         typeInput.name = "format";
+        L.DomEvent
+            .on(helpButton, 'click', L.DomEvent.stop)
+            .on(helpButton, 'click', function () { this.help.show('importFormats');}, this);
         layerLabel.innerHTML = L._('Choose the layer to import in');
         var layerInput = L.DomUtil.create('select', '', layerLabel);
         layerInput.name = "datalayer";
@@ -835,7 +844,7 @@ L.Storage.Map.include({
         help.title = help.innerHTML = L._('help');
         L.DomEvent
             .on(help, 'click', L.DomEvent.stop)
-            .on(help, 'click', this.editHelp, this);
+            .on(help, 'click', function () {this.help.show('edit');}, this);
         var save = L.DomUtil.create('a', "leaflet-control-edit-save button", container);
         save.href = '#';
         save.title = L._("Save current edits") + ' (Ctrl-S)';
@@ -868,43 +877,6 @@ L.Storage.Map.include({
                 L.S.fire('ui:end');
                 this.reset();
             }, this);
-    },
-
-    editHelp: function () {
-        var container = L.DomUtil.create('div', ''),
-            title = L.DomUtil.create('h3', '', container),
-            actionsContainer = L.DomUtil.create('ul', 'storage-edit-actions', container);
-        var addAction = function (action) {
-            var actionContainer = L.DomUtil.create('li', action.className, actionsContainer);
-            actionContainer.innerHTML = action.title;
-            L.DomEvent.on(actionContainer, 'click', action.callback, action.context);
-        };
-        title.innerHTML = L._('Where do we go from here?');
-        var actions = this.getEditActions();
-        actions.unshift(
-            {
-                title: L._('Draw a polyline') + ' (Ctrl+L)',
-                className: 'leaflet-draw-draw-polyline',
-                callback: this._controls.draw.startPolyline,
-                context: this._controls.draw
-            },
-            {
-                title: L._('Draw a polygon') + ' (Ctrl+P)',
-                className: 'leaflet-draw-draw-polygon',
-                callback: this._controls.draw.startPolygon,
-                context: this._controls.draw
-            },
-            {
-                title: L._('Draw a marker') + ' (Ctrl+M)',
-                className: 'leaflet-draw-draw-marker',
-                callback: this._controls.draw.startMarker,
-                context: this._controls.draw
-            }
-        );
-        for (var i = 0; i < actions.length; i++) {
-            addAction(actions[i]);
-        }
-        L.S.fire('ui:start', {data: {html: container}});
     },
 
     getEditActions: function () {
@@ -1027,6 +999,11 @@ L.Storage.Map.include({
                         context: this._controls.draw
                     }
                 );
+                items.push('-');
+                items.push({
+                    text: L._('Help'),
+                    callback: function () { this.help.show('edit');}
+                });
             } else {
                 items.push({
                     text: L._('Start editing') + ' (Ctrl+E)',

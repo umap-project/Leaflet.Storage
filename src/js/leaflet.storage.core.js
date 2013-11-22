@@ -91,7 +91,12 @@ L.Util.toHTML = function (r) {
 L.DomUtil.add = function (tagName, className, container, content) {
     var el = L.DomUtil.create(tagName, className, container);
     if (content) {
-        el.innerHTML = content;
+        if (content.nodeType && content.nodeType === 1) {
+            el.appendChild(content);
+        }
+        else {
+            el.innerHTML = content;
+        }
     }
     return el;
 };
@@ -113,3 +118,100 @@ L.S._onKeyDown = function (e) {
     }
 };
 L.DomEvent.addListener(document, 'keydown', L.S._onKeyDown, L.S);
+
+
+L.Storage.Help = L.Class.extend({
+
+    initialize: function (map) {
+        this.map = map;
+        this.parentContainer = L.DomUtil.create('div', 'storage-help-container', document.body);
+        this.overlay = L.DomUtil.create('div', 'storage-help-overlay', this.parentContainer);
+        this.box = L.DomUtil.create('div', 'storage-help-box', this.parentContainer);
+        this.closeButton = L.DomUtil.add('a', 'storage-close-link', this.box, '&times;');
+        this.content = L.DomUtil.create('div', 'storage-help-content', this.box);
+        L.DomEvent.on(this.closeButton, 'click', this.hide, this);
+        L.DomEvent.addListener(this.parentContainer, 'keydown', this.onKeyDown, this);
+    },
+
+    onKeyDown: function (e) {
+        var key = e.keyCode,
+            ESC = 27;
+        if (key == ESC) {
+            this.hide();
+        }
+    },
+
+    show: function () {
+        this.content.innerHTML = '';
+        for (var i = 0, name; i < arguments.length; i++) {
+            name = arguments[i];
+            L.DomUtil.add('div', '', this.content, this.resolve(name));
+        }
+        L.DomUtil.addClass(document.body, 'storage-help-on');
+    },
+
+    hide: function () {
+        L.DomUtil.removeClass(document.body, 'storage-help-on');
+    },
+
+    resolve: function (name) {
+        return typeof this[name] === "function" ? this[name]() : this[name];
+    },
+
+    edit: function () {
+        var container = L.DomUtil.create('div', ''),
+            self = this,
+            title = L.DomUtil.create('h3', '', container),
+            actionsContainer = L.DomUtil.create('ul', 'storage-edit-actions', container);
+        var addAction = function (action) {
+            var actionContainer = L.DomUtil.add('li', action.className, actionsContainer, action.title);
+            L.DomEvent.on(actionContainer, 'click', action.callback, action.context);
+            L.DomEvent.on(actionContainer, 'click', self.hide, self);
+        };
+        title.innerHTML = L._('Where do we go from here?');
+        var actions = this.map.getEditActions();
+        actions.unshift(
+            {
+                title: L._('Draw a polyline') + ' (Ctrl+L)',
+                className: 'leaflet-draw-draw-polyline',
+                callback: function () {this.hide(); this.map._controls.draw.startPolyline();},
+                context: this
+            },
+            {
+                title: L._('Draw a polygon') + ' (Ctrl+P)',
+                className: 'leaflet-draw-draw-polygon',
+                callback: function () {this.hide(); this.map._controls.draw.startPolygone();},
+                context: this
+            },
+            {
+                title: L._('Draw a marker') + ' (Ctrl+M)',
+                className: 'leaflet-draw-draw-marker',
+                callback: function () {this.hide(); this.map._controls.draw.startMarker();},
+                context: this
+            }
+        );
+        for (var i = 0; i < actions.length; i++) {
+            addAction(actions[i]);
+        }
+        return container;
+    },
+
+    importFormats: L._('Supported formats are:') + ' GeojSON, KML, GPX, OSM, CSV',
+
+    textFormatting: function () {
+        var container = L.DomUtil.create('div'),
+            title = L.DomUtil.add('h3', '', container, L._('Text formatting')),
+            elements = L.DomUtil.create('ul', '', container);
+        L.DomUtil.add('li', '', elements, L._('*simple star for italic*'));
+        L.DomUtil.add('li', '', elements, L._('**double star for bold**'));
+        L.DomUtil.add('li', '', elements, L._('# one hash for main heading'));
+        L.DomUtil.add('li', '', elements, L._('## two hashes for second heading'));
+        L.DomUtil.add('li', '', elements, L._('### three hashes for third heading'));
+        L.DomUtil.add('li', '', elements, L._('Simple link: [[http://example.com]]'));
+        L.DomUtil.add('li', '', elements, L._('Link with text: [[http://example.com|text of the link]]'));
+        L.DomUtil.add('li', '', elements, L._('Image: {{http://image.url.com}}'));
+        L.DomUtil.add('li', '', elements, L._('--- for an horizontal rule'));
+        return container;
+    }
+
+});

@@ -37,9 +37,16 @@ L.Storage.ElementHelper = L.Class.extend({
     },
 
     buildLabel: function () {
-        this.label = L.DomUtil.create('label', '', this.formBuilder.form);
-        if (this.options.label) {
-            this.label.innerHTML = this.options.label;
+        this.label = L.DomUtil.add('label', '', this.formBuilder.form, this.options.label);
+        if (this.options.helpEntries) {
+            var helpButton = L.DomUtil.add('a', 'storage-help-button', this.label);
+            helpButton.href = "#";
+            L.DomEvent
+                .on(helpButton, 'click', L.DomEvent.stop)
+                .on(helpButton, 'click', function (e) {
+                    var args = typeof this.options.helpEntries === "string"? [this.options.helpEntries] : this.options.helpEntries;
+                    this.map.help.show.apply(this.map.help, args);
+                }, this);
         }
     },
 
@@ -625,7 +632,7 @@ L.Storage.FormBuilder = L.Class.extend({
 
     defaultOptions: {
         name: {label: L._('name')},
-        description: {label: L._('description'), handler: 'Textarea'},
+        description: {label: L._('description'), handler: 'Textarea', helpEntries: 'textFormatting'},
         color: {handler: 'ColorPicker', label: L._('color'), helpText: L._('Must be a CSS valid name (eg.: DarkBlue or #123456)')},
         opacity: {label: L._('opacity'), helpText: L._('Opacity, from 0.1 to 1.0 (opaque).')},
         stroke: {handler: 'NullableBoolean', label: L._('stroke'), helpText: L._('Whether to display or not the Polygon path.')},
