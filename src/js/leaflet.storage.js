@@ -311,6 +311,12 @@ L.Storage.Map.include({
 
     backupOptions: function () {
         this._backupOptions = L.extend({}, this.options);
+        this._backupOptions.tilelayer = L.extend({}, this.options.tilelayer);
+    },
+
+    resetOptions: function () {
+        this.options = L.extend({}, this._backupOptions);
+        this.options.tilelayer = L.extend({}, this._backupOptions.tilelayer);
     },
 
     initTileLayers: function () {
@@ -632,7 +638,7 @@ L.Storage.Map.include({
         this.deleted_datalayers.forEach(function (datalayer) {
             datalayer.reset();
         });
-        this.options = L.extend({}, this._backupOptions);
+        this.resetOptions();
         this.initTileLayers();
         this.isDirty = false;
     },
