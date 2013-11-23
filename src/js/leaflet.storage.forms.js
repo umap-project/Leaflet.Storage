@@ -144,6 +144,10 @@ L.S.ElementHelper.IntegerMixin = {
 
     value: function () {
         return !isNaN(this.input.value) && this.input.value !== "" ? parseInt(this.input.value, 10): null;
+    },
+
+    type: function () {
+        return "number";
     }
 
 };
