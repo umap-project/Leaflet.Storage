@@ -852,21 +852,15 @@ L.Storage.Map.include({
 
     initEditBar: function () {
         var container = L.DomUtil.create('div', 'storage-main-edit-toolbox', this._controlContainer),
-            title = L.DomUtil.create('h3', '', container);
-        title.innerHTML = L._("Editing") + '&nbsp;';
-        var name = L.DomUtil.create('a', 'storage-click-to-edit', title);
-        var setName = function () {
-            name.innerHTML = this.options.name || L._('Untitled map');
-        };
+            title = L.DomUtil.add('h3', '', container, L._("Editing") + '&nbsp;'),
+            name = L.DomUtil.create('a', 'storage-click-to-edit', title),
+            setName = function () {
+                name.innerHTML = this.options.name || L._('Untitled map');
+            };
         L.bind(setName, this)();
         L.DomEvent.on(name, 'click', this.edit, this);
         this.on('synced', L.bind(setName, this));
-        var help = L.DomUtil.create('a', 'storage-help', container);
-        help.href = "#";
-        help.title = help.innerHTML = L._('help');
-        L.DomEvent
-            .on(help, 'click', L.DomEvent.stop)
-            .on(help, 'click', function () {this.help.show('edit');}, this);
+        this.help.button(title, 'edit');
         var save = L.DomUtil.create('a', "leaflet-control-edit-save button", container);
         save.href = '#';
         save.title = L._("Save current edits") + ' (Ctrl-S)';

@@ -243,6 +243,7 @@ a.storage-control-text {
     background-position: center center;
     background-repeat: no-repeat;
     background-image: url("../img/help-16.png");
+    vertical-align: text-top;
 }
 
 /* ********************************* */
