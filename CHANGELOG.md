@@ -19,6 +19,8 @@
 - support of OSM XML format, thanks to https://github.com/tyrasd/osmtogeojson
 - added a measure control, thanks to https://github.com/makinacorpus/Leaflet.MeasureControl
 - added Transifex config
+- simple help boxes
+- it's now possible to set background layer with manual settings
 
 ## 0.4.x
 - add a data browser
