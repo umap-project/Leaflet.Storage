@@ -237,6 +237,8 @@ L.Storage.Help = L.Class.extend({
         L.DomUtil.add('li', '', elements, L._('Image: {{http://image.url.com}}'));
         L.DomUtil.add('li', '', elements, L._('--- for an horizontal rule'));
         return container;
-    }
+    },
+
+    formatURL: L._('Supported variables that will be dynamically replaced') + ': {bbox}, {lat}, {lng}, {zoom}, {east}, {north}..., {left}, {top}...'
 
 });

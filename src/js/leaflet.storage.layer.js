@@ -437,7 +437,7 @@ L.Storage.DataLayer = L.Class.extend({
             this.options.remoteData = {};
         }
         var remoteDataFields = [
-            ['options.remoteData.url', {handler: 'Url', label: L._('Url')}],
+            ['options.remoteData.url', {handler: 'Url', label: L._('Url'), helpEntries: 'formatURL'}],
             ['options.remoteData.format', {handler: 'DataFormat', label: L._('Format')}],
             ['options.remoteData.from', {label: L._('From zoom'), helpText: L._('Optionnal.')}],
             ['options.remoteData.to', {label: L._('To zoom'), helpText: L._('Optionnal.')}],
