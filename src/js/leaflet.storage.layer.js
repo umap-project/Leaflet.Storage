@@ -424,6 +424,9 @@ L.Storage.DataLayer = L.Class.extend({
                 if (field === "options.markercluster") {
                     this.resetLayer();
                 }
+                if (field === "options.color" && this.isClustered()) {
+                    this.layer.options.polygonOptions.color = this.options.color || this.map.getDefaultOption('color');
+                }
                 this.display();
             }
         });
