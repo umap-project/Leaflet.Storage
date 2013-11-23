@@ -158,6 +158,20 @@ L.Storage.Help = L.Class.extend({
         return typeof this[name] === "function" ? this[name]() : this[name];
     },
 
+    button: function (container, entries) {
+        var helpButton = L.DomUtil.create('a', 'storage-help-button', container);
+        helpButton.href = "#";
+        if (entries) {
+            L.DomEvent
+                .on(helpButton, 'click', L.DomEvent.stop)
+                .on(helpButton, 'click', function (e) {
+                    var args = typeof entries === "string"? [entries] : entries;
+                    this.show.apply(this, args);
+                }, this);
+        }
+        return helpButton;
+    },
+
     edit: function () {
         var container = L.DomUtil.create('div', ''),
             self = this,
@@ -196,7 +210,18 @@ L.Storage.Help = L.Class.extend({
         return container;
     },
 
-    importFormats: L._('Supported formats are:') + ' GeojSON, KML, GPX, OSM, CSV',
+    importFormats: function () {
+        var container = L.DomUtil.create('div');
+        L.DomUtil.add('h3', '', container,'GeojSON');
+        L.DomUtil.add('p', '', container, L._('All properties are imported.'));
+        L.DomUtil.add('h3', '', container,'GPX');
+        L.DomUtil.add('p', '', container, L._('Properties imported:') + 'name, desc');
+        L.DomUtil.add('h3', '', container,'KML');
+        L.DomUtil.add('p', '', container, L._('Properties imported:') + 'name, description');
+        L.DomUtil.add('h3', '', container,'CSV');
+        L.DomUtil.add('p', '', container, L._('Comma, tab or semi-colon separated values. SRS WGS84 is implied. Only Point geometries are imported. The import will look at the column headers for any mention of «lat» and «lon» at the begining of the header, case insensitive. All other column are imported as properties.'));
+        return container;
+    },
 
     textFormatting: function () {
         var container = L.DomUtil.create('div'),

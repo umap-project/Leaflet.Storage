@@ -456,12 +456,9 @@ L.Storage.Map.include({
         submitInput.value = L._('Import');
         submitInput.className = "button";
         typeLabel.innerHTML = L._('Choose the format of the data to import');
-        var helpButton = L.DomUtil.create('a', 'storage-help-button', typeLabel);
+        this.help.button(typeLabel, 'importFormats');
         var typeInput = L.DomUtil.create('select', '', typeLabel);
         typeInput.name = "format";
-        L.DomEvent
-            .on(helpButton, 'click', L.DomEvent.stop)
-            .on(helpButton, 'click', function () { this.help.show('importFormats');}, this);
         layerLabel.innerHTML = L._('Choose the layer to import in');
         var layerInput = L.DomUtil.create('select', '', layerLabel);
         layerInput.name = "datalayer";

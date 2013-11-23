@@ -39,14 +39,7 @@ L.Storage.ElementHelper = L.Class.extend({
     buildLabel: function () {
         this.label = L.DomUtil.add('label', '', this.formBuilder.form, this.options.label);
         if (this.options.helpEntries) {
-            var helpButton = L.DomUtil.add('a', 'storage-help-button', this.label);
-            helpButton.href = "#";
-            L.DomEvent
-                .on(helpButton, 'click', L.DomEvent.stop)
-                .on(helpButton, 'click', function (e) {
-                    var args = typeof this.options.helpEntries === "string"? [this.options.helpEntries] : this.options.helpEntries;
-                    this.map.help.show.apply(this.map.help, args);
-                }, this);
+            this.map.help.button(this.label, this.options.helpEntries);
         }
     },
 
