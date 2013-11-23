@@ -95,7 +95,7 @@ L.Storage.Map.include({
         }
         this.initCenter();
 
-        this.populateTileLayers(this.options.tilelayers);
+        this.initTileLayers(this.options.tilelayers);
         this.initControls();
 
         // Global storage for retrieving datalayers
@@ -313,14 +313,17 @@ L.Storage.Map.include({
         this._backupOptions = L.extend({}, this.options);
     },
 
-    populateTileLayers: function (tilelayers) {
+    initTileLayers: function () {
         this.tilelayers = Array();
-        for(var i in tilelayers) {
-            if(tilelayers.hasOwnProperty(i)) {
-                this.addTileLayer(tilelayers[i]);
+        for(var i in this.options.tilelayers) {
+            if(this.options.tilelayers.hasOwnProperty(i)) {
+                this.tilelayers.push(this.createTileLayer(this.options.tilelayers[i]));
             }
         }
-        if (!this.selected_tilelayer) {
+        if (this.options.tilelayer && this.options.tilelayer.url_template && this.options.tilelayer.attribution) {
+            this.customTilelayer = this.createTileLayer(this.options.tilelayer);
+            this.selectTileLayer(this.customTilelayer);
+        } else {
             this.selectTileLayer(this.tilelayers[0]);
         }
     },
@@ -339,14 +342,17 @@ L.Storage.Map.include({
         this.selected_tilelayer = tilelayer;
     },
 
-    addTileLayer: function (options) {
-        var tilelayer = this.createTileLayer(options);
-        // Add only the first to the map, to make it visible,
-        // and the other only when user click on them
-        if(this.options.tilelayer && this.options.tilelayer.url_template === tilelayer._url) {
-            this.selectTileLayer(tilelayer);
+    eachTileLayer: function (method, context) {
+        var urls = [];
+        for (var i in this.tilelayers) {
+            if (this.tilelayers.hasOwnProperty(i)) {
+                method.call(context, this.tilelayers[i]);
+                urls.push(this.tilelayers[i]._url);
+            }
         }
-        this.tilelayers.push(tilelayer);
+        if (this.customTilelayer && (Array.prototype.indexOf && urls.indexOf(this.customTilelayer._url) === -1)) {
+            method.call(context || this, this.customTilelayer);
+        }
     },
 
     initCenter: function () {
@@ -627,6 +633,7 @@ L.Storage.Map.include({
             datalayer.reset();
         });
         this.options = L.extend({}, this._backupOptions);
+        this.initTileLayers();
         this.isDirty = false;
     },
 
@@ -793,13 +800,25 @@ L.Storage.Map.include({
             callback: this.initControls,
             callbackContext: this
         });
-        var controlsOptions = L.DomUtil.create('fieldset', 'toggle', container);
-        var controlsOptionsTitle = L.DomUtil.create('legend', 'style_options_toggle', controlsOptions);
-        controlsOptionsTitle.innerHTML = L._('Display options');
+        var controlsOptions = L.DomUtil.createFieldset(container, L._('Display options'));
         controlsOptions.appendChild(builder.build());
-        var advancedActions = L.DomUtil.create('fieldset', 'toggle', container);
-        var advancedActionsTitle = L.DomUtil.create('legend', 'style_options_toggle', advancedActions);
-        advancedActionsTitle.innerHTML = L._('Advanced actions');
+        if (typeof this.options.tilelayer !== 'object') {
+            this.options.tilelayer = {};
+        }
+        var tilelayerFields = [
+            ['options.tilelayer.name', {handler: 'BlurInput', placeholder: L._('display name')}],
+            ['options.tilelayer.url_template', {handler: 'BlurInput', helpText: L._("Supported scheme") + ': http://{s}.domain.com/{z}/{x}/{y}.png', placeholder: 'url'}],
+            ['options.tilelayer.maxZoom', {handler: 'BlurIntInput', placeholder: L._('max zoom')}],
+            ['options.tilelayer.minZoom', {handler: 'BlurIntInput', placeholder: L._('min zoom')}],
+            ['options.tilelayer.attribution', {handler: 'BlurInput', placeholder: L._('attribution')}]
+        ];
+        var customTilelayer = L.DomUtil.createFieldset(container, L._('Custom background'));
+        builder = new L.S.FormBuilder(this, tilelayerFields, {
+            callback: this.initTileLayers,
+            callbackContext: this
+        });
+        customTilelayer.appendChild(builder.build());
+        var advancedActions = L.DomUtil.createFieldset(container, L._('Advanced actions'));
         var del = L.DomUtil.create('a', 'storage-delete', advancedActions);
         del.href = "#";
         del.innerHTML = L._('Delete');

@@ -587,7 +587,8 @@ L.TileLayer.include({
             minZoom: this.options.minZoom,
             maxZoom: this.options.maxZoom,
             attribution: this.options.attribution,
-            url_template: this._url
+            url_template: this._url,
+            name: this.options.name
         };
     }
 });

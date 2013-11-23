@@ -87,8 +87,15 @@ L.Storage.ElementHelper.Input = L.S.ElementHelper.extend({
         this.input.type = this.type();
         this.input.name = this.name;
         this.input._helper = this;
-        L.DomEvent.on(this.input, 'input', this.sync, this);
+        if (this.options.placeholder) {
+            this.input.placeholder = this.options.placeholder;
+        }
+        L.DomEvent.on(this.input, this.getSyncEvent(), this.sync, this);
         L.DomEvent.on(this.input, 'keypress', this.onKeyPress, this);
+    },
+
+    getSyncEvent: function () {
+        return 'input';
     },
 
     type: function () {
@@ -96,7 +103,11 @@ L.Storage.ElementHelper.Input = L.S.ElementHelper.extend({
     },
 
     value: function () {
-        return this.input.value;
+        return this.input.value || null;
+    },
+
+    finish: function () {
+        L.S.fire('ui:end');
     },
 
     onKeyPress: function (e) {
@@ -104,11 +115,48 @@ L.Storage.ElementHelper.Input = L.S.ElementHelper.extend({
             ENTER = 13;
         if (key == ENTER) {
             L.DomEvent.stop(e);
-            L.S.fire('ui:end');
+            this.finish();
         }
     }
 
 });
+
+L.S.ElementHelper.BlurInput = L.S.ElementHelper.Input.extend({
+
+    getSyncEvent: function () {
+        return 'blur';
+    },
+
+    finish: function () {
+        this.sync();
+        L.S.ElementHelper.Input.prototype.finish.call(this);
+    },
+
+    sync: function () {
+        if (this.backup !== this.value()) {
+            L.S.ElementHelper.Input.prototype.sync.call(this);
+        }
+    }
+
+});
+
+L.S.ElementHelper.IntegerMixin = {
+
+    value: function () {
+        return !isNaN(this.input.value) && this.input.value !== "" ? parseInt(this.input.value, 10): null;
+    }
+
+};
+
+L.S.ElementHelper.IntInput = L.S.ElementHelper.Input.extend({
+    includes: [L.S.ElementHelper.IntegerMixin]
+});
+
+
+L.S.ElementHelper.BlurIntInput = L.S.ElementHelper.BlurInput.extend({
+    includes: [L.S.ElementHelper.IntegerMixin]
+});
+
 
 L.S.ElementHelper.ColorPicker = L.S.ElementHelper.Input.extend({
     colors: [

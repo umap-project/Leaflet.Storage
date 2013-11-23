@@ -444,9 +444,9 @@ L.Storage.TileLayerControl = L.Control.extend({
     },
 
     buildList: function (options) {
-        for (var i=0,l=this._map.tilelayers.length;i<l;i++) {
-            this.addTileLayerElement(this._map.tilelayers[i], options);
-        }
+        this._map.eachTileLayer(function (tilelayer) {
+            this.addTileLayerElement(tilelayer, options);
+        }, this);
         L.Storage.fire("ui:start", {data: {html: this._tilelayers_container}});
     },
 
