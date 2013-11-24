@@ -1,7 +1,7 @@
 L.Storage.FeatureMixin = {
 
     form_id: "feature_form",
-    static_options: {},
+    staticOptions: {},
 
     initialize: function (map, latlng, options) {
         this.map = map;
@@ -234,11 +234,11 @@ L.Storage.FeatureMixin = {
 
     getOption: function (option, fallback) {
         var value = fallback || null;
-        if (this.usableOption(this.properties._storage_options, option)) {
-            value = this.properties._storage_options[option];
+        if (typeof this.staticOptions[option] !== "undefined") {
+            value = this.staticOptions[option];
         }
-        else if (typeof this.static_options[option] !== "undefined") {
-            value = this.static_options[option];
+        else if (this.usableOption(this.properties._storage_options, option)) {
+            value = this.properties._storage_options[option];
         }
         else if (this.datalayer && this.usableOption(this.datalayer.options, option)) {
             value = this.datalayer.options[option];
@@ -612,7 +612,7 @@ L.Storage.Polyline = L.Polyline.extend({
     parentClass: L.Polyline,
     includes: [L.Storage.FeatureMixin, L.Storage.PathMixin, L.Mixin.Events],
 
-    static_options: {
+    staticOptions: {
         stroke: true,
         fill: false
     },
