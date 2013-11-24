@@ -160,10 +160,10 @@ L.Storage.FeatureMixin = {
                 next = this.getNext(),
                 prev = this.getPrevious();
             if (next) {
-                next_li.title = L._("Go to «{feature}»", {feature: next.name});
+                next_li.title = L._("Go to «{feature}»", {feature: next.properties.name});
             }
             if (prev) {
-                previous_li.title = L._("Go to «{feature}»", {feature: prev.name});
+                previous_li.title = L._("Go to «{feature}»", {feature: prev.properties.name});
             }
             zoom_li.title = L._("Zoom to this feature");
             L.DomEvent.on(next_li, 'click', function (e) {
