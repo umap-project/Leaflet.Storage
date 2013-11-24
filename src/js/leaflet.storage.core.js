@@ -68,7 +68,7 @@ L.Util.toHTML = function (r) {
 
     // links
     r = r.replace(/(\[\[http)/g, '[[h_t_t_p');  // Escape for avoiding clash between [[http://xxx]] and http://xxx
-    r = r.replace(/(https?[^ ]*)/g, '<a target="_blank" href="$1">$1</a>');
+    r = r.replace(/(https?[^ \)]*)/g, '<a target="_blank" href="$1">$1</a>');
     r = r.replace(/\[\[(h_t_t_ps?:[^\]|]*?)\]\]/g, '<a target="_blank" href="$1">$1</a>');
     r = r.replace(/\[\[(h_t_t_ps?:[^|]*?)\|(.*?)\]\]/g, '<a target="_blank" href="$1">$2</a>');
     r = r.replace(/\[\[([^\]|]*?)\]\]/g, '<a href="$1">$1</a>');

@@ -14,6 +14,10 @@ describe('L.Util', function () {
             assert.equal(L.Util.toHTML('A simple http://osm.org link'), 'A simple <a target="_blank" href="http://osm.org">http://osm.org</a> link');
         });
 
+        it('should handle simple link inside parenthesis', function () {
+            assert.equal(L.Util.toHTML('A simple link (http://osm.org)'), 'A simple link (<a target="_blank" href="http://osm.org">http://osm.org</a>)');
+        });
+
         it('should handle simple link with formatting', function () {
             assert.equal(L.Util.toHTML('A simple [[http://osm.org]] link'), 'A simple <a target="_blank" href="http://osm.org">http://osm.org</a> link');
         });
