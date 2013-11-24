@@ -177,7 +177,7 @@ L.Storage.FeatureMixin = {
                 }
             }, this);
             L.DomEvent.on(zoom_li, 'click', function (e) {
-                this.map.setZoom(16);  // Do not hardcode this
+                this.map._zoom = 16;  // Do not hardcode this
                 this.bringToCenter();
             }, this);
         }
