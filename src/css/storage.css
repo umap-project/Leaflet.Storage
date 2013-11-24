@@ -970,6 +970,8 @@ a.storage-control-text {
 }
 .storage-popup-content {
     max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 .leaflet-bar {
     border: 1px solid #bbb;
