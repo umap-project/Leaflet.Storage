@@ -80,6 +80,7 @@ L.Storage.Xhr = {
             catch (err) {
                 console.log(err);
                 L.Storage.fire("ui:alert", {"content": L._("Problem in the response format"), "level": "error"});
+                return;
             }
             if (data.errors) {
                 console.log(data.errors);
