@@ -105,8 +105,8 @@ L.Storage.FeatureMixin = {
     endEdit: function () {},
 
     defaultPopupTemplate: function (container) {
-        var content = L.DomUtil.create('p', '', container);
         if (this.properties.description) {
+            var content = L.DomUtil.create('p', '', container);
             content.innerHTML = L.Util.toHTML(this.properties.description);
         }
 
@@ -141,15 +141,16 @@ L.Storage.FeatureMixin = {
     },
 
     populatePopup: function () {
-        var container = L.DomUtil.create('div', ''),
-            template = this.getOption('popupTemplate');
+        var container = L.DomUtil.create('div', '');
         if (this.properties.name) {
             L.DomUtil.add('h4', '', container, this.properties.name);
         }
+        var content = L.DomUtil.create('div', 'storage-popup-content', container),
+            template = this.getOption('popupTemplate');
         if (template === "table") {
-            this.tablePopupTemplate(container);
+            this.tablePopupTemplate(content);
         } else {
-            this.defaultPopupTemplate(container);
+            this.defaultPopupTemplate(content);
         }
         if (this.displayPopupFooter()) {
             var footer = L.DomUtil.create('ul', 'storage-popup-footer', container),

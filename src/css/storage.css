@@ -968,7 +968,7 @@ a.storage-control-text {
 .leaflet-popup-content-wrapper {
     border-radius: 4px;
 }
-.leaflet-popup-content {
+.storage-popup-content {
     max-height: 300px;
 }
 .leaflet-bar {
