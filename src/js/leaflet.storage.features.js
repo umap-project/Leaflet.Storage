@@ -350,6 +350,7 @@ L.Storage.Marker = L.Marker.extend({
     },
 
     addInteractions: function () {
+        L.Storage.FeatureMixin.addInteractions.call(this);
         this.on("dragend", function (e) {
             this.isDirty = true;
             this.edit(e);
