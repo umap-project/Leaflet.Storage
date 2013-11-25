@@ -28,4 +28,12 @@ describe('L.Util', function () {
 
     });
 
+    describe('#escapeHTML', function () {
+
+        it('should escape HTML tags', function () {
+            assert.equal(L.Util.toHTML('<a href="pouet">'), '&lt;a href="pouet">');
+        });
+
+    });
+
 });

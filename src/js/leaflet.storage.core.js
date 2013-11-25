@@ -41,6 +41,9 @@ L.Util.setBooleanFromQueryString = function (options, name) {
         options[name] = value == "1" || value == "true";
     }
 };
+L.Util.escapeHTML = function (s) {
+    return s.replace(/</gm, '&lt;');
+};
 L.Util.toHTML = function (r) {
     var ii;
 

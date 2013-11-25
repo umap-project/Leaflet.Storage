@@ -126,7 +126,7 @@ L.Storage.FeatureMixin = {
                 continue;
             }
             // TODO, manage links (url, mailto, wikipedia...)
-            addRow(key, this.properties[key]);
+            addRow(key, L.Util.escapeHTML(this.properties[key]));
         }
     },
 
@@ -143,7 +143,7 @@ L.Storage.FeatureMixin = {
     populatePopup: function () {
         var container = L.DomUtil.create('div', '');
         if (this.properties.name) {
-            L.DomUtil.add('h4', '', container, this.properties.name);
+            L.DomUtil.add('h4', '', container, L.Util.escapeHTML(this.properties.name));
         }
         var content = L.DomUtil.create('div', 'storage-popup-content', container),
             template = this.getOption('popupTemplate');
