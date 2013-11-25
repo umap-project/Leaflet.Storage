@@ -41,7 +41,9 @@ L.Storage.Xhr = {
                     L.Storage.fire("ui:alert", {"content": L._("Action not allowed :("), "level": "error"});
                 }
                 else {
-                    L.Storage.fire("ui:alert", {"content": L._("Problem in the response"), "level": "error"});
+                    if (xhr.status !== 0) {  // 0 === request cut by user
+                        L.Storage.fire("ui:alert", {"content": L._("Problem in the response"), "level": "error"});
+                    }
                 }
                 if (settings.listener) settings.listener.fire('dataload', {id: id});
             }
