@@ -26,6 +26,14 @@ describe('L.Util', function () {
             assert.equal(L.Util.toHTML('A simple [[http://osm.org|link]]'), 'A simple <a target="_blank" href="http://osm.org">link</a>');
         });
 
+        it('should handle image', function () {
+            assert.equal(L.Util.toHTML('A simple image: {{http://osm.org/pouet.png}}'), 'A simple image: <img src="http://osm.org/pouet.png">');
+        });
+
+        it('should handle image with alt', function () {
+            assert.equal(L.Util.toHTML('A simple image: {{http://osm.org/pouet.png|alt text}}'), 'A simple image: <img src="http://osm.org/pouet.png" alt="alt text">');
+        });
+
     });
 
     describe('#escapeHTML', function () {

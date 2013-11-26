@@ -71,16 +71,17 @@ L.Util.toHTML = function (r) {
 
     // links
     r = r.replace(/(\[\[http)/g, '[[h_t_t_p');  // Escape for avoiding clash between [[http://xxx]] and http://xxx
+    r = r.replace(/({{http)/g, '{{h_t_t_p');
     r = r.replace(/(https?[^ \)]*)/g, '<a target="_blank" href="$1">$1</a>');
     r = r.replace(/\[\[(h_t_t_ps?:[^\]|]*?)\]\]/g, '<a target="_blank" href="$1">$1</a>');
     r = r.replace(/\[\[(h_t_t_ps?:[^|]*?)\|(.*?)\]\]/g, '<a target="_blank" href="$1">$2</a>');
     r = r.replace(/\[\[([^\]|]*?)\]\]/g, '<a href="$1">$1</a>');
     r = r.replace(/\[\[([^|]*?)\|(.*?)\]\]/g, '<a href="$1">$2</a>');
-    r = r.replace(/(h_t_t_p)/g, 'http');
 
     // images
     r = r.replace(/{{([^\]|]*?)}}/g, '<img src="$1">');
     r = r.replace(/{{([^|]*?)\|(.*?)}}/g, '<img src="$1" alt="$2">');
+    r = r.replace(/(h_t_t_p)/g, 'http');
 
     // video
     r = r.replace(/<<(.*?)>>/g, '<embed class="video" src="$1" allowfullscreen="true" allowscriptaccess="never" type="application/x-shockwave/flash"></embed>');
