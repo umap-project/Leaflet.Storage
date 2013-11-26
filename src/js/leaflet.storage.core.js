@@ -107,7 +107,14 @@ L.DomUtil.add = function (tagName, className, container, content) {
 
 L.DomUtil.createFieldset = function (container, legend) {
     var fieldset = L.DomUtil.create('fieldset', 'toggle', container);
-    L.DomUtil.add('legend', 'style_options_toggle', fieldset, legend);
+    var legendEl = L.DomUtil.add('legend', 'style_options_toggle', fieldset, legend);
+    L.DomEvent.on(legendEl, 'click', function () {
+        if (L.DomUtil.hasClass(fieldset, 'on')) {
+            L.DomUtil.removeClass(fieldset, 'on');
+        } else {
+            L.DomUtil.addClass(fieldset, 'on');
+        }
+    });
     return fieldset;
 };
 

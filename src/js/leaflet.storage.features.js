@@ -82,14 +82,10 @@ L.Storage.FeatureMixin = {
             callback: this._redraw,
             callbackContext: this
         });
-        var advancedProperties = L.DomUtil.create('fieldset', 'toggle', container);
-        var advancedPropertiesTitle = L.DomUtil.create('legend', 'style_options_toggle', advancedProperties);
-        advancedPropertiesTitle.innerHTML = L._('Advanced properties');
+        var advancedProperties = L.DomUtil.createFieldset(container, L._('Advanced properties'));
         form = builder.build();
         advancedProperties.appendChild(form);
-        var advancedActions = L.DomUtil.create('fieldset', 'toggle', container);
-        var advancedActionsTitle = L.DomUtil.create('legend', 'style_options_toggle', advancedActions);
-        advancedActionsTitle.innerHTML = L._('Advanced actions');
+        var advancedActions = L.DomUtil.createFieldset(container, L._('Advanced actions'));
         var deleteLink = L.DomUtil.create('a', 'storage-delete', advancedActions);
         deleteLink.href = "#";
         deleteLink.innerHTML = L._('Delete');

@@ -430,9 +430,7 @@ L.Storage.DataLayer = L.Class.extend({
                 this.display();
             }
         });
-        var advancedProperties = L.DomUtil.create('fieldset', 'toggle', container);
-        var advancedPropertiesTitle = L.DomUtil.create('legend', 'style_options_toggle', advancedProperties);
-        advancedPropertiesTitle.innerHTML = L._('Advanced properties');
+        var advancedProperties = L.DomUtil.createFieldset(container, L._('Advanced properties'));
         form = builder.build();
         advancedProperties.appendChild(form);
 
