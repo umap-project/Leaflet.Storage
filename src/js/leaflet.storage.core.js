@@ -42,6 +42,7 @@ L.Util.setBooleanFromQueryString = function (options, name) {
     }
 };
 L.Util.escapeHTML = function (s) {
+    s = s? s.toString() : "";
     return s.replace(/</gm, '&lt;');
 };
 L.Util.toHTML = function (r) {

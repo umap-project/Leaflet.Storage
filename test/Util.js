@@ -39,7 +39,15 @@ describe('L.Util', function () {
     describe('#escapeHTML', function () {
 
         it('should escape HTML tags', function () {
-            assert.equal(L.Util.toHTML('<a href="pouet">'), '&lt;a href="pouet">');
+            assert.equal(L.Util.escapeHTML('<a href="pouet">'), '&lt;a href="pouet">');
+        });
+
+        it('should not fail with int value', function () {
+            assert.equal(L.Util.escapeHTML(25), '25');
+        });
+
+        it('should not fail with null value', function () {
+            assert.equal(L.Util.escapeHTML(null), '');
         });
 
     });
