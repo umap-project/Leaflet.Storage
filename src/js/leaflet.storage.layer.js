@@ -576,7 +576,7 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     getName: function () {
-        return this.options.name || L._('Untitled layer');
+        return this.options.name || L._('Untitled layer');
     }
 
 });
