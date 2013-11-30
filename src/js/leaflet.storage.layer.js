@@ -376,6 +376,7 @@ L.Storage.DataLayer = L.Class.extend({
                 this.fromGeoJSON(this._geojson);
             }
             this.display();
+            this.isDirty = false;
         } else {
             this.erase();
         }
