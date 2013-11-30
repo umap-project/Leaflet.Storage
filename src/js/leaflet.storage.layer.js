@@ -552,7 +552,7 @@ L.Storage.DataLayer = L.Class.extend({
         this._geojson = geojson;
         var formData = new FormData();
         formData.append("name", this.options.name);
-        formData.append("display_on_load", this.options.displayOnLoad);
+        formData.append("display_on_load", !!this.options.displayOnLoad);
         // filename support is shaky, don't do it for now
         var blob = new Blob([JSON.stringify(geojson)], {type: 'application/json'});
         formData.append("geojson", blob);
