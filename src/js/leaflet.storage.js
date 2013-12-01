@@ -612,7 +612,7 @@ L.Storage.Map.include({
             name = L.DomUtil.create('strong', '', tilelayerCredit),
             attribution = L.DomUtil.create('span', '', tilelayerCredit);
         name.innerHTML = this.selected_tilelayer.options.name + ' ';
-        attribution.innerHTML = this.selected_tilelayer.options.attribution;
+        attribution.innerHTML = this.selected_tilelayer.getAttribution();
         L.DomUtil.create('hr', '', container);
         var umapCredit = L.DomUtil.create('p', '', container),
             urls = {
