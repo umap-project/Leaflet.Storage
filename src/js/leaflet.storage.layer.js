@@ -592,5 +592,10 @@ L.TileLayer.include({
             url_template: this._url,
             name: this.options.name
         };
+    },
+
+    getAttribution: function () {
+        return L.Util.toHTML(this.options.attribution);
     }
+
 });

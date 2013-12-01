@@ -324,6 +324,10 @@ L.Storage.Map.include({
         for(var i in this.options.tilelayers) {
             if(this.options.tilelayers.hasOwnProperty(i)) {
                 this.tilelayers.push(this.createTileLayer(this.options.tilelayers[i]));
+                if (this.options.tilelayer && this.options.tilelayer.url_template === this.options.tilelayers[i].url_template) {
+                    // Keep control over the displayed attribution for non custom tilelayers
+                    this.options.tilelayer.attribution = this.options.tilelayers[i].attribution;
+                }
             }
         }
         if (this.options.tilelayer && this.options.tilelayer.url_template && this.options.tilelayer.attribution) {
