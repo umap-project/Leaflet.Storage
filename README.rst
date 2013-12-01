@@ -16,8 +16,6 @@ Known backends:
 
 - `django-leaflet-storage <https://github.com/yohanboniface/django-leaflet-storage>`_
 
-More about backend API: https://github.com/yohanboniface/Leaflet.Storage/wiki/Backend
-
 
 ================
 Functional tests
