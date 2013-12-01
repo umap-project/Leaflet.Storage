@@ -40,7 +40,7 @@ Dependencies
 * `Leaflet.Hash <https://github.com/mlevans/leaflet-hash>`_
 * `Leaflet.EditInOSM <http://github.com/yohanboniface/Leaflet.EditInOSM>`_
 * `Leaflet.MiniMap <http://github.com/Norkart/Leaflet-MiniMap>`_
-* `Leaflet.I18n >http://github.com/yohanboniface/Leaflet.i18n>`_
+* `Leaflet.I18n <http://github.com/yohanboniface/Leaflet.i18n>`_
 * `csv2geojson <http://github.com/mapbox/csv2geojson>`_
 * `togeojson <http://github.com/mapbox/togeojson>`_
 * `osm and geojson <http://github.com/aaronlidman/osm-and-geojson>`_
