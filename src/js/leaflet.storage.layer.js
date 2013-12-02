@@ -388,7 +388,7 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     edit: function () {
-        if(!this.map.editEnabled) return;
+        if(!this.map.editEnabled || !this.isLoaded()) {return;}
         var self = this,
             container = L.DomUtil.create('div'),
             metadata_fields = [
@@ -545,6 +545,7 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     save: function () {
+        if (!this.isLoaded()) {return;}
         var geojson = {
             type: "FeatureCollection",
             features: this.isRemoteLayer() ? [] : this.featuresToGeoJSON(),
