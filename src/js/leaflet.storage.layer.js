@@ -143,7 +143,7 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     isLoaded: function () {
-        return this._geojson !== null;
+        return !this.storage_id || this._geojson !== null;
     },
 
     populate: function (datalayer) {
