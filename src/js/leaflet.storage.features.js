@@ -502,14 +502,20 @@ L.Storage.PathMixin = {
         }
     },
 
+    edit: function (e) {
+        if(this.map.editEnabled) {
+            this.editing.enable();
+            L.Storage.FeatureMixin.edit.call(this, e);
+        }
+    },
+
     _toggleEditing: function(e) {
         if(this.map.editEnabled) {
             if(this.editing._enabled) {
-                this.editing.disable();
+                this.endEdit();
                 L.Storage.fire('ui:end');
             }
             else {
-                this.editing.enable();
                 this.edit(e);
             }
         }
