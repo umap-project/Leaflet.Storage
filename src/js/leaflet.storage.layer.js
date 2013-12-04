@@ -202,7 +202,7 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     addData: function (geojson) {
-        return this.geojsonToFeatures(geojson);
+        this.geojsonToFeatures(geojson);
     },
 
     addRawData: function (c, type) {
@@ -285,10 +285,19 @@ L.Storage.DataLayer = L.Class.extend({
                 latlngs = L.GeoJSON.coordsToLatLngs(coords, 1);
                 layer = this._polygonToLayer(geojson, latlngs);
                 break;
+            case 'MultiPolygon':
+                // Hack: we handle only MultiPolygon with one polygon
+                if (coords.length === 1) {
+                    latlngs = L.GeoJSON.coordsToLatLngs(coords[0], 1);
+                    layer = this._polygonToLayer(geojson, latlngs);
+                    break;
+                }
             default:
-                throw new Error(L._("Unkown geometry.type: {type}", {type: geometry.type}));
+                L.S.fire('ui:alert', {content: L._("Skipping unkown geometry.type: {type}", {type: geometry.type}), level: 'error'});
         }
-        return this.addLayer(layer);
+        if (layer) {
+            this.addLayer(layer);
+        }
     },
 
     _pointToLayer: function(geojson, latlng) {
