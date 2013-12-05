@@ -99,7 +99,6 @@
     "Stop editing": "Stop editing",
     "The zoom and center have been setted.": "The zoom and center have been setted.",
     "To zoom": "To zoom",
-    "Unkown geometry.type: {type}": "Unkown geometry.type: {type}",
     "Untitled layer": "Untitled layer",
     "Untitled map": "Untitled map",
     "Update permissions and editors": "Update permissions and editors",
@@ -118,7 +117,6 @@
     "fill": "fill",
     "fill color": "fill color",
     "fill opacity": "fill opacity",
-    "help": "help",
     "inherit": "inherit",
     "licence": "licence",
     "name": "name",
@@ -159,5 +157,6 @@
     "attribution": "attribution",
     "display name": "display name",
     "max zoom": "max zoom",
-    "min zoom": "min zoom"
+    "min zoom": "min zoom",
+    "Skipping unkown geometry.type: {type}": "Skipping unkown geometry.type: {type}"
 }
