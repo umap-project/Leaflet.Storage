@@ -445,7 +445,8 @@ L.S.ElementHelper.NullableBoolean = L.S.ElementHelper.SelectAbstract.extend({
         [false, L._('no')]
     ],
 
-    toJS: function (value) {
+    toJS: function () {
+        var value = this.value();
         switch (value) {
             case "true":
             case true:
