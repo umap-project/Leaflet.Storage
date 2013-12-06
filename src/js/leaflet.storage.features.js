@@ -551,11 +551,7 @@ L.Storage.PathMixin = {
         return [
             'properties._storage_options.color',
             'properties._storage_options.opacity',
-            'properties._storage_options.stroke',
             'properties._storage_options.weight',
-            'properties._storage_options.fill',
-            'properties._storage_options.fillColor',
-            'properties._storage_options.fillOpacity',
             'properties._storage_options.smoothFactor',
             'properties._storage_options.dashArray',
             'properties._storage_options.popupTemplate'
@@ -681,6 +677,11 @@ L.Storage.Polygon = L.Polygon.extend({
 
     getAdvancedOptions: function () {
         var options = L.Storage.PathMixin.getAdvancedOptions();
+        options.push('properties._storage_options.stroke',
+            'properties._storage_options.fill',
+            'properties._storage_options.fillColor',
+            'properties._storage_options.fillOpacity'
+        );
         options.push(['properties._storage_options.outlink', {label: L._('outlink'), helpText: L._("Define output link to open a new window on polygon click.")}]);
         return options;
     },
