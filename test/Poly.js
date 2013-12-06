@@ -53,6 +53,16 @@ describe('L.Storage.Poly', function () {
             assert.ok(qs('path[fill="none"]')); // Polyline fill is unchanged
         });
 
+        it('should remove stroke if set to no', function () {
+            assert.notOk(qs('path[stroke="none"]'));
+            var select = qs('form#storage-feature-advanced-properties select[name="stroke"]');
+            assert.ok(select);
+            select.selectedIndex = 2;
+            happen.once(select, {type: 'change'});
+            assert.ok(qs('path[stroke="none"]'));
+            assert.ok(qs('path[fill="none"]')); // Polyline fill is unchanged
+        });
+
         it('should not override already set style on features', function () {
             happen.click(qs('span#edit_datalayer_62'));
             changeInputValue(qs('form#datalayer-advanced-properties input[name=color]'), "Chocolate");
