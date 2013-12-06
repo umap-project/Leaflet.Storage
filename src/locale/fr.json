@@ -158,5 +158,5 @@
     "display name": "nom",
     "max zoom": "zoom max",
     "min zoom": "zoom min",
-    "Skipping unkown geometry.type: {type}": "Skipping unkown geometry.type: {type}"
+    "Skipping unkown geometry.type: {type}": "Le type de géométrie suivant a été ignoré: {type}"
 }
