@@ -757,12 +757,12 @@ L.Storage.Map.include({
         for (var i in this.datalayers) {
             if (this.datalayers.hasOwnProperty(i)) {
                 datalayer = this.datalayers[i];
-                if (datalayer.isVisible()) {
+                if (datalayer.isVisible() && !datalayer.isRemoteLayer()) {
                     return datalayer;
                 }
             }
         }
-        if (datalayer) {
+        if (datalayer && !datalayer.isRemoteLayer()) {
             // No datalayer visibile, let's force one
             this.addLayer(datalayer.layer);
             return datalayer;
