@@ -21,6 +21,7 @@
 - added Transifex config
 - simple help boxes
 - it's now possible to set background layer with manual settings
+- add an edit button in the data browser (when in edit mode)
 
 ## 0.4.x
 - add a data browser
