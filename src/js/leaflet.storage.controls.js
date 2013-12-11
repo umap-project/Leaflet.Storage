@@ -256,7 +256,7 @@ L.Storage.DataLayersControl = L.Control.extend({
 
         var add = L.DomUtil.create('a', "show-on-edit block add-datalayer", actions);
         add.href = '#';
-        add.innerHTML = link.title = L._('Add a layer');
+        add.innerHTML = add.title = L._('Add a layer');
 
         var toggle = L.DomUtil.create('a', "storage-browse-toggle", container);
         toggle.href = '#';
