@@ -387,10 +387,12 @@ L.Storage.DataLayersControl = L.Control.extend({
     addFeature: function (feature) {
         var feature_li = L.DomUtil.create('li', feature.getClassName()),
             zoom_to = L.DomUtil.create('span', 'feature-zoom_to', feature_li),
+            edit = L.DomUtil.create('span', 'show-on-edit feature-edit', feature_li),
             color = L.DomUtil.create('span', 'feature-color', feature_li),
             title = L.DomUtil.create('span', 'feature-title', feature_li),
             symbol = feature._getIconUrl ? feature._getIconUrl(): null;
         zoom_to.title = L._("Bring feature to center");
+        edit.title = L._("Edit this feature");
         title.innerHTML = feature.properties.name;
         color.style.backgroundColor = feature.getOption('color');
         if (symbol) {
@@ -398,6 +400,9 @@ L.Storage.DataLayersControl = L.Control.extend({
         }
         L.DomEvent.on(zoom_to, 'click', function (e) {
             this.bringToCenter(e, L.bind(this.view, this, {latlng: this.getCenter()}));
+        }, feature);
+        L.DomEvent.on(edit, 'click', function (e) {
+            this.edit();
         }, feature);
         return feature_li;
     },

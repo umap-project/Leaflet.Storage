@@ -415,6 +415,7 @@ a.storage-control-text {
 .leaflet-control-browse .storage-browse-actions .layer-zoom_to {
     background-image: url("../img/zoom_to.png");
 }
+.storage-browse-features .feature-edit,
 .leaflet-control-browse .storage-browse-actions .layer-edit {
     background-image: url("../img/edit-16.png");
 }
