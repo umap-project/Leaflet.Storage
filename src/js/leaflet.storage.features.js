@@ -57,7 +57,7 @@ L.Storage.FeatureMixin = {
 
     edit: function(e) {
         if(!this.map.editEnabled || this.isReadOnly()) return;
-        this.map.edited_feature = this;
+        this.map.editedFeature = this;
         var self = this,
             container = L.DomUtil.create('div'), form ;
 
@@ -332,8 +332,15 @@ L.Storage.FeatureMixin = {
     updateTooltipPosition: function (e) {
         if (!this.tooltip) {return;}
         this.tooltip.updatePosition(this.getCenter());
-    }
+    },
 
+    onRemove: function (map) {
+        this.parentClass.prototype.onRemove.call(this, map);
+        if (this.map.editedFeature === this) {
+            this.endEdit();
+            L.Storage.fire('ui:end');
+        }
+    }
 
 };
 

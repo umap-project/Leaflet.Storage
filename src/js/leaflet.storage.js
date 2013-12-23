@@ -72,17 +72,17 @@ L.Storage.Map.include({
             this.options.allowEdit = false;
         }
 
-        var edited_feature = null;
+        var editedFeature = null;
         try {
-            Object.defineProperty(this, 'edited_feature', {
+            Object.defineProperty(this, 'editedFeature', {
                 get: function () {
-                    return edited_feature;
+                    return editedFeature;
                 },
                 set: function (feature) {
-                    if (edited_feature && edited_feature != feature) {
-                        edited_feature.endEdit();
+                    if (editedFeature && editedFeature != feature) {
+                        editedFeature.endEdit();
                     }
-                    edited_feature = feature;
+                    editedFeature = feature;
                 }
             });
         }
@@ -180,7 +180,7 @@ L.Storage.Map.include({
                 e.layer.isDirty = true;
             });
             L.Storage.on('ui:end', function (e) {
-                this.edited_feature = null;
+                this.editedFeature = null;
             }, this);
             this.initEditBar();
             var editShortcuts = function (e) {
