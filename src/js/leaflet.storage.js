@@ -449,6 +449,10 @@ L.Storage.Map.include({
     },
 
     updatePermissions: function () {
+        if (!this.options.storage_id) {
+            L.S.fire('ui:alert', {content: L._('Please save the map before'), level: 'info'});
+            return;
+        }
         var url = L.Util.template(this.options.urls.map_update_permissions, {'map_id': this.options.storage_id});
         this.get(url, {
             'listen_form': {'id': 'map_edit'}
