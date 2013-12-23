@@ -645,8 +645,10 @@ L.Storage.Map.include({
             }
         });
         this.deleted_datalayers.forEach(function (datalayer) {
+            datalayer.connectToMap();
             datalayer.reset();
         });
+        this.updateDatalayersControl();
         this.resetOptions();
         this.initTileLayers();
         this.isDirty = false;
