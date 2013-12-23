@@ -95,7 +95,7 @@ L.Storage.FeatureMixin = {
             }
         }, this);
         L.S.fire('ui:start', {data: {html: container}});
-        this.bringToCenter();
+        this.bringToCenter(e);
     },
 
     endEdit: function () {},
