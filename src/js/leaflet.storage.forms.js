@@ -478,7 +478,7 @@ L.S.ElementHelper.IconUrl = L.S.ElementHelper.Input.extend({
         this.buttonsContainer = L.DomUtil.create("div", "", this.parentContainer);
         this.pictogramsContainer = L.DomUtil.create("div", "storage-pictogram-list", this.parentContainer);
         this.input.type = "hidden";
-        this.input.placeholder = L._('URL');
+        this.input.placeholder = L._('Url');
         this.label.style.display = "none";
         this.createButtonsBar();
     },
