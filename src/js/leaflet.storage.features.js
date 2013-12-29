@@ -751,6 +751,32 @@ L.Storage.Polygon = L.Polygon.extend({
         center.area = area;
 
         return center;
-    }
+    },
 
+    getEditContextMenuItems: function () {
+        var items = L.Storage.FeatureMixin.getEditContextMenuItems.call(this);
+        items.push({
+            text: L._('Transform to lines'),
+            callback: this.toPolyline,
+            context: this
+        });
+        return items;
+    },
+
+    toPolyline: function () {
+        var geojson = this.toGeoJSON();
+        geojson.geometry.type = "LineString";
+        geojson.geometry.coordinates = geojson.geometry.coordinates[0];
+        var polyline = this.datalayer.geojsonToFeatures(geojson);
+        polyline.edit();
+        this.del();
+    },
+
+    getAdvancedEditActions: function (container) {
+        L.Storage.FeatureMixin.getAdvancedEditActions.call(this, container);
+        var toPolyline = L.DomUtil.create('a', 'storage-to-polyline', container);
+        toPolyline.href = "#";
+        toPolyline.innerHTML = L._('Transform to lines');
+        L.DomEvent.on(toPolyline, "click", this.toPolyline, this);
+    }
 });

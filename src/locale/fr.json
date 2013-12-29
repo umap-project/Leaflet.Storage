@@ -161,5 +161,6 @@
     "Skipping unkown geometry.type: {type}": "Le type de géométrie suivant a été ignoré: {type}",
     "Please save the map before": "Vous devez enregistrer la carte d'abord",
     "You can use feature properties as variables: ex.: with \"http://myserver.org/images/{name}.png\", the {name} variable will be replaced by the \"name\" value of each markers.": "Vous pouvez utiliser des propriétés des marqueurs comme variables: par exemple avec \"http://myserver.org/images/{name}.png\", la variable {name} sera remplacée par la valeur du \"name\" de chacun des marqueurs.",
-    "Transform to polygon": "Transformer en polygone"
+    "Transform to polygon": "Transformer en polygone",
+    "Transform to lines": "Transformer en lignes"
 }

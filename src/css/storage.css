@@ -687,7 +687,7 @@ a.storage-control-text {
 
 .storage-delete, .storage-to-polygon,
 .clone-map-button, .delete_map_button,
-.delete_datalayer_button {
+.delete_datalayer_button, .storage-to-polyline {
     background-position: 7px center;
     background-repeat: no-repeat;
     text-indent: 38px;
@@ -697,6 +697,9 @@ a.storage-control-text {
 }
 .storage-to-polygon {
     background-image: url("../img/draw_polygon.png");
+}
+.storage-to-polyline {
+    background-image: url("../img/draw_polyline.png");
 }
 .clone-map-button {
     background-image: url("../img/clone-24.png");
