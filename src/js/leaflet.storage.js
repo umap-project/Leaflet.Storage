@@ -352,6 +352,7 @@ L.Storage.Map.include({
             }
             this.selected_tilelayer = tilelayer;
         } catch (e) {
+            tilelayer.fire('load');
             L.S.fire('ui:alert', {content: L._('Error in the tilelayer URL') + ': ' + tilelayer._url, level: 'error'});
             // Users can put tilelayer URLs by hand, and if they add wrong {variable},
             // Leaflet throw an error, and then the map is no more editable
