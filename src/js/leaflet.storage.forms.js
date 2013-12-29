@@ -103,7 +103,7 @@ L.Storage.ElementHelper.Input = L.S.ElementHelper.extend({
     },
 
     value: function () {
-        return this.input.value || null;
+        return this.input.value || undefined;
     },
 
     finish: function () {
@@ -143,7 +143,7 @@ L.S.ElementHelper.BlurInput = L.S.ElementHelper.Input.extend({
 L.S.ElementHelper.IntegerMixin = {
 
     value: function () {
-        return !isNaN(this.input.value) && this.input.value !== "" ? parseInt(this.input.value, 10): null;
+        return !isNaN(this.input.value) && this.input.value !== "" ? parseInt(this.input.value, 10): undefined;
     },
 
     type: function () {
@@ -660,7 +660,11 @@ L.Storage.FormBuilder = L.Class.extend({
         for (var i=0, l=path.length; i<l; i++) {
             what = path[i];
             if (what === path[l-1]) {
-                obj[what] = value;
+                if (typeof value === "undefined") {
+                    delete obj[what];
+                } else {
+                    obj[what] = value;
+                }
             } else {
                 obj = obj[what];
             }
