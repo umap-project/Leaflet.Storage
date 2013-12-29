@@ -478,12 +478,13 @@ L.S.ElementHelper.IconUrl = L.S.ElementHelper.Input.extend({
         this.buttonsContainer = L.DomUtil.create("div", "", this.parentContainer);
         this.pictogramsContainer = L.DomUtil.create("div", "storage-pictogram-list", this.parentContainer);
         this.input.type = "hidden";
+        this.input.placeholder = L._('URL');
         this.label.style.display = "none";
         this.createButtonsBar();
     },
 
     createButtonsBar: function () {
-        if (this.value()) {
+        if (this.value() && this.value().indexOf('{') == -1) { // Do not try to render URL with variables
             var img = L.DomUtil.create('img', '', L.DomUtil.create('div', "storage-icon-choice", this.buttonsContainer));
             img.src = this.value();
             L.DomEvent.on(img, "click", this.fetch, this);
@@ -502,7 +503,7 @@ L.S.ElementHelper.IconUrl = L.S.ElementHelper.Input.extend({
             className = value === this.value() ? baseClass + " selected" : baseClass,
             container = L.DomUtil.create('div', className, this.pictogramsContainer),
             img = L.DomUtil.create('img', '', container);
-        img.src = pictogram.src;
+        img.src = value;
         if (pictogram.name && pictogram.attribution) {
             img.title = pictogram.name + " — © " + pictogram.attribution;
         }
@@ -558,6 +559,7 @@ L.S.ElementHelper.IconUrl = L.S.ElementHelper.Input.extend({
                 customButton.href = "#";
                 customButton.style.display = "block";
                 customButton.style.clear = "both";
+                this.map.help.button(customButton, 'formatIconURL');
                 L.DomEvent
                     .on(customButton, "click", L.DomEvent.stop)
                     .on(customButton, "click", function (e) {

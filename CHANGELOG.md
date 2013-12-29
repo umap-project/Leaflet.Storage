@@ -22,6 +22,7 @@
 - simple help boxes
 - it's now possible to set background layer with manual settings
 - add an edit button in the data browser (when in edit mode)
+- add icon URL formatting with feature properties
 
 ## 0.4.x
 - add a data browser

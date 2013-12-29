@@ -22,7 +22,7 @@ L.Storage.Icon = L.DivIcon.extend({
         else {
             url = this.options[name + 'Url'];
         }
-        return url;
+        return this.formatUrl(url, this.feature);
     },
 
     _getColor: function () {
@@ -37,6 +37,10 @@ L.Storage.Icon = L.DivIcon.extend({
             color = this.map.getDefaultOption('color');
         }
         return color;
+    },
+
+    formatUrl: function (url, feature) {
+        return L.Util.template(url, feature.properties);
     }
 
 });
