@@ -158,5 +158,8 @@
     "display name": "表示名",
     "max zoom": "最大ズーム",
     "min zoom": "最小ズーム",
-    "Skipping unkown geometry.type: {type}": "不明なジオメトリタイプ {type}をスキップしました"
+    "Skipping unkown geometry.type: {type}": "不明なジオメトリタイプ {type}をスキップしました",
+    "Please save the map before": "Please save the map before",
+    "You can use feature properties as variables: ex.: with \"http://myserver.org/images/{name}.png\", the {name} variable will be replaced by the \"name\" value of each markers.": "You can use feature properties as variables: ex.: with \"http://myserver.org/images/{name}.png\", the {name} variable will be replaced by the \"name\" value of each markers.",
+    "Transform to polygon": "Transform to polygon"
 }

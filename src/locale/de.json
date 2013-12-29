@@ -158,5 +158,8 @@
     "display name": "Name anzeigen",
     "max zoom": "höchste Zoomstufe",
     "min zoom": "kleinste Zoomstufe",
-    "Skipping unkown geometry.type: {type}": "Überspringe unbekannten Geometrietyp: {type}"
+    "Skipping unkown geometry.type: {type}": "Überspringe unbekannten Geometrietyp: {type}",
+    "Please save the map before": "Please save the map before",
+    "You can use feature properties as variables: ex.: with \"http://myserver.org/images/{name}.png\", the {name} variable will be replaced by the \"name\" value of each markers.": "You can use feature properties as variables: ex.: with \"http://myserver.org/images/{name}.png\", the {name} variable will be replaced by the \"name\" value of each markers.",
+    "Transform to polygon": "Transform to polygon"
 }
