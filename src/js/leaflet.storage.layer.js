@@ -297,6 +297,7 @@ L.Storage.DataLayer = L.Class.extend({
         }
         if (layer) {
             this.addLayer(layer);
+            return layer;
         }
     },
 

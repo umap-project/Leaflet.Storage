@@ -86,7 +86,13 @@ L.Storage.FeatureMixin = {
         form = builder.build();
         advancedProperties.appendChild(form);
         var advancedActions = L.DomUtil.createFieldset(container, L._('Advanced actions'));
-        var deleteLink = L.DomUtil.create('a', 'storage-delete', advancedActions);
+        this.getAdvancedEditActions(advancedActions);
+        L.S.fire('ui:start', {data: {html: container}});
+        this.bringToCenter(e);
+    },
+
+    getAdvancedEditActions: function (container) {
+        var deleteLink = L.DomUtil.create('a', 'storage-delete', container);
         deleteLink.href = "#";
         deleteLink.innerHTML = L._('Delete');
         L.DomEvent.on(deleteLink, "click", function (e) {
@@ -94,8 +100,6 @@ L.Storage.FeatureMixin = {
                 L.S.fire('ui:end');
             }
         }, this);
-        L.S.fire('ui:start', {data: {html: container}});
-        this.bringToCenter(e);
     },
 
     endEdit: function () {},
@@ -295,25 +299,29 @@ L.Storage.FeatureMixin = {
     getContextMenuItems: function () {
         var items = [];
         if (this._map.editEnabled && !this.isReadOnly()) {
-            items.push('-',
-                {
-                    text: L._('Edit this feature'),
-                    callback: this.edit,
-                    context: this
-                },
-                {
-                    text: L._("Edit feature's layer"),
-                    callback: this.datalayer.edit,
-                    context: this.datalayer
-                },
-                {
-                    text: L._('Delete this feature'),
-                    callback: this.confirmDelete,
-                    context: this
-                }
-            );
+            items = items.concat(this.getEditContextMenuItems());
         }
         return items;
+    },
+
+    getEditContextMenuItems: function () {
+        return ['-',
+            {
+                text: L._('Edit this feature'),
+                callback: this.edit,
+                context: this
+            },
+            {
+                text: L._("Edit feature's layer"),
+                callback: this.datalayer.edit,
+                context: this.datalayer
+            },
+            {
+                text: L._('Delete this feature'),
+                callback: this.confirmDelete,
+                context: this
+            }
+        ];
     },
 
     showTooltip: function (content) {
@@ -652,6 +660,33 @@ L.Storage.Polyline = L.Polyline.extend({
             previous = latlng;
         }
         return L.GeometryUtil.readableDistance(distance, true);
+    },
+
+    getEditContextMenuItems: function () {
+        var items = L.Storage.FeatureMixin.getEditContextMenuItems.call(this);
+        items.push({
+            text: L._('Transform to polygon'),
+            callback: this.toPolygon,
+            context: this
+        });
+        return items;
+    },
+
+    toPolygon: function () {
+        var geojson = this.toGeoJSON();
+        geojson.geometry.type = "Polygon";
+        geojson.geometry.coordinates = [geojson.geometry.coordinates];
+        var polygon = this.datalayer.geojsonToFeatures(geojson);
+        polygon.edit();
+        this.del();
+    },
+
+    getAdvancedEditActions: function (container) {
+        L.Storage.FeatureMixin.getAdvancedEditActions.call(this, container);
+        var toPolygon = L.DomUtil.create('a', 'storage-to-polygon', container);
+        toPolygon.href = "#";
+        toPolygon.innerHTML = L._('Transform to polygon');
+        L.DomEvent.on(toPolygon, "click", this.toPolygon, this);
     }
 
 });
