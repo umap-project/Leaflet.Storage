@@ -344,12 +344,18 @@ L.Storage.Map.include({
 
     selectTileLayer: function (tilelayer) {
         if (tilelayer === this.selected_tilelayer) { return; }
-        this.fire('baselayerchange', {layer: tilelayer});
-        this.addLayer(tilelayer);
-        if (this.selected_tilelayer) {
-            this.removeLayer(this.selected_tilelayer);
+        try {
+            this.fire('baselayerchange', {layer: tilelayer});
+            this.addLayer(tilelayer);
+            if (this.selected_tilelayer) {
+                this.removeLayer(this.selected_tilelayer);
+            }
+            this.selected_tilelayer = tilelayer;
+        } catch (e) {
+            L.S.fire('ui:alert', {content: L._('Error in the tilelayer URL') + ': ' + tilelayer._url, level: 'error'});
+            // Users can put tilelayer URLs by hand, and if they add wrong {variable},
+            // Leaflet throw an error, and then the map is no more editable
         }
-        this.selected_tilelayer = tilelayer;
     },
 
     eachTileLayer: function (method, context) {
@@ -402,7 +408,7 @@ L.Storage.Map.include({
         this.options.center = this.getCenter();
         this.options.zoom = this.getZoom();
         this.isDirty = true;
-        L.Storage.fire("ui:alert", {"content": L._('The zoom and center have been setted.'), "level": "info"});
+        L.Storage.fire("ui:alert", {content: L._('The zoom and center have been setted.'), "level": "info"});
     },
 
     updateTileLayers: function () {
