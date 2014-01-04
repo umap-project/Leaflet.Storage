@@ -89,7 +89,6 @@ L.Storage.DataLayer = L.Class.extend({
         if (!this.storage_id) {
             return;
         }
-        var self = this;
         this.map.get(this._dataUrl(), {
             callback: function (geojson) {
                 if (geojson._storage) {
@@ -123,6 +122,8 @@ L.Storage.DataLayer = L.Class.extend({
             return;
         }
         var self = this;
+        this._geojson = {}; // Should appear as loaded (and so editable) even if xhr goes in error
+                            // du to user missconfigurating the remote URL
         this.map.ajax({
             uri: this.map.localizeUrl(this.options.remoteData.url),
             verb: 'GET',
@@ -178,7 +179,7 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     isRemoteLayer: function () {
-        return this.options.remoteData && this.options.remoteData.url && this.options.remoteData.format;
+        return !!(this.options.remoteData && this.options.remoteData.url && this.options.remoteData.format);
     },
 
     isClustered: function () {
