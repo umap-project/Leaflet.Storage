@@ -161,6 +161,8 @@
     "Skipping unkown geometry.type: {type}": "不明なジオメトリタイプ {type}をスキップしました",
     "Please save the map before": "Please save the map before",
     "You can use feature properties as variables: ex.: with \"http://myserver.org/images/{name}.png\", the {name} variable will be replaced by the \"name\" value of each markers.": "You can use feature properties as variables: ex.: with \"http://myserver.org/images/{name}.png\", the {name} variable will be replaced by the \"name\" value of each markers.",
-    "Transform to polygon": "Transform to polygon",
-    "Transform to lines": "Transform to lines"
+    "Transform to polygon": "ポリゴンへ変換",
+    "Transform to lines": "ラインへ変換",
+    "Choose the data format": "Choose the data format",
+    "Error in the tilelayer URL": "Error in the tilelayer URL"
 }

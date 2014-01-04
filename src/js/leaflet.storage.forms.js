@@ -394,6 +394,7 @@ L.S.ElementHelper.DataLayerSwitcher = L.S.ElementHelper.SelectAbstract.extend({
 L.S.ElementHelper.DataFormat = L.S.ElementHelper.SelectAbstract.extend({
 
     selectOptions: [
+        [undefined, L._('Choose the data format')],
         ['geojson', 'geojson'],
         ['osm', 'osm'],
         ['csv', 'csv'],
