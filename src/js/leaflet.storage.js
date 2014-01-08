@@ -351,6 +351,13 @@ L.Storage.Map.include({
                 this.removeLayer(this.selected_tilelayer);
             }
             this.selected_tilelayer = tilelayer;
+            console.log(this.selected_tilelayer.options)
+            if (!isNaN(this.selected_tilelayer.options.minZoom) && this.getZoom() < this.selected_tilelayer.options.minZoom) {
+                this.setZoom(this.selected_tilelayer.options.minZoom);
+            }
+            if (!isNaN(this.selected_tilelayer.options.maxZoom) && this.getZoom() > this.selected_tilelayer.options.maxZoom) {
+                this.setZoom(this.selected_tilelayer.options.maxZoom);
+            }
         } catch (e) {
             console.log(e.message, e.name);
             this.removeLayer(tilelayer);
