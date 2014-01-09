@@ -76,14 +76,15 @@ function initMap (options) {
             },
             "default_iconUrl": "../src/img/marker.png",
             "zoom": 6,
-            "tilelayers": [{
-                    "attribution": "\u00a9 OSM Contributors",
-                    "name": "OpenStreetMap",
-                    "url_template": "http://localhost:20008/tile/openriverboatmap/{z}/{x}/{y}.png",
-                    "minZoom": 0,
-                    "maxZoom": 18,
-                    "id": 1,
-                    "selected": true
+            "tilelayers": [
+            {
+                "attribution": "\u00a9 OSM Contributors",
+                "name": "OpenStreetMap",
+                "url_template": "http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+                "minZoom": 0,
+                "maxZoom": 18,
+                "id": 1,
+                "selected": true
             },
             {
                 "attribution": "HOT and friends",
