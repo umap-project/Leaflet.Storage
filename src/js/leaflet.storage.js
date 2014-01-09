@@ -1073,10 +1073,11 @@ L.Storage.Map.include({
         this.options.contextmenuItems = items;
     },
 
-    openExternalRouting: function () {
-        var url = this.options.urls.routing,
-            params = {lat: this.getCenter().lat, lng: this.getCenter().lng},
-            w = window.open(L.Util.template(url, params));
+    openExternalRouting: function (e) {
+        var url = this.options.urls.routing;
+        if (url) {
+            window.open(L.Util.template(url, {lat: e.latlng.lat, lng: e.latlng.lng}));
+        }
         return;
     },
 
