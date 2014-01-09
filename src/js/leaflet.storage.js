@@ -1062,7 +1062,22 @@ L.Storage.Map.include({
                 callback: this.displayCaption
             }
         );
+        if (this.options.urls.routing) {
+            items.push('-',
+                {
+                    text: L._('Directions from here'),
+                    callback: this.openExternalRouting
+                }
+            );
+        }
         this.options.contextmenuItems = items;
+    },
+
+    openExternalRouting: function () {
+        var url = this.options.urls.routing,
+            params = {lat: this.getCenter().lat, lng: this.getCenter().lng},
+            w = window.open(L.Util.template(url, params));
+        return;
     },
 
     getMap: function () {
@@ -1080,10 +1095,10 @@ L.Storage.Map.include({
                 lng: this.getCenter().lng,
                 zoom: this.getZoom()
             };
-        replace['left'] = replace['west'];
-        replace['bottom'] = replace['south'];
-        replace['right'] = replace['east'];
-        replace['top'] = replace['north'];
+        replace.left = replace.west;
+        replace.bottom = replace.south;
+        replace.right = replace.east;
+        replace.top = replace.north;
         return L.Util.template(url, replace);
     }
 
