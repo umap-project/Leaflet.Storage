@@ -24,6 +24,7 @@
 - add an edit button in the data browser (when in edit mode)
 - add icon URL formatting with feature properties
 - add "Transform to Polygon/Polyline" action
+- new link on contextmenu to open external routing service from clicked point
 
 ## 0.4.x
 - add a data browser
