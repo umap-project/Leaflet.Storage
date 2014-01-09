@@ -40,7 +40,7 @@ L.Storage.Icon = L.DivIcon.extend({
     },
 
     formatUrl: function (url, feature) {
-        return L.Util.template(url || '', feature.properties);
+        return L.Util.template(url || '', feature.properties);
     }
 
 });
