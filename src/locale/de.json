@@ -164,5 +164,6 @@
     "Transform to polygon": "In Fläche umwandeln",
     "Transform to lines": "In Linie umwandeln",
     "Choose the data format": "Wähle das Datenformat",
-    "Error in the tilelayer URL": "Fehler in der Kachelebenen-URL"
+    "Error in the tilelayer URL": "Fehler in der Kachelebenen-URL",
+    "Directions from here": "Directions from here"
 }

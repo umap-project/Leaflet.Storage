@@ -164,5 +164,6 @@
     "Transform to polygon": "ポリゴンへ変換",
     "Transform to lines": "ラインへ変換",
     "Choose the data format": "Choose the data format",
-    "Error in the tilelayer URL": "Error in the tilelayer URL"
+    "Error in the tilelayer URL": "Error in the tilelayer URL",
+    "Directions from here": "Directions from here"
 }

@@ -164,5 +164,6 @@
     "Transform to polygon": "Transformer en polygone",
     "Transform to lines": "Transformer en lignes",
     "Choose the data format": "Choisir le format des données",
-    "Error in the tilelayer URL": "Erreur dans l'URL du fond de carte"
+    "Error in the tilelayer URL": "Erreur dans l'URL du fond de carte",
+    "Directions from here": "Itinéraire à partir de ce lieu"
 }
