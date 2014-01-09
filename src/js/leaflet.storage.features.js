@@ -334,7 +334,9 @@ L.Storage.FeatureMixin = {
 
     removeTooltip: function () {
         this.map.off('zoomend', this.updateTooltipPosition, this);
-        this.tooltip.dispose();
+        if (this.tooltip) {
+            this.tooltip.dispose();
+        }
     },
 
     updateTooltipPosition: function (e) {
@@ -347,6 +349,9 @@ L.Storage.FeatureMixin = {
         if (this.map.editedFeature === this) {
             this.endEdit();
             L.Storage.fire('ui:end');
+        }
+        if (this.tooltip) {
+            this.tooltip.dispose();
         }
     }
 
@@ -612,7 +617,9 @@ L.Storage.PathMixin = {
         this.on("edit", this.makeDirty);
         if (this.map._controls.measureControl) {
             this.map._controls.measureControl.handler.on('enabled', function () {
-                this.showTooltip({text: this.getMeasure()});
+                if (this.datalayer.isVisible()) {
+                    this.showTooltip({text: this.getMeasure()});
+                }
             }, this);
             this.map._controls.measureControl.handler.on('disabled', function () {
                 this.removeTooltip();
