@@ -1076,7 +1076,12 @@ L.Storage.Map.include({
     openExternalRouting: function (e) {
         var url = this.options.urls.routing;
         if (url) {
-            window.open(L.Util.template(url, {lat: e.latlng.lat, lng: e.latlng.lng}));
+            var params = {
+                lat: e.latlng.lat,
+                lng: e.latlng.lng,
+                locale: L.locale
+            };
+            window.open(L.Util.template(url, params));
         }
         return;
     },

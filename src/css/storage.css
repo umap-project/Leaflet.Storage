@@ -1005,3 +1005,14 @@ a.storage-control-text {
         margin-left: 10px;
     }
 }
+
+/* ****** */
+/* Print  */
+/* ****** */
+
+@media print {
+
+    .leaflet-control-container {
+        display: none;
+    }
+}
