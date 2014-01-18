@@ -159,11 +159,11 @@
     "max zoom": "zoom massimo",
     "min zoom": "zoom minimo",
     "Skipping unkown geometry.type: {type}": "Ignorare le geometrie sconosciute di tipo: {type}",
-    "Please save the map before": "Please save the map before",
-    "You can use feature properties as variables: ex.: with \"http://myserver.org/images/{name}.png\", the {name} variable will be replaced by the \"name\" value of each markers.": "You can use feature properties as variables: ex.: with \"http://myserver.org/images/{name}.png\", the {name} variable will be replaced by the \"name\" value of each markers.",
-    "Transform to polygon": "Transform to polygon",
-    "Transform to lines": "Transform to lines",
-    "Choose the data format": "Choose the data format",
-    "Error in the tilelayer URL": "Error in the tilelayer URL",
-    "Directions from here": "Directions from here"
+    "Please save the map before": "Per favore, prima, salva la mappa",
+    "You can use feature properties as variables: ex.: with \"http://myserver.org/images/{name}.png\", the {name} variable will be replaced by the \"name\" value of each markers.": "Puoi utilizzare le proprietà come fossero variabili: ad esempio, in \"http://myserver.org/images/{name}.png\", la variabile {name} verrà sostituita con il valore di \"name\" presente in ognuno dei marker.",
+    "Transform to polygon": "Trasforma in poligono",
+    "Transform to lines": "Trasforma in poli-linea",
+    "Choose the data format": "Scegli il formato dati",
+    "Error in the tilelayer URL": "Errore nell'URL dei tile di mappa",
+    "Directions from here": "Indicazioni stradali da qui"
 }
