@@ -36,7 +36,10 @@ L.Map.mergeOptions({
     licence: '',
     enableMarkerDraw: true,
     enablePolygonDraw: true,
-    enablePolylineDraw: true
+    enablePolylineDraw: true,
+    importPresets: [
+        // {url: 'http://localhost:8019/en/datalayer/1502/', label: 'Simplified World Countries', format: 'geojson'}
+    ]
 });
 
 L.Storage.Map.include({
@@ -476,6 +479,8 @@ L.Storage.Map.include({
     importPanel: function () {
         var container = L.DomUtil.create('div', 'storage-upload'),
             title = L.DomUtil.create('h4', '', container),
+            presetBox = L.DomUtil.create('div', 'formbox', container),
+            presetSelect = L.DomUtil.create('select', '', presetBox),
             fileBox = L.DomUtil.create('div', 'formbox', container),
             fileInput = L.DomUtil.create('input', '', fileBox),
             urlInput = L.DomUtil.create('input', '', container),
@@ -509,6 +514,17 @@ L.Storage.Map.include({
         for (var i = 0; i < types.length; i++) {
             option = L.DomUtil.create('option', '', typeInput);
             option.value = option.innerHTML = types[i];
+        }
+        if (this.options.importPresets.length) {
+            var noPreset = L.DomUtil.create('option', '', presetSelect);
+            noPreset.value = noPreset.innerHTML = L._('Choose a preset');
+            for (var j = 0; j < this.options.importPresets.length; j++) {
+                option = L.DomUtil.create('option', '', presetSelect);
+                option.value = this.options.importPresets[j].url;
+                option.innerHTML = this.options.importPresets[j].label;
+            }
+        } else {
+            presetBox.style.display = 'none';
         }
 
         var processContent = function (raw) {
@@ -555,11 +571,11 @@ L.Storage.Map.include({
             }
         };
 
-        var processUrl = function () {
-            var url = map.localizeUrl(urlInput.value);
-            L.S.Xhr._ajax('GET', url, null, function (data) {
+        var processUrl = function (url) {
+            url = map.localizeUrl(url);
+            L.S.Xhr._ajax({verb: 'GET', uri: url, callback: function (data) {
                 processContent(data);
-            });
+            }});
         };
 
         var submit = function () {
@@ -570,7 +586,10 @@ L.Storage.Map.include({
                 processContent(rawInput.value);
             }
             if (urlInput.value) {
-                processUrl();
+                processUrl(urlInput.value);
+            }
+            if (presetSelect.selectedIndex !== 0) {
+                processUrl(presetSelect[presetSelect.selectedIndex].value);
             }
         };
         L.DomEvent.on(submitInput, 'click', submit, this);
