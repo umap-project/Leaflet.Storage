@@ -941,7 +941,7 @@ L.Storage.Map.include({
 
     getEditActions: function () {
 
-        return [
+        var actions = [
             {
                 title: L._('Import data') + ' (Ctrl+I)',
                 className: 'upload-data',
@@ -954,21 +954,12 @@ L.Storage.Map.include({
                 callback: this.edit,
                 context: this
             },
-
-            {
-                title: L._('Update permissions and editors'),
-                className: 'update-map-permissions',
-                callback: this.updatePermissions,
-                context: this
-            },
-
             {
                 title: L._('Change tilelayers'),
                 className: 'update-map-tilelayers',
                 callback: this.updateTileLayers,
                 context: this
             },
-
             {
                 title: L._('Save this center and zoom'),
                 className: 'update-map-extent',
@@ -976,6 +967,17 @@ L.Storage.Map.include({
                 context: this
             }
         ];
+        if (this.options.urls.map_update_permissions) {
+            actions = actions.concat([
+                {
+                    title: L._('Update permissions and editors'),
+                    className: 'update-map-permissions',
+                    callback: this.updatePermissions,
+                    context: this
+                }
+            ]);
+        }
+        return actions;
     },
 
     del: function () {
