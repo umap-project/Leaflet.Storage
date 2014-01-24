@@ -1044,23 +1044,31 @@ L.Storage.Map.include({
                     {
                         text: L._('Stop editing') + ' (Ctrl+E)',
                         callback: this.disableEdit
-                    },
-                    {
-                        text: L._('Draw a marker') + ' (Ctrl-M)',
-                        callback: this._controls.draw.startMarker,
-                        context: this._controls.draw
-                    },
-                    {
-                        text: L._('Draw a polygon') + ' (Ctrl-P)',
-                        callback: this._controls.draw.startPolygon,
-                        context: this._controls.draw
-                    },
-                    {
-                        text: L._('Draw a line') + ' (Ctrl-L)',
-                        callback: this._controls.draw.startPolyline,
-                        context: this._controls.draw
-                    }
-                );
+                    });
+                if (this.options.enableMarkerDraw) {
+                    items.push(
+                        {
+                            text: L._('Draw a marker') + ' (Ctrl-M)',
+                            callback: this._controls.draw.startMarker,
+                            context: this._controls.draw
+                        });
+                }
+                if (this.options.enablePolylineDraw) {
+                    items.push(
+                        {
+                            text: L._('Draw a polygon') + ' (Ctrl-P)',
+                            callback: this._controls.draw.startPolygon,
+                            context: this._controls.draw
+                        });
+                }
+                if (this.options.enablePolygonDraw) {
+                    items.push(
+                      {
+                           text: L._('Draw a line') + ' (Ctrl-L)',
+                           callback: this._controls.draw.startPolyline,
+                           context: this._controls.draw
+                       });
+                }
                 items.push('-');
                 items.push({
                     text: L._('Help'),
