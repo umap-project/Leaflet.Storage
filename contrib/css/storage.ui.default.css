@@ -1,9 +1,106 @@
 /* *********** */
+/*    forms    */
+/* *********** */
+input[type="text"], input[type="password"], input[type="date"],
+input[type="datetime"], input[type="email"], input[type="number"],
+input[type="search"], input[type="tel"], input[type="time"],
+input[type="url"], textarea {
+    background-color: white;
+    border: 1px solid #CCCCCC;
+    border-radius: 2px 2px 2px 2px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
+    color: rgba(0, 0, 0, 0.75);
+    display: block;
+    font-family: inherit;
+    font-size: 14px;
+    height: 56px;
+    margin: 0 0 14px;
+    padding: 7px;
+    width: 100%;
+}
+textarea {
+    height: inherit;
+}
+select {
+    width: 100%;
+    background-color: #fff;
+    height: 28px;
+    line-height: 28px;
+    color: rgba(0, 0, 0, 0.75);
+    border: 1px solid #ddd;
+}
+select[multiple="multiple"] {
+    height: auto;
+}
+.button, input[type="submit"] {
+    display: block;
+    width: 100%;
+    background-color: SeaGreen;
+    color: #fff;
+    border: none;
+    margin-bottom: 14px;
+    text-align: center;
+    min-height: 56px;
+    line-height: 56px;
+    border-radius: 2px;
+    font-weight: normal;
+    cursor: pointer;
+}
+.button:hover, input[type="submit"]:hover {
+    background-color: MediumSeaGreen;
+}
+.help-text, .helptext {
+    display: block;
+    padding: 7px 7px;
+    margin-top: -14px;
+    margin-bottom: 14px;
+    background: #ddd;
+    color: #6f6f6f;
+    font-size: 11px;
+    border-radius: 0 2px;
+}
+.formbox {
+    border: 1px #ddd solid;
+    min-height: 28px;
+    line-height: 28px;
+    padding-left: 14px;
+    margin-bottom: 14px;
+}
+.formbox select {
+    width: calc(100% - 14px);
+}
+label {
+    display: block;
+    font-size: 14px;
+    line-height: 21px;
+    width: 100%;
+}
+input[type="checkbox"] + label, input[type="radio"] + label {
+    display: inline;
+    padding: 0 14px; 
+}
+select + .error,
+input + .error {
+    display: block;
+    padding: 7px 7px;
+    margin-top: -14px;
+    margin-bottom: 14px;
+    background: #ddd;
+    color: #fff;
+    background-color: #cc0000;
+    font-size: 11px;
+    border-radius: 0 2px;
+}
+input[type="file"] + .error {
+    margin-top: 0;
+}
+
+
+
+/* *********** */
 /*    Panel    */
 /* *********** */
-/*.storage-ui #map, .storage-ui #storage-alert-container {
-    width: 70%;
-}*/
+
 #storage-ui-container {
     width: 400px;
     position: absolute;
