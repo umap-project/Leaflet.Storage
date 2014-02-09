@@ -28,8 +28,9 @@
 - fix bug where features were duplicated when datalayer was deleted then reverted
 - add layer action to databrowser
 - add optional default CSS
-- allow to close panel when editing by ctrl-Enter when in textarea
+- allow to close panel by ctrl-Enter when editing in textarea
 - add management for map max bounds
+- add Ctrl-Z for canceling changes
 
 ## 0.4.x
 - add a data browser

@@ -197,7 +197,8 @@ L.Storage.Map.include({
                     L: 76,
                     M: 77,
                     P: 80,
-                    S: 83
+                    S: 83,
+                    Z: 90
                 };
                 if (key == chars.E && e.ctrlKey && !this.editEnabled) {
                     L.DomEvent.stop(e);
@@ -210,6 +211,10 @@ L.Storage.Map.include({
                 if (key == chars.S && e.ctrlKey && this.isDirty) {
                     L.DomEvent.stop(e);
                     this.save();
+                }
+                if (key == chars.Z && e.ctrlKey && this.isDirty) {
+                    L.DomEvent.stop(e);
+                    this.askForReset();
                 }
                 if (key == chars.M && e.ctrlKey && this.editEnabled) {
                     L.DomEvent.stop(e);
@@ -977,12 +982,14 @@ L.Storage.Map.include({
 
         L.DomEvent
             .addListener(cancel, 'click', L.DomEvent.stop)
-            .addListener(cancel, 'click', function (e) {
-                if (!confirm(L._("Are you sure you want to cancel your changes?"))) return;
-                this.disableEdit(e);
-                L.S.fire('ui:end');
-                this.reset();
-            }, this);
+            .addListener(cancel, 'click', this.askForReset, this);
+    },
+
+    askForReset: function (e) {
+        if (!confirm(L._("Are you sure you want to cancel your changes?"))) return;
+        this.disableEdit(e);
+        L.S.fire('ui:end');
+        this.reset();
     },
 
     getEditActions: function () {
