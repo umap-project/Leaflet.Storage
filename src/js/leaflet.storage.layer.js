@@ -507,6 +507,9 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     zoomTo: function () {
+        if (!this.isVisible()) {
+            return;
+        }
         var bounds = this.layer.getBounds();
         if (bounds.isValid()) {
             this.map.fitBounds(bounds);

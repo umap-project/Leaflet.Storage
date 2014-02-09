@@ -22,7 +22,7 @@ describe('L.Storage.Poly', function () {
 
         it('should take into account styles changes made in the datalayer', function () {
             enableEdit();
-            happen.click(qs('span#edit_datalayer_62'));
+            happen.click(qs('i#edit_datalayer_62'));
             var colorInput = qs('form#datalayer-advanced-properties input[name=color]');
             changeInputValue(colorInput, "DarkRed");
             assert.ok(qs('path[fill="none"]')); // Polyline fill is unchanged
@@ -64,7 +64,7 @@ describe('L.Storage.Poly', function () {
         });
 
         it('should not override already set style on features', function () {
-            happen.click(qs('span#edit_datalayer_62'));
+            happen.click(qs('i#edit_datalayer_62'));
             changeInputValue(qs('form#datalayer-advanced-properties input[name=color]'), "Chocolate");
             assert.notOk(qs('path[fill="DarkBlue"]'));
             assert.notOk(qs('path[fill="DarkRed"]'));

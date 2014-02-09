@@ -119,6 +119,14 @@ L.DomUtil.createFieldset = function (container, legend) {
     return fieldset;
 };
 
+L.DomUtil.classIf = function (el, className, bool) {
+    if (bool) {
+        L.DomUtil.addClass(el, className);
+    } else {
+        L.DomUtil.removeClass(el, className);
+    }
+};
+
 /*
 * Global events
 */

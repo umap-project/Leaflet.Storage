@@ -388,8 +388,8 @@ a.storage-control-text {
     max-height: 10em;
     overflow-y: auto;
 }
-.storage-browse-features span,
-.leaflet-control-browse .storage-browse-datalayers span {
+.storage-browse-features i,
+.leaflet-control-browse .storage-browse-datalayers i {
     width: 24px;
     height: 24px;
     line-height: 24px;
@@ -400,29 +400,29 @@ a.storage-control-text {
     cursor: pointer;
     font-size: 12px;
 }
-.leaflet-control-browse .storage-browse-datalayers .off span {
+.leaflet-control-browse .storage-browse-datalayers .off i {
     cursor: inherit;
 }
-.leaflet-control-browse .storage-browse-actions .layer-toggle {
+.layer-toggle {
     background-image: url("../img/eye-on.png");
 }
-.leaflet-control-browse .storage-browse-actions .off .layer-toggle {
+.off .layer-toggle {
     background-image: url("../img/eye-off.png");
 }
 .storage-browse-features .feature-zoom_to {
     background-image: url("../img/zoom_to-18.png");
 }
-.leaflet-control-browse .storage-browse-actions .layer-zoom_to {
+.layer-zoom_to {
     background-image: url("../img/zoom_to.png");
 }
 .storage-browse-features .feature-edit,
-.leaflet-control-browse .storage-browse-actions .layer-edit {
+.layer-edit {
     background-image: url("../img/edit-16.png");
 }
-.leaflet-control-browse .storage-browse-actions .off .layer-edit {
+.off .layer-edit {
     background-image: url("../img/edit-off-16.png");
 }
-.leaflet-control-browse .storage-browse-actions .off .layer-zoom_to {
+.off .layer-zoom_to {
     background-image: url("../img/zoom_to-off.png");
 }
 .storage-browse-features .feature-title,
@@ -430,6 +430,9 @@ a.storage-control-text {
     width: inherit;
     cursor: inherit;
     padding-left: 6px;
+}
+.storage-browse-features .feature-title {
+    font-size: 12px;
 }
 .leaflet-control-browse .storage-browse-actions .off .layer-title {
     color: rgb(179, 179, 179);
@@ -476,10 +479,6 @@ a.storage-control-text {
     border-radius: 2px;
 }
 .storage-browse-features h5 {
-    background-image: url("../img/datalayers-24.png");
-    background-position: 7px center;
-    background-repeat: no-repeat;
-    text-indent: 38px;
     height: 30px;
     line-height: 30px;
     background-color: #eeeee0;
