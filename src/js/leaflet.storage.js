@@ -37,6 +37,7 @@ L.Map.mergeOptions({
     enableMarkerDraw: true,
     enablePolygonDraw: true,
     enablePolylineDraw: true,
+    limitBounds: {},
     importPresets: [
         // {url: 'http://localhost:8019/en/datalayer/1502/', label: 'Simplified World Countries', format: 'geojson'}
     ]
@@ -96,6 +97,7 @@ L.Storage.Map.include({
         if (this.options.hash) {
             this.addHash();
         }
+        this.handleLimitBounds();
         this.initCenter();
 
         this.initTileLayers(this.options.tilelayers);
@@ -315,6 +317,7 @@ L.Storage.Map.include({
     backupOptions: function () {
         this._backupOptions = L.extend({}, this.options);
         this._backupOptions.tilelayer = L.extend({}, this.options.tilelayer);
+        this._backupOptions.limitBounds = L.extend({}, this.options.limitBounds);
     },
 
     resetOptions: function () {
@@ -405,6 +408,18 @@ L.Storage.Map.include({
             a = Array(a.coordinates[1], a.coordinates[0]);
         }
         return L.latLng(a, b, c);
+    },
+
+    handleLimitBounds: function () {
+        var south = parseFloat(this.options.limitBounds.south),
+            west = parseFloat(this.options.limitBounds.west),
+            north = parseFloat(this.options.limitBounds.north),
+            east = parseFloat(this.options.limitBounds.east);
+        if (!isNaN(south) && !isNaN(west) && !isNaN(north) && !isNaN(east)) {
+            this.setMaxBounds([[south, west], [north, east]]);
+        } else {
+            this.setMaxBounds();
+        }
     },
 
     _createDataLayer: function(datalayer) {
@@ -736,7 +751,8 @@ L.Storage.Map.include({
             'name',
             'description',
             'licence',
-            'tilelayer'
+            'tilelayer',
+            'limitBounds'
         ], properties = {};
         for (var i = editableOptions.length - 1; i >= 0; i--) {
             if (typeof this.options[editableOptions[i]] !== "undefined") {
@@ -852,6 +868,7 @@ L.Storage.Map.include({
         });
         var controlsOptions = L.DomUtil.createFieldset(container, L._('Display options'));
         controlsOptions.appendChild(builder.build());
+
         if (typeof this.options.tilelayer !== 'object') {
             this.options.tilelayer = {};
         }
@@ -868,6 +885,35 @@ L.Storage.Map.include({
             callbackContext: this
         });
         customTilelayer.appendChild(builder.build());
+
+        if (typeof this.options.limitBounds !== 'object' || this.options.limitBounds === null) {
+            this.options.limitBounds = {};
+        }
+        var limitBounds = L.DomUtil.createFieldset(container, L._('Limit bounds'));
+        var boundsFields = [
+            ['options.limitBounds.south', {handler: 'BlurFloatInput', placeholder: L._('max South')}],
+            ['options.limitBounds.west', {handler: 'BlurFloatInput', placeholder: L._('max West')}],
+            ['options.limitBounds.north', {handler: 'BlurFloatInput', placeholder: L._('max North')}],
+            ['options.limitBounds.east', {handler: 'BlurFloatInput', placeholder: L._('max East')}],
+        ];
+        var boundsBuilder = new L.S.FormBuilder(this, boundsFields, {
+            callback: this.handleLimitBounds,
+            callbackContext: this
+        });
+        limitBounds.appendChild(boundsBuilder.build());
+        var setCurrentButton = L.DomUtil.add('a', '', limitBounds, L._('Use current bounds'));
+        setCurrentButton.href = "#";
+        L.DomEvent.on(setCurrentButton, 'click', function (e) {
+            var bounds = this.getBounds();
+            this.options.limitBounds.south = bounds.getSouth();
+            this.options.limitBounds.west = bounds.getWest();
+            this.options.limitBounds.north = bounds.getNorth();
+            this.options.limitBounds.east = bounds.getEast();
+            boundsBuilder.fetchAll();
+            this.isDirty = true;
+            this.handleLimitBounds();
+        }, this);
+
         var advancedActions = L.DomUtil.createFieldset(container, L._('Advanced actions'));
         var del = L.DomUtil.create('a', 'storage-delete', advancedActions);
         del.href = "#";
