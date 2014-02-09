@@ -127,13 +127,49 @@ L.DomUtil.classIf = function (el, className, bool) {
     }
 };
 
+
+L.DomUtil.element = function (what, attrs, parent) {
+    var el = document.createElement(what);
+    for (var attr in attrs) {
+        el[attr] = attrs[attr];
+    }
+    if (typeof parent !== "undefined") {
+        parent.appendChild(el);
+    }
+    return el;
+};
+
+
+L.DomUtil.before = function (target, el) {
+    target.parentNode.insertBefore(el, target);
+    return el;
+};
+
+L.DomUtil.after = function (target, el)
+{
+    target.parentNode.insertBefore(el, target.nextSibling);
+    return el;
+};
+
+
 /*
 * Global events
 */
+L.S.Keys = {
+    LEFT: 37,
+    UP: 38,
+    RIGHT: 39,
+    DOWN: 40,
+    TAB: 9,
+    RETURN: 13,
+    ESC: 27,
+    APPLE: 91,
+    SHIFT: 16,
+    ALT: 17,
+    CTRL: 18
+};
 L.S._onKeyDown = function (e) {
-    var key = e.keyCode,
-        ESC = 27;
-    if (key == ESC) {
+    if (e.keyCode == L.S.Keys.ESC) {
         L.S.fire('ui:end');
     }
 };
