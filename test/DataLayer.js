@@ -26,7 +26,7 @@ describe('L.DataLayer', function () {
         var editButton, form, input;
 
         it('row in control should be active', function () {
-            assert.ok(qs('.leaflet-control-browse #browse_data_toggle_62.on'));
+            assert.notOk(qs('.leaflet-control-browse #browse_data_toggle_62.off'));
         });
 
         it('should have edit button', function () {
@@ -214,7 +214,6 @@ describe('L.DataLayer', function () {
 
         it('should be visible again on edit cancel', function () {
             clickCancel();
-            this.server.respond();
             assert.ok(qs('div.icon_container'));
         });
 

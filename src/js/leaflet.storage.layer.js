@@ -34,6 +34,9 @@ L.Storage.DataLayer = L.Class.extend({
         }
         this.populate(datalayer);
         this.connectToMap();
+        if(this.options.displayOnLoad) {
+            this.display();
+        }
         if (!this.storage_id) {
             this.isDirty = true;
         }
@@ -166,9 +169,6 @@ L.Storage.DataLayer = L.Class.extend({
         if (!this.map.datalayers[id]) {
             this.map.datalayers[id] = this;
             this.map.datalayers_index.push(this);
-        }
-        if(this.options.displayOnLoad) {
-            this.display();
         }
         this.map.updateDatalayersControl();
     },
@@ -371,7 +371,6 @@ L.Storage.DataLayer = L.Class.extend({
         delete this.map.datalayers[L.stamp(this)];
         this.map.datalayers_index.splice(this.map.datalayers_index.indexOf(this), 1);
         this.map.updateDatalayersControl();
-        this._geojson = null;
         this._layers = {};
         this._index = Array();
     },
@@ -488,11 +487,13 @@ L.Storage.DataLayer = L.Class.extend({
             this.fetchData();
         }
         this.map.addLayer(this.layer);
+        this.fire('display');
         // this._map.fire('overlayadd', {layer: obj});
     },
 
     hide: function () {
         this.map.removeLayer(this.layer);
+        this.fire('hide');
         // this._map.fire('overlayremove', {layer: obj});
     },
 

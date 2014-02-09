@@ -319,21 +319,6 @@ L.Storage.DataLayersControl = L.Control.extend({
         L.Storage.fire('ui:start', {data: {html: this._browser_container}});
     },
 
-    toggleDataLayer: function (datalayer) {
-        var toggle = L.DomUtil.get("browse_data_toggle_" + datalayer.storage_id);
-        if (datalayer.isVisible()) {
-            datalayer.hide();
-            this.removeFeatures(datalayer);
-            L.DomUtil.addClass(toggle, 'off');
-        } else {
-            datalayer.display();
-            datalayer.onceLoaded(function () {
-                this.addFeatures(datalayer);
-                L.DomUtil.removeClass(toggle, 'off');
-            }, this);
-        }
-    },
-
     addDataLayer: function (datalayer) {
         var datalayer_li = L.DomUtil.create('li', '', this._datalayers_container),
             toggle = L.DomUtil.create('span', 'layer-toggle', datalayer_li),
@@ -353,9 +338,19 @@ L.Storage.DataLayersControl = L.Control.extend({
         }
 
         title.innerHTML = datalayer.options.name;
-        L.DomEvent.on(toggle, 'click', function (e) { this.toggleDataLayer(datalayer); }, this);
+        L.DomEvent.on(toggle, 'click', datalayer.toggle, datalayer);
         L.DomEvent.on(zoom_to, 'click', datalayer.zoomTo, datalayer);
         L.DomEvent.on(edit, 'click', datalayer.edit, datalayer);
+        datalayer.on('hide', function () {
+            this.removeFeatures(datalayer);
+            L.DomUtil.addClass(datalayer_li, 'off');
+        }, this);
+        datalayer.on('display', function () {
+            datalayer.onceLoaded(function () {
+                this.addFeatures(datalayer);
+                L.DomUtil.removeClass(datalayer_li, 'off');
+            }, this);
+        }, this);
     },
 
     addFeatures: function (datalayer) {
