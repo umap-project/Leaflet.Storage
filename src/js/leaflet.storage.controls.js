@@ -361,15 +361,18 @@ L.Storage.DataLayersControl = L.Control.extend({
     addFeatures: function (datalayer) {
         var id = 'browse_data_datalayer_' + datalayer.storage_id,
             self = this,
-            container = L.DomUtil.get(id);
+            container = L.DomUtil.get(id), title, ul;
         if (!container) {
             container = L.DomUtil.create('div', '', this._features_container);
             container.id = id;
+            title = L.DomUtil.add('h5', '', container, datalayer.options.name);
+            ul = L.DomUtil.create('ul', '', container);
+        } else {
+            title = container.querySelector('h5');
+            ul = container.querySelector('ul');
         }
         var build = function () {
-            container.innerHTML = "";
-            var title = L.DomUtil.add('h5', '', container, datalayer.options.name),
-                ul = L.DomUtil.create('ul', '', container);
+            ul.innerHTML = "";
             for (var j in datalayer._layers) {
                 ul.appendChild(self.addFeature(datalayer._layers[j]));
             }
@@ -410,7 +413,10 @@ L.Storage.DataLayersControl = L.Control.extend({
     removeFeatures: function (datalayer) {
         var el = L.DomUtil.get('browse_data_datalayer_' + datalayer.storage_id);
         if (el) {
-            el.innerHTML = '';
+            var ul = el.querySelector('ul');
+            if (ul) {
+                ul.innerHTML = '';
+            }
         }
     },
 

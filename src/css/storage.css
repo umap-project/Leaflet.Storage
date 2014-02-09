@@ -470,27 +470,33 @@ a.storage-control-text {
 /*   Features browser panel          */
 /* ********************************* */
 
-.storage-browse-features ul {
-    border-top: 2px solid rgb(68, 68, 68);
+.storage-browse-features > div {
+    border: 1px solid #d3d3d3;
     margin-bottom: 14px;
+    border-radius: 2px;
 }
 .storage-browse-features h5 {
     background-image: url("../img/datalayers-24.png");
     background-position: 7px center;
     background-repeat: no-repeat;
     text-indent: 38px;
-    height: 24px;
-    line-height: 24px;
+    height: 30px;
+    line-height: 30px;
+    background-color: #eeeee0;
+    margin-bottom: 0;
+    color: #666;
 }
 .storage-browse-features li {
     padding: 2px 0;
-    border-bottom: 1px dotted rgb(179, 179, 179);
     white-space: nowrap;
+}
+.storage-browse-features li:nth-child(even) {
+    background-color: #f8f8f3;
 }
 .storage-browse-features .feature-color {
     box-shadow: 0 0 4px 0 black inset;
     background-size: 70% 70%;
-    border: 4px solid white;
+    border: 4px solid #f8f8f3;
     cursor: inherit;
     -moz-box-sizing:border-box;
     -webkit-box-sizing:border-box;
