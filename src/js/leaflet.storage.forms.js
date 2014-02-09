@@ -71,7 +71,7 @@ L.S.ElementHelper.Textarea = L.S.ElementHelper.extend({
     onKeyPress: function (e) {
         var key = e.keyCode,
             ENTER = 13;
-        if (key == ENTER && e.shiftKey) {
+        if (key == ENTER && (e.shiftKey || e.ctrlKey)) {
             L.DomEvent.stop(e);
             L.S.fire('ui:end');
         }
