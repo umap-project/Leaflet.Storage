@@ -26,6 +26,7 @@ L.Storage.Xhr = {
         var response, xhr = this._wrapper(), id = Math.random();
         if (settings.listener) settings.listener.fire('dataloading', {id: id});
         xhr.open(settings.verb, settings.uri, true);
+        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
         if (settings.headers) {
             for (var name in settings.headers) {
                 xhr.setRequestHeader(name, settings.headers[name]);
@@ -35,7 +36,7 @@ L.Storage.Xhr = {
         xhr.onreadystatechange = function(e) {
             if (xhr.readyState === 4) {
                 if (xhr.status == 200) {
-                    settings.callback(xhr.responseText);
+                    settings.callback.call(settings.context || xhr, xhr.responseText);
                 }
                 else if (xhr.status === 403) {
                     L.Storage.fire("ui:alert", {"content": L._("Action not allowed :("), "level": "error"});
