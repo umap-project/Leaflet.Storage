@@ -985,6 +985,9 @@ a.storage-control-text {
     overflow-y: auto;
     overflow-x: hidden;
 }
+.leaflet-popup-content .popup-title {
+    margin-bottom: 0;
+}
 .leaflet-bar {
     border: 1px solid #bbb;
     box-shadow: none;
