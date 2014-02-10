@@ -122,7 +122,7 @@ L.Storage.FeatureMixin = {
         };
 
         for (var key in this.properties) {
-            if (typeof this.properties[key] === "object") {
+            if (typeof this.properties[key] === "object" || key === "name") {
                 continue;
             }
             // TODO, manage links (url, mailto, wikipedia...)
