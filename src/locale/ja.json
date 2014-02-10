@@ -165,5 +165,12 @@
     "Transform to lines": "ラインへ変換",
     "Choose the data format": "データ形式選択",
     "Error in the tilelayer URL": "タイルレイヤーのURLに誤りがあります",
-    "Directions from here": "Directions from here"
+    "Directions from here": "Directions from here",
+    "Choose a preset": "Choose a preset",
+    "Limit bounds": "Limit bounds",
+    "Use current bounds": "Use current bounds",
+    "max East": "max East",
+    "max North": "max North",
+    "max South": "max South",
+    "max West": "max West"
 }

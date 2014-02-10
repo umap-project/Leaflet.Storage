@@ -731,7 +731,7 @@ L.Storage.Polygon = L.Polygon.extend({
             'properties._storage_options.fillColor',
             'properties._storage_options.fillOpacity'
         );
-        options.push(['properties._storage_options.outlink', {label: L._('outlink'), helpText: L._("Define output link to open a new window on polygon click.")}]);
+        options.push(['properties._storage_options.outlink', {label: L._('outlink'), helpText: L._("Define output link to open a new window on polygon click."), placeholder: 'http://...'}]);
         return options;
     },
 

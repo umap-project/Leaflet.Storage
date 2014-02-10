@@ -165,5 +165,12 @@
     "Transform to lines": "In Linie umwandeln",
     "Choose the data format": "Wähle das Datenformat",
     "Error in the tilelayer URL": "Fehler in der Kachelebenen-URL",
-    "Directions from here": "Directions from here"
+    "Directions from here": "Directions from here",
+    "Choose a preset": "Choose a preset",
+    "Limit bounds": "Limit bounds",
+    "Use current bounds": "Use current bounds",
+    "max East": "max East",
+    "max North": "max North",
+    "max South": "max South",
+    "max West": "max West"
 }
