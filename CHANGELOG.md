@@ -25,6 +25,12 @@
 - add icon URL formatting with feature properties
 - add "Transform to Polygon/Polyline" action
 - new link on contextmenu to open external routing service from clicked point
+- fix bug where features were duplicated when datalayer was deleted then reverted
+- add layer action to databrowser
+- add optional default CSS
+- allow to close panel by ctrl-Enter when editing in textarea
+- add management for map max bounds
+- add Ctrl-Z for canceling changes
 
 ## 0.4.x
 - add a data browser

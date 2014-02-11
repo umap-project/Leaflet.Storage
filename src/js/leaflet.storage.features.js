@@ -122,7 +122,7 @@ L.Storage.FeatureMixin = {
         };
 
         for (var key in this.properties) {
-            if (typeof this.properties[key] === "object") {
+            if (typeof this.properties[key] === "object" || key === "name") {
                 continue;
             }
             // TODO, manage links (url, mailto, wikipedia...)
@@ -143,7 +143,7 @@ L.Storage.FeatureMixin = {
     populatePopup: function () {
         var container = L.DomUtil.create('div', '');
         if (this.properties.name) {
-            L.DomUtil.add('h4', '', container, L.Util.escapeHTML(this.properties.name));
+            L.DomUtil.add('h3', 'popup-title', container, L.Util.escapeHTML(this.properties.name));
         }
         var content = L.DomUtil.create('div', 'storage-popup-content', container),
             template = this.getOption('popupTemplate');
@@ -372,7 +372,9 @@ L.Storage.Marker = L.Marker.extend({
             this.edit(e);
         }, this);
         this.on("click", this._onClick);
-        this.on("mouseover", this._enableDragging);
+        if (!this.isReadOnly()) {
+            this.on("mouseover", this._enableDragging);
+        }
         this.on("mouseout", this._onMouseOut);
         this._popupHandlersAdded = true; // prevent Leaflet from binding event on bindPopup
     },
@@ -612,7 +614,9 @@ L.Storage.PathMixin = {
         L.Storage.FeatureMixin.addInteractions.call(this);
         this.on("dragend", this.edit);
         this.on("click", this._onClick);
-        this.on("dblclick", this._toggleEditing);
+        if (!this.isReadOnly()) {
+            this.on("dblclick", this._toggleEditing);
+        }
         this.on("mouseover", this._onMouseOver);
         this.on("edit", this.makeDirty);
         if (this.map._controls.measureControl) {
@@ -731,7 +735,7 @@ L.Storage.Polygon = L.Polygon.extend({
             'properties._storage_options.fillColor',
             'properties._storage_options.fillOpacity'
         );
-        options.push(['properties._storage_options.outlink', {label: L._('outlink'), helpText: L._("Define output link to open a new window on polygon click.")}]);
+        options.push(['properties._storage_options.outlink', {label: L._('outlink'), helpText: L._("Define output link to open a new window on polygon click."), placeholder: 'http://...'}]);
         return options;
     },
 

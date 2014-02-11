@@ -48,7 +48,9 @@ L.Storage.ElementHelper = L.Class.extend({
             var container = L.DomUtil.create('small', 'help-text', this.form);
             container.innerHTML = this.options.helpText;
         }
-    }
+    },
+
+    fetch: function () {}
 
 });
 
@@ -56,12 +58,16 @@ L.S.ElementHelper.Textarea = L.S.ElementHelper.extend({
 
     build: function () {
         this.input = L.DomUtil.create('textarea', '', this.form);
+        this.fetch();
+        L.DomEvent.on(this.input, 'input', this.sync, this);
+        L.DomEvent.on(this.input, 'keypress', this.onKeyPress, this);
+    },
+
+    fetch: function () {
         var value = this.backup = this.toHTML();
         if (value) {
             this.input.value = value;
         }
-        L.DomEvent.on(this.input, 'input', this.sync, this);
-        L.DomEvent.on(this.input, 'keypress', this.onKeyPress, this);
     },
 
     value: function () {
@@ -71,7 +77,7 @@ L.S.ElementHelper.Textarea = L.S.ElementHelper.extend({
     onKeyPress: function (e) {
         var key = e.keyCode,
             ENTER = 13;
-        if (key == ENTER && e.shiftKey) {
+        if (key == ENTER && (e.shiftKey || e.ctrlKey)) {
             L.DomEvent.stop(e);
             L.S.fire('ui:end');
         }
@@ -83,15 +89,19 @@ L.Storage.ElementHelper.Input = L.S.ElementHelper.extend({
 
     build: function () {
         this.input = L.DomUtil.create('input', '', this.form);
-        this.input.value = this.backup = this.toHTML() || null;
         this.input.type = this.type();
         this.input.name = this.name;
         this.input._helper = this;
+        this.fetch();
         if (this.options.placeholder) {
             this.input.placeholder = this.options.placeholder;
         }
         L.DomEvent.on(this.input, this.getSyncEvent(), this.sync, this);
         L.DomEvent.on(this.input, 'keypress', this.onKeyPress, this);
+    },
+
+    fetch: function () {
+        this.input.value = this.backup = (typeof this.toHTML() !== "undefined" ? this.toHTML() : null);
     },
 
     getSyncEvent: function () {
@@ -159,6 +169,27 @@ L.S.ElementHelper.IntInput = L.S.ElementHelper.Input.extend({
 
 L.S.ElementHelper.BlurIntInput = L.S.ElementHelper.BlurInput.extend({
     includes: [L.S.ElementHelper.IntegerMixin]
+});
+
+
+L.S.ElementHelper.FloatMixin = {
+
+    value: function () {
+        return !isNaN(this.input.value) && this.input.value !== "" ? parseFloat(this.input.value): undefined;
+    },
+
+    type: function () {
+        return "number";
+    }
+
+};
+
+L.S.ElementHelper.FloatInput = L.S.ElementHelper.Input.extend({
+    includes: [L.S.ElementHelper.FloatMixin]
+});
+
+L.S.ElementHelper.BlurFloatInput = L.S.ElementHelper.BlurInput.extend({
+    includes: [L.S.ElementHelper.FloatMixin]
 });
 
 
@@ -259,12 +290,16 @@ L.S.ElementHelper.CheckBox = L.S.ElementHelper.extend({
     build: function () {
         var container = L.DomUtil.create('div', 'formbox', this.form);
         this.input = L.DomUtil.create('input', '', container);
-        this.backup = this.get();
-        this.input.checked = this.backup === true;
         this.input.type = "checkbox";
         this.input.name = this.name;
         this.input._helper = this;
+        this.fetch();
         L.DomEvent.on(this.input, 'change', this.sync, this);
+    },
+
+    fetch: function () {
+        this.backup = this.toHTML();
+        this.input.checked = this.backup === true;
     },
 
     value: function () {
@@ -294,8 +329,13 @@ L.S.ElementHelper.SelectAbstract = L.S.ElementHelper.extend({
         return this.selectOptions;
     },
 
-    buildOptions: function (options) {
-        options = options || this.getOptions();
+    fetch: function () {
+        this.buildOptions();
+    },
+
+    buildOptions: function () {
+        this.select.innerHTML = "";
+        var options = this.getOptions();
         for (var i=0, l=options.length; i<l; i++) {
             this.buildOption(options[i][0], options[i][1]);
         }
@@ -683,6 +723,22 @@ L.Storage.FormBuilder = L.Class.extend({
     getName: function (field) {
         var fieldEls = field.split('.');
         return fieldEls[fieldEls.length-1];
+    },
+
+    fetchAll: function () {
+        for (var key in this.helpers) {
+            if (this.helpers.hasOwnProperty(key)) {
+                this.helpers[key].fetch();
+            }
+        }
+    },
+
+    syncAll: function () {
+        for (var key in this.helpers) {
+            if (this.helpers.hasOwnProperty(key)) {
+                this.helpers[key].sync();
+            }
+        }
     },
 
     defaultOptions: {

@@ -165,5 +165,12 @@
     "Transform to lines": "Transformer en lignes",
     "Choose the data format": "Choisir le format des données",
     "Error in the tilelayer URL": "Erreur dans l'URL du fond de carte",
-    "Directions from here": "Itinéraire à partir de ce lieu"
+    "Directions from here": "Itinéraire à partir de ce lieu",
+    "Choose a preset": "Choisir dans les préselections",
+    "Limit bounds": "Limites géographiques",
+    "Use current bounds": "Utiliser la vue courante",
+    "max East": "limite est",
+    "max North": "limite nord",
+    "max South": "limite sud",
+    "max West": "limite ouest"
 }

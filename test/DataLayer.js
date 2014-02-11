@@ -26,20 +26,20 @@ describe('L.DataLayer', function () {
         var editButton, form, input;
 
         it('row in control should be active', function () {
-            assert.ok(qs('.leaflet-control-browse #browse_data_toggle_62.on'));
+            assert.notOk(qs('.leaflet-control-browse #browse_data_toggle_62.off'));
         });
 
         it('should have edit button', function () {
-            editButton = qs('span#edit_datalayer_62');
+            editButton = qs('i#edit_datalayer_62');
             assert.ok(editButton);
         });
 
         it('should have toggle visibility element', function () {
-            assert.ok(qs('.leaflet-control-browse span.layer-toggle'));
+            assert.ok(qs('.leaflet-control-browse i.layer-toggle'));
         });
 
         it('should exist only one datalayer', function () {
-            assert.equal(document.querySelectorAll('.leaflet-control-browse span.layer-toggle').length, 1);
+            assert.equal(document.querySelectorAll('.leaflet-control-browse i.layer-toggle').length, 1);
         });
 
         it('should build a form on edit button click', function () {
@@ -128,7 +128,7 @@ describe('L.DataLayer', function () {
         });
 
         it('should have edit button', function () {
-            editButton = qs('span#edit_datalayer_63');
+            editButton = qs('i#edit_datalayer_63');
             assert.ok(editButton);
         });
 
@@ -186,7 +186,7 @@ describe('L.DataLayer', function () {
         var deleteLink, deletePath = '/map/99/datalayer/delete/62/';
 
         it('should have a delete link in update form', function () {
-            happen.click(qs('span#edit_datalayer_62'));
+            happen.click(qs('i#edit_datalayer_62'));
             deleteLink = qs('a.delete_datalayer_button');
             assert.ok(deleteLink);
         });
@@ -214,7 +214,6 @@ describe('L.DataLayer', function () {
 
         it('should be visible again on edit cancel', function () {
             clickCancel();
-            this.server.respond();
             assert.ok(qs('div.icon_container'));
         });
 
