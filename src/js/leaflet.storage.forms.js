@@ -528,14 +528,14 @@ L.S.ElementHelper.IconUrl = L.S.ElementHelper.Input.extend({
         if (this.value() && this.value().indexOf('{') == -1) { // Do not try to render URL with variables
             var img = L.DomUtil.create('img', '', L.DomUtil.create('div', "storage-icon-choice", this.buttonsContainer));
             img.src = this.value();
-            L.DomEvent.on(img, "click", this.fetch, this);
+            L.DomEvent.on(img, "click", this.fetchIconList, this);
         }
         this.button = L.DomUtil.create('a', '', this.buttonsContainer);
         this.button.innerHTML = this.value() ? L._('Change symbol') : L._('Add symbol');
         this.button.href = "#";
         L.DomEvent
             .on(this.button, "click", L.DomEvent.stop)
-            .on(this.button, "click", this.fetch, this);
+            .on(this.button, "click", this.fetchIconList, this);
     },
 
     addIconPreview: function (pictogram) {
@@ -566,7 +566,7 @@ L.S.ElementHelper.IconUrl = L.S.ElementHelper.Input.extend({
         this.createButtonsBar();
     },
 
-    fetch: function (e) {
+    fetchIconList: function (e) {
         this.map.get(this.map.options.urls.pictogram_list_json, {
             callback: function (data) {
                 this.pictogramsContainer.innerHTML = "";
