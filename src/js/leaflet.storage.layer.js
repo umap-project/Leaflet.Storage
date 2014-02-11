@@ -175,7 +175,7 @@ L.Storage.DataLayer = L.Class.extend({
 
     _dataUrl: function() {
         var template = this.map.options.urls.datalayer_view;
-        return L.Util.template(template, {"pk": this.storage_id});
+        return L.Util.template(template, {"pk": this.storage_id, "map_id": this.map.options.storage_id});
     },
 
     isRemoteLayer: function () {
