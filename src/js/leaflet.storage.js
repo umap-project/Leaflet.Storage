@@ -608,7 +608,7 @@ L.Storage.Map.include({
             if (urlInput.value) {
                 processUrl(urlInput.value);
             }
-            if (presetSelect.selectedIndex !== 0) {
+            if (presetSelect.selectedIndex > 0) {
                 processUrl(presetSelect[presetSelect.selectedIndex].value);
             }
         };
