@@ -92,6 +92,9 @@ L.Util.toHTML = function (r) {
 
     return r;
 };
+L.Util.isObject = function (what) {
+    return typeof what === "object" && what !== null;
+};
 
 L.DomUtil.add = function (tagName, className, container, content) {
     var el = L.DomUtil.create(tagName, className, container);
