@@ -874,7 +874,7 @@ L.Storage.Map.include({
         var controlsOptions = L.DomUtil.createFieldset(container, L._('Display options'));
         controlsOptions.appendChild(builder.build());
 
-        if (typeof this.options.tilelayer !== 'object') {
+        if (!L.Util.isObject(this.options.tilelayer)) {
             this.options.tilelayer = {};
         }
         var tilelayerFields = [
@@ -891,7 +891,7 @@ L.Storage.Map.include({
         });
         customTilelayer.appendChild(builder.build());
 
-        if (typeof this.options.limitBounds !== 'object' || this.options.limitBounds === null) {
+        if (!L.Util.isObject(this.options.limitBounds)) {
             this.options.limitBounds = {};
         }
         var limitBounds = L.DomUtil.createFieldset(container, L._('Limit bounds'));

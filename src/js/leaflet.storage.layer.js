@@ -445,7 +445,7 @@ L.Storage.DataLayer = L.Class.extend({
         form = builder.build();
         advancedProperties.appendChild(form);
 
-        if (typeof this.options.remoteData === "undefined") {
+        if (!L.Util.isObject(this.options.remoteData)) {
             this.options.remoteData = {};
         }
         var remoteDataFields = [
