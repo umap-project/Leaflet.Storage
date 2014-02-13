@@ -421,8 +421,11 @@ L.Storage.Map.include({
             north = parseFloat(this.options.limitBounds.north),
             east = parseFloat(this.options.limitBounds.east);
         if (!isNaN(south) && !isNaN(west) && !isNaN(north) && !isNaN(east)) {
-            this.setMaxBounds([[south, west], [north, east]]);
+            var bounds = L.latLngBounds([[south, west], [north, east]]);
+            this.options.minZoom = this.getBoundsZoom(bounds, true);
+            this.setMaxBounds(bounds);
         } else {
+            this.options.minZoom = 0;
             this.setMaxBounds();
         }
     },
@@ -910,10 +913,10 @@ L.Storage.Map.include({
         setCurrentButton.href = "#";
         L.DomEvent.on(setCurrentButton, 'click', function (e) {
             var bounds = this.getBounds();
-            this.options.limitBounds.south = bounds.getSouth();
-            this.options.limitBounds.west = bounds.getWest();
-            this.options.limitBounds.north = bounds.getNorth();
-            this.options.limitBounds.east = bounds.getEast();
+            this.options.limitBounds.south = L.Util.formatNum(bounds.getSouth());
+            this.options.limitBounds.west = L.Util.formatNum(bounds.getWest());
+            this.options.limitBounds.north = L.Util.formatNum(bounds.getNorth());
+            this.options.limitBounds.east = L.Util.formatNum(bounds.getEast());
             boundsBuilder.fetchAll();
             this.isDirty = true;
             this.handleLimitBounds();
