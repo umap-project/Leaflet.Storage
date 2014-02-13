@@ -1078,16 +1078,19 @@ L.Storage.Map.include({
     },
 
     setContextMenuItems: function (e) {
-        var items = [
-            {
+        var items = [];
+        if (this._zoom !== this.getMaxZoom()) {
+            items.push({
                 text: L._('Zoom in'),
                 callback: function () {this.zoomIn();}
-            },
-            {
+            });
+        }
+        if (this._zoom !== this.getMinZoom()) {
+            items.push({
                 text: L._('Zoom out'),
                 callback: function () {this.zoomOut();}
-            }
-        ];
+            });
+        }
         if (e && e.relatedTarget) {
             if (e.relatedTarget.getContextMenuItems) {
                 items = items.concat(e.relatedTarget.getContextMenuItems());
