@@ -172,5 +172,6 @@
     "max East": "limite est",
     "max North": "limite nord",
     "max South": "limite sud",
-    "max West": "limite ouest"
+    "max West": "limite ouest",
+    "TMS format": "format de type TMS"
 }

@@ -885,7 +885,8 @@ L.Storage.Map.include({
             ['options.tilelayer.url_template', {handler: 'BlurInput', helpText: L._("Supported scheme") + ': http://{s}.domain.com/{z}/{x}/{y}.png', placeholder: 'url'}],
             ['options.tilelayer.maxZoom', {handler: 'BlurIntInput', placeholder: L._('max zoom')}],
             ['options.tilelayer.minZoom', {handler: 'BlurIntInput', placeholder: L._('min zoom')}],
-            ['options.tilelayer.attribution', {handler: 'BlurInput', placeholder: L._('attribution')}]
+            ['options.tilelayer.attribution', {handler: 'BlurInput', placeholder: L._('attribution')}],
+            ['options.tilelayer.tms', {handler: 'CheckBox', helpText: L._('TMS format')}]
         ];
         var customTilelayer = L.DomUtil.createFieldset(container, L._('Custom background'));
         builder = new L.S.FormBuilder(this, tilelayerFields, {
