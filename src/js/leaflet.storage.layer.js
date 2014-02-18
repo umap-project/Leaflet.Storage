@@ -606,7 +606,8 @@ L.TileLayer.include({
             maxZoom: this.options.maxZoom,
             attribution: this.options.attribution,
             url_template: this._url,
-            name: this.options.name
+            name: this.options.name,
+            tms: this.options.tms
         };
     },
 
