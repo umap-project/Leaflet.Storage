@@ -97,8 +97,8 @@ L.Storage.Map.include({
         if (this.options.hash) {
             this.addHash();
         }
-        this.handleLimitBounds();
         this.initCenter();
+        this.handleLimitBounds();
 
         this.initTileLayers(this.options.tilelayers);
         this.initControls();
