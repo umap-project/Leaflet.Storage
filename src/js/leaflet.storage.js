@@ -655,9 +655,7 @@ L.Storage.Map.include({
                 headline = L.DomUtil.create('strong', '', p),
                 description = L.DomUtil.create('span', '', p);
                 datalayer.onceLoaded(function () {
-                    if (this.options.color) {
-                        color.style.backgroundColor = this.options.color;
-                    }
+                    color.style.backgroundColor = this.getColor();
                 });
             datalayer.renderToolbox(headline);
             L.DomUtil.add('span', '', headline, datalayer.options.name + ' ');

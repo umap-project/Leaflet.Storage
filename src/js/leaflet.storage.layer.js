@@ -64,7 +64,7 @@ L.Storage.DataLayer = L.Class.extend({
         if (this.isClustered()) {
             this.layer = new L.MarkerClusterGroup({
                 polygonOptions: {
-                    color: this.options.color || this.map.getDefaultOption('color')
+                    color: this.getColor()
                 },
                 iconCreateFunction: function (cluster) {
                     return new L.Storage.Icon.Cluster(self, cluster);
@@ -353,6 +353,10 @@ L.Storage.DataLayer = L.Class.extend({
         return new L.Storage.Icon[this.getIconClass()](this.map);
     },
 
+    getColor: function () {
+        return this.options.color || this.map.getDefaultOption('color');
+    },
+
     getDeleteUrl: function () {
         return L.Util.template(this.map.options.urls.datalayer_delete, {'pk': this.storage_id, 'map_id': this.map.options.storage_id});
 
@@ -436,7 +440,7 @@ L.Storage.DataLayer = L.Class.extend({
                     this.resetLayer();
                 }
                 if (field === "options.color" && this.isClustered()) {
-                    this.layer.options.polygonOptions.color = this.options.color || this.map.getDefaultOption('color');
+                    this.layer.options.polygonOptions.color = this.getColor();
                 }
                 this.display();
             }
