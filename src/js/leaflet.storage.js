@@ -644,13 +644,20 @@ L.Storage.Map.include({
         }
         this.eachDataLayer(function (datalayer) {
             var p = L.DomUtil.create('p', '', container),
-                color = L.DomUtil.create('span', 'datalayer_color', p),
-                title = L.DomUtil.create('strong', '', p),
+                color = L.DomUtil.create('span', 'datalayer-color', p),
+                headline = L.DomUtil.create('strong', '', p),
                 description = L.DomUtil.create('span', '', p);
-            if (datalayer.options.color) {
-                color.style.backgroundColor = datalayer.options.color;
-            }
-            title.innerHTML = datalayer.options.name + ' ';
+                datalayer.onceLoaded(function () {
+                    if (this.options.color) {
+                        color.style.backgroundColor = this.options.color;
+                    }
+                });
+            datalayer.renderToolbox(headline);
+            L.DomUtil.add('span', '', headline, datalayer.options.name + ' ');
+            L.DomUtil.classIf(p, 'off', !datalayer.isVisible());
+            datalayer.on('hide display', function () {
+                L.DomUtil.classIf(p, 'off', !this.isVisible());
+            });
             if (datalayer.options.description) {
                 description.innerHTML = datalayer.options.description;
             }

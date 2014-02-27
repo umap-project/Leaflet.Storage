@@ -389,6 +389,7 @@ a.storage-control-text {
     overflow-y: auto;
 }
 .storage-browse-features i,
+.storage-caption i,
 .leaflet-control-browse .storage-browse-datalayers i {
     width: 24px;
     height: 24px;
@@ -566,6 +567,20 @@ a.storage-control-text {
     padding-right: 7px;
     position: absolute;
     left: 7px;
+}
+
+
+/* ********************************* */
+/*            Caption                */
+/* ********************************* */
+.datalayer-color {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+    border: 1px solid #000;
+    background-color: transparent;
+    vertical-align: middle;
 }
 
 

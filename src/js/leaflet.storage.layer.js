@@ -594,6 +594,18 @@ L.Storage.DataLayer = L.Class.extend({
 
     getName: function () {
         return this.options.name || L._('Untitled layer');
+    },
+
+    renderToolbox: function (container) {
+        var toggle = L.DomUtil.create('i', 'layer-toggle', container),
+            zoom_to = L.DomUtil.create('i', 'layer-zoom_to', container),
+            edit = L.DomUtil.create('i', "layer-edit show-on-edit", container);
+        zoom_to.title = L._('Zoom to layer extent');
+        toggle.title = L._('Show/hide layer');
+        edit.title = L._('Edit');
+        L.DomEvent.on(toggle, 'click', this.toggle, this);
+        L.DomEvent.on(zoom_to, 'click', this.zoomTo, this);
+        L.DomEvent.on(edit, 'click', this.edit, this);
     }
 
 });

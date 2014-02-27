@@ -326,27 +326,19 @@ L.Storage.DataLayersControl = L.Control.extend({
     },
 
     addDataLayer: function (datalayer) {
-        var datalayer_li = L.DomUtil.create('li', '', this._datalayers_container),
-            toggle = L.DomUtil.create('i', 'layer-toggle', datalayer_li),
-            zoom_to = L.DomUtil.create('i', 'layer-zoom_to', datalayer_li),
-            edit = L.DomUtil.create('i', "layer-edit show-on-edit", datalayer_li);
-            title = L.DomUtil.create('span', 'layer-title', datalayer_li);
+        var datalayer_li = L.DomUtil.create('li', '', this._datalayers_container);
+        datalayer.renderToolbox(datalayer_li);
+        var title = L.DomUtil.add('span', 'layer-title', datalayer_li, datalayer.options.name);
 
-        zoom_to.title = this.labels.zoomToLayer;
-        toggle.title = this.labels.toggleLayer;
         datalayer_li.id = "browse_data_toggle_" + datalayer.storage_id;
-        L.DomUtil.addClass(datalayer_li, datalayer.isVisible() ? 'on': 'off');
+        L.DomUtil.classIf(datalayer_li, 'off', !datalayer.isVisible());
 
-        edit.title = this.labels.editLayer;
-        edit.href = '#';
-        if (datalayer.storage_id) {  // storage_id is null for non saved ones
-            edit.id = 'edit_datalayer_' + datalayer.storage_id;
-        }
+        // if (datalayer.storage_id) {  // storage_id is null for non saved ones
+        //     edit.id = 'edit_datalayer_' + datalayer.storage_id;
+        // }
 
         title.innerHTML = datalayer.options.name;
-        L.DomEvent.on(toggle, 'click', datalayer.toggle, datalayer);
-        L.DomEvent.on(zoom_to, 'click', datalayer.zoomTo, datalayer);
-        L.DomEvent.on(edit, 'click', datalayer.edit, datalayer);
+
         datalayer.on('hide', function () {
             this.removeFeatures(datalayer);
             L.DomUtil.addClass(datalayer_li, 'off');
@@ -366,17 +358,9 @@ L.Storage.DataLayersControl = L.Control.extend({
         if (!container) {
             container = L.DomUtil.create('div', '', this._features_container);
             container.id = id;
-            headline = L.DomUtil.create('h5', '', container);
-            var toggle = L.DomUtil.create('i', 'layer-toggle', headline),
-                zoom_to = L.DomUtil.create('i', 'layer-zoom_to', headline),
-                edit = L.DomUtil.create('i', "layer-edit show-on-edit", headline),
-                title = L.DomUtil.add('span', '', headline, datalayer.options.name);
-            zoom_to.title = this.labels.zoomToLayer;
-            toggle.title = this.labels.toggleLayer;
-            edit.title = this.labels.editLayer;
-            L.DomEvent.on(toggle, 'click', datalayer.toggle, datalayer);
-            L.DomEvent.on(zoom_to, 'click', datalayer.zoomTo, datalayer);
-            L.DomEvent.on(edit, 'click', datalayer.edit, datalayer);
+            var headline = L.DomUtil.create('h5', '', container);
+            datalayer.renderToolbox(headline);
+            var title = L.DomUtil.add('span', '', headline, datalayer.options.name);
             ul = L.DomUtil.create('ul', '', container);
         } else {
             ul = container.querySelector('ul');
