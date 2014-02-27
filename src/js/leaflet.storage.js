@@ -464,27 +464,34 @@ L.Storage.Map.include({
             iframeUrl = url + '?scaleControl=0&miniMap=0&scrollWheelZoom=0&allowEdit=0';
         iframe.innerHTML = '<iframe width="100%" height="300" frameBorder="0" src="' + iframeUrl +'"></iframe><p><a href="' + url + '">See full screen</a></p>';
         if (this.options.shortUrl) {
+            L.DomUtil.create('hr', '', container);
             L.DomUtil.add('h4', '', container, L._('Short URL'));
             var shortUrl = L.DomUtil.create('input', 'storage-short-url', container);
             shortUrl.type = "text";
             shortUrl.value = this.options.shortUrl;
         }
+        L.DomUtil.create('hr', '', container);
         L.DomUtil.add('h4', '', container, L._('Download raw data (GeoJSON)'));
+        L.DomUtil.add('p', '', container, L._('Only visible features will be downloaded.'));
         var download = L.DomUtil.create('a', 'button', container);
-        var features = [];
-        this.eachDataLayer(function (datalayer) {
-            features = features.concat(datalayer.featuresToGeoJSON());
-        });
-        var geojson = {
-            type: "FeatureCollection",
-            features: features
-        };
-        var content = JSON.stringify(geojson, null, 2);
-        window.URL = window.URL || window.webkitURL;
-        var blob = new Blob([content], {type: 'application/json'});
-        download.href = window.URL.createObjectURL(blob);
         download.innerHTML = L._('Download data');
         download.download = "features.geojson";
+        L.DomEvent.on(download, 'click', function () {
+            var features = [];
+            this.eachDataLayer(function (datalayer) {
+                if (datalayer.isVisible()) {
+                    features = features.concat(datalayer.featuresToGeoJSON());
+                }
+            });
+            var geojson = {
+                type: "FeatureCollection",
+                features: features
+            };
+            var content = JSON.stringify(geojson, null, 2);
+            window.URL = window.URL || window.webkitURL;
+            var blob = new Blob([content], {type: 'application/json'});
+            download.href = window.URL.createObjectURL(blob);
+        }, this);
         L.S.fire('ui:start', {data:{html:container}});
     },
 
@@ -833,7 +840,7 @@ L.Storage.Map.include({
             }
         }
         if (datalayer && !datalayer.isRemoteLayer()) {
-            // No datalayer visibile, let's force one
+            // No datalayer visible, let's force one
             this.addLayer(datalayer.layer);
             return datalayer;
         }

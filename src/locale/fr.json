@@ -174,5 +174,6 @@
     "max South": "limite sud",
     "max West": "limite ouest",
     "TMS format": "format de type TMS",
-    "Credits": "Crédits"
+    "Credits": "Crédits",
+    "Only visible features will be downloaded.": "Seuls les éléments visibles seront téléchargés."
 }
