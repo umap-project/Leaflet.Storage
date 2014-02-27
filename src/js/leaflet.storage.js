@@ -662,10 +662,10 @@ L.Storage.Map.include({
                 description.innerHTML = datalayer.options.description;
             }
         });
-        L.DomUtil.create('hr', '', container);
-        title = L.DomUtil.create('h5', '', container);
+        var credits = L.DomUtil.createFieldset(container, L._('Credits'));
+        title = L.DomUtil.create('h5', '', credits);
         title.innerHTML = L._('User content credits');
-        var contentCredit = L.DomUtil.create('p', '', container),
+        var contentCredit = L.DomUtil.create('p', '', credits),
             licence = L.DomUtil.create('a', '', contentCredit);
         if (this.options.licence) {
             licence.innerHTML = this.options.licence.name;
@@ -673,16 +673,16 @@ L.Storage.Map.include({
             contentCredit.innerHTML =  L._('Map user content has been published under licence')
                                        + ' ' + contentCredit.innerHTML;
         }
-        L.DomUtil.create('hr', '', container);
-        title = L.DomUtil.create('h5', '', container);
+        L.DomUtil.create('hr', '', credits);
+        title = L.DomUtil.create('h5', '', credits);
         title.innerHTML = L._('Map background credits');
-        var tilelayerCredit = L.DomUtil.create('p', '', container),
+        var tilelayerCredit = L.DomUtil.create('p', '', credits),
             name = L.DomUtil.create('strong', '', tilelayerCredit),
             attribution = L.DomUtil.create('span', '', tilelayerCredit);
         name.innerHTML = this.selected_tilelayer.options.name + ' ';
         attribution.innerHTML = this.selected_tilelayer.getAttribution();
-        L.DomUtil.create('hr', '', container);
-        var umapCredit = L.DomUtil.create('p', '', container),
+        L.DomUtil.create('hr', '', credits);
+        var umapCredit = L.DomUtil.create('p', '', credits),
             urls = {
                 leaflet: 'http://leafletjs.com',
                 django: 'https://www.djangoproject.com',
