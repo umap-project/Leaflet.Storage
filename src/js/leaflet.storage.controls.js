@@ -673,11 +673,8 @@ L.S.ContextMenu = L.Map.ContextMenu.extend({
 
 });
 
-
+L.Control.MeasureControl.TITLE = L._('Measure distances');
 L.S.MeasureControl = L.Control.MeasureControl.extend({
-    statics: {
-        TITLE: L._('Measure distances')
-    },
 
     onAdd: function (map) {
         L.Control.MeasureControl.prototype.onAdd.call(this, map);
