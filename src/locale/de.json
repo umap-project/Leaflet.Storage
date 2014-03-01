@@ -93,7 +93,7 @@
     "Save": "Speichern",
     "Save current edits": "Aktuelle Änderungen speichern",
     "Save this center and zoom": "Aktuelle Position und Zoomstufe speichern",
-    "Show/hide layer": "Ebene Anzeigen/Ausblenden",
+    "Show/hide layer": "Ebene Einblenden/Ausblenden",
     "Sorry, no location found for {location}": "Entschuldigung, keinen Ort für {location} gefunden.",
     "Start editing": "Beginne mit der Bearbeitung",
     "Stop editing": "Bearbeitung beenden",
@@ -175,5 +175,6 @@
     "max West": "Westliche Begrenzung",
     "TMS format": "TMS-Format",
     "Credits": "Credits",
-    "Only visible features will be downloaded.": "Only visible features will be downloaded."
+    "Only visible features will be downloaded.": "Nur eingeblendete Elemente werden heruntergeladen.",
+    "Open this map extent in a map editor to provide more accurate data to OpenStreetMap": "Open this map extent in a map editor to provide more accurate data to OpenStreetMap"
 }

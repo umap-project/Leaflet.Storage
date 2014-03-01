@@ -175,5 +175,6 @@
     "max West": "limite ouest",
     "TMS format": "format de type TMS",
     "Credits": "Crédits",
-    "Only visible features will be downloaded.": "Seuls les éléments visibles seront téléchargés."
+    "Only visible features will be downloaded.": "Seuls les éléments visibles seront téléchargés.",
+    "Open this map extent in a map editor to provide more accurate data to OpenStreetMap": "Ouvrir cette carte dans OpenStreetMap pour améliorer les données"
 }

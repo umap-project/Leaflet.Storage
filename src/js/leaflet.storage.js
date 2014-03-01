@@ -280,7 +280,11 @@ L.Storage.Map.include({
             this._controls.jumpToLocationControl = (new L.Storage.JumpToLocationControl()).addTo(this);
             this._controls.embedControl = (new L.Control.Embed(this, this.options.embedOptions)).addTo(this);
             this._controls.tilelayersControl = new L.Storage.TileLayerControl().addTo(this);
-            this._controls.editInOSMControl = (new L.Control.EditInOSM({position: 'topleft'})).addTo(this);
+            var editInOSMControlOptions = {
+                position: 'topleft',
+                widgetOptions: {helpText: L._('Open this map extent in a map editor to provide more accurate data to OpenStreetMap')}
+            };
+            this._controls.editInOSMControl = (new L.Control.EditInOSM(editInOSMControlOptions)).addTo(this);
             var measureOptions = {
                 handler: {
                     icon: new L.DivIcon({
