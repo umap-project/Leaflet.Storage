@@ -261,7 +261,7 @@ L.Storage.Map.include({
         }
 
         if (this.options.zoomControl) {
-            this._controls.zoomControl = (new L.Control.Zoom()).addTo(this);
+            this._controls.zoomControl = (new L.Control.Zoom({zoomInTitle: L._('Zoom in'), zoomOutTitle: L._('Zoom out')})).addTo(this);
         }
         if (this.options.datalayersControl) {
             this._controls.datalayersControl = new L.Storage.DataLayersControl().addTo(this);
