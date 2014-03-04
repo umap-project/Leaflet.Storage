@@ -36,7 +36,7 @@ L.Storage.Xhr = {
         xhr.onreadystatechange = function(e) {
             if (xhr.readyState === 4) {
                 if (xhr.status == 200) {
-                    settings.callback.call(settings.context || xhr, xhr.responseText);
+                    settings.callback.call(settings.context || xhr, xhr.responseText);
                 }
                 else if (xhr.status === 403) {
                     L.Storage.fire("ui:alert", {"content": L._("Action not allowed :("), "level": "error"});
