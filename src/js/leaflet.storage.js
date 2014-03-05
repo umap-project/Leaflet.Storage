@@ -97,8 +97,8 @@ L.Storage.Map.include({
         if (this.options.hash) {
             this.addHash();
         }
-        this.handleLimitBounds();
         this.initCenter();
+        this.handleLimitBounds();
 
         this.initTileLayers(this.options.tilelayers);
         this.initControls();
@@ -261,7 +261,7 @@ L.Storage.Map.include({
         }
 
         if (this.options.zoomControl) {
-            this._controls.zoomControl = (new L.Control.Zoom()).addTo(this);
+            this._controls.zoomControl = (new L.Control.Zoom({zoomInTitle: L._('Zoom in'), zoomOutTitle: L._('Zoom out')})).addTo(this);
         }
         if (this.options.datalayersControl) {
             this._controls.datalayersControl = new L.Storage.DataLayersControl().addTo(this);
@@ -280,7 +280,11 @@ L.Storage.Map.include({
             this._controls.jumpToLocationControl = (new L.Storage.JumpToLocationControl()).addTo(this);
             this._controls.embedControl = (new L.Control.Embed(this, this.options.embedOptions)).addTo(this);
             this._controls.tilelayersControl = new L.Storage.TileLayerControl().addTo(this);
-            this._controls.editInOSMControl = (new L.Control.EditInOSM({position: 'topleft'})).addTo(this);
+            var editInOSMControlOptions = {
+                position: 'topleft',
+                widgetOptions: {helpText: L._('Open this map extent in a map editor to provide more accurate data to OpenStreetMap')}
+            };
+            this._controls.editInOSMControl = (new L.Control.EditInOSM(editInOSMControlOptions)).addTo(this);
             var measureOptions = {
                 handler: {
                     icon: new L.DivIcon({
@@ -421,8 +425,11 @@ L.Storage.Map.include({
             north = parseFloat(this.options.limitBounds.north),
             east = parseFloat(this.options.limitBounds.east);
         if (!isNaN(south) && !isNaN(west) && !isNaN(north) && !isNaN(east)) {
-            this.setMaxBounds([[south, west], [north, east]]);
+            var bounds = L.latLngBounds([[south, west], [north, east]]);
+            this.options.minZoom = this.getBoundsZoom(bounds, true);
+            this.setMaxBounds(bounds);
         } else {
+            this.options.minZoom = 0;
             this.setMaxBounds();
         }
     },
@@ -461,27 +468,34 @@ L.Storage.Map.include({
             iframeUrl = url + '?scaleControl=0&miniMap=0&scrollWheelZoom=0&allowEdit=0';
         iframe.innerHTML = '<iframe width="100%" height="300" frameBorder="0" src="' + iframeUrl +'"></iframe><p><a href="' + url + '">See full screen</a></p>';
         if (this.options.shortUrl) {
+            L.DomUtil.create('hr', '', container);
             L.DomUtil.add('h4', '', container, L._('Short URL'));
             var shortUrl = L.DomUtil.create('input', 'storage-short-url', container);
             shortUrl.type = "text";
             shortUrl.value = this.options.shortUrl;
         }
+        L.DomUtil.create('hr', '', container);
         L.DomUtil.add('h4', '', container, L._('Download raw data (GeoJSON)'));
+        L.DomUtil.add('p', '', container, L._('Only visible features will be downloaded.'));
         var download = L.DomUtil.create('a', 'button', container);
-        var features = [];
-        this.eachDataLayer(function (datalayer) {
-            features = features.concat(datalayer.featuresToGeoJSON());
-        });
-        var geojson = {
-            type: "FeatureCollection",
-            features: features
-        };
-        var content = JSON.stringify(geojson, null, 2);
-        window.URL = window.URL || window.webkitURL;
-        var blob = new Blob([content], {type: 'application/json'});
-        download.href = window.URL.createObjectURL(blob);
         download.innerHTML = L._('Download data');
         download.download = "features.geojson";
+        L.DomEvent.on(download, 'click', function () {
+            var features = [];
+            this.eachDataLayer(function (datalayer) {
+                if (datalayer.isVisible()) {
+                    features = features.concat(datalayer.featuresToGeoJSON());
+                }
+            });
+            var geojson = {
+                type: "FeatureCollection",
+                features: features
+            };
+            var content = JSON.stringify(geojson, null, 2);
+            window.URL = window.URL || window.webkitURL;
+            var blob = new Blob([content], {type: 'application/json'});
+            download.href = window.URL.createObjectURL(blob);
+        }, this);
         L.S.fire('ui:start', {data:{html:container}});
     },
 
@@ -641,21 +655,26 @@ L.Storage.Map.include({
         }
         this.eachDataLayer(function (datalayer) {
             var p = L.DomUtil.create('p', '', container),
-                color = L.DomUtil.create('span', 'datalayer_color', p),
-                title = L.DomUtil.create('strong', '', p),
+                color = L.DomUtil.create('span', 'datalayer-color', p),
+                headline = L.DomUtil.create('strong', '', p),
                 description = L.DomUtil.create('span', '', p);
-            if (datalayer.options.color) {
-                color.style.backgroundColor = datalayer.options.color;
-            }
-            title.innerHTML = datalayer.options.name + ' ';
+                datalayer.onceLoaded(function () {
+                    color.style.backgroundColor = this.getColor();
+                });
+            datalayer.renderToolbox(headline);
+            L.DomUtil.add('span', '', headline, datalayer.options.name + ' ');
+            L.DomUtil.classIf(p, 'off', !datalayer.isVisible());
+            datalayer.on('hide display', function () {
+                L.DomUtil.classIf(p, 'off', !this.isVisible());
+            });
             if (datalayer.options.description) {
                 description.innerHTML = datalayer.options.description;
             }
         });
-        L.DomUtil.create('hr', '', container);
-        title = L.DomUtil.create('h5', '', container);
+        var credits = L.DomUtil.createFieldset(container, L._('Credits'));
+        title = L.DomUtil.create('h5', '', credits);
         title.innerHTML = L._('User content credits');
-        var contentCredit = L.DomUtil.create('p', '', container),
+        var contentCredit = L.DomUtil.create('p', '', credits),
             licence = L.DomUtil.create('a', '', contentCredit);
         if (this.options.licence) {
             licence.innerHTML = this.options.licence.name;
@@ -663,16 +682,16 @@ L.Storage.Map.include({
             contentCredit.innerHTML =  L._('Map user content has been published under licence')
                                        + ' ' + contentCredit.innerHTML;
         }
-        L.DomUtil.create('hr', '', container);
-        title = L.DomUtil.create('h5', '', container);
+        L.DomUtil.create('hr', '', credits);
+        title = L.DomUtil.create('h5', '', credits);
         title.innerHTML = L._('Map background credits');
-        var tilelayerCredit = L.DomUtil.create('p', '', container),
+        var tilelayerCredit = L.DomUtil.create('p', '', credits),
             name = L.DomUtil.create('strong', '', tilelayerCredit),
             attribution = L.DomUtil.create('span', '', tilelayerCredit);
         name.innerHTML = this.selected_tilelayer.options.name + ' ';
         attribution.innerHTML = this.selected_tilelayer.getAttribution();
-        L.DomUtil.create('hr', '', container);
-        var umapCredit = L.DomUtil.create('p', '', container),
+        L.DomUtil.create('hr', '', credits);
+        var umapCredit = L.DomUtil.create('p', '', credits),
             urls = {
                 leaflet: 'http://leafletjs.com',
                 django: 'https://www.djangoproject.com',
@@ -823,7 +842,7 @@ L.Storage.Map.include({
             }
         }
         if (datalayer && !datalayer.isRemoteLayer()) {
-            // No datalayer visibile, let's force one
+            // No datalayer visible, let's force one
             this.addLayer(datalayer.layer);
             return datalayer;
         }
@@ -882,7 +901,8 @@ L.Storage.Map.include({
             ['options.tilelayer.url_template', {handler: 'BlurInput', helpText: L._("Supported scheme") + ': http://{s}.domain.com/{z}/{x}/{y}.png', placeholder: 'url'}],
             ['options.tilelayer.maxZoom', {handler: 'BlurIntInput', placeholder: L._('max zoom')}],
             ['options.tilelayer.minZoom', {handler: 'BlurIntInput', placeholder: L._('min zoom')}],
-            ['options.tilelayer.attribution', {handler: 'BlurInput', placeholder: L._('attribution')}]
+            ['options.tilelayer.attribution', {handler: 'BlurInput', placeholder: L._('attribution')}],
+            ['options.tilelayer.tms', {handler: 'CheckBox', helpText: L._('TMS format')}]
         ];
         var customTilelayer = L.DomUtil.createFieldset(container, L._('Custom background'));
         builder = new L.S.FormBuilder(this, tilelayerFields, {
@@ -910,10 +930,10 @@ L.Storage.Map.include({
         setCurrentButton.href = "#";
         L.DomEvent.on(setCurrentButton, 'click', function (e) {
             var bounds = this.getBounds();
-            this.options.limitBounds.south = bounds.getSouth();
-            this.options.limitBounds.west = bounds.getWest();
-            this.options.limitBounds.north = bounds.getNorth();
-            this.options.limitBounds.east = bounds.getEast();
+            this.options.limitBounds.south = L.Util.formatNum(bounds.getSouth());
+            this.options.limitBounds.west = L.Util.formatNum(bounds.getWest());
+            this.options.limitBounds.north = L.Util.formatNum(bounds.getNorth());
+            this.options.limitBounds.east = L.Util.formatNum(bounds.getEast());
             boundsBuilder.fetchAll();
             this.isDirty = true;
             this.handleLimitBounds();
@@ -1075,16 +1095,19 @@ L.Storage.Map.include({
     },
 
     setContextMenuItems: function (e) {
-        var items = [
-            {
+        var items = [];
+        if (this._zoom !== this.getMaxZoom()) {
+            items.push({
                 text: L._('Zoom in'),
                 callback: function () {this.zoomIn();}
-            },
-            {
+            });
+        }
+        if (this._zoom !== this.getMinZoom()) {
+            items.push({
                 text: L._('Zoom out'),
                 callback: function () {this.zoomOut();}
-            }
-        ];
+            });
+        }
         if (e && e.relatedTarget) {
             if (e.relatedTarget.getContextMenuItems) {
                 items = items.concat(e.relatedTarget.getContextMenuItems());

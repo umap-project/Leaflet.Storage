@@ -30,7 +30,7 @@ describe('L.DataLayer', function () {
         });
 
         it('should have edit button', function () {
-            editButton = qs('i#edit_datalayer_62');
+            editButton = qs('#browse_data_toggle_62 .layer-edit');
             assert.ok(editButton);
         });
 
@@ -128,7 +128,7 @@ describe('L.DataLayer', function () {
         });
 
         it('should have edit button', function () {
-            editButton = qs('i#edit_datalayer_63');
+            editButton = qs('#browse_data_toggle_63 .layer-edit');
             assert.ok(editButton);
         });
 
@@ -186,7 +186,7 @@ describe('L.DataLayer', function () {
         var deleteLink, deletePath = '/map/99/datalayer/delete/62/';
 
         it('should have a delete link in update form', function () {
-            happen.click(qs('i#edit_datalayer_62'));
+            happen.click(qs('#browse_data_toggle_62 .layer-edit'));
             deleteLink = qs('a.delete_datalayer_button');
             assert.ok(deleteLink);
         });

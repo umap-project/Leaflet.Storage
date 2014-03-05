@@ -1,5 +1,8 @@
 # Leaflet.Storage changelog
 
+## dev
+- add TMS option to custom tilelayer
+
 ## 0.5.x
 - datalayers are now sent to backend as geojson
 - there is now a global "save" button, and also a "cancel changes"

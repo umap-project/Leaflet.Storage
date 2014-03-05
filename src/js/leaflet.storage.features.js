@@ -707,10 +707,11 @@ L.Storage.Polygon = L.Polygon.extend({
     includes: [L.Storage.FeatureMixin, L.Storage.PathMixin, L.Mixin.Events],
 
     geometry: function() {
+        // TODO: add test!
         /* Return a GeoJSON geometry Object */
         /* see: https://github.com/CloudMade/Leaflet/issues/1135 */
         /* and: https://github.com/CloudMade/Leaflet/issues/712 */
-        var latlngs = this.getLatLngs(), coords = [], closingPoint = latlngs[0];
+        var latlngs = this.getLatLngs().slice(0), coords = [], closingPoint = latlngs[0];
         latlngs.push(closingPoint);  // Artificially create a LinearRing
         for(var i = 0, len = latlngs.length; i < len; i++) {
             coords.push([
