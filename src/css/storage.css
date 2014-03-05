@@ -388,8 +388,9 @@ a.storage-control-text {
     max-height: 10em;
     overflow-y: auto;
 }
-.storage-browse-features span,
-.leaflet-control-browse .storage-browse-datalayers span {
+.storage-browse-features i,
+.storage-caption i,
+.leaflet-control-browse .storage-browse-datalayers i {
     width: 24px;
     height: 24px;
     line-height: 24px;
@@ -400,29 +401,29 @@ a.storage-control-text {
     cursor: pointer;
     font-size: 12px;
 }
-.leaflet-control-browse .storage-browse-datalayers .off span {
+.leaflet-control-browse .storage-browse-datalayers .off i {
     cursor: inherit;
 }
-.leaflet-control-browse .storage-browse-actions .layer-toggle {
+.layer-toggle {
     background-image: url("../img/eye-on.png");
 }
-.leaflet-control-browse .storage-browse-actions .off .layer-toggle {
+.off .layer-toggle {
     background-image: url("../img/eye-off.png");
 }
 .storage-browse-features .feature-zoom_to {
     background-image: url("../img/zoom_to-18.png");
 }
-.leaflet-control-browse .storage-browse-actions .layer-zoom_to {
+.layer-zoom_to {
     background-image: url("../img/zoom_to.png");
 }
 .storage-browse-features .feature-edit,
-.leaflet-control-browse .storage-browse-actions .layer-edit {
+.layer-edit {
     background-image: url("../img/edit-16.png");
 }
-.leaflet-control-browse .storage-browse-actions .off .layer-edit {
+.off .layer-edit {
     background-image: url("../img/edit-off-16.png");
 }
-.leaflet-control-browse .storage-browse-actions .off .layer-zoom_to {
+.off .layer-zoom_to {
     background-image: url("../img/zoom_to-off.png");
 }
 .storage-browse-features .feature-title,
@@ -430,6 +431,9 @@ a.storage-control-text {
     width: inherit;
     cursor: inherit;
     padding-left: 6px;
+}
+.storage-browse-features .feature-title {
+    font-size: 12px;
 }
 .leaflet-control-browse .storage-browse-actions .off .layer-title {
     color: rgb(179, 179, 179);
@@ -470,27 +474,29 @@ a.storage-control-text {
 /*   Features browser panel          */
 /* ********************************* */
 
-.storage-browse-features ul {
-    border-top: 2px solid rgb(68, 68, 68);
+.storage-browse-features > div {
+    border: 1px solid #d3d3d3;
     margin-bottom: 14px;
+    border-radius: 2px;
 }
 .storage-browse-features h5 {
-    background-image: url("../img/datalayers-24.png");
-    background-position: 7px center;
-    background-repeat: no-repeat;
-    text-indent: 38px;
-    height: 24px;
-    line-height: 24px;
+    height: 30px;
+    line-height: 30px;
+    background-color: #eeeee0;
+    margin-bottom: 0;
+    color: #666;
 }
 .storage-browse-features li {
     padding: 2px 0;
-    border-bottom: 1px dotted rgb(179, 179, 179);
     white-space: nowrap;
+}
+.storage-browse-features li:nth-child(even) {
+    background-color: #f8f8f3;
 }
 .storage-browse-features .feature-color {
     box-shadow: 0 0 4px 0 black inset;
     background-size: 70% 70%;
-    border: 4px solid white;
+    border: 4px solid #f8f8f3;
     cursor: inherit;
     -moz-box-sizing:border-box;
     -webkit-box-sizing:border-box;
@@ -561,6 +567,20 @@ a.storage-control-text {
     padding-right: 7px;
     position: absolute;
     left: 7px;
+}
+
+
+/* ********************************* */
+/*            Caption                */
+/* ********************************* */
+.datalayer-color {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+    border: 1px solid #000;
+    background-color: transparent;
+    vertical-align: middle;
 }
 
 
@@ -979,6 +999,9 @@ a.storage-control-text {
     max-height: 300px;
     overflow-y: auto;
     overflow-x: hidden;
+}
+.leaflet-popup-content .popup-title {
+    margin-bottom: 0;
 }
 .leaflet-bar {
     border: 1px solid #bbb;

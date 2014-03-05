@@ -165,5 +165,16 @@
     "Transform to lines": "Trasforma in poli-linea",
     "Choose the data format": "Scegli il formato dati",
     "Error in the tilelayer URL": "Errore nell'URL dei tile di mappa",
-    "Directions from here": "Indicazioni stradali da qui"
+    "Directions from here": "Indicazioni stradali da qui",
+    "Choose a preset": "Choose a preset",
+    "Limit bounds": "Limit bounds",
+    "Use current bounds": "Use current bounds",
+    "max East": "max East",
+    "max North": "max North",
+    "max South": "max South",
+    "max West": "max West",
+    "TMS format": "TMS format",
+    "Credits": "Credits",
+    "Only visible features will be downloaded.": "Only visible features will be downloaded.",
+    "Open this map extent in a map editor to provide more accurate data to OpenStreetMap": "Open this map extent in a map editor to provide more accurate data to OpenStreetMap"
 }

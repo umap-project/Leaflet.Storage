@@ -34,6 +34,9 @@ L.Storage.DataLayer = L.Class.extend({
         }
         this.populate(datalayer);
         this.connectToMap();
+        if(this.options.displayOnLoad) {
+            this.display();
+        }
         if (!this.storage_id) {
             this.isDirty = true;
         }
@@ -61,7 +64,7 @@ L.Storage.DataLayer = L.Class.extend({
         if (this.isClustered()) {
             this.layer = new L.MarkerClusterGroup({
                 polygonOptions: {
-                    color: this.options.color || this.map.getDefaultOption('color')
+                    color: this.getColor()
                 },
                 iconCreateFunction: function (cluster) {
                     return new L.Storage.Icon.Cluster(self, cluster);
@@ -167,15 +170,12 @@ L.Storage.DataLayer = L.Class.extend({
             this.map.datalayers[id] = this;
             this.map.datalayers_index.push(this);
         }
-        if(this.options.displayOnLoad) {
-            this.display();
-        }
         this.map.updateDatalayersControl();
     },
 
     _dataUrl: function() {
         var template = this.map.options.urls.datalayer_view;
-        return L.Util.template(template, {"pk": this.storage_id});
+        return L.Util.template(template, {"pk": this.storage_id, "map_id": this.map.options.storage_id});
     },
 
     isRemoteLayer: function () {
@@ -353,6 +353,10 @@ L.Storage.DataLayer = L.Class.extend({
         return new L.Storage.Icon[this.getIconClass()](this.map);
     },
 
+    getColor: function () {
+        return this.options.color || this.map.getDefaultOption('color');
+    },
+
     getDeleteUrl: function () {
         return L.Util.template(this.map.options.urls.datalayer_delete, {'pk': this.storage_id, 'map_id': this.map.options.storage_id});
 
@@ -371,7 +375,6 @@ L.Storage.DataLayer = L.Class.extend({
         delete this.map.datalayers[L.stamp(this)];
         this.map.datalayers_index.splice(this.map.datalayers_index.indexOf(this), 1);
         this.map.updateDatalayersControl();
-        this._geojson = null;
         this._layers = {};
         this._index = Array();
     },
@@ -437,7 +440,7 @@ L.Storage.DataLayer = L.Class.extend({
                     this.resetLayer();
                 }
                 if (field === "options.color" && this.isClustered()) {
-                    this.layer.options.polygonOptions.color = this.options.color || this.map.getDefaultOption('color');
+                    this.layer.options.polygonOptions.color = this.getColor();
                 }
                 this.display();
             }
@@ -446,7 +449,7 @@ L.Storage.DataLayer = L.Class.extend({
         form = builder.build();
         advancedProperties.appendChild(form);
 
-        if (typeof this.options.remoteData === "undefined") {
+        if (!L.Util.isObject(this.options.remoteData)) {
             this.options.remoteData = {};
         }
         var remoteDataFields = [
@@ -488,11 +491,13 @@ L.Storage.DataLayer = L.Class.extend({
             this.fetchData();
         }
         this.map.addLayer(this.layer);
+        this.fire('display');
         // this._map.fire('overlayadd', {layer: obj});
     },
 
     hide: function () {
         this.map.removeLayer(this.layer);
+        this.fire('hide');
         // this._map.fire('overlayremove', {layer: obj});
     },
 
@@ -506,6 +511,9 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     zoomTo: function () {
+        if (!this.isVisible()) {
+            return;
+        }
         var bounds = this.layer.getBounds();
         if (bounds.isValid()) {
             this.map.fitBounds(bounds);
@@ -590,6 +598,18 @@ L.Storage.DataLayer = L.Class.extend({
 
     getName: function () {
         return this.options.name || L._('Untitled layer');
+    },
+
+    renderToolbox: function (container) {
+        var toggle = L.DomUtil.create('i', 'layer-toggle', container),
+            zoom_to = L.DomUtil.create('i', 'layer-zoom_to', container),
+            edit = L.DomUtil.create('i', "layer-edit show-on-edit", container);
+        zoom_to.title = L._('Zoom to layer extent');
+        toggle.title = L._('Show/hide layer');
+        edit.title = L._('Edit');
+        L.DomEvent.on(toggle, 'click', this.toggle, this);
+        L.DomEvent.on(zoom_to, 'click', this.zoomTo, this);
+        L.DomEvent.on(edit, 'click', this.edit, this);
     }
 
 });
@@ -602,7 +622,8 @@ L.TileLayer.include({
             maxZoom: this.options.maxZoom,
             attribution: this.options.attribution,
             url_template: this._url,
-            name: this.options.name
+            name: this.options.name,
+            tms: this.options.tms
         };
     },
 

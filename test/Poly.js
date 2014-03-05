@@ -4,6 +4,7 @@ describe('L.Storage.Poly', function () {
         this.server = sinon.fakeServer.create();
         this.server.respondWith('GET', '/datalayer/62/', JSON.stringify(RESPONSES.datalayer62_GET));
         this.map = initMap({storage_id: 99});
+        this.datalayer = this.map.getDataLayerByStorageId(62);
         this.server.respond();
     });
     after(function () {
@@ -22,7 +23,7 @@ describe('L.Storage.Poly', function () {
 
         it('should take into account styles changes made in the datalayer', function () {
             enableEdit();
-            happen.click(qs('span#edit_datalayer_62'));
+            happen.click(qs('#browse_data_toggle_62 .layer-edit'));
             var colorInput = qs('form#datalayer-advanced-properties input[name=color]');
             changeInputValue(colorInput, "DarkRed");
             assert.ok(qs('path[fill="none"]')); // Polyline fill is unchanged
@@ -64,7 +65,7 @@ describe('L.Storage.Poly', function () {
         });
 
         it('should not override already set style on features', function () {
-            happen.click(qs('span#edit_datalayer_62'));
+            happen.click(qs('#browse_data_toggle_62 .layer-edit'));
             changeInputValue(qs('form#datalayer-advanced-properties input[name=color]'), "Chocolate");
             assert.notOk(qs('path[fill="DarkBlue"]'));
             assert.notOk(qs('path[fill="DarkRed"]'));
@@ -81,6 +82,22 @@ describe('L.Storage.Poly', function () {
             assert.ok(qs('path[fill="DarkBlue"]'));
             assert.notOk(qs('path[fill="DarkRed"]'));
             window.confirm = oldConfirm;
+        });
+
+    });
+
+    describe('#utils()', function () {
+        var poly;
+        it('should generate a valid geojson', function () {
+            this.datalayer.eachLayer(function (layer) {
+                if (!poly && layer instanceof L.Polygon) {
+                    poly = layer;
+                }
+            });
+            assert.ok(poly);
+            assert.deepEqual(poly.geometry(), {"type":"Polygon","coordinates":[[[11.25,53.585983654559804],[10.1513671875,52.9751081817353],[12.689208984375,52.16719363541221],[14.084472656249998,53.199451902831555],[12.63427734375,53.61857936489517],[11.25,53.585983654559804],[11.25,53.585983654559804]]]});
+            // Ensure original latlngs has not been modified
+            assert.equal(poly.getLatLngs().length, 6);
         });
 
     });

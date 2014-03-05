@@ -37,6 +37,7 @@ L.Map.mergeOptions({
     enableMarkerDraw: true,
     enablePolygonDraw: true,
     enablePolylineDraw: true,
+    limitBounds: {},
     importPresets: [
         // {url: 'http://localhost:8019/en/datalayer/1502/', label: 'Simplified World Countries', format: 'geojson'}
     ]
@@ -97,6 +98,7 @@ L.Storage.Map.include({
             this.addHash();
         }
         this.initCenter();
+        this.handleLimitBounds();
 
         this.initTileLayers(this.options.tilelayers);
         this.initControls();
@@ -195,7 +197,8 @@ L.Storage.Map.include({
                     L: 76,
                     M: 77,
                     P: 80,
-                    S: 83
+                    S: 83,
+                    Z: 90
                 };
                 if (key == chars.E && e.ctrlKey && !this.editEnabled) {
                     L.DomEvent.stop(e);
@@ -208,6 +211,10 @@ L.Storage.Map.include({
                 if (key == chars.S && e.ctrlKey && this.isDirty) {
                     L.DomEvent.stop(e);
                     this.save();
+                }
+                if (key == chars.Z && e.ctrlKey && this.isDirty) {
+                    L.DomEvent.stop(e);
+                    this.askForReset();
                 }
                 if (key == chars.M && e.ctrlKey && this.editEnabled) {
                     L.DomEvent.stop(e);
@@ -254,7 +261,7 @@ L.Storage.Map.include({
         }
 
         if (this.options.zoomControl) {
-            this._controls.zoomControl = (new L.Control.Zoom()).addTo(this);
+            this._controls.zoomControl = (new L.Control.Zoom({zoomInTitle: L._('Zoom in'), zoomOutTitle: L._('Zoom out')})).addTo(this);
         }
         if (this.options.datalayersControl) {
             this._controls.datalayersControl = new L.Storage.DataLayersControl().addTo(this);
@@ -273,7 +280,11 @@ L.Storage.Map.include({
             this._controls.jumpToLocationControl = (new L.Storage.JumpToLocationControl()).addTo(this);
             this._controls.embedControl = (new L.Control.Embed(this, this.options.embedOptions)).addTo(this);
             this._controls.tilelayersControl = new L.Storage.TileLayerControl().addTo(this);
-            this._controls.editInOSMControl = (new L.Control.EditInOSM({position: 'topleft'})).addTo(this);
+            var editInOSMControlOptions = {
+                position: 'topleft',
+                widgetOptions: {helpText: L._('Open this map extent in a map editor to provide more accurate data to OpenStreetMap')}
+            };
+            this._controls.editInOSMControl = (new L.Control.EditInOSM(editInOSMControlOptions)).addTo(this);
             var measureOptions = {
                 handler: {
                     icon: new L.DivIcon({
@@ -315,6 +326,7 @@ L.Storage.Map.include({
     backupOptions: function () {
         this._backupOptions = L.extend({}, this.options);
         this._backupOptions.tilelayer = L.extend({}, this.options.tilelayer);
+        this._backupOptions.limitBounds = L.extend({}, this.options.limitBounds);
     },
 
     resetOptions: function () {
@@ -407,6 +419,21 @@ L.Storage.Map.include({
         return L.latLng(a, b, c);
     },
 
+    handleLimitBounds: function () {
+        var south = parseFloat(this.options.limitBounds.south),
+            west = parseFloat(this.options.limitBounds.west),
+            north = parseFloat(this.options.limitBounds.north),
+            east = parseFloat(this.options.limitBounds.east);
+        if (!isNaN(south) && !isNaN(west) && !isNaN(north) && !isNaN(east)) {
+            var bounds = L.latLngBounds([[south, west], [north, east]]);
+            this.options.minZoom = this.getBoundsZoom(bounds, true);
+            this.setMaxBounds(bounds);
+        } else {
+            this.options.minZoom = 0;
+            this.setMaxBounds();
+        }
+    },
+
     _createDataLayer: function(datalayer) {
         return new L.Storage.DataLayer(this, datalayer);
     },
@@ -441,27 +468,34 @@ L.Storage.Map.include({
             iframeUrl = url + '?scaleControl=0&miniMap=0&scrollWheelZoom=0&allowEdit=0';
         iframe.innerHTML = '<iframe width="100%" height="300" frameBorder="0" src="' + iframeUrl +'"></iframe><p><a href="' + url + '">See full screen</a></p>';
         if (this.options.shortUrl) {
+            L.DomUtil.create('hr', '', container);
             L.DomUtil.add('h4', '', container, L._('Short URL'));
             var shortUrl = L.DomUtil.create('input', 'storage-short-url', container);
             shortUrl.type = "text";
             shortUrl.value = this.options.shortUrl;
         }
+        L.DomUtil.create('hr', '', container);
         L.DomUtil.add('h4', '', container, L._('Download raw data (GeoJSON)'));
+        L.DomUtil.add('p', '', container, L._('Only visible features will be downloaded.'));
         var download = L.DomUtil.create('a', 'button', container);
-        var features = [];
-        this.eachDataLayer(function (datalayer) {
-            features = features.concat(datalayer.featuresToGeoJSON());
-        });
-        var geojson = {
-            type: "FeatureCollection",
-            features: features
-        };
-        var content = JSON.stringify(geojson, null, 2);
-        window.URL = window.URL || window.webkitURL;
-        var blob = new Blob([content], {type: 'application/json'});
-        download.href = window.URL.createObjectURL(blob);
         download.innerHTML = L._('Download data');
         download.download = "features.geojson";
+        L.DomEvent.on(download, 'click', function () {
+            var features = [];
+            this.eachDataLayer(function (datalayer) {
+                if (datalayer.isVisible()) {
+                    features = features.concat(datalayer.featuresToGeoJSON());
+                }
+            });
+            var geojson = {
+                type: "FeatureCollection",
+                features: features
+            };
+            var content = JSON.stringify(geojson, null, 2);
+            window.URL = window.URL || window.webkitURL;
+            var blob = new Blob([content], {type: 'application/json'});
+            download.href = window.URL.createObjectURL(blob);
+        }, this);
         L.S.fire('ui:start', {data:{html:container}});
     },
 
@@ -588,7 +622,7 @@ L.Storage.Map.include({
             if (urlInput.value) {
                 processUrl(urlInput.value);
             }
-            if (presetSelect.selectedIndex !== 0) {
+            if (presetSelect.selectedIndex > 0) {
                 processUrl(presetSelect[presetSelect.selectedIndex].value);
             }
         };
@@ -621,21 +655,26 @@ L.Storage.Map.include({
         }
         this.eachDataLayer(function (datalayer) {
             var p = L.DomUtil.create('p', '', container),
-                color = L.DomUtil.create('span', 'datalayer_color', p),
-                title = L.DomUtil.create('strong', '', p),
+                color = L.DomUtil.create('span', 'datalayer-color', p),
+                headline = L.DomUtil.create('strong', '', p),
                 description = L.DomUtil.create('span', '', p);
-            if (datalayer.options.color) {
-                color.style.backgroundColor = datalayer.options.color;
-            }
-            title.innerHTML = datalayer.options.name + ' ';
+                datalayer.onceLoaded(function () {
+                    color.style.backgroundColor = this.getColor();
+                });
+            datalayer.renderToolbox(headline);
+            L.DomUtil.add('span', '', headline, datalayer.options.name + ' ');
+            L.DomUtil.classIf(p, 'off', !datalayer.isVisible());
+            datalayer.on('hide display', function () {
+                L.DomUtil.classIf(p, 'off', !this.isVisible());
+            });
             if (datalayer.options.description) {
                 description.innerHTML = datalayer.options.description;
             }
         });
-        L.DomUtil.create('hr', '', container);
-        title = L.DomUtil.create('h5', '', container);
+        var credits = L.DomUtil.createFieldset(container, L._('Credits'));
+        title = L.DomUtil.create('h5', '', credits);
         title.innerHTML = L._('User content credits');
-        var contentCredit = L.DomUtil.create('p', '', container),
+        var contentCredit = L.DomUtil.create('p', '', credits),
             licence = L.DomUtil.create('a', '', contentCredit);
         if (this.options.licence) {
             licence.innerHTML = this.options.licence.name;
@@ -643,16 +682,16 @@ L.Storage.Map.include({
             contentCredit.innerHTML =  L._('Map user content has been published under licence')
                                        + ' ' + contentCredit.innerHTML;
         }
-        L.DomUtil.create('hr', '', container);
-        title = L.DomUtil.create('h5', '', container);
+        L.DomUtil.create('hr', '', credits);
+        title = L.DomUtil.create('h5', '', credits);
         title.innerHTML = L._('Map background credits');
-        var tilelayerCredit = L.DomUtil.create('p', '', container),
+        var tilelayerCredit = L.DomUtil.create('p', '', credits),
             name = L.DomUtil.create('strong', '', tilelayerCredit),
             attribution = L.DomUtil.create('span', '', tilelayerCredit);
         name.innerHTML = this.selected_tilelayer.options.name + ' ';
         attribution.innerHTML = this.selected_tilelayer.getAttribution();
-        L.DomUtil.create('hr', '', container);
-        var umapCredit = L.DomUtil.create('p', '', container),
+        L.DomUtil.create('hr', '', credits);
+        var umapCredit = L.DomUtil.create('p', '', credits),
             urls = {
                 leaflet: 'http://leafletjs.com',
                 django: 'https://www.djangoproject.com',
@@ -736,7 +775,8 @@ L.Storage.Map.include({
             'name',
             'description',
             'licence',
-            'tilelayer'
+            'tilelayer',
+            'limitBounds'
         ], properties = {};
         for (var i = editableOptions.length - 1; i >= 0; i--) {
             if (typeof this.options[editableOptions[i]] !== "undefined") {
@@ -802,7 +842,7 @@ L.Storage.Map.include({
             }
         }
         if (datalayer && !datalayer.isRemoteLayer()) {
-            // No datalayer visibile, let's force one
+            // No datalayer visible, let's force one
             this.addLayer(datalayer.layer);
             return datalayer;
         }
@@ -852,7 +892,8 @@ L.Storage.Map.include({
         });
         var controlsOptions = L.DomUtil.createFieldset(container, L._('Display options'));
         controlsOptions.appendChild(builder.build());
-        if (typeof this.options.tilelayer !== 'object') {
+
+        if (!L.Util.isObject(this.options.tilelayer)) {
             this.options.tilelayer = {};
         }
         var tilelayerFields = [
@@ -860,7 +901,8 @@ L.Storage.Map.include({
             ['options.tilelayer.url_template', {handler: 'BlurInput', helpText: L._("Supported scheme") + ': http://{s}.domain.com/{z}/{x}/{y}.png', placeholder: 'url'}],
             ['options.tilelayer.maxZoom', {handler: 'BlurIntInput', placeholder: L._('max zoom')}],
             ['options.tilelayer.minZoom', {handler: 'BlurIntInput', placeholder: L._('min zoom')}],
-            ['options.tilelayer.attribution', {handler: 'BlurInput', placeholder: L._('attribution')}]
+            ['options.tilelayer.attribution', {handler: 'BlurInput', placeholder: L._('attribution')}],
+            ['options.tilelayer.tms', {handler: 'CheckBox', helpText: L._('TMS format')}]
         ];
         var customTilelayer = L.DomUtil.createFieldset(container, L._('Custom background'));
         builder = new L.S.FormBuilder(this, tilelayerFields, {
@@ -868,6 +910,35 @@ L.Storage.Map.include({
             callbackContext: this
         });
         customTilelayer.appendChild(builder.build());
+
+        if (!L.Util.isObject(this.options.limitBounds)) {
+            this.options.limitBounds = {};
+        }
+        var limitBounds = L.DomUtil.createFieldset(container, L._('Limit bounds'));
+        var boundsFields = [
+            ['options.limitBounds.south', {handler: 'BlurFloatInput', placeholder: L._('max South')}],
+            ['options.limitBounds.west', {handler: 'BlurFloatInput', placeholder: L._('max West')}],
+            ['options.limitBounds.north', {handler: 'BlurFloatInput', placeholder: L._('max North')}],
+            ['options.limitBounds.east', {handler: 'BlurFloatInput', placeholder: L._('max East')}],
+        ];
+        var boundsBuilder = new L.S.FormBuilder(this, boundsFields, {
+            callback: this.handleLimitBounds,
+            callbackContext: this
+        });
+        limitBounds.appendChild(boundsBuilder.build());
+        var setCurrentButton = L.DomUtil.add('a', '', limitBounds, L._('Use current bounds'));
+        setCurrentButton.href = "#";
+        L.DomEvent.on(setCurrentButton, 'click', function (e) {
+            var bounds = this.getBounds();
+            this.options.limitBounds.south = L.Util.formatNum(bounds.getSouth());
+            this.options.limitBounds.west = L.Util.formatNum(bounds.getWest());
+            this.options.limitBounds.north = L.Util.formatNum(bounds.getNorth());
+            this.options.limitBounds.east = L.Util.formatNum(bounds.getEast());
+            boundsBuilder.fetchAll();
+            this.isDirty = true;
+            this.handleLimitBounds();
+        }, this);
+
         var advancedActions = L.DomUtil.createFieldset(container, L._('Advanced actions'));
         var del = L.DomUtil.create('a', 'storage-delete', advancedActions);
         del.href = "#";
@@ -931,12 +1002,14 @@ L.Storage.Map.include({
 
         L.DomEvent
             .addListener(cancel, 'click', L.DomEvent.stop)
-            .addListener(cancel, 'click', function (e) {
-                if (!confirm(L._("Are you sure you want to cancel your changes?"))) return;
-                this.disableEdit(e);
-                L.S.fire('ui:end');
-                this.reset();
-            }, this);
+            .addListener(cancel, 'click', this.askForReset, this);
+    },
+
+    askForReset: function (e) {
+        if (!confirm(L._("Are you sure you want to cancel your changes?"))) return;
+        this.disableEdit(e);
+        L.S.fire('ui:end');
+        this.reset();
     },
 
     getEditActions: function () {
@@ -1022,16 +1095,19 @@ L.Storage.Map.include({
     },
 
     setContextMenuItems: function (e) {
-        var items = [
-            {
+        var items = [];
+        if (this._zoom !== this.getMaxZoom()) {
+            items.push({
                 text: L._('Zoom in'),
                 callback: function () {this.zoomIn();}
-            },
-            {
+            });
+        }
+        if (this._zoom !== this.getMinZoom()) {
+            items.push({
                 text: L._('Zoom out'),
                 callback: function () {this.zoomOut();}
-            }
-        ];
+            });
+        }
         if (e && e.relatedTarget) {
             if (e.relatedTarget.getContextMenuItems) {
                 items = items.concat(e.relatedTarget.getContextMenuItems());
@@ -1044,23 +1120,31 @@ L.Storage.Map.include({
                     {
                         text: L._('Stop editing') + ' (Ctrl+E)',
                         callback: this.disableEdit
-                    },
-                    {
-                        text: L._('Draw a marker') + ' (Ctrl-M)',
-                        callback: this._controls.draw.startMarker,
-                        context: this._controls.draw
-                    },
-                    {
-                        text: L._('Draw a polygon') + ' (Ctrl-P)',
-                        callback: this._controls.draw.startPolygon,
-                        context: this._controls.draw
-                    },
-                    {
-                        text: L._('Draw a line') + ' (Ctrl-L)',
-                        callback: this._controls.draw.startPolyline,
-                        context: this._controls.draw
-                    }
-                );
+                    });
+                if (this.options.enableMarkerDraw) {
+                    items.push(
+                        {
+                            text: L._('Draw a marker') + ' (Ctrl-M)',
+                            callback: this._controls.draw.startMarker,
+                            context: this._controls.draw
+                        });
+                }
+                if (this.options.enablePolylineDraw) {
+                    items.push(
+                        {
+                            text: L._('Draw a polygon') + ' (Ctrl-P)',
+                            callback: this._controls.draw.startPolygon,
+                            context: this._controls.draw
+                        });
+                }
+                if (this.options.enablePolygonDraw) {
+                    items.push(
+                      {
+                           text: L._('Draw a line') + ' (Ctrl-L)',
+                           callback: this._controls.draw.startPolyline,
+                           context: this._controls.draw
+                       });
+                }
                 items.push('-');
                 items.push({
                     text: L._('Help'),

@@ -165,5 +165,16 @@
     "Transform to lines": "Muunna viivoiksi",
     "Choose the data format": "Valitse päivämäärän muoto",
     "Error in the tilelayer URL": "Virhe karttalaattojen URL:ssä",
-    "Directions from here": "Ohjeet täältä"
+    "Directions from here": "Ohjeet täältä",
+    "Choose a preset": "Choose a preset",
+    "Limit bounds": "Limit bounds",
+    "Use current bounds": "Use current bounds",
+    "max East": "max East",
+    "max North": "max North",
+    "max South": "max South",
+    "max West": "max West",
+    "TMS format": "TMS format",
+    "Credits": "Credits",
+    "Only visible features will be downloaded.": "Only visible features will be downloaded.",
+    "Open this map extent in a map editor to provide more accurate data to OpenStreetMap": "Open this map extent in a map editor to provide more accurate data to OpenStreetMap"
 }
