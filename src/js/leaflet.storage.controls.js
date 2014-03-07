@@ -433,7 +433,9 @@ L.Storage.DataLayer.include({
     },
 
     hideFromBrowser: function () {
-        this.map._controls.datalayersControl.removeFeatures(this);
+        if (this.map._controls.datalayersControl) {
+            this.map._controls.datalayersControl.removeFeatures(this);
+        }
         var els = this.getHidableElements();
         for (var i = 0; i < els.length; i++) {
             L.DomUtil.addClass(els[i], 'off');
@@ -442,7 +444,9 @@ L.Storage.DataLayer.include({
 
     showOnBrowser: function () {
         this.onceLoaded(function () {
-            this.map._controls.datalayersControl.appendOnBrowser(this);
+            if (this.map._controls.datalayersControl) {
+                this.map._controls.datalayersControl.appendOnBrowser(this);
+            }
             var els = this.getHidableElements();
             for (var i = 0; i < els.length; i++) {
                 L.DomUtil.removeClass(els[i], 'off');
