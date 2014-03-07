@@ -1001,7 +1001,7 @@ a.storage-control-text {
     overflow-x: hidden;
 }
 .storage-popup-content iframe {
-    max-width: 300px;
+    min-width: 300px;
 }
 .leaflet-popup-content .popup-title {
     margin-bottom: 0;
