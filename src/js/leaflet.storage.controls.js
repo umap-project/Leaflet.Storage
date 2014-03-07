@@ -326,29 +326,14 @@ L.Storage.DataLayersControl = L.Control.extend({
     },
 
     addDataLayer: function (datalayer) {
-        var datalayer_li = L.DomUtil.create('li', '', this._datalayers_container);
+        var datalayer_li = L.DomUtil.create('li', datalayer.getHidableClass(), this._datalayers_container);
         datalayer.renderToolbox(datalayer_li);
         var title = L.DomUtil.add('span', 'layer-title', datalayer_li, datalayer.options.name);
 
         datalayer_li.id = "browse_data_toggle_" + datalayer.storage_id;
         L.DomUtil.classIf(datalayer_li, 'off', !datalayer.isVisible());
 
-        // if (datalayer.storage_id) {  // storage_id is null for non saved ones
-        //     edit.id = 'edit_datalayer_' + datalayer.storage_id;
-        // }
-
         title.innerHTML = datalayer.options.name;
-
-        datalayer.on('hide', function () {
-            this.removeFeatures(datalayer);
-            L.DomUtil.addClass(datalayer_li, 'off');
-        }, this);
-        datalayer.on('display', function () {
-            datalayer.onceLoaded(function () {
-                this.appendOnBrowser(datalayer);
-                L.DomUtil.removeClass(datalayer_li, 'off');
-            }, this);
-        }, this);
     },
 
     appendOnBrowser: function (datalayer) {
@@ -356,7 +341,7 @@ L.Storage.DataLayersControl = L.Control.extend({
             self = this,
             container = L.DomUtil.get(id), ul;
         if (!container) {
-            container = L.DomUtil.create('div', '', this._features_container);
+            container = L.DomUtil.create('div', datalayer.getHidableClass(), this._features_container);
             container.id = id;
             var headline = L.DomUtil.create('h5', '', container);
             datalayer.renderToolbox(headline);
@@ -373,10 +358,7 @@ L.Storage.DataLayersControl = L.Control.extend({
                 ul.appendChild(self.addFeature(datalayer._layers[j]));
             }
         };
-        if (datalayer.isLoaded() && datalayer.isVisible()) {
-            build();
-        }
-        datalayer.on('dataloaded', function () {
+        datalayer.onceLoaded(function () {
             if (datalayer.isVisible()) {
                 build();
             }
@@ -423,6 +405,63 @@ L.Storage.DataLayersControl = L.Control.extend({
     }
 
 });
+
+L.Storage.DataLayer.include({
+
+    renderToolbox: function (container) {
+        var toggle = L.DomUtil.create('i', 'layer-toggle', container),
+            zoom_to = L.DomUtil.create('i', 'layer-zoom_to', container),
+            edit = L.DomUtil.create('i', "layer-edit show-on-edit", container);
+        zoom_to.title = L._('Zoom to layer extent');
+        toggle.title = L._('Show/hide layer');
+        edit.title = L._('Edit');
+        L.DomEvent.on(toggle, 'click', this.toggle, this);
+        L.DomEvent.on(zoom_to, 'click', this.zoomTo, this);
+        L.DomEvent.on(edit, 'click', this.edit, this);
+    },
+
+    getLocalId: function () {
+        return this.storage_id || "tmp" + L.Util.stamp(this);
+    },
+
+    getHidableElements: function () {
+        return document.querySelectorAll('.' + this.getHidableClass());
+    },
+
+    getHidableClass: function () {
+        return 'show_with_datalayer_' + this.getLocalId();
+    },
+
+    hideFromBrowser: function () {
+        this.map._controls.datalayersControl.removeFeatures(this);
+        var els = this.getHidableElements();
+        for (var i = 0; i < els.length; i++) {
+            L.DomUtil.addClass(els[i], 'off');
+        }
+    },
+
+    showOnBrowser: function () {
+        this.onceLoaded(function () {
+            this.map._controls.datalayersControl.appendOnBrowser(this);
+            var els = this.getHidableElements();
+            for (var i = 0; i < els.length; i++) {
+                L.DomUtil.removeClass(els[i], 'off');
+            }
+        }, this);
+    }
+
+});
+
+L.Storage.DataLayer.addInitHook(function () {
+    this.on('hide', this.hideFromBrowser);
+    this.on('show', this.showOnBrowser);
+    this.showOnBrowser();
+    this.on('erase', function () {
+        this.off('hide', this.hideFromBrowser);
+        this.off('show', this.showOnBrowser);
+    });
+});
+
 
 L.Storage.TileLayerControl = L.Control.extend({
     options: {

@@ -35,7 +35,7 @@ L.Storage.DataLayer = L.Class.extend({
         this.populate(datalayer);
         this.connectToMap();
         if(this.options.displayOnLoad) {
-            this.display();
+            this.show();
         }
         if (!this.storage_id) {
             this.isDirty = true;
@@ -377,6 +377,7 @@ L.Storage.DataLayer = L.Class.extend({
         this.map.updateDatalayersControl();
         this._layers = {};
         this._index = Array();
+        this.fire('erase');
     },
 
     reset: function () {
@@ -389,7 +390,7 @@ L.Storage.DataLayer = L.Class.extend({
                 this.resetOptions(this._geojson._storage);
                 this.fromGeoJSON(this._geojson);
             }
-            this.display();
+            this.show();
             this.isDirty = false;
         } else {
             this.erase();
@@ -398,7 +399,7 @@ L.Storage.DataLayer = L.Class.extend({
 
     redraw: function () {
         this.hide();
-        this.display();
+        this.show();
     },
 
     edit: function () {
@@ -442,7 +443,7 @@ L.Storage.DataLayer = L.Class.extend({
                 if (field === "options.color" && this.isClustered()) {
                     this.layer.options.polygonOptions.color = this.getColor();
                 }
-                this.display();
+                this.show();
             }
         });
         var advancedProperties = L.DomUtil.createFieldset(container, L._('Advanced properties'));
@@ -486,12 +487,12 @@ L.Storage.DataLayer = L.Class.extend({
         return features;
     },
 
-    display: function () {
+    show: function () {
         if(!this.isLoaded()) {
             this.fetchData();
         }
         this.map.addLayer(this.layer);
-        this.fire('display');
+        this.fire('show');
         // this._map.fire('overlayadd', {layer: obj});
     },
 
@@ -503,7 +504,7 @@ L.Storage.DataLayer = L.Class.extend({
 
     toggle: function () {
         if (!this.isVisible()) {
-            this.display();
+            this.show();
         }
         else {
             this.hide();
@@ -598,18 +599,6 @@ L.Storage.DataLayer = L.Class.extend({
 
     getName: function () {
         return this.options.name || L._('Untitled layer');
-    },
-
-    renderToolbox: function (container) {
-        var toggle = L.DomUtil.create('i', 'layer-toggle', container),
-            zoom_to = L.DomUtil.create('i', 'layer-zoom_to', container),
-            edit = L.DomUtil.create('i', "layer-edit show-on-edit", container);
-        zoom_to.title = L._('Zoom to layer extent');
-        toggle.title = L._('Show/hide layer');
-        edit.title = L._('Edit');
-        L.DomEvent.on(toggle, 'click', this.toggle, this);
-        L.DomEvent.on(zoom_to, 'click', this.zoomTo, this);
-        L.DomEvent.on(edit, 'click', this.edit, this);
     }
 
 });

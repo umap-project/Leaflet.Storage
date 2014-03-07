@@ -182,6 +182,26 @@ describe('L.DataLayer', function () {
 
     });
 
+    describe('#show/hide', function () {
+
+        it('should hide features on hide', function () {
+            assert.ok(qs('div.storage-div-icon'));
+            assert.ok(qs('path[fill="none"]'));
+            this.datalayer.hide();
+            assert.notOk(qs('div.storage-div-icon'));
+            assert.notOk(qs('path[fill="none"]'));
+        });
+
+        it('should show features on show', function () {
+            assert.notOk(qs('div.storage-div-icon'));
+            assert.notOk(qs('path[fill="none"]'));
+            this.datalayer.show();
+            assert.ok(qs('div.storage-div-icon'));
+            assert.ok(qs('path[fill="none"]'));
+        });
+
+    });
+
     describe('#delete()', function () {
         var deleteLink, deletePath = '/map/99/datalayer/delete/62/';
 
