@@ -639,9 +639,7 @@ L.Storage.Map.include({
 
     openBrowser: function () {
         this.whenReady(function () {
-            if (this._controls.datalayersControl) {
-            this._controls.datalayersControl.openBrowser();
-            }
+            this._openBrowser();
         });
     },
 

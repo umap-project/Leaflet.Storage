@@ -272,7 +272,7 @@ L.Storage.DataLayersControl = L.Control.extend({
 
         L.DomEvent
             .on(link, 'click', L.DomEvent.stop)
-            .on(link, 'click', this.openBrowser, this);
+            .on(link, 'click', map.openBrowser, map);
 
         L.DomEvent
             .on(add, 'click', L.DomEvent.stop)
@@ -301,30 +301,6 @@ L.Storage.DataLayersControl = L.Control.extend({
         }
     },
 
-    initBrowserLayout: function () {
-        this._browser_container = L.DomUtil.create('div', 'storage-browse-data');
-        var title = L.DomUtil.create('h3', 'storage-browse-title', this._browser_container);
-        var description = L.DomUtil.create('div', '', this._browser_container);
-        this._features_container = L.DomUtil.create('div', 'storage-browse-features', this._browser_container);
-        title.innerHTML = this._map.name;
-        if (this._map.description) {
-            var content = L.DomUtil.create('div', 'storage-browse-description', description);
-            content.innerHTML = L.Util.toHTML(this._map.description);
-        }
-        return this._browser_container;
-    },
-
-    openBrowser: function () {
-        if (!this._browser_container) {
-            this.initBrowserLayout();
-        }
-        this._features_container.innerHTML = '';
-        for(var idx in this._map.datalayers) {
-            this.appendOnBrowser(this._map.datalayers[idx]);
-        }
-        L.Storage.fire('ui:start', {data: {html: this._browser_container}});
-    },
-
     addDataLayer: function (datalayer) {
         var datalayer_li = L.DomUtil.create('li', '', this._datalayers_container);
         datalayer.renderToolbox(datalayer_li);
@@ -334,69 +310,6 @@ L.Storage.DataLayersControl = L.Control.extend({
         L.DomUtil.classIf(datalayer_li, 'off', !datalayer.isVisible());
 
         title.innerHTML = datalayer.options.name;
-    },
-
-    appendOnBrowser: function (datalayer) {
-        var id = 'browse_data_datalayer_' + datalayer.storage_id,
-            self = this,
-            container = L.DomUtil.get(id), ul;
-        if (!container) {
-            container = L.DomUtil.create('div', '', this._features_container);
-            container.id = id;
-            var headline = L.DomUtil.create('h5', '', container);
-            datalayer.renderToolbox(headline);
-            var title = L.DomUtil.add('span', '', headline, datalayer.options.name);
-            ul = L.DomUtil.create('ul', '', container);
-        } else {
-            ul = container.querySelector('ul');
-        }
-        L.DomUtil.classIf(container, 'off', !datalayer.isVisible());
-
-        var build = function () {
-            ul.innerHTML = "";
-            for (var j in datalayer._layers) {
-                ul.appendChild(self.addFeature(datalayer._layers[j]));
-            }
-        };
-        datalayer.onceLoaded(function () {
-            if (datalayer.isVisible()) {
-                build();
-            }
-        });
-    },
-
-    addFeature: function (feature) {
-        var feature_li = L.DomUtil.create('li', feature.getClassName()),
-            zoom_to = L.DomUtil.create('i', 'feature-zoom_to', feature_li),
-            edit = L.DomUtil.create('i', 'show-on-edit feature-edit', feature_li),
-            color = L.DomUtil.create('i', 'feature-color', feature_li),
-            title = L.DomUtil.create('span', 'feature-title', feature_li),
-            symbol = feature._getIconUrl ? L.S.Icon.prototype.formatUrl(feature._getIconUrl(), feature): null;
-        zoom_to.title = L._("Bring feature to center");
-        edit.title = L._("Edit this feature");
-        title.innerHTML = feature.properties.name || '—';
-        color.style.backgroundColor = feature.getOption('color');
-        if (symbol) {
-            color.style.backgroundImage = 'url(' + symbol + ')';
-        }
-        L.DomEvent.on(zoom_to, 'click', function (e) {
-            this.bringToCenter(e, L.bind(this.view, this, {latlng: this.getCenter()}));
-        }, feature);
-        L.DomEvent.on(edit, 'click', function (e) {
-            this.edit();
-        }, feature);
-        return feature_li;
-    },
-
-    removeFeatures: function (datalayer) {
-        var el = L.DomUtil.get('browse_data_datalayer_' + datalayer.storage_id);
-        if (el) {
-            L.DomUtil.addClass(el, 'off');
-            var ul = el.querySelector('ul');
-            if (ul) {
-                ul.innerHTML = '';
-            }
-        }
     },
 
     newDataLayer: function (e) {
@@ -433,21 +346,15 @@ L.Storage.DataLayer.include({
         return 'show_with_datalayer_' + this.getLocalId();
     },
 
-    hideFromBrowser: function () {
-        if (this.map._controls.datalayersControl) {
-            this.map._controls.datalayersControl.removeFeatures(this);
-        }
+    propagateHide: function () {
         var els = this.getHidableElements();
         for (var i = 0; i < els.length; i++) {
             L.DomUtil.addClass(els[i], 'off');
         }
     },
 
-    showOnBrowser: function () {
+    propagateShow: function () {
         this.onceLoaded(function () {
-            if (this.map._controls.datalayersControl) {
-                this.map._controls.datalayersControl.appendOnBrowser(this);
-            }
             var els = this.getHidableElements();
             for (var i = 0; i < els.length; i++) {
                 L.DomUtil.removeClass(els[i], 'off');
@@ -458,14 +365,74 @@ L.Storage.DataLayer.include({
 });
 
 L.Storage.DataLayer.addInitHook(function () {
-    this.on('hide', this.hideFromBrowser);
-    this.on('show', this.showOnBrowser);
-    this.showOnBrowser();
-    this.on('erase', function () {
-        this.off('hide', this.hideFromBrowser);
-        this.off('show', this.showOnBrowser);
-    });
+    this.on('hide', this.propagateHide);
+    this.on('show', this.propagateShow);
+    this.propagateShow();
 });
+
+
+L.Storage.Map.include({
+
+    _openBrowser: function () {
+        var browserContainer = L.DomUtil.create('div', 'storage-browse-data'),
+            title = L.DomUtil.add('h3', 'storage-browse-title', browserContainer, this.options.name),
+            description = L.DomUtil.create('div', '', browserContainer),
+            featuresContainer = L.DomUtil.create('div', 'storage-browse-features', browserContainer);
+        if (this.options.description) {
+            var content = L.DomUtil.create('div', 'storage-browse-description', description);
+            content.innerHTML = L.Util.toHTML(this.options.description);
+        }
+
+        var addFeature = function (feature) {
+            var feature_li = L.DomUtil.create('li', feature.getClassName() + ' feature'),
+                zoom_to = L.DomUtil.create('i', 'feature-zoom_to', feature_li),
+                edit = L.DomUtil.create('i', 'show-on-edit feature-edit', feature_li),
+                color = L.DomUtil.create('i', 'feature-color', feature_li),
+                title = L.DomUtil.create('span', 'feature-title', feature_li),
+                symbol = feature._getIconUrl ? L.S.Icon.prototype.formatUrl(feature._getIconUrl(), feature): null;
+            zoom_to.title = L._("Bring feature to center");
+            edit.title = L._("Edit this feature");
+            title.innerHTML = feature.properties.name || '—';
+            color.style.backgroundColor = feature.getOption('color');
+            if (symbol) {
+                color.style.backgroundImage = 'url(' + symbol + ')';
+            }
+            L.DomEvent.on(zoom_to, 'click', function (e) {
+                this.bringToCenter(e, L.bind(this.view, this, {latlng: this.getCenter()}));
+            }, feature);
+            L.DomEvent.on(edit, 'click', function (e) {
+                this.edit();
+            }, feature);
+            return feature_li;
+        };
+
+        var append = function (datalayer) {
+            var container = L.DomUtil.create('div', datalayer.getHidableClass(), featuresContainer),
+                headline = L.DomUtil.create('h5', '', container);
+            container.id = 'browse_data_datalayer_' + datalayer.storage_id;
+            datalayer.renderToolbox(headline);
+            var title = L.DomUtil.add('span', '', headline, datalayer.options.name),
+                ul = L.DomUtil.create('ul', '', container);
+            L.DomUtil.classIf(container, 'off', !datalayer.isVisible());
+
+            var build = function () {
+                ul.innerHTML = "";
+                datalayer.eachLayer(function (layer) {
+                    ul.appendChild(addFeature(layer));
+                });
+            };
+            build();
+            datalayer.on('datachanged', build);
+        };
+
+        this.eachDataLayer(function (datalayer) {
+            append(datalayer);
+        });
+        L.Storage.fire('ui:start', {data: {html: browserContainer}});
+    }
+
+});
+
 
 
 L.Storage.TileLayerControl = L.Control.extend({

@@ -111,6 +111,7 @@ L.Storage.DataLayer = L.Class.extend({
         this.addData(geojson);
         this._geojson = geojson;
         this.fire('dataloaded');
+        this.fire('datachanged');
     },
 
     clear: function () {
@@ -192,6 +193,9 @@ L.Storage.DataLayer = L.Class.extend({
         this._index.push(id);
         this._layers[id] = feature;
         this.layer.addLayer(feature);
+        if (this.isLoaded()) {
+            this.fire('datachanged');
+        }
     },
 
     removeLayer: function (feature) {
@@ -200,6 +204,9 @@ L.Storage.DataLayer = L.Class.extend({
         this._index.splice(this._index.indexOf(id), 1);
         delete this._layers[id];
         this.layer.removeLayer(feature);
+        if (this.isLoaded()) {
+            this.fire('datachanged');
+        }
     },
 
     addData: function (geojson) {
@@ -378,10 +385,13 @@ L.Storage.DataLayer = L.Class.extend({
         this._layers = {};
         this._index = Array();
         this.fire('erase');
+        this._leaflet_events_bk = this._leaflet_events;
+        this.off();
     },
 
     reset: function () {
         if (this.storage_id) {
+            this._leaflet_events = this._leaflet_events_bk;
             this.hide();
             this.clear();
             if (this.isRemoteLayer()) {

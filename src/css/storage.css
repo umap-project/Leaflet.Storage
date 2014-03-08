@@ -468,6 +468,9 @@ a.storage-control-text {
 .leaflet-control-browse a.storage-browse-link:hover {
     background-color: rgb(99, 99, 99);
 }
+.storage-browse-data .off .feature {
+    display: none;
+}
 
 
 /* ********************************* */
