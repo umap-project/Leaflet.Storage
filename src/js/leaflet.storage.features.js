@@ -61,7 +61,10 @@ L.Storage.FeatureMixin = {
         var self = this,
             container = L.DomUtil.create('div'), form ;
 
-        var builder = new L.S.FormBuilder(this, ['datalayer']);
+        var builder = new L.S.FormBuilder(this, ['datalayer'], {
+            callback: this.edit,
+            callbackContext: this
+        });
         container.appendChild(builder.build());
 
         var properties = [];
