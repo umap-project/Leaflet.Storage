@@ -664,9 +664,6 @@ L.Storage.Map.include({
             datalayer.renderToolbox(headline);
             L.DomUtil.add('span', '', headline, datalayer.options.name + ' ');
             L.DomUtil.classIf(p, 'off', !datalayer.isVisible());
-            datalayer.on('hide display', function () {
-                L.DomUtil.classIf(p, 'off', !this.isVisible());
-            });
             if (datalayer.options.description) {
                 description.innerHTML = datalayer.options.description;
             }

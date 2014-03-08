@@ -326,7 +326,7 @@ L.Storage.DataLayersControl = L.Control.extend({
     },
 
     addDataLayer: function (datalayer) {
-        var datalayer_li = L.DomUtil.create('li', datalayer.getHidableClass(), this._datalayers_container);
+        var datalayer_li = L.DomUtil.create('li', '', this._datalayers_container);
         datalayer.renderToolbox(datalayer_li);
         var title = L.DomUtil.add('span', 'layer-title', datalayer_li, datalayer.options.name);
 
@@ -341,7 +341,7 @@ L.Storage.DataLayersControl = L.Control.extend({
             self = this,
             container = L.DomUtil.get(id), ul;
         if (!container) {
-            container = L.DomUtil.create('div', datalayer.getHidableClass(), this._features_container);
+            container = L.DomUtil.create('div', '', this._features_container);
             container.id = id;
             var headline = L.DomUtil.create('h5', '', container);
             datalayer.renderToolbox(headline);
@@ -418,6 +418,7 @@ L.Storage.DataLayer.include({
         L.DomEvent.on(toggle, 'click', this.toggle, this);
         L.DomEvent.on(zoom_to, 'click', this.zoomTo, this);
         L.DomEvent.on(edit, 'click', this.edit, this);
+        L.DomUtil.addClass(container, this.getHidableClass());
     },
 
     getLocalId: function () {
