@@ -332,6 +332,7 @@ L.Storage.DataLayer.include({
         L.DomEvent.on(zoom_to, 'click', this.zoomTo, this);
         L.DomEvent.on(edit, 'click', this.edit, this);
         L.DomUtil.addClass(container, this.getHidableClass());
+        L.DomUtil.classIf(container, 'off', !this.isVisible());
     },
 
     getLocalId: function () {
