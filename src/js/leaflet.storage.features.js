@@ -62,7 +62,7 @@ L.Storage.FeatureMixin = {
             container = L.DomUtil.create('div'), form ;
 
         var builder = new L.S.FormBuilder(this, ['datalayer'], {
-            callback: this.edit,
+            callback: this.edit,  // removeLayer step will close the edit panel, let's reopen it
             callbackContext: this
         });
         container.appendChild(builder.build());

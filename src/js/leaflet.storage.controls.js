@@ -423,6 +423,14 @@ L.Storage.Map.include({
             };
             build();
             datalayer.on('datachanged', build);
+            L.Storage.once('ui:end', function () {
+                datalayer.off('datachanged', build);
+            });
+            L.Storage.once('ui:ready', function () {
+                L.Storage.once('ui:start', function () {
+                    datalayer.off('datachanged', build);
+                });
+            });
         };
 
         this.eachDataLayer(function (datalayer) {
