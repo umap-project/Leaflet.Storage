@@ -119,8 +119,10 @@ L.Storage.DataLayer = L.Class.extend({
     clear: function () {
         this.layer.clearLayers();
         this._layers = {};
-        this._geojson_bk = this._geojson;
-        this._geojson = null;
+        if (this._geojson) {
+            this._geojson_bk = this._geojson;
+            this._geojson = null;
+        }
     },
 
     fetchRemoteData: function () {
@@ -399,13 +401,11 @@ L.Storage.DataLayer = L.Class.extend({
         delete this.map.datalayers[L.stamp(this)];
         this.map.datalayers_index.splice(this.map.datalayers_index.indexOf(this), 1);
         this.map.updateDatalayersControl();
-        this._layers = {};
         this._index = Array();
         this.fire('erase');
         this._leaflet_events_bk = this._leaflet_events;
         this.off();
-        this._geojson_bk = this._geojson;
-        this._geojson = null;
+        this.clear();
         delete this._loaded;
     },
 
