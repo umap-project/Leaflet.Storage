@@ -311,17 +311,20 @@ L.Storage.FeatureMixin = {
             {
                 text: L._('Edit this feature'),
                 callback: this.edit,
-                context: this
+                context: this,
+                iconCls: 'storage-edit'
             },
             {
                 text: L._("Edit feature's layer"),
                 callback: this.datalayer.edit,
-                context: this.datalayer
+                context: this.datalayer,
+                iconCls: 'storage-edit'
             },
             {
                 text: L._('Delete this feature'),
                 callback: this.confirmDelete,
-                context: this
+                context: this,
+                iconCls: 'storage-delete'
             }
         ];
     },

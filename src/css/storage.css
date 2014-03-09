@@ -710,7 +710,7 @@ a.storage-control-text {
 
 .storage-delete, .storage-to-polygon,
 .clone-map-button, .delete_map_button,
-.delete_datalayer_button, .storage-to-polyline {
+.storage-to-polyline {
     background-position: 7px center;
     background-repeat: no-repeat;
     text-indent: 38px;
@@ -730,10 +730,6 @@ a.storage-control-text {
 .storage-delete,
 .delete_map_button {
     background-image: url("../img/delete-24.png");
-    color: rgb(198, 15, 19);
-}
-.delete_datalayer_button {
-    background-image: url("../img/delete-datalayer-24.png");
     color: rgb(198, 15, 19);
 }
 .storage-edit-actions li {
@@ -1017,6 +1013,9 @@ a.storage-control-text {
     background-color: white;
     width: 40px;
     height: 40px;
+}
+.leaflet-contextmenu-icon {
+    display: none;
 }
 
 /* ****** */

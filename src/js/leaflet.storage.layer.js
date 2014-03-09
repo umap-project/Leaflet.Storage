@@ -498,7 +498,7 @@ L.Storage.DataLayer = L.Class.extend({
         remoteDataContainer.appendChild(builder.build());
 
         var advancedActions = L.DomUtil.createFieldset(container, L._('Advanced actions'));
-        var deleteLink = L.DomUtil.create('a', 'delete_datalayer_button', advancedActions);
+        var deleteLink = L.DomUtil.create('a', 'delete_datalayer_button storage-delete', advancedActions);
         deleteLink.innerHTML = L._('Delete');
         deleteLink.href = "#";
         L.DomEvent.on(deleteLink, 'click', L.DomEvent.stop)
