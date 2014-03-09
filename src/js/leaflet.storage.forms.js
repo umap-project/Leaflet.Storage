@@ -409,7 +409,7 @@ L.S.ElementHelper.DataLayerSwitcher = L.S.ElementHelper.SelectAbstract.extend({
     getOptions: function () {
         var options = [];
         this.map.eachDataLayer(function (datalayer) {
-            if(!datalayer.isRemoteLayer()) {
+            if(datalayer.isLoaded() && !datalayer.isRemoteLayer()) {
                 options.push([L.stamp(datalayer), datalayer.getName()]);
             }
         });
@@ -671,7 +671,7 @@ L.Storage.FormBuilder = L.Class.extend({
         this.helpers[field] = helper;
         helper.on('synced', function () {
             if (this.options.callback) {
-                this.options.callback.call(this.callbackContext || this.obj, field);
+                this.options.callback.call(this.options.callbackContext || this.obj, field);
             }
             this.obj.fire('synced', {field: field});
         }, this);

@@ -119,6 +119,7 @@ L.Storage.DataLayer = L.Class.extend({
     clear: function () {
         this.layer.clearLayers();
         this._layers = {};
+        this._geojson_bk = this._geojson;
         this._geojson = null;
     },
 
