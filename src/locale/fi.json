@@ -35,7 +35,6 @@
     "Delete this feature": "Poista tämä piirre",
     "Disable editing": "Lopeta kartan muokaaminen",
     "Display on load": "Näytä ladattaessa",
-    "Display options": "Näytä vaihtoehdot",
     "Do you want to display a minimap?": "Haluatko aktivoida minikartan?",
     "Do you want to display data browser on load?": "Haluatko näyttää tietueselaimen ladattaessa?",
     "Do you want to display map caption on load?": "Näytetäänkö kartan kuvaus ladattaessa?",
@@ -176,5 +175,9 @@
     "TMS format": "TMS-formaatti",
     "Credits": "Tunnustukset",
     "Only visible features will be downloaded.": "Vain näkyvät kohteet ladataan",
-    "Open this map extent in a map editor to provide more accurate data to OpenStreetMap": "Avaa rajauksen mukainen alue editorissa parantaaksesi OpenStreetMapin tietosisältöä."
+    "Open this map extent in a map editor to provide more accurate data to OpenStreetMap": "Avaa rajauksen mukainen alue editorissa parantaaksesi OpenStreetMapin tietosisältöä.",
+    "Default properties": "Default properties",
+    "Iframe with custom height (in px): {{{http://image.url.com|height}}}": "Iframe with custom height (in px): {{{http://image.url.com|height}}}",
+    "Iframe: {{{http://image.url.com}}}": "Iframe: {{{http://image.url.com}}}",
+    "User interface options": "User interface options"
 }

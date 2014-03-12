@@ -35,7 +35,6 @@
     "Delete this feature": "地物を削除",
     "Disable editing": "編集を終了",
     "Display on load": "読み込み時に表示",
-    "Display options": "オプション表示",
     "Do you want to display a minimap?": "ミニマップを表示しますか？",
     "Do you want to display data browser on load?": "読み込み時にデータブラウザを表示しますか？",
     "Do you want to display map caption on load?": "読み込み時にマップの説明文を表示しますか？",
@@ -176,5 +175,9 @@
     "TMS format": "TMSフォーマット",
     "Credits": "Credits",
     "Only visible features will be downloaded.": "Only visible features will be downloaded.",
-    "Open this map extent in a map editor to provide more accurate data to OpenStreetMap": "Open this map extent in a map editor to provide more accurate data to OpenStreetMap"
+    "Open this map extent in a map editor to provide more accurate data to OpenStreetMap": "Open this map extent in a map editor to provide more accurate data to OpenStreetMap",
+    "Default properties": "Default properties",
+    "Iframe with custom height (in px): {{{http://image.url.com|height}}}": "Iframe with custom height (in px): {{{http://image.url.com|height}}}",
+    "Iframe: {{{http://image.url.com}}}": "Iframe: {{{http://image.url.com}}}",
+    "User interface options": "User interface options"
 }

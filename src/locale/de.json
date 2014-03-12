@@ -35,7 +35,6 @@
     "Delete this feature": "Dieses Element löschen",
     "Disable editing": "Bearbeiten deaktivieren",
     "Display on load": "Beim Seitenaufruf anzeigen.",
-    "Display options": "Anzeigeeinstellungen",
     "Do you want to display a minimap?": "Möchtest du eine Übersichtskarte anzeigen?",
     "Do you want to display data browser on load?": "Möchtest du die Datenübersicht beim Seitenaufruf anzeigen?",
     "Do you want to display map caption on load?": "Möchtest du beim Seitenaufruf die Kartenüberschrift anzeigen?",
@@ -176,5 +175,9 @@
     "TMS format": "TMS-Format",
     "Credits": "Credits",
     "Only visible features will be downloaded.": "Nur eingeblendete Elemente werden heruntergeladen.",
-    "Open this map extent in a map editor to provide more accurate data to OpenStreetMap": "Diesen Kartenauschnitt in einem Karten-Editor öffnen, um genauere Daten für OpenStreetMap bereitzustellen."
+    "Open this map extent in a map editor to provide more accurate data to OpenStreetMap": "Diesen Kartenauschnitt in einem Karten-Editor öffnen, um genauere Daten für OpenStreetMap bereitzustellen.",
+    "Default properties": "Default properties",
+    "Iframe with custom height (in px): {{{http://image.url.com|height}}}": "Iframe with custom height (in px): {{{http://image.url.com|height}}}",
+    "Iframe: {{{http://image.url.com}}}": "Iframe: {{{http://image.url.com}}}",
+    "User interface options": "User interface options"
 }

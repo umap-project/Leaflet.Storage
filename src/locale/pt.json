@@ -35,7 +35,6 @@
     "Delete this feature": "Delete this feature",
     "Disable editing": "Disable editing",
     "Display on load": "Display on load",
-    "Display options": "Display options",
     "Do you want to display a minimap?": "Do you want to display a minimap?",
     "Do you want to display data browser on load?": "Do you want to display data browser on load?",
     "Do you want to display map caption on load?": "Do you want to display map caption on load?",
@@ -176,5 +175,9 @@
     "TMS format": "TMS format",
     "Credits": "Credits",
     "Only visible features will be downloaded.": "Only visible features will be downloaded.",
-    "Open this map extent in a map editor to provide more accurate data to OpenStreetMap": "Open this map extent in a map editor to provide more accurate data to OpenStreetMap"
+    "Open this map extent in a map editor to provide more accurate data to OpenStreetMap": "Open this map extent in a map editor to provide more accurate data to OpenStreetMap",
+    "Default properties": "Default properties",
+    "Iframe with custom height (in px): {{{http://image.url.com|height}}}": "Iframe with custom height (in px): {{{http://image.url.com|height}}}",
+    "Iframe: {{{http://image.url.com}}}": "Iframe: {{{http://image.url.com}}}",
+    "User interface options": "User interface options"
 }
