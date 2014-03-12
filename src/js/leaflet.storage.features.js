@@ -245,6 +245,9 @@ L.Storage.FeatureMixin = {
         else if (this.datalayer && this.usableOption(this.datalayer.options, option)) {
             value = this.datalayer.options[option];
         }
+        else if (this.usableOption(this.map.options, option)) {
+            value = this.map.options[option];
+        }
         else {
             value = this.map.getDefaultOption(option);
         }
@@ -452,25 +455,11 @@ L.Storage.Marker = L.Marker.extend({
         if (typeof name === "undefined") {
             name = "icon";
         }
-        var url = null;
-        if (this.properties._storage_options[name + 'Url']) {
-            url = this.properties._storage_options[name + 'Url'];
-        }
-        else if(this.datalayer && this.datalayer.options[name + 'Url']) {
-            url = this.datalayer.options[name + 'Url'];
-        }
-        return url;
+        return this.getOption(name + 'Url');
     },
 
     getIconClass: function () {
-        var iconClass = this.map.getDefaultOption('iconClass');
-        if (this.properties._storage_options.iconClass) {
-            iconClass = this.properties._storage_options.iconClass;
-        }
-        else if (this.datalayer) {
-            iconClass = this.datalayer.getIconClass();
-        }
-        return iconClass;
+        return this.getOption('iconClass');
     },
 
     getIcon: function () {

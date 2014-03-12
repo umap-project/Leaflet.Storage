@@ -367,18 +367,6 @@ L.Storage.DataLayer = L.Class.extend({
         return (this.storage_id && this.getEditUrl()) || this.getCreateUrl();
     },
 
-    getIconClass: function () {
-        var iconClass = this.map.getDefaultOption('iconClass');
-        if(L.Storage.Icon[this.options.iconClass]) {
-            iconClass = this.options.iconClass;
-        }
-        return iconClass;
-    },
-
-    getIcon: function () {
-        return new L.Storage.Icon[this.getIconClass()](this.map);
-    },
-
     getColor: function () {
         return this.options.color || this.map.getDefaultOption('color');
     },
