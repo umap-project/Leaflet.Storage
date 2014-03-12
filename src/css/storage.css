@@ -224,9 +224,9 @@ a.storage-control-text {
 .storage-help-box {
     position: absolute;
     top: 10%;
-    margin: 0 calc(50% - 400px/2);
+    margin: 0 calc(50% - 500px/2);
     background-color: #fff;
-    width: 400px;
+    width: 500px;
     padding: 40px 20px;
     border: 1px solid #ddd;
     z-index: 10002;
