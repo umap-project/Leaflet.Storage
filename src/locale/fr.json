@@ -177,7 +177,8 @@
     "Only visible features will be downloaded.": "Seuls les éléments visibles seront téléchargés.",
     "Open this map extent in a map editor to provide more accurate data to OpenStreetMap": "Ouvrir cette carte dans OpenStreetMap pour améliorer les données",
     "Default properties": "Propriétés par défaut",
-    "Iframe with custom height (in px): {{{http://image.url.com|height}}}": "Iframe avec une hauteur custom (en pixels): {{{http://image.url.com|hauteur}}}",
+    "Iframe with custom height (in px): {{{http://image.url.com|height}}}": "Iframe avec hauteur (en pixels): {{{http://image.url.com|hauteur}}}",
     "Iframe: {{{http://image.url.com}}}": "Iframe: {{{http://image.url.com}}}",
-    "User interface options": "Options d'interface"
+    "User interface options": "Options d'interface",
+    "Image with custom width (in px): {{http://image.url.com|width}}": "Image avec largeur (en pixels): {{http://image.url.com|largeur}}"
 }

@@ -179,5 +179,6 @@
     "Default properties": "Default properties",
     "Iframe with custom height (in px): {{{http://image.url.com|height}}}": "Iframe with custom height (in px): {{{http://image.url.com|height}}}",
     "Iframe: {{{http://image.url.com}}}": "Iframe: {{{http://image.url.com}}}",
-    "User interface options": "User interface options"
+    "User interface options": "User interface options",
+    "Image with custom width (in px): {{http://image.url.com|width}}": "Image with custom width (in px): {{http://image.url.com|width}}"
 }
