@@ -79,13 +79,16 @@ L.Util.toHTML = function (r) {
     r = r.replace(/\[\[([^\]|]*?)\]\]/g, '<a href="$1">$1</a>');
     r = r.replace(/\[\[([^|]*?)\|(.*?)\]\]/g, '<a href="$1">$2</a>');
 
+    // iframe
+    r = r.replace(/{{{(h_t_t_ps?[^ |]*)}}}/g, '<iframe frameBorder="0" src="$1" width="100%" height="300px"></iframe>');
+    r = r.replace(/{{{(h_t_t_ps?[^ |]*)\|(\d*?)}}}/g, '<iframe frameBorder="0" src="$1" width="100%" height="$2px"></iframe>');
+
     // images
     r = r.replace(/{{([^\]|]*?)}}/g, '<img src="$1">');
     r = r.replace(/{{([^|]*?)\|(.*?)}}/g, '<img src="$1" alt="$2">');
-    r = r.replace(/(h_t_t_p)/g, 'http');
 
-    // video
-    r = r.replace(/<<(.*?)>>/g, '<embed class="video" src="$1" allowfullscreen="true" allowscriptaccess="never" type="application/x-shockwave/flash"></embed>');
+    //Unescape http
+    r = r.replace(/(h_t_t_p)/g, 'http');
 
     // Preserver line breaks
     if (newline) r = r.replace(new RegExp(newline, 'g'), '<br>' + newline);
@@ -294,6 +297,8 @@ L.Storage.Help = L.Class.extend({
         L.DomUtil.add('li', '', elements, L._('Simple link: [[http://example.com]]'));
         L.DomUtil.add('li', '', elements, L._('Link with text: [[http://example.com|text of the link]]'));
         L.DomUtil.add('li', '', elements, L._('Image: {{http://image.url.com}}'));
+        L.DomUtil.add('li', '', elements, L._('Iframe: {{{http://image.url.com}}}'));
+        L.DomUtil.add('li', '', elements, L._('Iframe with custom height (in px): {{{http://image.url.com|height}}}'));
         L.DomUtil.add('li', '', elements, L._('--- for an horizontal rule'));
         return container;
     },

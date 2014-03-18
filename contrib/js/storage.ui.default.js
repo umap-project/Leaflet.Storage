@@ -8,7 +8,6 @@
 */
 L.Storage.on('ui:start', function (e) {
     var div = L.DomUtil.get('storage-ui-container');
-    var body = document.getElementsByTagName('body')[0];
     // We reset all because we can't know which class has been added
     // by previous ui processes...
     div.className = "";
@@ -19,7 +18,7 @@ L.Storage.on('ui:start', function (e) {
     else {
         div.innerHTML = e.data.html;
     }
-    L.DomUtil.addClass(body, 'storage-ui');
+    L.DomUtil.addClass(document.body, 'storage-ui');
     var close_link = L.DomUtil.create('a', 'storage-close-link', div);
     close_link.innerHTML = "&times;";
     if (e.cssClass) {
@@ -36,9 +35,8 @@ L.Storage.on('ui:start', function (e) {
 });
 L.Storage.on('ui:end', function (e) {
     var div = L.DomUtil.get('storage-ui-container');
-    var body = document.getElementsByTagName('body')[0];
     div.innerHTML = "";
-    L.DomUtil.removeClass(body, 'storage-ui');
+    L.DomUtil.removeClass(document.body, 'storage-ui');
     L.Storage.fire('ui:closed');
 });
 

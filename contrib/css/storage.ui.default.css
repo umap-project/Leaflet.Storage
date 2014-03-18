@@ -106,6 +106,7 @@ fieldset.toggle {
 }
 fieldset.toggle.on {
     border: 1px solid #999;
+    padding-bottom: 5px;
 }
 
 fieldset.toggle .more_style_options,

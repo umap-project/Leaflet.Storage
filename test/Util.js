@@ -34,6 +34,14 @@ describe('L.Util', function () {
             assert.equal(L.Util.toHTML('A simple image: {{http://osm.org/pouet.png|alt text}}'), 'A simple image: <img src="http://osm.org/pouet.png" alt="alt text">');
         });
 
+        it('should handle iframe', function () {
+            assert.equal(L.Util.toHTML('A simple iframe: {{{http://osm.org/pouet.html}}}'), 'A simple iframe: <iframe frameBorder="0" src="http://osm.org/pouet.html" width="100%" height="300px"></iframe>');
+        });
+
+        it('should handle iframe with height', function () {
+            assert.equal(L.Util.toHTML('A simple iframe: {{{http://osm.org/pouet.html|200}}}'), 'A simple iframe: <iframe frameBorder="0" src="http://osm.org/pouet.html" width="100%" height="200px"></iframe>');
+        });
+
     });
 
     describe('#escapeHTML', function () {
