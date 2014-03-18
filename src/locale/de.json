@@ -180,5 +180,5 @@
     "Iframe with custom height (in px): {{{http://image.url.com|height}}}": "Iframe mit benutzerdefinierter Höhe (in Pixel): {{{http://bild.url.com|Höhe}}}",
     "Iframe: {{{http://image.url.com}}}": "Iframe: {{{http://bild.url.com}}}",
     "User interface options": "Einstellungen Benutzeroberfläche",
-    "Image with custom width (in px): {{http://image.url.com|width}}": "Image with custom width (in px): {{http://image.url.com|width}}"
+    "Image with custom width (in px): {{http://image.url.com|width}}": "Bild mit benutzerdefinierter Breite (in Pixel): {{http://bild.url.com|Breite}}"
 }
