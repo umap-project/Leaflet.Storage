@@ -540,10 +540,12 @@ L.Storage.Map.include({
         urlInput.placeholder = L._('Provide an URL here');
         rawInput.placeholder = L._('Paste here your data');
         this.eachDataLayer(function (datalayer) {
-            var id = L.stamp(datalayer);
-            option = L.DomUtil.create('option', '', layerInput);
-            option.value = id;
-            option.innerHTML = datalayer.options.name;
+            if (datalayer.isLoaded()) {
+                var id = L.stamp(datalayer);
+                option = L.DomUtil.create('option', '', layerInput);
+                option.value = id;
+                option.innerHTML = datalayer.options.name;
+            }
         });
         for (var i = 0; i < types.length; i++) {
             option = L.DomUtil.create('option', '', typeInput);
@@ -639,9 +641,7 @@ L.Storage.Map.include({
 
     openBrowser: function () {
         this.whenReady(function () {
-            if (this._controls.datalayersControl) {
-            this._controls.datalayersControl.openBrowser();
-            }
+            this._openBrowser();
         });
     },
 
@@ -663,10 +663,6 @@ L.Storage.Map.include({
                 });
             datalayer.renderToolbox(headline);
             L.DomUtil.add('span', '', headline, datalayer.options.name + ' ');
-            L.DomUtil.classIf(p, 'off', !datalayer.isVisible());
-            datalayer.on('hide display', function () {
-                L.DomUtil.classIf(p, 'off', !this.isVisible());
-            });
             if (datalayer.options.description) {
                 description.innerHTML = datalayer.options.description;
             }
@@ -711,17 +707,15 @@ L.Storage.Map.include({
     },
 
     reset: function () {
+        this.resetOptions();
         this.eachDataLayer(function (datalayer) {
-            if (datalayer.isDirty) {
-                datalayer.reset();
-            }
+            datalayer.reset();
         });
         this.deleted_datalayers.forEach(function (datalayer) {
             datalayer.connectToMap();
             datalayer.reset();
         });
         this.updateDatalayersControl();
-        this.resetOptions();
         this.initTileLayers();
         this.isDirty = false;
     },
@@ -890,8 +884,34 @@ L.Storage.Map.include({
             callback: this.initControls,
             callbackContext: this
         });
-        var controlsOptions = L.DomUtil.createFieldset(container, L._('Display options'));
+        var controlsOptions = L.DomUtil.createFieldset(container, L._('User interface options'));
         controlsOptions.appendChild(builder.build());
+
+        var optionsFields = [
+            'options.color',
+            'options.iconClass',
+            'options.iconUrl',
+            'options.smoothFactor',
+            'options.opacity',
+            'options.weight',
+            'options.fill',
+            'options.fillColor',
+            'options.fillOpacity',
+            'options.dashArray',
+            'options.popupTemplate',
+        ];
+
+        builder = new L.S.FormBuilder(this, optionsFields, {
+            callback: function (field) {
+                if (field !== "options.popupTemplate") {
+                    this.eachDataLayer(function (datalayer) {
+                        datalayer.redraw();
+                    });
+                }
+            }
+        });
+        var defaultProperties = L.DomUtil.createFieldset(container, L._('Default properties'));
+        defaultProperties.appendChild(builder.build());
 
         if (!L.Util.isObject(this.options.tilelayer)) {
             this.options.tilelayer = {};

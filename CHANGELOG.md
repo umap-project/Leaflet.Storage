@@ -2,6 +2,10 @@
 
 ## dev
 - add TMS option to custom tilelayer
+- allow to define default properties at map level
+- support iframe in text formatting
+- fix bug where polygon export were adding a point
+- make that only visible elements are downloaded
 
 ## 0.5.x
 - datalayers are now sent to backend as geojson

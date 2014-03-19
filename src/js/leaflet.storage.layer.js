@@ -35,7 +35,7 @@ L.Storage.DataLayer = L.Class.extend({
         this.populate(datalayer);
         this.connectToMap();
         if(this.options.displayOnLoad) {
-            this.display();
+            this.show();
         }
         if (!this.storage_id) {
             this.isDirty = true;
@@ -102,6 +102,8 @@ L.Storage.DataLayer = L.Class.extend({
                 } else {
                     this.fromGeoJSON(geojson);
                 }
+                this._loaded = true;
+                this.fire('loaded');
             },
             context: this
         });
@@ -111,22 +113,27 @@ L.Storage.DataLayer = L.Class.extend({
         this.addData(geojson);
         this._geojson = geojson;
         this.fire('dataloaded');
+        this.fire('datachanged');
     },
 
     clear: function () {
         this.layer.clearLayers();
         this._layers = {};
+        if (this._geojson) {
+            this._geojson_bk = this._geojson;
+            this._geojson = null;
+        }
     },
 
     fetchRemoteData: function () {
-        if ((!isNaN(this.options.remoteData.from) && this.map.getZoom() < this.options.remoteData.from) ||
-            (!isNaN(this.options.remoteData.to) && this.map.getZoom() > this.options.remoteData.to) ) {
+        var from = parseInt(this.options.remoteData.from, 10),
+            to = parseInt(this.options.remoteData.to, 10);
+        if ((!isNaN(from) && this.map.getZoom() < from) ||
+            (!isNaN(to) && this.map.getZoom() > to) ) {
             this.clear();
             return;
         }
         var self = this;
-        this._geojson = {}; // Should appear as loaded (and so editable) even if xhr goes in error
-                            // du to user missconfigurating the remote URL
         this.map.ajax({
             uri: this.map.localizeUrl(this.options.remoteData.url),
             verb: 'GET',
@@ -141,12 +148,25 @@ L.Storage.DataLayer = L.Class.extend({
         if (this.isLoaded()) {
             callback.call(context || this, this);
         } else {
+            this.once('loaded', callback, context);
+        }
+        return this;
+    },
+
+    onceDataLoaded: function (callback, context) {
+        if (this.hasDataLoaded()) {
+            callback.call(context || this, this);
+        } else {
             this.once('dataloaded', callback, context);
         }
         return this;
     },
 
     isLoaded: function () {
+        return !this.storage_id || this._loaded;
+    },
+
+    hasDataLoaded: function () {
         return !this.storage_id || this._geojson !== null;
     },
 
@@ -192,6 +212,9 @@ L.Storage.DataLayer = L.Class.extend({
         this._index.push(id);
         this._layers[id] = feature;
         this.layer.addLayer(feature);
+        if (this.hasDataLoaded()) {
+            this.fire('datachanged');
+        }
     },
 
     removeLayer: function (feature) {
@@ -200,6 +223,9 @@ L.Storage.DataLayer = L.Class.extend({
         this._index.splice(this._index.indexOf(id), 1);
         delete this._layers[id];
         this.layer.removeLayer(feature);
+        if (this.hasDataLoaded()) {
+            this.fire('datachanged');
+        }
     },
 
     addData: function (geojson) {
@@ -341,18 +367,6 @@ L.Storage.DataLayer = L.Class.extend({
         return (this.storage_id && this.getEditUrl()) || this.getCreateUrl();
     },
 
-    getIconClass: function () {
-        var iconClass = this.map.getDefaultOption('iconClass');
-        if(L.Storage.Icon[this.options.iconClass]) {
-            iconClass = this.options.iconClass;
-        }
-        return iconClass;
-    },
-
-    getIcon: function () {
-        return new L.Storage.Icon[this.getIconClass()](this.map);
-    },
-
     getColor: function () {
         return this.options.color || this.map.getDefaultOption('color');
     },
@@ -375,21 +389,27 @@ L.Storage.DataLayer = L.Class.extend({
         delete this.map.datalayers[L.stamp(this)];
         this.map.datalayers_index.splice(this.map.datalayers_index.indexOf(this), 1);
         this.map.updateDatalayersControl();
-        this._layers = {};
         this._index = Array();
+        this.fire('erase');
+        this._leaflet_events_bk = this._leaflet_events;
+        this.off();
+        this.clear();
+        delete this._loaded;
     },
 
     reset: function () {
         if (this.storage_id) {
+            this._leaflet_events = this._leaflet_events_bk;
             this.hide();
             this.clear();
             if (this.isRemoteLayer()) {
                 this.fetchRemoteData();
-            } else if (this._geojson) {
-                this.resetOptions(this._geojson._storage);
-                this.fromGeoJSON(this._geojson);
+            } else if (this._geojson_bk) {
+                this.resetOptions(this._geojson_bk._storage);
+                this.fromGeoJSON(this._geojson_bk);
             }
-            this.display();
+            this._loaded = true;
+            this.show();
             this.isDirty = false;
         } else {
             this.erase();
@@ -398,7 +418,7 @@ L.Storage.DataLayer = L.Class.extend({
 
     redraw: function () {
         this.hide();
-        this.display();
+        this.show();
     },
 
     edit: function () {
@@ -442,7 +462,7 @@ L.Storage.DataLayer = L.Class.extend({
                 if (field === "options.color" && this.isClustered()) {
                     this.layer.options.polygonOptions.color = this.getColor();
                 }
-                this.display();
+                this.show();
             }
         });
         var advancedProperties = L.DomUtil.createFieldset(container, L._('Advanced properties'));
@@ -466,7 +486,7 @@ L.Storage.DataLayer = L.Class.extend({
         remoteDataContainer.appendChild(builder.build());
 
         var advancedActions = L.DomUtil.createFieldset(container, L._('Advanced actions'));
-        var deleteLink = L.DomUtil.create('a', 'delete_datalayer_button', advancedActions);
+        var deleteLink = L.DomUtil.create('a', 'delete_datalayer_button storage-delete', advancedActions);
         deleteLink.innerHTML = L._('Delete');
         deleteLink.href = "#";
         L.DomEvent.on(deleteLink, 'click', L.DomEvent.stop)
@@ -486,24 +506,22 @@ L.Storage.DataLayer = L.Class.extend({
         return features;
     },
 
-    display: function () {
+    show: function () {
         if(!this.isLoaded()) {
             this.fetchData();
         }
         this.map.addLayer(this.layer);
-        this.fire('display');
-        // this._map.fire('overlayadd', {layer: obj});
+        this.fire('show');
     },
 
     hide: function () {
         this.map.removeLayer(this.layer);
         this.fire('hide');
-        // this._map.fire('overlayremove', {layer: obj});
     },
 
     toggle: function () {
         if (!this.isVisible()) {
-            this.display();
+            this.show();
         }
         else {
             this.hide();
@@ -598,18 +616,6 @@ L.Storage.DataLayer = L.Class.extend({
 
     getName: function () {
         return this.options.name || L._('Untitled layer');
-    },
-
-    renderToolbox: function (container) {
-        var toggle = L.DomUtil.create('i', 'layer-toggle', container),
-            zoom_to = L.DomUtil.create('i', 'layer-zoom_to', container),
-            edit = L.DomUtil.create('i', "layer-edit show-on-edit", container);
-        zoom_to.title = L._('Zoom to layer extent');
-        toggle.title = L._('Show/hide layer');
-        edit.title = L._('Edit');
-        L.DomEvent.on(toggle, 'click', this.toggle, this);
-        L.DomEvent.on(zoom_to, 'click', this.zoomTo, this);
-        L.DomEvent.on(edit, 'click', this.edit, this);
     }
 
 });

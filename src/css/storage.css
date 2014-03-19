@@ -224,9 +224,9 @@ a.storage-control-text {
 .storage-help-box {
     position: absolute;
     top: 10%;
-    margin: 0 calc(50% - 400px/2);
+    margin: 0 calc(50% - 500px/2);
     background-color: #fff;
-    width: 400px;
+    width: 500px;
     padding: 40px 20px;
     border: 1px solid #ddd;
     z-index: 10002;
@@ -468,6 +468,9 @@ a.storage-control-text {
 .leaflet-control-browse a.storage-browse-link:hover {
     background-color: rgb(99, 99, 99);
 }
+.storage-browse-data .off .feature {
+    display: none;
+}
 
 
 /* ********************************* */
@@ -707,7 +710,7 @@ a.storage-control-text {
 
 .storage-delete, .storage-to-polygon,
 .clone-map-button, .delete_map_button,
-.delete_datalayer_button, .storage-to-polyline {
+.storage-to-polyline {
     background-position: 7px center;
     background-repeat: no-repeat;
     text-indent: 38px;
@@ -727,10 +730,6 @@ a.storage-control-text {
 .storage-delete,
 .delete_map_button {
     background-image: url("../img/delete-24.png");
-    color: rgb(198, 15, 19);
-}
-.delete_datalayer_button {
-    background-image: url("../img/delete-datalayer-24.png");
     color: rgb(198, 15, 19);
 }
 .storage-edit-actions li {
@@ -1000,6 +999,9 @@ a.storage-control-text {
     overflow-y: auto;
     overflow-x: hidden;
 }
+.storage-popup-content iframe {
+    min-width: 300px;
+}
 .leaflet-popup-content .popup-title {
     margin-bottom: 0;
 }
@@ -1011,6 +1013,9 @@ a.storage-control-text {
     background-color: white;
     width: 40px;
     height: 40px;
+}
+.leaflet-contextmenu-icon {
+    display: none;
 }
 
 /* ****** */

@@ -1,4 +1,5 @@
 var qs = function (selector) {return document.querySelector(selector);};
+var qsa = function (selector) {return document.querySelectorAll(selector);};
 var resetMap = function () {
     var mapElement = qs('#map');
     mapElement.innerHTML = 'Done';
