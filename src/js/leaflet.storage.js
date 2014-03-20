@@ -40,7 +40,8 @@ L.Map.mergeOptions({
     limitBounds: {},
     importPresets: [
         // {url: 'http://localhost:8019/en/datalayer/1502/', label: 'Simplified World Countries', format: 'geojson'}
-    ]
+    ],
+    moreControl: true
 });
 
 L.Storage.Map.include({
@@ -60,9 +61,6 @@ L.Storage.Map.include({
         this.demoTileInfos = this.options.demoTileInfos;
         if (geojson.geometry) {
             this.options.center = geojson.geometry;
-        }
-        if (typeof this.options.moreControl === "undefined") {
-            this.options.moreControl = true;
         }
         this.options.zoomControl = zoomControl;
         this.overrideBooleanOptionFromQueryString("zoomControl");
