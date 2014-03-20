@@ -52,6 +52,7 @@ L.Storage.Map.include({
         }
         var zoomControl = typeof geojson.properties.zoomControl !== "undefined" ? geojson.properties.zoomControl : true;
         geojson.properties.zoomControl = false;
+        L.Util.setBooleanFromQueryString(geojson.properties, 'scrollWheelZoom');
         L.Map.prototype.initialize.call(this, el, geojson.properties);
         this.initLoader();
         this.name = this.options.name;
@@ -67,7 +68,6 @@ L.Storage.Map.include({
         this.overrideBooleanOptionFromQueryString("zoomControl");
         this.overrideBooleanOptionFromQueryString("moreControl");
         this.overrideBooleanOptionFromQueryString("miniMap");
-        this.overrideBooleanOptionFromQueryString("scrollWheelZoom");
         this.overrideBooleanOptionFromQueryString("scaleControl");
         this.overrideBooleanOptionFromQueryString("allowEdit");
         this.overrideBooleanOptionFromQueryString("datalayersControl");
@@ -781,6 +781,7 @@ L.Storage.Map.include({
         var editableOptions = [
             'zoom',
             'datalayersControl',
+            'scrollWheelZoom',
             'zoomControl',
             'scaleControl',
             'moreControl',
