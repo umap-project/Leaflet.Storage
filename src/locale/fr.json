@@ -180,5 +180,11 @@
     "Iframe with custom height (in px): {{{http://image.url.com|height}}}": "Iframe avec hauteur (en pixels): {{{http://image.url.com|hauteur}}}",
     "Iframe: {{{http://image.url.com}}}": "Iframe: {{{http://image.url.com}}}",
     "User interface options": "Options d'interface",
-    "Image with custom width (in px): {{http://image.url.com|width}}": "Image avec largeur (en pixels): {{http://image.url.com|largeur}}"
+    "Image with custom width (in px): {{http://image.url.com|width}}": "Image avec largeur (en pixels): {{http://image.url.com|largeur}}",
+    "Current view instead of default map view?": "Vue courante plutôt que la vue par défaut?",
+    "Iframe export options": "Options d'export de l'iframe",
+    "Include full screen link?": "Inclure le lien \"plein écran\"?",
+    "See full screen": "Voir en plein écran",
+    "height": "hauteur",
+    "width": "largeur"
 }
