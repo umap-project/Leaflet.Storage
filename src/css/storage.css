@@ -1017,6 +1017,15 @@ a.storage-control-text {
 .leaflet-contextmenu-icon {
     display: none;
 }
+.leaflet-label:before {
+    left: -8px;
+}
+.leaflet-label:after {
+    right: -8px;
+}
+.leaflet-label {
+    border-width: 2px;
+}
 
 /* ****** */
 /* Mobile */

@@ -7,6 +7,7 @@
 - fix bug where polygon export were adding a point
 - make that only visible elements are downloaded
 - iframe export helper
+- add Leaflet.label (for marker only atm)
 
 ## 0.5.x
 - datalayers are now sent to backend as geojson

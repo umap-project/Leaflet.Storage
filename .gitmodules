@@ -37,3 +37,6 @@
 [submodule "reqs/measure"]
 	path = reqs/measure
 	url = https://github.com/makinacorpus/Leaflet.MeasureControl.git
+[submodule "reqs/label"]
+	path = reqs/label
+	url = https://github.com/Leaflet/Leaflet.label.git
