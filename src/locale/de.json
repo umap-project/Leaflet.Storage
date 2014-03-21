@@ -181,10 +181,10 @@
     "Iframe: {{{http://image.url.com}}}": "Iframe: {{{http://bild.url.com}}}",
     "User interface options": "Einstellungen Benutzeroberfläche",
     "Image with custom width (in px): {{http://image.url.com|width}}": "Bild mit benutzerdefinierter Breite (in Pixel): {{http://bild.url.com|Breite}}",
-    "Current view instead of default map view?": "Current view instead of default map view?",
-    "Iframe export options": "Iframe export options",
-    "Include full screen link?": "Include full screen link?",
-    "See full screen": "See full screen",
-    "height": "height",
-    "width": "width"
+    "Current view instead of default map view?": "Aktuelle Kartenansicht anstatt der Standard-Kartenansicht verwenden?",
+    "Iframe export options": "Iframe Exportoptionen",
+    "Include full screen link?": "Vollbild-Link mit einbeziehen?",
+    "See full screen": "Vollbildanzeige",
+    "height": "Höhe",
+    "width": "Breite"
 }
