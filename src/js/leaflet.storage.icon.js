@@ -86,7 +86,7 @@ L.Storage.Icon.Circle = L.Storage.Icon.extend({
         var default_options = {
             iconAnchor: new L.Point(6, 6),
             popupAnchor: new L.Point(0, -6),
-            labelAnchor: new L.Point(0, 0),
+            labelAnchor: new L.Point(0, 2),
             className: "storage-circle-icon"
         };
         options = L.Util.extend({}, default_options, options);
