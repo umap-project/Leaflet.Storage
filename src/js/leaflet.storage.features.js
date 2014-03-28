@@ -75,7 +75,12 @@ L.Storage.FeatureMixin = {
         // We always want name and description for now (properties management to come)
         properties.unshift('properties.description');
         properties.unshift('properties.name');
-        builder = new L.S.FormBuilder(this, properties, {id: 'storage-feature-properties'});
+        builder = new L.S.FormBuilder(this, properties,
+            {
+                id: 'storage-feature-properties',
+                callback: this.resetLabel
+            }
+        );
         form = builder.build();
         container.appendChild(form);
         var options_fields = this.getAdvancedOptions();
@@ -361,6 +366,17 @@ L.Storage.FeatureMixin = {
         if (this.tooltip) {
             this.tooltip.dispose();
         }
+    },
+
+    resetLabel: function () {
+        if (this.label) {
+            this.hideLabel();
+            delete this.label;
+        }
+        if (this.getOption('showLabel') && this.properties.name) {
+            this.bindLabel(L.Util.escapeHTML(this.properties.name), {noHide: true});
+            this.showLabel();
+        }
     }
 
 };
@@ -432,6 +448,7 @@ L.Storage.Marker = L.Marker.extend({
     _initIcon: function () {
         this.options.icon = this.getIcon();
         L.Marker.prototype._initIcon.call(this);
+        this.resetLabel();
     },
 
     disconnectFromDataLayer: function (datalayer) {
@@ -487,7 +504,8 @@ L.Storage.Marker = L.Marker.extend({
             'properties._storage_options.color',
             'properties._storage_options.iconClass',
             'properties._storage_options.iconUrl',
-            'properties._storage_options.popupTemplate'
+            'properties._storage_options.popupTemplate',
+            ['properties._storage_options.showLabel', {handler: 'CheckBox', helpText: L._('Add a permanent label')}]
         ];
     },
 

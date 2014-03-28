@@ -707,3 +707,51 @@ L.S.MeasureControl = L.Control.MeasureControl.extend({
     }
 
 });
+
+L.S.IframeExporter = L.Class.extend({
+    includes: [L.Mixin.Events],
+
+    options: {
+        includeFullScreenLink: true,
+        currentView: false
+    },
+
+    queryString : {
+        scaleControl: false,
+        miniMap: false,
+        scrollWheelZoom: false,
+        zoomControl: true,
+        allowEdit: false,
+        moreControl: true,
+        datalayersControl: true,
+        displayCaptionOnLoad: true,
+        displayDataBrowserOnLoad: true
+    },
+
+    dimensions: {
+        width: '100%',
+        height: '300px'
+    },
+
+    initialize: function (map) {
+        this.map = map;
+        this.baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
+        this.queryString.displayDataBrowserOnLoad = this.map.options.displayDataBrowserOnLoad;
+        this.queryString.displayCaptionOnLoad = this.map.options.displayCaptionOnLoad;
+    },
+
+    getMap: function () {
+        return this.map;
+    },
+
+    build: function () {
+        var currentView = this.options.currentView ? window.location.hash : '',
+            iframeUrl = this.baseUrl + '?' + L.S.Xhr.buildQueryString(this.queryString) + currentView,
+            code = '<iframe width="' + this.dimensions.width + '" height="' + this.dimensions.height + '" frameBorder="0" src="' + iframeUrl +'"></iframe>';
+        if (this.options.includeFullScreenLink) {
+            code += '<p><a href="' + this.baseUrl + '">' + L._('See full screen') + '</a></p>';
+        }
+        return code;
+    }
+
+});

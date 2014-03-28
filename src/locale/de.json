@@ -176,8 +176,16 @@
     "Credits": "Credits",
     "Only visible features will be downloaded.": "Nur eingeblendete Elemente werden heruntergeladen.",
     "Open this map extent in a map editor to provide more accurate data to OpenStreetMap": "Diesen Kartenauschnitt in einem Karten-Editor öffnen, um genauere Daten für OpenStreetMap bereitzustellen.",
-    "Default properties": "Default properties",
-    "Iframe with custom height (in px): {{{http://image.url.com|height}}}": "Iframe with custom height (in px): {{{http://image.url.com|height}}}",
-    "Iframe: {{{http://image.url.com}}}": "Iframe: {{{http://image.url.com}}}",
-    "User interface options": "User interface options"
+    "Default properties": "Standardeigenschaften",
+    "Iframe with custom height (in px): {{{http://image.url.com|height}}}": "Iframe mit benutzerdefinierter Höhe (in Pixel): {{{http://bild.url.com|Höhe}}}",
+    "Iframe: {{{http://image.url.com}}}": "Iframe: {{{http://bild.url.com}}}",
+    "User interface options": "Einstellungen Benutzeroberfläche",
+    "Image with custom width (in px): {{http://image.url.com|width}}": "Bild mit benutzerdefinierter Breite (in Pixel): {{http://bild.url.com|Breite}}",
+    "Current view instead of default map view?": "Aktuelle Kartenansicht anstatt der Standard-Kartenansicht verwenden?",
+    "Iframe export options": "Iframe Exportoptionen",
+    "Include full screen link?": "Vollbild-Link mit einbeziehen?",
+    "See full screen": "Vollbildanzeige",
+    "height": "Höhe",
+    "width": "Breite",
+    "Add a permanent label": "Name immmer anzeigen"
 }

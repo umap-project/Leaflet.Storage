@@ -85,7 +85,7 @@ L.Util.toHTML = function (r) {
 
     // images
     r = r.replace(/{{([^\]|]*?)}}/g, '<img src="$1">');
-    r = r.replace(/{{([^|]*?)\|(.*?)}}/g, '<img src="$1" alt="$2">');
+    r = r.replace(/{{([^|]*?)\|(\d*?)}}/g, '<img src="$1" width="$2">');
 
     //Unescape http
     r = r.replace(/(h_t_t_p)/g, 'http');
@@ -297,6 +297,7 @@ L.Storage.Help = L.Class.extend({
         L.DomUtil.add('li', '', elements, L._('Simple link: [[http://example.com]]'));
         L.DomUtil.add('li', '', elements, L._('Link with text: [[http://example.com|text of the link]]'));
         L.DomUtil.add('li', '', elements, L._('Image: {{http://image.url.com}}'));
+        L.DomUtil.add('li', '', elements, L._('Image with custom width (in px): {{http://image.url.com|width}}'));
         L.DomUtil.add('li', '', elements, L._('Iframe: {{{http://image.url.com}}}'));
         L.DomUtil.add('li', '', elements, L._('Iframe with custom height (in px): {{{http://image.url.com|height}}}'));
         L.DomUtil.add('li', '', elements, L._('--- for an horizontal rule'));
