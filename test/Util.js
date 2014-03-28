@@ -30,8 +30,8 @@ describe('L.Util', function () {
             assert.equal(L.Util.toHTML('A simple image: {{http://osm.org/pouet.png}}'), 'A simple image: <img src="http://osm.org/pouet.png">');
         });
 
-        it('should handle image with alt', function () {
-            assert.equal(L.Util.toHTML('A simple image: {{http://osm.org/pouet.png|alt text}}'), 'A simple image: <img src="http://osm.org/pouet.png" alt="alt text">');
+        it('should handle image with width', function () {
+            assert.equal(L.Util.toHTML('A simple image: {{http://osm.org/pouet.png|100}}'), 'A simple image: <img src="http://osm.org/pouet.png" width="100">');
         });
 
         it('should handle iframe', function () {

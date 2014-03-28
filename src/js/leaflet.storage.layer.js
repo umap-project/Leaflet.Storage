@@ -399,7 +399,9 @@ L.Storage.DataLayer = L.Class.extend({
 
     reset: function () {
         if (this.storage_id) {
-            this._leaflet_events = this._leaflet_events_bk;
+            if (this._leaflet_events_bk && !this._leaflet_events) {
+                this._leaflet_events = this._leaflet_events_bk;
+            }
             this.hide();
             this.clear();
             if (this.isRemoteLayer()) {

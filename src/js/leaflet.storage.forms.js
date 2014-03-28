@@ -756,7 +756,16 @@ L.Storage.FormBuilder = L.Class.extend({
         iconClass: {handler: 'IconClassSwitcher', label: L._('type of icon')},
         iconUrl: {handler: 'IconUrl', label: L._('symbol of the icon')},
         popupTemplate: {handler: 'PopupTemplate', label: L._('template to use for the popup')},
-        datalayer: {handler: 'DataLayerSwitcher', label: L._('Choose the layer of the feature')}
+        datalayer: {handler: 'DataLayerSwitcher', label: L._('Choose the layer of the feature')},
+        moreControl: {handler: 'CheckBox', helpText: L._("Do you want to display the 'more' control?")},
+        datalayersControl: {handler: 'CheckBox', helpText: L._("Do you want to display the data layers control?")},
+        zoomControl: {handler: 'CheckBox', helpText: L._("Do you want to display zoom control?")},
+        scrollWheelZoom: {handler: 'CheckBox', helpText: L._("Allow scroll wheel zoom?")},
+        miniMap: {handler: 'CheckBox', helpText: L._("Do you want to display a minimap?")},
+        scaleControl: {handler: 'CheckBox', helpText: L._("Do you want to display the scale control?")},
+        displayCaptionOnLoad: {handler: 'CheckBox', helpText: L._("Do you want to display map caption on load?")},
+        displayDataBrowserOnLoad: {handler: 'CheckBox', helpText: L._("Do you want to display data browser on load?")},
+        displayPopupFooter: {handler: 'CheckBox', helpText: L._("Do you want to display popup footer?")}
     }
 
 });

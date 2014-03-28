@@ -40,7 +40,8 @@ L.Map.mergeOptions({
     limitBounds: {},
     importPresets: [
         // {url: 'http://localhost:8019/en/datalayer/1502/', label: 'Simplified World Countries', format: 'geojson'}
-    ]
+    ],
+    moreControl: true
 });
 
 L.Storage.Map.include({
@@ -52,6 +53,7 @@ L.Storage.Map.include({
         }
         var zoomControl = typeof geojson.properties.zoomControl !== "undefined" ? geojson.properties.zoomControl : true;
         geojson.properties.zoomControl = false;
+        L.Util.setBooleanFromQueryString(geojson.properties, 'scrollWheelZoom');
         L.Map.prototype.initialize.call(this, el, geojson.properties);
         this.initLoader();
         this.name = this.options.name;
@@ -60,17 +62,15 @@ L.Storage.Map.include({
         if (geojson.geometry) {
             this.options.center = geojson.geometry;
         }
-        if (typeof this.options.moreControl === "undefined") {
-            this.options.moreControl = true;
-        }
         this.options.zoomControl = zoomControl;
         this.overrideBooleanOptionFromQueryString("zoomControl");
         this.overrideBooleanOptionFromQueryString("moreControl");
         this.overrideBooleanOptionFromQueryString("miniMap");
-        this.overrideBooleanOptionFromQueryString("scrollWheelZoom");
         this.overrideBooleanOptionFromQueryString("scaleControl");
         this.overrideBooleanOptionFromQueryString("allowEdit");
         this.overrideBooleanOptionFromQueryString("datalayersControl");
+        this.overrideBooleanOptionFromQueryString("displayDataBrowserOnLoad");
+        this.overrideBooleanOptionFromQueryString("displayCaptionOnLoad");
         if (L.Browser.ielt9) {
             // TODO include ie9
             this.options.allowEdit = false;
@@ -463,10 +463,31 @@ L.Storage.Map.include({
     renderShareBox: function () {
         var container = L.DomUtil.create('div', 'storage-share'),
             embedTitle = L.DomUtil.add('h4', '', container, L._('Embed the map')),
-            iframe = L.DomUtil.create('textarea', 'storage-share-iframe', container),
-            url = window.location.protocol + '//' + window.location.host + window.location.pathname,
-            iframeUrl = url + '?scaleControl=0&miniMap=0&scrollWheelZoom=0&allowEdit=0';
-        iframe.innerHTML = '<iframe width="100%" height="300" frameBorder="0" src="' + iframeUrl +'"></iframe><p><a href="' + url + '">See full screen</a></p>';
+            iframe = L.DomUtil.create('textarea', 'storage-share-iframe', container);
+        var UIFields = [
+            ['dimensions.width', {handler: 'Input', label: L._('width')}],
+            ['dimensions.height', {handler: 'Input', label: L._('height')}],
+            ['options.includeFullScreenLink', {handler: 'CheckBox', helpText: L._('Include full screen link?')}],
+            ['options.currentView', {handler: 'CheckBox', helpText: L._('Current view instead of default map view?')}],
+            'queryString.moreControl',
+            'queryString.datalayersControl',
+            'queryString.zoomControl',
+            'queryString.scrollWheelZoom',
+            'queryString.miniMap',
+            'queryString.scaleControl',
+            'queryString.displayCaptionOnLoad',
+            'queryString.displayDataBrowserOnLoad',
+        ];
+        var iframeExporter = new L.S.IframeExporter(this);
+        var buildIframeCode = function () {
+            iframe.innerHTML = iframeExporter.build();
+        };
+        buildIframeCode();
+        var builder = new L.S.FormBuilder(iframeExporter, UIFields, {
+            callback: buildIframeCode
+        });
+        var iframeOptions = L.DomUtil.createFieldset(container, L._('Iframe export options'));
+        iframeOptions.appendChild(builder.build());
         if (this.options.shortUrl) {
             L.DomUtil.create('hr', '', container);
             L.DomUtil.add('h4', '', container, L._('Short URL'));
@@ -758,6 +779,7 @@ L.Storage.Map.include({
         var editableOptions = [
             'zoom',
             'datalayersControl',
+            'scrollWheelZoom',
             'zoomControl',
             'scaleControl',
             'moreControl',
@@ -870,15 +892,15 @@ L.Storage.Map.include({
         form = builder.build();
         container.appendChild(form);
         var UIFields = [
-            ['options.moreControl', {handler: 'CheckBox', helpText: L._("Do you want to display the 'more' control?")}],
-            ['options.datalayersControl', {handler: 'CheckBox', helpText: L._("Do you want to display the data layers control?")}],
-            ['options.zoomControl', {handler: 'CheckBox', helpText: L._("Do you want to display zoom control?")}],
-            ['options.scrollWheelZoom', {handler: 'CheckBox', helpText: L._("Allow scroll wheel zoom?")}],
-            ['options.miniMap', {handler: 'CheckBox', helpText: L._("Do you want to display a minimap?")}],
-            ['options.scaleControl', {handler: 'CheckBox', helpText: L._("Do you want to display the scale control?")}],
-            ['options.displayCaptionOnLoad', {handler: 'CheckBox', helpText: L._("Do you want to display map caption on load?")}],
-            ['options.displayDataBrowserOnLoad', {handler: 'CheckBox', helpText: L._("Do you want to display data browser on load?")}],
-            ['options.displayPopupFooter', {handler: 'CheckBox', helpText: L._("Do you want to display popup footer?")}]
+            'options.moreControl',
+            'options.datalayersControl',
+            'options.zoomControl',
+            'options.scrollWheelZoom',
+            'options.miniMap',
+            'options.scaleControl',
+            'options.displayCaptionOnLoad',
+            'options.displayDataBrowserOnLoad',
+            'options.displayPopupFooter'
         ];
         builder = new L.S.FormBuilder(this, UIFields, {
             callback: this.initControls,
