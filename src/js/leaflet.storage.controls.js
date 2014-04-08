@@ -608,7 +608,7 @@ L.Storage.JumpToLocationControl = L.Control.extend({
                     L.DomUtil.removeClass(link, 'loading');
                     if (data.length > 0 && data[0].lon && data[0].lat) {
                         map.panTo([data[0].lat, data[0].lon]);
-                        map.setZoom(15);
+                        map.setZoom(map.options.jumpToZoom);
                     }
                     else {
                         L.S.fire('ui:alert', {content: L._('Sorry, no location found for {location}', {location: search_terms})});

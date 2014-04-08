@@ -41,7 +41,8 @@ L.Map.mergeOptions({
     importPresets: [
         // {url: 'http://localhost:8019/en/datalayer/1502/', label: 'Simplified World Countries', format: 'geojson'}
     ],
-    moreControl: true
+    moreControl: true,
+    jumpToZoom: 15
 });
 
 L.Storage.Map.include({
