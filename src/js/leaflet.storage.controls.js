@@ -393,7 +393,7 @@ L.Storage.Map.include({
                 symbol = feature._getIconUrl ? L.S.Icon.prototype.formatUrl(feature._getIconUrl(), feature): null;
             zoom_to.title = L._("Bring feature to center");
             edit.title = L._("Edit this feature");
-            title.innerHTML = feature.properties.name || '—';
+            title.innerHTML = feature.getDisplayName() || '—';
             color.style.backgroundColor = feature.getOption('color');
             if (symbol) {
                 color.style.backgroundImage = 'url(' + symbol + ')';

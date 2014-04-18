@@ -51,7 +51,7 @@ L.Storage.FeatureMixin = {
             var win = window.open(this.properties._storage_options.outlink);
             return;
         }
-        this.populatePopup();
+        this.attachPopup();
         this.openPopup(e.latlng);
     },
 
@@ -111,33 +111,11 @@ L.Storage.FeatureMixin = {
 
     endEdit: function () {},
 
-    defaultPopupTemplate: function (container) {
-        if (this.properties.description) {
-            var content = L.DomUtil.create('p', '', container);
-            content.innerHTML = L.Util.toHTML(this.properties.description);
-        }
-
+    getDisplayName: function () {
+        return this.properties.name || this.properties.title;
     },
 
-    tablePopupTemplate: function (container) {
-        var table = L.DomUtil.create('table', '', container);
-
-        var addRow = function (key, value) {
-            var tr = L.DomUtil.create('tr', '', table);
-            L.DomUtil.add('th', '', tr, key);
-            L.DomUtil.add('td', '', tr, value);
-        };
-
-        for (var key in this.properties) {
-            if (typeof this.properties[key] === "object" || key === "name") {
-                continue;
-            }
-            // TODO, manage links (url, mailto, wikipedia...)
-            addRow(key, L.Util.escapeHTML(this.properties[key]));
-        }
-    },
-
-    displayPopupFooter: function () {
+    hasPopupFooter: function () {
         if (L.Browser.ielt9) {
             return false;
         }
@@ -147,48 +125,13 @@ L.Storage.FeatureMixin = {
         return this.map.options.displayPopupFooter;
     },
 
-    populatePopup: function () {
-        var container = L.DomUtil.create('div', '');
-        if (this.properties.name) {
-            L.DomUtil.add('h3', 'popup-title', container, L.Util.escapeHTML(this.properties.name));
-        }
-        var content = L.DomUtil.create('div', 'storage-popup-content', container),
-            template = this.getOption('popupTemplate');
-        if (template === "table") {
-            this.tablePopupTemplate(content);
-        } else {
-            this.defaultPopupTemplate(content);
-        }
-        if (this.displayPopupFooter()) {
-            var footer = L.DomUtil.create('ul', 'storage-popup-footer', container),
-                previous_li = L.DomUtil.create('li', 'previous', footer),
-                zoom_li = L.DomUtil.create('li', 'zoom', footer),
-                next_li = L.DomUtil.create('li', 'next', footer),
-                next = this.getNext(),
-                prev = this.getPrevious();
-            if (next) {
-                next_li.title = L._("Go to «{feature}»", {feature: next.properties.name});
-            }
-            if (prev) {
-                previous_li.title = L._("Go to «{feature}»", {feature: prev.properties.name});
-            }
-            zoom_li.title = L._("Zoom to this feature");
-            L.DomEvent.on(next_li, 'click', function (e) {
-                if (next) {
-                    next.bringToCenter(e, function () {next.view(next.getCenter());});
-                }
-            }, this);
-            L.DomEvent.on(previous_li, 'click', function (e) {
-                if (prev) {
-                    prev.bringToCenter(e, function () {prev.view(prev.getCenter());});
-                }
-            }, this);
-            L.DomEvent.on(zoom_li, 'click', function (e) {
-                this.map._zoom = 16;  // Do not hardcode this
-                this.bringToCenter();
-            }, this);
-        }
-        this.bindPopup(container);
+    getPopupClass: function () {
+        return L.Storage.Popup[this.getOption('popupTemplate')] || L.Storage.Popup;
+    },
+
+    attachPopup: function () {
+        var Class = this.getPopupClass();
+        this.bindPopup(new Class(this));
     },
 
     confirmDelete: function () {

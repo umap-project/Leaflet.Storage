@@ -116,6 +116,19 @@ describe('L.Storage.Poly', function () {
             assert.ok(qs('path[fill="none"]')); // Polyline fill is unchanged
             assert.notOk(qs('path[fill="DarkBlue"]'));
             assert.ok(qs('path[fill="MediumAquaMarine"]'));
+            clickCancel();
+        });
+
+    });
+
+    describe('#openPopup()', function () {
+
+        it('should open a popup on click', function () {
+            assert.notOk(qs('.leaflet-popup-content'));
+            happen.click(qs('path[fill="DarkBlue"]'));
+            var title = qs('.leaflet-popup-content');
+            assert.ok(title);
+            assert.ok(title.innerHTML.indexOf('name poly'));
         });
 
     });

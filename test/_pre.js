@@ -9,6 +9,9 @@ var resetMap = function () {
 var enableEdit = function () {
     happen.click(qs('div.leaflet-control-edit-enable a'));
 };
+var disableEdit = function () {
+    happen.click(qs('div.leaflet-control-edit-disable a'));
+};
 var clickSave = function () {
     happen.click(qs('a.leaflet-control-edit-save'));
 };
@@ -169,7 +172,7 @@ var RESPONSES = {
             },
             "type": "Feature",
             "id": 76,
-            "properties": {"options": {}, "datalayer_id": 62, "name": "test poly clickeabl", "icon": {}}
+            "properties": {"options": {}, "datalayer_id": 62, "name": "name poly", "icon": {}}
         }]
     }
 };
