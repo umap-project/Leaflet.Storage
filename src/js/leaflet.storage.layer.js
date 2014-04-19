@@ -268,7 +268,13 @@ L.Storage.DataLayer = L.Class.extend({
         } else if (type === 'kml') {
             callback(toGeoJSON.kml(toDom(c)));
         } else if (type === 'osm') {
-            callback(osm_geojson.osm2geojson(toDom(c)));
+            var d;
+            try {
+                d = JSON.parse(c);
+            } catch (e) {
+                d = toDom(c);
+            }
+            callback(osmtogeojson(d, {flatProperties: true}));
         } else if (type === "geojson") {
             try {
                 gj = JSON.parse(c);
