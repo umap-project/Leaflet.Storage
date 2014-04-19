@@ -995,7 +995,7 @@ a.storage-control-text {
     border-radius: 4px;
 }
 .storage-popup-content {
-    max-height: 300px;
+    max-height: 500px;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -1025,6 +1025,12 @@ a.storage-control-text {
 }
 .leaflet-label {
     border-width: 2px;
+}
+.storage-georss-image img {
+    max-width: 500px !important;
+}
+.storage-georss-link .popup-title {
+    text-align: center;
 }
 
 /* ****** */

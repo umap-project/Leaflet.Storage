@@ -545,7 +545,7 @@ L.Storage.Map.include({
             layerLabel = L.DomUtil.create('label', '', container),
             submitInput = L.DomUtil.create('input', '', container),
             map = this, option,
-            types = ['geojson', 'csv', 'gpx', 'kml', 'osm'];
+            types = ['geojson', 'csv', 'gpx', 'kml', 'osm', 'georss'];
         title.innerHTML = L._('Import data');
         fileInput.type = "file";
         submitInput.type = "button";

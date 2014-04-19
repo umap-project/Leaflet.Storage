@@ -13,15 +13,21 @@ L.S.Popup = L.Popup.extend({
     },
 
     renderTitle: function () {
+        var title;
         if (this.feature.getDisplayName()) {
-            L.DomUtil.add('h3', 'popup-title', this.container, L.Util.escapeHTML(this.feature.getDisplayName()));
+            title = L.DomUtil.create('h3', 'popup-title');
+            title.innerHTML = L.Util.escapeHTML(this.feature.getDisplayName());
         }
+        return title;
     },
 
     renderBody: function () {
+        var body;
         if (this.feature.properties.description) {
-            L.DomUtil.add('p', '', this.bodyContainer, L.Util.toHTML(this.feature.properties.description));
+            body = L.DomUtil.create('p');
+            body.innerHTML = L.Util.toHTML(this.feature.properties.description);
         }
+        return body;
     },
 
     renderFooter: function () {
@@ -57,10 +63,23 @@ L.S.Popup = L.Popup.extend({
     },
 
     format: function () {
-        this.renderTitle();
-        this.bodyContainer = L.DomUtil.create('div', 'storage-popup-content', this.container);
-        this.renderBody();
+        var title = this.renderTitle();
+        if (title) {
+            this.container.appendChild(title);
+        }
+        var body = this.renderBody();
+        if (body) {
+            this.bodyContainer = L.DomUtil.add('div', 'storage-popup-content', this.container, body);
+        }
         this.renderFooter();
+    },
+
+    onImageLoad: function (img) {
+        L.DomEvent.on(img, 'load', function () {
+            this._updateLayout();
+            this._updatePosition();
+            this._adjustPan();
+        }, this);
     }
 
 });
@@ -68,7 +87,7 @@ L.S.Popup = L.Popup.extend({
 L.S.Popup.Table = L.S.Popup.extend({
 
     renderBody: function () {
-        var table = L.DomUtil.create('table', '', this.bodyContainer);
+        var table = L.DomUtil.create('table');
 
         var addRow = function (key, value) {
             var tr = L.DomUtil.create('tr', '', table);
@@ -83,9 +102,52 @@ L.S.Popup.Table = L.S.Popup.extend({
             // TODO, manage links (url, mailto, wikipedia...)
             addRow(key, L.Util.escapeHTML(this.feature.properties[key]));
         }
-
+        return table;
     }
 
 });
 
 L.S.Popup.table = L.S.Popup.Table;  // backward compatibility
+
+L.S.Popup.GeoRSSImage = L.S.Popup.extend({
+
+    options: {
+        minWidth: 300,
+        maxWidth: 500,
+        className: 'storage-georss-image'
+    },
+
+    renderBody: function () {
+        var container = L.DomUtil.create('a');
+        container.href = this.feature.properties.link;
+        container.target = "_blank";
+        if (this.feature.properties.img) {
+            var img = L.DomUtil.create('img', '', container);
+            img.src = this.feature.properties.img;
+            // Sadly, we are unable to override this from JS the clean way
+            // See https://github.com/Leaflet/Leaflet/commit/61d746818b99d362108545c151a27f09d60960ee#commitcomment-6061847
+            img.style.maxWidth = this.options.maxWidth + "px";
+            img.style.maxHeight = this.options.maxWidth + "px";
+            this.onImageLoad(img);
+        }
+        return container;
+    }
+
+});
+
+L.S.Popup.GeoRSSLink = L.S.Popup.extend({
+
+    options: {
+        className: 'storage-georss-link'
+    },
+
+    renderBody: function () {},
+    renderTitle: function () {
+        var title = L.S.Popup.prototype.renderTitle.call(this),
+            a = L.DomUtil.add('a');
+        a.href = this.feature.properties.link;
+        a.target = "_blank";
+        a.appendChild(title);
+        return a;
+    }
+});

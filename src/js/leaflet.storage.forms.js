@@ -386,15 +386,22 @@ L.S.ElementHelper.PopupTemplate = L.S.ElementHelper.SelectAbstract.extend({
 
     selectOptions: [
         [undefined, L._('inherit')],
-        ["default", L._('name and description')],
-        ["table", L._('table')]
+        ["Default", L._('Name and description')],
+        ["Table", L._('Table')],
+        ["GeoRSSImage", L._('GeoRSS (title + image)')],
+        ["GeoRSSLink", L._('GeoRSS (only link)')]
     ],
 
     toJS: function () {
         var value = this.value();
         switch(value) {
             case "default":
+            case "Table":
+            case "GeoRSSImage":
+            case "GeoRSSLink":
+                break;
             case "table":
+                value = "Table";
                 break;
             default:
                 value = undefined;
@@ -439,7 +446,8 @@ L.S.ElementHelper.DataFormat = L.S.ElementHelper.SelectAbstract.extend({
         ['osm', 'osm'],
         ['csv', 'csv'],
         ['gpx', 'gpx'],
-        ['kml', 'kml']
+        ['kml', 'kml'],
+        ['georss', 'georss']
     ],
 
     toJS: function () {
@@ -449,6 +457,7 @@ L.S.ElementHelper.DataFormat = L.S.ElementHelper.SelectAbstract.extend({
             case "gpx":
             case "csv":
             case "kml":
+            case "georss":
                 break;
             default:
                 value = 'geojson';

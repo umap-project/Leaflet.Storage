@@ -133,9 +133,13 @@ L.Storage.DataLayer = L.Class.extend({
             this.clear();
             return;
         }
-        var self = this;
+        var self = this,
+            url = this.options.remoteData.url;
+        if (this.options.remoteData.proxy && this.map.options.urls.ajax_proxy) {
+            url = L.Util.template(this.map.options.urls.ajax_proxy, {url: encodeURIComponent(url)});
+        }
         this.map.ajax({
-            uri: this.map.localizeUrl(this.options.remoteData.url),
+            uri: this.map.localizeUrl(url),
             verb: 'GET',
             callback: function (raw) {
                 self.clear();
@@ -259,6 +263,8 @@ L.Storage.DataLayer = L.Class.extend({
             });
         } else if (type === 'gpx') {
             callback(toGeoJSON.gpx(toDom(c)));
+        } else if (type === 'georss') {
+            callback(GeoRSSToGeoJSON(toDom(c)));
         } else if (type === 'kml') {
             callback(toGeoJSON.kml(toDom(c)));
         } else if (type === 'osm') {
@@ -280,7 +286,7 @@ L.Storage.DataLayer = L.Class.extend({
 
         if (features) {
             features.sort(function (a, b) {
-                if (!a.properties.name && ! b.properties.name) {
+                if (!a.properties.name && !b.properties.name) {
                     return 0;
                 } else if (!a.properties.name) {
                     return -1;
@@ -482,6 +488,9 @@ L.Storage.DataLayer = L.Class.extend({
             ['options.remoteData.dynamic', {handler: 'CheckBox', label: L._('Dynamic')}],
             ['options.remoteData.licence', {label: L._('Licence'), helpText: L._('Please be sure the licence is compliant with your use.')}]
         ];
+        if (this.map.options.urls.ajax_proxy) {
+            remoteDataFields.push(['options.remoteData.proxy', {handler: 'CheckBox', label: L._('Proxy request'), helpText: L._('To use if remote server doesn\'t allow cross domain (slower)')}]);
+        }
 
         var remoteDataContainer = L.DomUtil.createFieldset(container, L._('Remote data'));
         builder = new L.S.FormBuilder(this, remoteDataFields);
