@@ -37,3 +37,6 @@
 [submodule "reqs/label"]
 	path = reqs/label
 	url = https://github.com/Leaflet/Leaflet.label.git
+[submodule "reqs/osmtogeojson"]
+	path = reqs/osmtogeojson
+	url = git@github.com:tyrasd/osmtogeojson.git
