@@ -60,7 +60,7 @@ L.S.Layer.Heat = L.HeatLayer.extend({
 
     initialize: function (datalayer) {
         this.datalayer = datalayer;
-        L.HeatLayer.prototype.initialize.call(this, [], this.datalayer.options.heatmap);
+        L.HeatLayer.prototype.initialize.call(this, [], this.datalayer.options.heat);
     },
 
     addLayer: function (layer) {
@@ -82,18 +82,18 @@ L.S.Layer.Heat = L.HeatLayer.extend({
     },
 
     getEditableOptions: function () {
-        if (!L.Util.isObject(this.datalayer.options.heatmap)) {
-            this.datalayer.options.heatmap = {};
+        if (!L.Util.isObject(this.datalayer.options.heat)) {
+            this.datalayer.options.heat = {};
         }
         return [
-            ['options.heatmap.radius', {handler: 'BlurIntInput', placeholder: L._('Heatmap radius'), helpText: L._('Override heat map radius (default 25)')}],
+            ['options.heat.radius', {handler: 'BlurIntInput', placeholder: L._('Heatmap radius'), helpText: L._('Override heatmap radius (default 25)')}],
         ];
 
     },
 
     postUpdate: function (field) {
-        if (field === 'options.heatmap.radius') {
-            this.options.radius = this.datalayer.options.heatmap.radius;
+        if (field === 'options.heat.radius') {
+            this.options.radius = this.datalayer.options.heat.radius;
         }
         this._updateOptions();
     }
