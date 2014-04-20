@@ -40,3 +40,6 @@
 [submodule "reqs/osmtogeojson"]
 	path = reqs/osmtogeojson
 	url = git@github.com:tyrasd/osmtogeojson.git
+[submodule "reqs/heat"]
+	path = reqs/heat
+	url = git@github.com:Leaflet/Leaflet.heat.git

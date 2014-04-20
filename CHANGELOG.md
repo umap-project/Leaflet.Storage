@@ -8,6 +8,8 @@
 - make that only visible elements are downloaded
 - iframe export helper
 - add Leaflet.label (for marker only atm)
+- GeoRSS support
+- heatmap support, thanks to https://github.com/Leaflet/Leaflet.heat
 
 ## 0.5.x
 - datalayers are now sent to backend as geojson

@@ -1,3 +1,78 @@
+L.S.Layer = {
+    isBrowsable: true,
+
+    getFeatures: function () {
+        return this._layers;
+    },
+
+    eachFeature: function (method, context) {
+        var features = this.getFeatures();
+        for (var i in features) {
+            method.call(context || this, features[i]);
+        }
+    }
+
+};
+
+L.S.Layer.Default = L.FeatureGroup.extend({
+    _type: "Default",
+    includes: [L.S.Layer],
+
+    initialize: function (datalayer) {
+        this.datalayer = datalayer;
+        L.FeatureGroup.prototype.initialize.call(this);
+    }
+
+});
+
+L.S.Layer.Cluster = L.MarkerClusterGroup.extend({
+    _type: "Cluster",
+    includes: [L.S.Layer],
+
+    initialize: function (datalayer) {
+        this.datalayer = datalayer;
+        L.MarkerClusterGroup.prototype.initialize.call(this, {
+            polygonOptions: {
+                color: this.datalayer.getColor()
+            },
+            iconCreateFunction: function (cluster) {
+                return new L.Storage.Icon.Cluster(datalayer, cluster);
+            }
+        });
+    }
+
+});
+
+L.S.Layer.Heat = L.HeatLayer.extend({
+    _type: "Heat",
+    includes: [L.S.Layer],
+    isBrowsable: false,
+
+    initialize: function (datalayer) {
+        this.datalayer = datalayer;
+        L.HeatLayer.prototype.initialize.call(this, []);
+    },
+
+    addLayer: function (layer) {
+        if (layer instanceof L.Marker) {
+            this.addLatLng(layer.getLatLng());
+        }
+    },
+
+    clearLayers: function () {
+        this.setLatLngs([]);
+    },
+
+    getFeatures: function () {
+        return {};
+    },
+
+    getBounds: function () {
+        return L.latLngBounds(this._latlngs);
+    }
+
+});
+
 L.Storage.DataLayer = L.Class.extend({
 
     includes: [L.Mixin.Events],
@@ -50,10 +125,13 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     resetLayer: function () {
-        if (this.layer && ((this.layer instanceof L.MarkerClusterGroup && this.isClustered()) ||
-            (!this.isClustered() && !(this.layer instanceof L.MarkerClusterGroup)))) {
-            return;
+        // Backward compat, to be removed
+        if (this.options.markercluster) {
+            this.options.type = "Cluster";
+            delete this.options.markercluster;
         }
+
+        if (this.layer && this.options.type === this.layer._type) return;
         var visible = this.isVisible(), self = this;
         if (visible) {
             this.map.removeLayer(this.layer);
@@ -61,18 +139,8 @@ L.Storage.DataLayer = L.Class.extend({
         if (this.layer) {
             this.layer.clearLayers();
         }
-        if (this.isClustered()) {
-            this.layer = new L.MarkerClusterGroup({
-                polygonOptions: {
-                    color: this.getColor()
-                },
-                iconCreateFunction: function (cluster) {
-                    return new L.Storage.Icon.Cluster(self, cluster);
-                }
-            });
-        } else {
-            this.layer = new L.FeatureGroup();
-        }
+        var Class = L.S.Layer[this.options.type] || L.S.Layer.Default;
+        this.layer = new Class(this);
         this.eachLayer(function (layer) {
             this.layer.addLayer(layer);
         });
@@ -84,6 +152,13 @@ L.Storage.DataLayer = L.Class.extend({
     eachLayer: function (method, context) {
         for (var i in this._layers) {
             method.call(context || this, this._layers[i]);
+        }
+        return this;
+    },
+
+    eachFeature: function (method, context) {
+        if (this.layer) {
+            this.layer.eachFeature(method, context | this);
         }
         return this;
     },
@@ -207,7 +282,7 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     isClustered: function () {
-        return !!this.options.markercluster;
+        return this.options.type === "Cluster";
     },
 
     addLayer: function (feature) {
@@ -442,10 +517,16 @@ L.Storage.DataLayer = L.Class.extend({
             metadata_fields = [
                 'options.name',
                 'options.description',
+                ['options.type', {handler: 'LayerTypeChooser', label: L._('Type of layer')}],
                 ['options.displayOnLoad', {label: L._('Display on load'), handler: 'CheckBox'}]
             ];
         var builder = new L.S.FormBuilder(this, metadata_fields, {
-            callback: function () { this.map.updateDatalayersControl(); },
+            callback: function (field) {
+                this.map.updateDatalayersControl();
+                if (field === "options.type") {
+                    this.resetLayer();
+                }
+            },
             callbackContext: this
         });
         form = builder.build();
@@ -462,17 +543,13 @@ L.Storage.DataLayer = L.Class.extend({
             'options.fillColor',
             'options.fillOpacity',
             'options.dashArray',
-            'options.popupTemplate',
-            ['options.markercluster', {handler: 'CheckBox', label: L._('Cluster markers')}],
+            'options.popupTemplate'
         ];
 
         builder = new L.S.FormBuilder(this, optionsFields, {
             id: 'datalayer-advanced-properties',
             callback: function (field) {
                 this.hide();
-                if (field === "options.markercluster") {
-                    this.resetLayer();
-                }
                 if (field === "options.color" && this.isClustered()) {
                     this.layer.options.polygonOptions.color = this.getColor();
                 }
@@ -583,7 +660,7 @@ L.Storage.DataLayer = L.Class.extend({
     getNextVisible: function () {
         var id = this.map.datalayers_index.indexOf(this),
             next = this.map.datalayers_index[id + 1] || this.map.datalayers_index[0];
-        while(!next.isVisible() || next._index.length === 0) {
+        while(!next.isVisible() || next._index.length === 0 || !next.isBrowsable()) {
             next = next.getNextVisible();
         }
         return next;
@@ -592,10 +669,14 @@ L.Storage.DataLayer = L.Class.extend({
     getPreviousVisible: function () {
         var id = this.map.datalayers_index.indexOf(this),
             prev = this.map.datalayers_index[id - 1] || this.map.datalayers_index[this.map.datalayers_index.length - 1];
-        while(!prev.isVisible() || prev._index.length === 0) {
+        while(!prev.isVisible() || prev._index.length === 0 || !prev.isBrowsable()) {
             prev = prev.getPreviousVisible();
         }
         return prev;
+    },
+
+    isBrowsable: function () {
+        return this.layer && this.layer.isBrowsable;
     },
 
     save: function () {

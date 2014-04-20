@@ -418,8 +418,8 @@ L.Storage.Map.include({
 
             var build = function () {
                 ul.innerHTML = "";
-                datalayer.eachLayer(function (layer) {
-                    ul.appendChild(addFeature(layer));
+                datalayer.eachFeature(function (feature) {
+                    ul.appendChild(addFeature(feature));
                 });
             };
             build();

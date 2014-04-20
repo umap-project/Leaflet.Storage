@@ -411,12 +411,35 @@ L.S.ElementHelper.PopupTemplate = L.S.ElementHelper.SelectAbstract.extend({
 
 });
 
+L.S.ElementHelper.LayerTypeChooser = L.S.ElementHelper.SelectAbstract.extend({
+
+    selectOptions: [
+        ["Default", L._('Default')],
+        ["Cluster", L._('Clustered')],
+        ["Heat", L._('Heatmap')],
+    ],
+
+    toJS: function () {
+        var value = this.value();
+        switch(value) {
+            case "Default":
+            case "Cluster":
+            case "Heat":
+                break;
+            default:
+                value = "Default";
+        }
+        return value;
+    }
+
+});
+
 L.S.ElementHelper.DataLayerSwitcher = L.S.ElementHelper.SelectAbstract.extend({
 
     getOptions: function () {
         var options = [];
         this.map.eachDataLayer(function (datalayer) {
-            if(datalayer.isLoaded() && !datalayer.isRemoteLayer()) {
+            if(datalayer.isLoaded() && !datalayer.isRemoteLayer() && datalayer.isBrowsable()) {
                 options.push([L.stamp(datalayer), datalayer.getName()]);
             }
         });
