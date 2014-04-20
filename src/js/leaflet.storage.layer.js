@@ -10,7 +10,11 @@ L.S.Layer = {
         for (var i in features) {
             method.call(context || this, features[i]);
         }
-    }
+    },
+
+    getEditableOptions: function () {return [];},
+
+    postUpdate: function (field) {}
 
 };
 
@@ -39,6 +43,12 @@ L.S.Layer.Cluster = L.MarkerClusterGroup.extend({
                 return new L.Storage.Icon.Cluster(datalayer, cluster);
             }
         });
+    },
+
+    postUpdate: function (field) {
+        if (field === "options.color") {
+            this.options.polygonOptions.color = this.datalayer.getColor();
+        }
     }
 
 });
@@ -50,7 +60,7 @@ L.S.Layer.Heat = L.HeatLayer.extend({
 
     initialize: function (datalayer) {
         this.datalayer = datalayer;
-        L.HeatLayer.prototype.initialize.call(this, []);
+        L.HeatLayer.prototype.initialize.call(this, [], this.datalayer.options.heatmap);
     },
 
     addLayer: function (layer) {
@@ -69,6 +79,23 @@ L.S.Layer.Heat = L.HeatLayer.extend({
 
     getBounds: function () {
         return L.latLngBounds(this._latlngs);
+    },
+
+    getEditableOptions: function () {
+        if (!L.Util.isObject(this.datalayer.options.heatmap)) {
+            this.datalayer.options.heatmap = {};
+        }
+        return [
+            ['options.heatmap.radius', {handler: 'BlurIntInput', placeholder: L._('Heatmap radius'), helpText: L._('Override heat map radius (default 25)')}],
+        ];
+
+    },
+
+    postUpdate: function (field) {
+        if (field === 'options.heatmap.radius') {
+            this.options.radius = this.datalayer.options.heatmap.radius;
+        }
+        this._updateOptions();
     }
 
 });
@@ -525,6 +552,7 @@ L.Storage.DataLayer = L.Class.extend({
                 this.map.updateDatalayersControl();
                 if (field === "options.type") {
                     this.resetLayer();
+                    this.edit();
                 }
             },
             callbackContext: this
@@ -546,13 +574,13 @@ L.Storage.DataLayer = L.Class.extend({
             'options.popupTemplate'
         ];
 
+        optionsFields = optionsFields.concat(this.layer.getEditableOptions());
+
         builder = new L.S.FormBuilder(this, optionsFields, {
             id: 'datalayer-advanced-properties',
             callback: function (field) {
                 this.hide();
-                if (field === "options.color" && this.isClustered()) {
-                    this.layer.options.polygonOptions.color = this.getColor();
-                }
+                this.layer.postUpdate(field);
                 this.show();
             }
         });
