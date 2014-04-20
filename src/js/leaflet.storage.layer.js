@@ -35,17 +35,35 @@ L.S.Layer.Cluster = L.MarkerClusterGroup.extend({
 
     initialize: function (datalayer) {
         this.datalayer = datalayer;
-        L.MarkerClusterGroup.prototype.initialize.call(this, {
+        var options = {
             polygonOptions: {
                 color: this.datalayer.getColor()
             },
             iconCreateFunction: function (cluster) {
                 return new L.Storage.Icon.Cluster(datalayer, cluster);
             }
-        });
+        };
+        if (this.datalayer.options.cluster && this.datalayer.options.cluster.radius) {
+            options.maxClusterRadius = this.datalayer.options.cluster.radius;
+        }
+        L.MarkerClusterGroup.prototype.initialize.call(this, options);
+    },
+
+    getEditableOptions: function () {
+        if (!L.Util.isObject(this.datalayer.options.cluster)) {
+            this.datalayer.options.cluster = {};
+        }
+        return [
+            ['options.cluster.radius', {handler: 'BlurIntInput', placeholder: L._('Clustering radius'), helpText: L._('Override clustering radius (default 80)')}],
+        ];
+
     },
 
     postUpdate: function (field) {
+        if (field === "options.cluster.radius") {
+            // No way to reset radius of an already instanciated MarkerClusterGroup...
+            this.datalayer.resetLayer(true);
+        }
         if (field === "options.color") {
             this.options.polygonOptions.color = this.datalayer.getColor();
         }
@@ -151,14 +169,14 @@ L.Storage.DataLayer = L.Class.extend({
         });
     },
 
-    resetLayer: function () {
+    resetLayer: function (force) {
         // Backward compat, to be removed
         if (this.options.markercluster) {
             this.options.type = "Cluster";
             delete this.options.markercluster;
         }
 
-        if (this.layer && this.options.type === this.layer._type) return;
+        if (this.layer && this.options.type === this.layer._type && !force) return;
         var visible = this.isVisible(), self = this;
         if (visible) {
             this.map.removeLayer(this.layer);
