@@ -63,6 +63,7 @@ L.S.Layer.Cluster = L.MarkerClusterGroup.extend({
         if (field === "options.cluster.radius") {
             // No way to reset radius of an already instanciated MarkerClusterGroup...
             this.datalayer.resetLayer(true);
+            return;
         }
         if (field === "options.color") {
             this.options.polygonOptions.color = this.datalayer.getColor();
@@ -83,7 +84,12 @@ L.S.Layer.Heat = L.HeatLayer.extend({
 
     addLayer: function (layer) {
         if (layer instanceof L.Marker) {
-            this.addLatLng(layer.getLatLng());
+            var latlng = layer.getLatLng(), alt;
+            if (this.datalayer.options.heat && this.datalayer.options.heat.intensityProperty) {
+                alt = parseFloat(layer.properties[this.datalayer.options.heat.intensityProperty || 0]);
+                latlng = new L.LatLng(latlng.lat, latlng.lng, alt);
+            }
+            this.addLatLng(latlng);
         }
     },
 
@@ -105,11 +111,16 @@ L.S.Layer.Heat = L.HeatLayer.extend({
         }
         return [
             ['options.heat.radius', {handler: 'BlurIntInput', placeholder: L._('Heatmap radius'), helpText: L._('Override heatmap radius (default 25)')}],
+            ['options.heat.intensityProperty', {handler: 'BlurInput', placeholder: L._('Heatmap intensity property'), helpText: L._('Optional intensity property for heatmap')}],
         ];
 
     },
 
     postUpdate: function (field) {
+        if (field === 'options.heat.intensityProperty') {
+            this.datalayer.resetLayer(true);  // We need to repopulate the latlngs
+            return;
+        }
         if (field === 'options.heat.radius') {
             this.options.radius = this.datalayer.options.heat.radius;
         }
