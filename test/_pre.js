@@ -155,7 +155,7 @@ var RESPONSES = {
             },
             "type": "Feature",
             "id": 1807,
-            "properties": {"options": {}, "datalayer_id": 62, "name": "test", "icon": {"url": null, "class": null}}
+            "properties": {_storage_options: {color: "OliveDrab"}, name: "test"}
         },
         {
             "geometry": {
@@ -172,7 +172,7 @@ var RESPONSES = {
             },
             "type": "Feature",
             "id": 76,
-            "properties": {"options": {}, "datalayer_id": 62, "name": "name poly", "icon": {}}
+            "properties": {name: "name poly"}
         }]
     }
 };

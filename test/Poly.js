@@ -87,17 +87,31 @@ describe('L.Storage.Poly', function () {
     });
 
     describe('#utils()', function () {
-        var poly;
-        it('should generate a valid geojson', function () {
-            this.datalayer.eachLayer(function (layer) {
+        var poly, marker;
+        function setFeatures (datalayer) {
+            datalayer.eachLayer(function (layer) {
                 if (!poly && layer instanceof L.Polygon) {
                     poly = layer;
                 }
+                if (!marker && layer instanceof L.Marker) {
+                    marker = layer;
+                }
             });
+        }
+        it('should generate a valid geojson', function () {
+            setFeatures(this.datalayer);
             assert.ok(poly);
             assert.deepEqual(poly.geometry(), {"type":"Polygon","coordinates":[[[11.25,53.585983654559804],[10.1513671875,52.9751081817353],[12.689208984375,52.16719363541221],[14.084472656249998,53.199451902831555],[12.63427734375,53.61857936489517],[11.25,53.585983654559804],[11.25,53.585983654559804]]]});
             // Ensure original latlngs has not been modified
             assert.equal(poly.getLatLngs().length, 6);
+        });
+
+        it('should remove empty _storage_options from exported geojson', function () {
+            setFeatures(this.datalayer);
+            assert.ok(poly);
+            assert.deepEqual(poly.toGeoJSON().properties, {name: "name poly"});
+            assert.ok(marker);
+            assert.deepEqual(marker.toGeoJSON().properties, {_storage_options: {color: "OliveDrab"}, name: "test"});
         });
 
     });

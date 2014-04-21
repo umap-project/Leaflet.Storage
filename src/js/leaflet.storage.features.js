@@ -225,10 +225,14 @@ L.Storage.FeatureMixin = {
     },
 
     toGeoJSON: function () {
+        var properties = L.extend({}, this.properties);
+        if (Object.keys && Object.keys(properties._storage_options).length === 0) {
+            delete properties._storage_options;  // It can make a difference on big data sets
+        }
         return {
             type: "Feature",
             geometry: this.geometry(),
-            properties: L.extend({}, this.properties)
+            properties: properties
         };
     },
 
