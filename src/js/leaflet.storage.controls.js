@@ -378,7 +378,11 @@ L.Storage.Map.include({
         var browserContainer = L.DomUtil.create('div', 'storage-browse-data'),
             title = L.DomUtil.add('h3', 'storage-browse-title', browserContainer, this.options.name),
             description = L.DomUtil.create('div', '', browserContainer),
+            filter = L.DomUtil.create('input', '', browserContainer),
+            filterValue = '',
             featuresContainer = L.DomUtil.create('div', 'storage-browse-features', browserContainer);
+        filter.type = 'text';
+        filter.placeholder = L._('Filter…');
         if (this.options.description) {
             var content = L.DomUtil.create('div', 'storage-browse-description', description);
             content.innerHTML = L.Util.toHTML(this.options.description);
@@ -419,6 +423,7 @@ L.Storage.Map.include({
             var build = function () {
                 ul.innerHTML = "";
                 datalayer.eachFeature(function (feature) {
+                    if (filterValue && (feature.getDisplayName() || "").toLowerCase().indexOf(filterValue) === -1) return;
                     ul.appendChild(addFeature(feature));
                 });
             };
@@ -434,9 +439,15 @@ L.Storage.Map.include({
             });
         };
 
-        this.eachDataLayer(function (datalayer) {
-            append(datalayer);
-        });
+        var appendAll = function () {
+            featuresContainer.innerHTML = '';
+            filterValue = filter.value;
+            this.eachDataLayer(function (datalayer) {
+                append(datalayer);
+            });
+        };
+        L.bind(appendAll, this)();
+        L.DomEvent.on(filter, 'input', appendAll, this);
         L.Storage.fire('ui:start', {data: {html: browserContainer}});
     }
 
