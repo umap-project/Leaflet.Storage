@@ -811,7 +811,18 @@ L.Storage.Map.include({
             'description',
             'licence',
             'tilelayer',
-            'limitBounds'
+            'limitBounds',
+            'color',
+            'iconClass',
+            'iconUrl',
+            'smoothFactor',
+            'opacity',
+            'weight',
+            'fill',
+            'fillColor',
+            'fillOpacity',
+            'dashArray',
+            'popupTemplate'
         ], properties = {};
         for (var i = editableOptions.length - 1; i >= 0; i--) {
             if (typeof this.options[editableOptions[i]] !== "undefined") {
