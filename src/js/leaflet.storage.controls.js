@@ -735,8 +735,7 @@ L.S.IframeExporter = L.Class.extend({
         allowEdit: false,
         moreControl: true,
         datalayersControl: true,
-        displayCaptionOnLoad: true,
-        displayDataBrowserOnLoad: true
+        onLoadPanel: "none"
     },
 
     dimensions: {
@@ -747,8 +746,8 @@ L.S.IframeExporter = L.Class.extend({
     initialize: function (map) {
         this.map = map;
         this.baseUrl = window.location.protocol + '//' + window.location.host + window.location.pathname;
-        this.queryString.displayDataBrowserOnLoad = this.map.options.displayDataBrowserOnLoad;
-        this.queryString.displayCaptionOnLoad = this.map.options.displayCaptionOnLoad;
+        // Use map default, not generic default
+        this.queryString.onLoadPanel = this.map.options.onLoadPanel;
     },
 
     getMap: function () {

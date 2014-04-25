@@ -25,11 +25,9 @@ L.Map.mergeOptions({
     editInOSMControlOptions: false,
     scaleControl: true,
     miniMap: false,
-    displayCaptionOnLoad: false,
     name: '',
     description: '',
     displayPopupFooter: false,
-    displayDataBrowserOnLoad: false,
     demoTileInfos: {s:'a', z:9, x:265, y:181},
     tilelayersControl: true,
     licences: [],
@@ -115,10 +113,23 @@ L.Storage.Map.include({
             }
         }
         if (this.options.displayCaptionOnLoad) {
-            this.displayCaption();
+            // Retrocompat
+            if (!this.options.onLoadPanel) {
+                this.options.onLoadPanel = "caption";
+            }
+            delete this.options.displayCaptionOnLoad;
         }
-        else if (this.options.displayDataBrowserOnLoad && this.options.datalayersControl) {
+        if (this.options.displayDataBrowserOnLoad) {
+            // Retrocompat
+            if (!this.options.onLoadPanel) {
+                this.options.onLoadPanel = "databrowser";
+            }
+            delete this.options.displayDataBrowserOnLoad;
+        }
+        if (this.options.onLoadPanel === "databrowser") {
             this.openBrowser();
+        } else if (this.options.onLoadPanel === "caption") {
+            this.displayCaption();
         }
 
         L.Storage.on('ui:closed', function () {
@@ -476,8 +487,7 @@ L.Storage.Map.include({
             'queryString.scrollWheelZoom',
             'queryString.miniMap',
             'queryString.scaleControl',
-            'queryString.displayCaptionOnLoad',
-            'queryString.displayDataBrowserOnLoad',
+            'queryString.onLoadPanel'
         ];
         var iframeExporter = new L.S.IframeExporter(this);
         var buildIframeCode = function () {
@@ -669,14 +679,22 @@ L.Storage.Map.include({
 
     displayCaption: function () {
         var container = L.DomUtil.create('div', 'storage-caption'),
-            title = L.DomUtil.create('h4', '', container);
+            title = L.DomUtil.create('h3', '', container);
         title.innerHTML = this.options.name;
+        if (this.options.author && this.options.author.name && this.options.author.link) {
+            var authorContainer = L.DomUtil.add('h5', 'storage-map-author', container, L._('by') + ' '),
+                author = L.DomUtil.create('a');
+            author.href = this.options.author.link;
+            author.innerHTML = this.options.author.name;
+            authorContainer.appendChild(author);
+        }
         if (this.options.description) {
             var description = L.DomUtil.create('div', 'storage-map-description', container);
             description.innerHTML = L.Util.toHTML(this.options.description);
         }
+        var datalayerContainer = L.DomUtil.create('div', 'datalayer-container', container);
         this.eachDataLayer(function (datalayer) {
-            var p = L.DomUtil.create('p', '', container),
+            var p = L.DomUtil.create('p', '', datalayerContainer),
                 color = L.DomUtil.create('span', 'datalayer-color', p),
                 headline = L.DomUtil.create('strong', '', p),
                 description = L.DomUtil.create('span', '', p);
@@ -689,7 +707,8 @@ L.Storage.Map.include({
                 description.innerHTML = datalayer.options.description;
             }
         });
-        var credits = L.DomUtil.createFieldset(container, L._('Credits'));
+        var creditsContainer = L.DomUtil.create('div', 'credits-container', container),
+            credits = L.DomUtil.createFieldset(creditsContainer, L._('Credits'));
         title = L.DomUtil.create('h5', '', credits);
         title.innerHTML = L._('User content credits');
         var contentCredit = L.DomUtil.create('p', '', credits),
@@ -785,9 +804,8 @@ L.Storage.Map.include({
             'scaleControl',
             'moreControl',
             'miniMap',
-            'displayCaptionOnLoad',
             'displayPopupFooter',
-            'displayDataBrowserOnLoad',
+            'onLoadPanel',
             'tilelayersControl',
             'name',
             'description',
@@ -899,8 +917,7 @@ L.Storage.Map.include({
             'options.scrollWheelZoom',
             'options.miniMap',
             'options.scaleControl',
-            'options.displayCaptionOnLoad',
-            'options.displayDataBrowserOnLoad',
+            'options.onLoadPanel',
             'options.displayPopupFooter'
         ];
         builder = new L.S.FormBuilder(this, UIFields, {

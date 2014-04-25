@@ -321,6 +321,7 @@ L.S.ElementHelper.SelectAbstract = L.S.ElementHelper.extend({
     build: function () {
         this.select = L.DomUtil.create('select', '', this.form);
         this.select.name = this.name;
+        this.validValues = [];
         this.buildOptions();
         L.DomEvent.on(this.select, 'change', this.sync, this);
     },
@@ -342,6 +343,7 @@ L.S.ElementHelper.SelectAbstract = L.S.ElementHelper.extend({
     },
 
     buildOption: function (value, label) {
+        this.validValues.push(value);
         var option = L.DomUtil.create('option', '', this.select);
         option.value = value;
         option.innerHTML = label;
@@ -352,7 +354,21 @@ L.S.ElementHelper.SelectAbstract = L.S.ElementHelper.extend({
 
     value: function () {
         return this.select[this.select.selectedIndex].value;
+    },
+
+    getDefault: function () {
+        return this.getOptions()[0][0];
+    },
+
+    toJS: function () {
+        var value = this.value();
+        if (this.validValues.indexOf(value) !== -1) {
+            return value;
+        } else {
+            return this.getDefault();
+        }
     }
+
 
 });
 
@@ -364,21 +380,7 @@ L.S.ElementHelper.IconClassSwitcher = L.S.ElementHelper.SelectAbstract.extend({
         ["Circle", L._('Circle')],
         ["Drop", L._('Drop')],
         ["Ball", L._('Ball')]
-    ],
-
-    toJS: function () {
-        var value = this.value();
-        switch(value) {
-            case "Default":
-            case "Circle":
-            case "Drop":
-            case "Ball":
-                break;
-            default:
-                value = undefined;
-        }
-        return value;
-    }
+    ]
 
 });
 
@@ -393,19 +395,8 @@ L.S.ElementHelper.PopupTemplate = L.S.ElementHelper.SelectAbstract.extend({
     ],
 
     toJS: function () {
-        var value = this.value();
-        switch(value) {
-            case "default":
-            case "Table":
-            case "GeoRSSImage":
-            case "GeoRSSLink":
-                break;
-            case "table":
-                value = "Table";
-                break;
-            default:
-                value = undefined;
-        }
+        var value = L.S.ElementHelper.SelectAbstract.prototype.toJS.apply(this);
+        if (value === "table") { value = "Table"; }
         return value;
     }
 
@@ -417,20 +408,7 @@ L.S.ElementHelper.LayerTypeChooser = L.S.ElementHelper.SelectAbstract.extend({
         ["Default", L._('Default')],
         ["Cluster", L._('Clustered')],
         ["Heat", L._('Heatmap')],
-    ],
-
-    toJS: function () {
-        var value = this.value();
-        switch(value) {
-            case "Default":
-            case "Cluster":
-            case "Heat":
-                break;
-            default:
-                value = "Default";
-        }
-        return value;
-    }
+    ]
 
 });
 
@@ -460,6 +438,16 @@ L.S.ElementHelper.DataLayerSwitcher = L.S.ElementHelper.SelectAbstract.extend({
 
 });
 
+L.S.ElementHelper.onLoadPanel = L.S.ElementHelper.SelectAbstract.extend({
+
+    selectOptions: [
+        ['none', L._('None')],
+        ['caption', L._('Caption')],
+        ['databrowser', L._('Data browser')]
+    ]
+
+});
+
 
 L.S.ElementHelper.DataFormat = L.S.ElementHelper.SelectAbstract.extend({
 
@@ -471,22 +459,7 @@ L.S.ElementHelper.DataFormat = L.S.ElementHelper.SelectAbstract.extend({
         ['gpx', 'gpx'],
         ['kml', 'kml'],
         ['georss', 'georss']
-    ],
-
-    toJS: function () {
-        var value = this.value();
-        switch(value) {
-            case "osm":
-            case "gpx":
-            case "csv":
-            case "kml":
-            case "georss":
-                break;
-            default:
-                value = 'geojson';
-        }
-        return value;
-    }
+    ]
 
 });
 
@@ -795,8 +768,7 @@ L.Storage.FormBuilder = L.Class.extend({
         scrollWheelZoom: {handler: 'CheckBox', helpText: L._("Allow scroll wheel zoom?")},
         miniMap: {handler: 'CheckBox', helpText: L._("Do you want to display a minimap?")},
         scaleControl: {handler: 'CheckBox', helpText: L._("Do you want to display the scale control?")},
-        displayCaptionOnLoad: {handler: 'CheckBox', helpText: L._("Do you want to display map caption on load?")},
-        displayDataBrowserOnLoad: {handler: 'CheckBox', helpText: L._("Do you want to display data browser on load?")},
+        onLoadPanel: {handler: 'onLoadPanel', helpText: L._("Do you want to display a panel on load?")},
         displayPopupFooter: {handler: 'CheckBox', helpText: L._("Do you want to display popup footer?")}
     }
 
