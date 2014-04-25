@@ -57,7 +57,6 @@ L.Storage.FeatureMixin = {
 
     edit: function(e) {
         if(!this.map.editEnabled || this.isReadOnly()) return;
-        this.map.editedFeature = this;
         var self = this,
             container = L.DomUtil.create('div'), form ;
 
@@ -95,6 +94,7 @@ L.Storage.FeatureMixin = {
         var advancedActions = L.DomUtil.createFieldset(container, L._('Advanced actions'));
         this.getAdvancedEditActions(advancedActions);
         L.S.fire('ui:start', {data: {html: container}});
+        this.map.editedFeature = this;
         this.bringToCenter(e);
     },
 

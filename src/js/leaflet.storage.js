@@ -196,7 +196,7 @@ L.Storage.Map.include({
             this.on('draw:start', function (e) {
                 e.layer.isDirty = true;
             });
-            L.Storage.on('ui:end', function (e) {
+            L.Storage.on('ui:end ui:start', function (e) {
                 this.editedFeature = null;
             }, this);
             this.initEditBar();

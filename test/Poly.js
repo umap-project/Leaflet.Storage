@@ -75,13 +75,28 @@ describe('L.Storage.Poly', function () {
         });
 
         it('should reset style on cancel click', function () {
-            var oldConfirm = window.confirm;
-            window.confirm = function () {return true;};
-            happen.click(qs('.storage-main-edit-toolbox .leaflet-control-edit-cancel'));
+            clickCancel();
             assert.ok(qs('path[fill="none"]')); // Polyline fill is unchanged
             assert.ok(qs('path[fill="DarkBlue"]'));
             assert.notOk(qs('path[fill="DarkRed"]'));
-            window.confirm = oldConfirm;
+        });
+
+        it('should set map.editedFeature on edit', function () {
+            enableEdit();
+            assert.notOk(this.map.editedFeature);
+            happen.dblclick(qs('path[fill="DarkBlue"]'));
+            assert.ok(this.map.editedFeature);
+            disableEdit();
+        });
+
+        it('should reset map.editedFeature on panel open', function () {
+            enableEdit();
+            assert.notOk(this.map.editedFeature);
+            happen.dblclick(qs('path[fill="DarkBlue"]'));
+            assert.ok(this.map.editedFeature);
+            this.map.displayCaption();
+            assert.notOk(this.map.editedFeature);
+            disableEdit();
         });
 
     });

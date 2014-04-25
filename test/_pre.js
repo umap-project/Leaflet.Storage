@@ -10,7 +10,7 @@ var enableEdit = function () {
     happen.click(qs('div.leaflet-control-edit-enable a'));
 };
 var disableEdit = function () {
-    happen.click(qs('div.leaflet-control-edit-disable a'));
+    happen.click(qs('a.leaflet-control-edit-disable'));
 };
 var clickSave = function () {
     happen.click(qs('a.leaflet-control-edit-save'));
