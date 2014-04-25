@@ -198,7 +198,7 @@
     "Table": "Tabelle",
     "To use if remote server doesn't allow cross domain (slower)": "Zu nutzen wenn der remote-Server kein cross domain erlaubt (langsamer).",
     "Type of layer": "Ebenentyp",
-    "Filter…": "Filter…",
-    "Heatmap intensity property": "Heatmap intensity property",
-    "Optional intensity property for heatmap": "Optional intensity property for heatmap"
+    "Filter…": "Filter...",
+    "Heatmap intensity property": "Heatmap Intensitätsmerkmal",
+    "Optional intensity property for heatmap": "Optionales Intensitätsmerkmal für die Heatmap"
 }
