@@ -197,5 +197,8 @@
     "Proxy request": "Avec proxy",
     "Table": "Tableau",
     "To use if remote server doesn't allow cross domain (slower)": "Cocher si le serveur distant n'autorise pas le cross domain (plus lent)",
-    "Type of layer": "Type de calque"
+    "Type of layer": "Type de calque",
+    "Filter…": "Filtrer…",
+    "Heatmap intensity property": "Propriété pour l'intensité de la heatmap",
+    "Optional intensity property for heatmap": "Propriété optionnelle pour à utiliser pour calculer l'intensité de la heatmap"
 }

@@ -197,5 +197,8 @@
     "Proxy request": "Petició proxy",
     "Table": "Taula",
     "To use if remote server doesn't allow cross domain (slower)": "To use if remote server doesn't allow cross domain (slower)",
-    "Type of layer": "Tipus de capa"
+    "Type of layer": "Tipus de capa",
+    "Filter…": "Filter…",
+    "Heatmap intensity property": "Heatmap intensity property",
+    "Optional intensity property for heatmap": "Optional intensity property for heatmap"
 }

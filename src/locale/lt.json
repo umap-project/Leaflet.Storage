@@ -197,5 +197,8 @@
     "Proxy request": "Proxy užklausa",
     "Table": "Lentelė",
     "To use if remote server doesn't allow cross domain (slower)": "Naudoti jei serveris neleidžia cross domain užklausų (lėtesnis sprendimas)",
-    "Type of layer": "Sluoksnio tipas"
+    "Type of layer": "Sluoksnio tipas",
+    "Filter…": "Filter…",
+    "Heatmap intensity property": "Heatmap intensity property",
+    "Optional intensity property for heatmap": "Optional intensity property for heatmap"
 }

@@ -197,5 +197,8 @@
     "Proxy request": "プロキシリクエスト",
     "Table": "テーブル",
     "To use if remote server doesn't allow cross domain (slower)": "外部サーバがクロスドメインを許可していない場合に使用します (処理速度低下)",
-    "Type of layer": "レイヤタイプ"
+    "Type of layer": "レイヤタイプ",
+    "Filter…": "Filter…",
+    "Heatmap intensity property": "Heatmap intensity property",
+    "Optional intensity property for heatmap": "Optional intensity property for heatmap"
 }
