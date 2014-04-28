@@ -35,7 +35,7 @@
     "Disable editing": "Bearbeiten deaktivieren",
     "Display on load": "Beim Seitenaufruf anzeigen.",
     "Do you want to display a minimap?": "Möchtest du eine Übersichtskarte anzeigen?",
-    "Do you want to display popup footer?": "Möchtest du einen Fußzeilen-Popup anzeigen?",
+    "Do you want to display popup footer?": "Möchtest du eine Fußzeile im Popup anzeigen?",
     "Do you want to display the 'more' control?": "Möchtest du die \"Mehr\"-Schaltfläche anzeigen?",
     "Do you want to display the data layers control?": "Möchtest du die Datenebenen-Schaltfläche anzeigen?",
     "Do you want to display the scale control?": "Möchtest du die Maßstabsleiste anzeigen?",
@@ -199,10 +199,10 @@
     "Filter…": "Elemente filtern...",
     "Heatmap intensity property": "Heatmap Intensitätsmerkmal",
     "Optional intensity property for heatmap": "Optionales Intensitätsmerkmal für die Heatmap",
-    "Caption": "Caption",
-    "Data browser": "Data browser",
-    "Do you want to display a caption bar?": "Do you want to display a caption bar?",
-    "Do you want to display a panel on load?": "Do you want to display a panel on load?",
-    "None": "None",
-    "by": "by"
+    "Caption": "Überschrift",
+    "Data browser": "Daten-Browser",
+    "Do you want to display a caption bar?": "Mächtest du eine Überschrift (Fußzeile) anzeigen?",
+    "Do you want to display a panel on load?": "Möchtest du eine Seitenleiste beim Seitenaufruf anzeigen?",
+    "None": "Keine",
+    "by": "von"
 }
