@@ -157,6 +157,9 @@ fieldset.toggle.on .more_style_options {
 .storage-edit-enabled #storage-ui-container {
     top: 46px;
 }
+.storage-caption-bar-enabled #storage-ui-container {
+    bottom: 46px;
+}
 .storage-ui #storage-ui-container {
     display: block;
 }

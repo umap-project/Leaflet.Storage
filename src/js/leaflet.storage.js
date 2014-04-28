@@ -40,7 +40,8 @@ L.Map.mergeOptions({
         // {url: 'http://localhost:8019/en/datalayer/1502/', label: 'Simplified World Countries', format: 'geojson'}
     ],
     moreControl: true,
-    jumpToZoom: 15
+    jumpToZoom: 15,
+    captionBar: false
 });
 
 L.Storage.Map.include({
@@ -199,6 +200,7 @@ L.Storage.Map.include({
             L.Storage.on('ui:end ui:start', function (e) {
                 this.editedFeature = null;
             }, this);
+            this.initCaptionBar();
             this.initEditBar();
             var editShortcuts = function (e) {
                 var key = e.keyCode,
@@ -272,6 +274,7 @@ L.Storage.Map.include({
             delete this._controls[i];
         }
 
+        L.DomUtil.classIf(document.body, 'storage-caption-bar-enabled', this.options.captionBar);
         if (this.options.zoomControl) {
             this._controls.zoomControl = (new L.Control.Zoom({zoomInTitle: L._('Zoom in'), zoomOutTitle: L._('Zoom out')})).addTo(this);
         }
@@ -822,7 +825,8 @@ L.Storage.Map.include({
             'fillColor',
             'fillOpacity',
             'dashArray',
-            'popupTemplate'
+            'popupTemplate',
+            'captionBar'
         ], properties = {};
         for (var i = editableOptions.length - 1; i >= 0; i--) {
             if (typeof this.options[editableOptions[i]] !== "undefined") {
@@ -929,7 +933,8 @@ L.Storage.Map.include({
             'options.miniMap',
             'options.scaleControl',
             'options.onLoadPanel',
-            'options.displayPopupFooter'
+            'options.displayPopupFooter',
+            'options.captionBar'
         ];
         builder = new L.S.FormBuilder(this, UIFields, {
             callback: this.initControls,
@@ -1036,12 +1041,36 @@ L.Storage.Map.include({
         this.editEnabled = false;
     },
 
+    getDisplayName: function () {
+        return this.options.name || L._('Untitled map');
+    },
+
+    initCaptionBar: function () {
+        var container = L.DomUtil.create('div', 'storage-caption-bar', this._controlContainer),
+            name = L.DomUtil.create('h3', '', container);
+        if (this.options.author && this.options.author.name && this.options.author.link) {
+            var authorContainer = L.DomUtil.add('span', 'storage-map-author', container, ' ' + L._('by') + ' '),
+                author = L.DomUtil.create('a');
+            author.href = this.options.author.link;
+            author.innerHTML = this.options.author.name;
+            authorContainer.appendChild(author);
+        }
+        var about = L.DomUtil.add('a', 'storage-about-link', container, ' — ' + L._('About'));
+        about.href = '#';
+        L.DomEvent.on(about, 'click', this.displayCaption, this);
+        var setName = function () {
+            name.innerHTML = this.getDisplayName();
+        };
+        L.bind(setName, this)();
+        this.on('synced', L.bind(setName, this));
+    },
+
     initEditBar: function () {
         var container = L.DomUtil.create('div', 'storage-main-edit-toolbox', this._controlContainer),
             title = L.DomUtil.add('h3', '', container, L._("Editing") + '&nbsp;'),
             name = L.DomUtil.create('a', 'storage-click-to-edit', title),
             setName = function () {
-                name.innerHTML = this.options.name || L._('Untitled map');
+                name.innerHTML = this.getDisplayName();
             };
         L.bind(setName, this)();
         L.DomEvent.on(name, 'click', this.edit, this);

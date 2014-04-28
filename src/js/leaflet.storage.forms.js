@@ -769,7 +769,8 @@ L.Storage.FormBuilder = L.Class.extend({
         miniMap: {handler: 'CheckBox', helpText: L._("Do you want to display a minimap?")},
         scaleControl: {handler: 'CheckBox', helpText: L._("Do you want to display the scale control?")},
         onLoadPanel: {handler: 'onLoadPanel', helpText: L._("Do you want to display a panel on load?")},
-        displayPopupFooter: {handler: 'CheckBox', helpText: L._("Do you want to display popup footer?")}
+        displayPopupFooter: {handler: 'CheckBox', helpText: L._("Do you want to display popup footer?")},
+        captionBar: {handler: 'CheckBox', helpText: L._("Do you want to display a caption bar?")}
     }
 
 });

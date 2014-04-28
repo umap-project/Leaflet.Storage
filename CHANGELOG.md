@@ -10,6 +10,7 @@
 - add Leaflet.label (for marker only atm)
 - GeoRSS support
 - heatmap support, thanks to https://github.com/Leaflet/Leaflet.heat
+- added optional caption bar
 
 ## 0.5.x
 - datalayers are now sent to backend as geojson

@@ -338,6 +338,7 @@ a.storage-control-text {
 .storage-click-to-edit:hover:after {
     background-image: url("../img/edit-16.png");
 }
+.storage-caption-bar,
 .storage-main-edit-toolbox {
     display: none;
 }
@@ -357,11 +358,34 @@ a.storage-control-text {
     border-bottom: 1px solid #ddd;
     opacity: 0.93;
 }
+.storage-edit-enabled .storage-caption-bar {
+    display: none;
+}
+.storage-caption-bar h3,
 .storage-edit-enabled .storage-main-edit-toolbox h3 {
-    float: left;
+    display: inline;
 }
 .storage-edit-enabled .leaflet-top {
     top: 48px;
+}
+.storage-caption-bar-enabled .storage-caption-bar {
+    display: block;
+    height: 46px;
+    background-color: #fff;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    padding: 5px;
+    text-align: left;
+    line-height: 36px;
+    cursor: auto;
+    border-top: 1px solid #ddd;
+    opacity: 0.93;
+}
+.storage-caption-bar-enabled .leaflet-bottom {
+    bottom: 48px;
 }
 .storage-help {
     font-style: italic;
