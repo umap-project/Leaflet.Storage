@@ -35,8 +35,6 @@
     "Disable editing": "Bearbeiten deaktivieren",
     "Display on load": "Beim Seitenaufruf anzeigen.",
     "Do you want to display a minimap?": "Möchtest du eine Übersichtskarte anzeigen?",
-    "Do you want to display data browser on load?": "Möchtest du die Datenübersicht beim Seitenaufruf anzeigen?",
-    "Do you want to display map caption on load?": "Möchtest du beim Seitenaufruf die Kartenüberschrift anzeigen?",
     "Do you want to display popup footer?": "Möchtest du einen Fußzeilen-Popup anzeigen?",
     "Do you want to display the 'more' control?": "Möchtest du die \"Mehr\"-Schaltfläche anzeigen?",
     "Do you want to display the data layers control?": "Möchtest du die Datenebenen-Schaltfläche anzeigen?",
@@ -198,7 +196,13 @@
     "Table": "Tabelle",
     "To use if remote server doesn't allow cross domain (slower)": "Zu nutzen wenn der remote-Server kein cross domain erlaubt (langsamer).",
     "Type of layer": "Ebenentyp",
-    "Filter…": "Filter...",
+    "Filter…": "Elemente filtern...",
     "Heatmap intensity property": "Heatmap Intensitätsmerkmal",
-    "Optional intensity property for heatmap": "Optionales Intensitätsmerkmal für die Heatmap"
+    "Optional intensity property for heatmap": "Optionales Intensitätsmerkmal für die Heatmap",
+    "Caption": "Caption",
+    "Data browser": "Data browser",
+    "Do you want to display a caption bar?": "Do you want to display a caption bar?",
+    "Do you want to display a panel on load?": "Do you want to display a panel on load?",
+    "None": "None",
+    "by": "by"
 }

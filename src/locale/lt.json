@@ -35,8 +35,6 @@
     "Disable editing": "Uždrausti redagavimą",
     "Display on load": "Rodyti pasikrovus",
     "Do you want to display a minimap?": "Ar norite rodyti mini žemėlapį?",
-    "Do you want to display data browser on load?": "Ar norite rodyti duomenų naršyklą pasikrovus?",
-    "Do you want to display map caption on load?": "Ar norite rodyti žemėlapio antraštę kraunant žemėlapį?",
     "Do you want to display popup footer?": "Ar norite rodyti iškylančio lango paraštę?",
     "Do you want to display the 'more' control?": "Ar norite rodyti mygtuką 'daugiau'?",
     "Do you want to display the data layers control?": "Ar norite rodyti duomenų sluoksnių valdymą?",
@@ -200,5 +198,11 @@
     "Type of layer": "Sluoksnio tipas",
     "Filter…": "Filter…",
     "Heatmap intensity property": "Heatmap intensity property",
-    "Optional intensity property for heatmap": "Optional intensity property for heatmap"
+    "Optional intensity property for heatmap": "Optional intensity property for heatmap",
+    "Caption": "Caption",
+    "Data browser": "Data browser",
+    "Do you want to display a caption bar?": "Do you want to display a caption bar?",
+    "Do you want to display a panel on load?": "Do you want to display a panel on load?",
+    "None": "None",
+    "by": "by"
 }

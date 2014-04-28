@@ -35,8 +35,6 @@
     "Disable editing": "Deshabilitar la edición",
     "Display on load": "Mostrar al cargar",
     "Do you want to display a minimap?": "¿Deseas mostrar un minimapa?",
-    "Do you want to display data browser on load?": "¿Quieres mostrar los datos del navegador al cargar?",
-    "Do you want to display map caption on load?": "¿Deseas mostrar una captura de mapa al cargar?",
     "Do you want to display popup footer?": "¿Deseas que se muestre el menú al pie de la viñeta emergente?",
     "Do you want to display the 'more' control?": "¿Quieres mostrar el control 'más'?",
     "Do you want to display the data layers control?": "Quieres mostrar el control de las capas de datos?",
@@ -200,5 +198,11 @@
     "Type of layer": "Type of layer",
     "Filter…": "Filter…",
     "Heatmap intensity property": "Heatmap intensity property",
-    "Optional intensity property for heatmap": "Optional intensity property for heatmap"
+    "Optional intensity property for heatmap": "Optional intensity property for heatmap",
+    "Caption": "Caption",
+    "Data browser": "Data browser",
+    "Do you want to display a caption bar?": "Do you want to display a caption bar?",
+    "Do you want to display a panel on load?": "Do you want to display a panel on load?",
+    "None": "None",
+    "by": "by"
 }

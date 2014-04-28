@@ -35,8 +35,6 @@
     "Disable editing": "Desactiver l'édition",
     "Display on load": "Afficher au chargement",
     "Do you want to display a minimap?": "Voulez-vous afficher une mini carte de situation?",
-    "Do you want to display data browser on load?": "Voulez-vous afficher le navigateur de données au chargement?",
-    "Do you want to display map caption on load?": "Voulez-vous afficher la légende de la carte au chargement?",
     "Do you want to display popup footer?": "Voulez-vous afficher les boutons de navigation en bas des popups?",
     "Do you want to display the 'more' control?": "Voulez-vous afficher le bouton 'Plus'?",
     "Do you want to display the data layers control?": "Voulez-vous afficher le switcheur de calques?",
@@ -200,5 +198,11 @@
     "Type of layer": "Type de calque",
     "Filter…": "Filtrer…",
     "Heatmap intensity property": "Propriété pour l'intensité de la heatmap",
-    "Optional intensity property for heatmap": "Propriété optionnelle pour à utiliser pour calculer l'intensité de la heatmap"
+    "Optional intensity property for heatmap": "Propriété optionnelle pour à utiliser pour calculer l'intensité de la heatmap",
+    "Caption": "Légende",
+    "Data browser": "Visualiseur de données",
+    "Do you want to display a caption bar?": "Voulez-vous afficher une barre de légende",
+    "Do you want to display a panel on load?": "Voulez-vous afficher un panneau latéral au chargement?",
+    "None": "Aucun",
+    "by": "par"
 }

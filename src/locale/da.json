@@ -35,8 +35,6 @@
     "Disable editing": "Deaktiver redigering",
     "Display on load": "Vis ved indlæsning",
     "Do you want to display a minimap?": "Vil du vise  et miniaturekort?",
-    "Do you want to display data browser on load?": "Vil du vise databrowser ved indlæsning?",
-    "Do you want to display map caption on load?": "Vil du vise kort titel ved indlæsning?",
     "Do you want to display popup footer?": "Vil du vise popup noten?",
     "Do you want to display the 'more' control?": "Vil du vise mere af kontrolpanel?",
     "Do you want to display the data layers control?": "Vil du tilføje datalag kontrolpanel?",
@@ -200,5 +198,11 @@
     "Type of layer": "Type of layer",
     "Filter…": "Filter…",
     "Heatmap intensity property": "Heatmap intensity property",
-    "Optional intensity property for heatmap": "Optional intensity property for heatmap"
+    "Optional intensity property for heatmap": "Optional intensity property for heatmap",
+    "Caption": "Caption",
+    "Data browser": "Data browser",
+    "Do you want to display a caption bar?": "Do you want to display a caption bar?",
+    "Do you want to display a panel on load?": "Do you want to display a panel on load?",
+    "None": "None",
+    "by": "by"
 }

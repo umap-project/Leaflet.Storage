@@ -35,8 +35,6 @@
     "Disable editing": "編集を終了",
     "Display on load": "読み込み時に表示",
     "Do you want to display a minimap?": "ミニマップを表示しますか？",
-    "Do you want to display data browser on load?": "読み込み時にデータブラウザを表示しますか？",
-    "Do you want to display map caption on load?": "読み込み時にマップの説明文を表示しますか？",
     "Do you want to display popup footer?": "フッタをポップアップしますか？",
     "Do you want to display the 'more' control?": "'more'操作パネルを表示しますか？",
     "Do you want to display the data layers control?": "データレイヤ操作パネルを表示しますか？",
@@ -200,5 +198,11 @@
     "Type of layer": "レイヤタイプ",
     "Filter…": "Filter…",
     "Heatmap intensity property": "Heatmap intensity property",
-    "Optional intensity property for heatmap": "Optional intensity property for heatmap"
+    "Optional intensity property for heatmap": "Optional intensity property for heatmap",
+    "Caption": "Caption",
+    "Data browser": "Data browser",
+    "Do you want to display a caption bar?": "Do you want to display a caption bar?",
+    "Do you want to display a panel on load?": "Do you want to display a panel on load?",
+    "None": "None",
+    "by": "by"
 }

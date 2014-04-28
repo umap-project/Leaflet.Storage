@@ -35,8 +35,6 @@
     "Disable editing": "Lopeta kartan muokaaminen",
     "Display on load": "Näytä ladattaessa",
     "Do you want to display a minimap?": "Haluatko aktivoida minikartan?",
-    "Do you want to display data browser on load?": "Haluatko näyttää tietueselaimen ladattaessa?",
-    "Do you want to display map caption on load?": "Näytetäänkö kartan kuvaus ladattaessa?",
     "Do you want to display popup footer?": "Haluatko näyttää ponnahdusikkunan alatunnisteen?",
     "Do you want to display the 'more' control?": "Haluatko näyttää 'lisää'-ohjaimen?",
     "Do you want to display the data layers control?": "Näytetäänkö data-kerrosten ohjain?",
@@ -200,5 +198,11 @@
     "Type of layer": "Type of layer",
     "Filter…": "Filter…",
     "Heatmap intensity property": "Heatmap intensity property",
-    "Optional intensity property for heatmap": "Optional intensity property for heatmap"
+    "Optional intensity property for heatmap": "Optional intensity property for heatmap",
+    "Caption": "Caption",
+    "Data browser": "Data browser",
+    "Do you want to display a caption bar?": "Do you want to display a caption bar?",
+    "Do you want to display a panel on load?": "Do you want to display a panel on load?",
+    "None": "None",
+    "by": "by"
 }
