@@ -377,16 +377,11 @@ L.Storage.Map.include({
     _openBrowser: function () {
         var browserContainer = L.DomUtil.create('div', 'storage-browse-data'),
             title = L.DomUtil.add('h3', 'storage-browse-title', browserContainer, this.options.name),
-            description = L.DomUtil.create('div', '', browserContainer),
             filter = L.DomUtil.create('input', '', browserContainer),
             filterValue = '',
             featuresContainer = L.DomUtil.create('div', 'storage-browse-features', browserContainer);
         filter.type = 'text';
         filter.placeholder = L._('Filter…');
-        if (this.options.description) {
-            var content = L.DomUtil.create('div', 'storage-browse-description', description);
-            content.innerHTML = L.Util.toHTML(this.options.description);
-        }
 
         var addFeature = function (feature) {
             var feature_li = L.DomUtil.create('li', feature.getClassName() + ' feature'),
