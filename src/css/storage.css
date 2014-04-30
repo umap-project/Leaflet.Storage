@@ -589,7 +589,9 @@ a.storage-control-text {
     position: absolute;
     left: 7px;
 }
-
+.storage-tilelayer-switcher-container li img {
+    display: block;
+}
 
 /* ********************************* */
 /*            Caption                */
