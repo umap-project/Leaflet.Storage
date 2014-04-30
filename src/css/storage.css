@@ -28,6 +28,7 @@
     height: 36px;
     width: 36px;
     line-height: 36px;
+    background-image: url("../img/24.png");
 }
 .leaflet-control-embed,
 .leaflet-control-tilelayers,
@@ -53,22 +54,19 @@ a.storage-control-less {
     display: none;
 }
 .leaflet-control-embed a {
-    background-image: url("../img/embed.png");
+    background-position: -82px -122px;
 }
 .leaflet-control-tilelayers a {
-    background-image: url("../img/tilelayers-24.png");
-}
-.leaflet-control-infos a {
-    background-image: url("../img/map-infos.png");
+    background-position: -82px -2px;
 }
 .leaflet-control-home a {
-    background-image: url("../img/home.png");
+    background-position: -122px -82px;
 }
 .leaflet-control-locate a {
-    background-image: url("../img/locate.png");
+    background-position: -2px -122px;
 }
 .leaflet-control-search a {
-    background-image: url("../img/search.png");
+    background-position: -42px -122px;
     display: inline-block;
 }
 .leaflet-control-search a.loading {
@@ -99,7 +97,8 @@ a.storage-control-text {
     font-size: 0.8em;
 }
 .leaflet-control-edit-enable a {
-    background-image: url('../img/edit-24.png');
+    background-image: url("../img/24.png");
+    background-position: -1px -1px;
 }
 
 
@@ -111,57 +110,51 @@ a.storage-control-text {
 
 .leaflet-draw .leaflet-draw-toolbar a,
 .leaflet-draw .leaflet-draw-toolbar a:hover {
-    height: 44px;
-    width: 44px;
+    height: 40px;
+    width: 40px;
     display: none;
     margin-top: 0;
     vertical-align: top;
     border-bottom: none;
     border-right: 1px solid #eee;
-    background-position: 50% 50%;
     background-repeat: no-repeat;
+    background-image: url("../img/24.png");
+    background-size: auto auto;
 }
 .leaflet-draw-toolbar {
     margin-top: 0;
 }
 .update-map-extent,
-.leaflet-draw-toolbar .update-map-extent {
-    background-image: url("../img/update-extent.png");
+.leaflet-container .leaflet-draw-toolbar .update-map-extent {
+    background-position: 0 -40px;
 }
 .leaflet-draw-toolbar .update-map-tilelayers,
 .update-map-tilelayers {
-    background-image: url("../img/tilelayers-24.png");
-}
-.leaflet-draw-toolbar .update-map-infos,
-.update-map-infos {
-    background-image: url("../img/map-infos.png");
+    background-position: -80px 0;
 }
 .leaflet-draw-toolbar .update-map-permissions,
 .update-map-permissions {
-    background-image: url("../img/update-permissions.png");
+    background-position: -40px -40px;
 }
 .leaflet-draw-toolbar .upload-data,
 .upload-data {
-    background-image: url("../img/upload.png");
+    background-position: -160px 0;
 }
 .leaflet-draw-toolbar .update-map-settings,
 .update-map-settings {
-    background-image: url("../img/settings.png");
+    background-position: -120px 0;
 }
 .leaflet-draw-draw-marker,
 .leaflet-draw-toolbar .leaflet-draw-draw-marker {
-    background-position: 50% 50%;
-    background-image: url("../img/draw_marker.png");
+    background-position: -160px -40px;
 }
 .leaflet-draw-draw-polyline,
 .leaflet-draw-toolbar .leaflet-draw-draw-polyline {
-    background-position: 50% 50%;
-    background-image: url("../img/draw_polyline.png");
+    background-position: -120px -40px;
 }
 .leaflet-draw-draw-polygon,
 .leaflet-draw-toolbar .leaflet-draw-draw-polygon {
-    background-position: 50% 50%;
-    background-image: url("../img/draw_polygon.png");
+    background-position: -80px -40px;
 }
 .storage-edit-enabled .leaflet-draw .leaflet-draw-toolbar a {
     display: block;
@@ -176,7 +169,8 @@ a.storage-control-text {
 /* ********************************* */
 
 .leaflet-control-edit-in-osm .leaflet-control-edit-in-osm-toggle {
-    background-image: url("../img/edit-in-osm.png");
+    background-image: url('../img/24.png');
+    background-position: -121px -121px;
 }
 .storage-measure-control,
 .leaflet-control-edit-in-osm {
@@ -188,13 +182,12 @@ a.storage-control-text {
     box-shadow: 0 0 2px 0 black inset;
 }
 .storage-measure-control a {
-    background-image: url("../img/measure-24.png");
+    background-position: -1px -81px;
 }
 .storage-measure-edge {
     background: none repeat scroll 0 0 #2F4F4F;
     border-radius: 6px;
 }
-
 
 
 /* ********************************* */
@@ -385,7 +378,7 @@ a.storage-control-text {
     opacity: 0.93;
 }
 .storage-caption-bar-enabled .leaflet-bottom {
-    bottom: 48px;
+    bottom: 46px;
 }
 .storage-help {
     font-style: italic;
@@ -397,9 +390,10 @@ a.storage-control-text {
 /* ********************************* */
 
 .leaflet-control-browse .storage-browse-toggle {
-    background-image: url("../img/datalayers-24.png");
+    background-image: url("../img/24.png");
     width: 36px;
     height: 36px;
+    background-position: -39px -82px;
 }
 .leaflet-control-browse .storage-browse-actions {
     background-color: #fff;

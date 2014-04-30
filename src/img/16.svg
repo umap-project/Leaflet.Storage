@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="80"
+   height="80"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="icons_16.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="5.6"
+     inkscape:cx="65.370503"
+     inkscape:cy="46.204123"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1366"
+     inkscape:window-height="744"
+     inkscape:window-x="0"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3004"
+       empspacing="4"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="16,60"
+       id="guide3084" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="4,64"
+       id="guide3086" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="32,68"
+       id="guide3088" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="4,48"
+       id="guide3090" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="48,60"
+       id="guide14621" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="64,52"
+       id="guide14737" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="0,32"
+       id="guide17864" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="-4,16"
+       id="guide17866" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-972.36218)">
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="13.786797"
+       y="953.80786"
+       id="text4457"
+       sodipodi:linespacing="125%"><tspan
+         y="953.80786"
+         x="13.786797"
+         sodipodi:role="line"
+         id="tspan4459" /></text>
+    <g
+       id="g3001"
+       transform="translate(-27.255701,36.613532)">
+      <path
+         transform="matrix(1.0714286,0,0,1.0714286,26.684272,934.10579)"
+         d="m 15,9 c 0,3.865993 -3.134007,7 -7,7 C 4.1340068,16 1,12.865993 1,9 1,5.1340068 4.1340068,2 8,2 c 3.865993,0 7,3.1340068 7,7 z"
+         sodipodi:ry="7"
+         sodipodi:rx="7"
+         sodipodi:cy="9"
+         sodipodi:cx="8"
+         id="path3014"
+         style="fill:none;stroke:#4d4d4d;stroke-width:0.93333334;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+         sodipodi:type="arc" />
+      <g
+         id="text3784"
+         style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none;font-family:Sans"
+         transform="translate(27.255701,-100.61365)">
+        <path
+           inkscape:connector-curvature="0"
+           id="path3789"
+           style="font-size:12px;font-weight:bold;fill:#4d4d4d;-inkscape-font-specification:Sans Bold"
+           d="m 8.7286658,1046.0463 -2.3698034,0 0,-0.3223 c -2.3e-6,-0.3596 0.072207,-0.6775 0.2166302,-0.9539 0.1444174,-0.2807 0.4485749,-0.636 0.9124728,-1.0658 l 0.4201314,-0.3816 c 0.249449,-0.228 0.4310681,-0.4429 0.5448577,-0.6446 0.1181576,-0.2019 0.1772384,-0.4036 0.177243,-0.6053 -4.6e-6,-0.3071 -0.1050376,-0.5462 -0.3150985,-0.7171 -0.2100697,-0.1756 -0.5032861,-0.2632 -0.87965,-0.2632 -0.3544889,0 -0.7374207,0.075 -1.1487968,0.2237 -0.4113804,0.1446 -0.840264,0.3618 -1.2866522,0.6513 l 0,-2.0659 c 0.5295391,-0.184 1.0131273,-0.32 1.4507661,-0.4077 0.437634,-0.088 0.8599531,-0.1317 1.2669587,-0.1317 1.0678292,0 1.8818328,0.2194 2.4420122,0.6579 0.560169,0.4341 0.840256,1.0702 0.840263,1.9078 -7e-6,0.4298 -0.08535,0.8159 -0.256017,1.158 -0.170685,0.3377 -0.461713,0.7017 -0.8730849,1.092 l -0.4201316,0.375 c -0.297598,0.272 -0.4923463,0.4913 -0.5842451,0.658 -0.091909,0.1622 -0.1378603,0.342 -0.1378556,0.5394 l 0,0.296 m -2.3698034,0.9739 2.3698034,0 0,2.342 -2.3698034,0 0,-2.342" />
+      </g>
+    </g>
+    <path
+       inkscape:connector-curvature="0"
+       style="fill:#4d4d4d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       d="m 8,1007.3622 c -3,0 -5,1.5 -8,4.5 3,3 5,4.5 8,4.5 3,0 5,-1.5 8,-4.5 -3,-3 -5,-4.5 -8,-4.5 z m 0,2.5 c 1.104569,0 1.9999997,0.8954 1.9999997,2 0,1.1046 -0.8954307,2 -1.9999997,2 -1.104569,0 -2,-0.8954 -2,-2 0,-1.1046 0.895431,-2 2,-2 z"
+       id="path2990-6"
+       inkscape:label="eye-on"
+       inkscape:export-filename="/home/ybon/Code/js/leaflet-storage/src/img/eye-on.png"
+       inkscape:export-xdpi="89.996864"
+       inkscape:export-ydpi="89.996864" />
+    <g
+       id="eye-off"
+       style="fill:#b3b3b3"
+       inkscape:label="eye-off"
+       inkscape:export-filename="/home/ybon/Code/js/leaflet-storage/src/img/eye-off.png"
+       inkscape:export-xdpi="89.996864"
+       inkscape:export-ydpi="89.996864"
+       transform="translate(-1,-14.50002)">
+      <path
+         id="path2990"
+         transform="translate(0,1034.3622)"
+         d="M 9,4.5 C 6.0000002,4.4999664 4.0000001,6 1,9 c 3.0000001,2.999999 5.0000002,4.500033 8,4.5 3,-3.3e-5 5,-1.500001 8,-4.5 C 14,6 12,4.5000336 9,4.5 z M 9,7 c 1.104569,0 2,0.8954305 2,2 0,1.104569 -0.895431,2 -2,2 C 7.8954305,11 7,10.104569 7,9 7,7.8954305 7.8954305,7 9,7 z"
+         style="fill:#b3b3b3;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         inkscape:connector-curvature="0" />
+      <path
+         sodipodi:nodetypes="ccccc"
+         inkscape:connector-curvature="0"
+         id="rect3787"
+         d="m 2,1047.8622 13,-10 1,1 -13,10 z"
+         style="fill:#b3b3b3;fill-opacity:1;fill-rule:nonzero;stroke:none" />
+    </g>
+    <path
+       style="fill:#f2f2f2;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       d="m 18,975.36218 0,2 12,0 0,-2 -12,0 z m 0,3 0,1 4,0 0,-1 -4,0 z m 5,0 0,1 7,0 0,-1 -7,0 z m -5,2 0,1 4,0 0,-1 -4,0 z m 5,0 0,1 7,0 0,-1 -7,0 z m -5,2 0,1 4,0 0,-1 -4,0 z m 5,0 0,1 7,0 0,-1 -7,0 z m -5,2 0,1 4,0 0,-1 -4,0 z m 5,0 0,1 7,0 0,-1 -7,0 z"
+       id="table"
+       inkscape:connector-curvature="0"
+       inkscape:label="table"
+       inkscape:export-filename="/home/ybon/Code/js/leaflet-storage/src/img/browse-data.png"
+       inkscape:export-xdpi="89.996864"
+       inkscape:export-ydpi="89.996864" />
+    <path
+       style="fill:#f2f2f2;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       d="m 39,975.36218 0,4 -4,0 0,2 4,0 0,4 2,0 0,-4 4,0 0,-2 -4,0 0,-4 z"
+       id="rect5280"
+       inkscape:export-filename="/home/ybon/Code/js/leaflet-storage/src/img/add-layer-grey-18.png"
+       inkscape:export-xdpi="89.996864"
+       inkscape:export-ydpi="89.996864"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccccccccc" />
+    <path
+       style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:3;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans"
+       d="m 9.51751,990.36206 c -2.4667621,0 -4.4824904,2.0158 -4.4824904,4.4826 0,0.8297 0.2337478,1.5964 0.6303501,2.26462 L 2,1000.7746 l 1.5875487,1.5876 3.6653697,-3.66542 c 0.6681392,0.3966 1.4348309,0.6303 2.2645916,0.6303 2.466762,0 4.48249,-2.0157 4.48249,-4.48242 0,-2.4668 -2.015728,-4.4826 -4.48249,-4.4826 z m 0,1.4943 c 1.659256,0 2.988326,1.329 2.988326,2.9883 0,1.6592 -1.32907,2.98832 -2.988326,2.98832 -1.6592563,0 -2.9883269,-1.32912 -2.9883269,-2.98832 0,-1.6593 1.3290706,-2.9883 2.9883269,-2.9883 z m 0,1.4941 c -0.8163549,0 -1.4941636,0.6779 -1.4941636,1.4942 0,0.8163 0.6778087,1.4942 1.4941636,1.4942 0.816354,0 1.494163,-0.6779 1.494163,-1.4942 0,-0.8163 -0.677809,-1.4942 -1.494163,-1.4942 z"
+       id="path4354"
+       inkscape:export-filename="/home/ybon/Code/js/leaflet-storage/src/img/zoom_to.png"
+       inkscape:export-xdpi="89.996864"
+       inkscape:export-ydpi="89.996864"
+       inkscape:connector-curvature="0" />
+    <path
+       id="path4392"
+       d="m 25.51751,990.36216 c -2.466762,0 -4.482491,2.0157 -4.482491,4.4825 0,0.8298 0.233749,1.5964 0.630351,2.2645 L 18,1000.7747 l 1.587549,1.5875 3.665369,-3.66544 c 0.668139,0.39662 1.434831,0.63042 2.264592,0.63042 2.466762,0 4.48249,-2.01572 4.48249,-4.48252 0,-2.4668 -2.015728,-4.4825 -4.48249,-4.4825 z m 0,1.4942 c 1.659256,0 2.988327,1.329 2.988327,2.9883 0,1.6593 -1.329071,2.9883 -2.988327,2.9883 -1.659256,0 -2.988327,-1.329 -2.988327,-2.9883 0,-1.6593 1.329071,-2.9883 2.988327,-2.9883 z m 0,1.4941 c -0.816355,0 -1.494164,0.6779 -1.494164,1.4942 0,0.8163 0.677809,1.4942 1.494164,1.4942 0.816355,0 1.494163,-0.6779 1.494163,-1.4942 0,-0.8163 -0.677808,-1.4942 -1.494163,-1.4942 z"
+       style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#b3b3b3;fill-opacity:1;stroke:none;stroke-width:3;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/ybon/Code/js/leaflet-storage/src/img/zoom_to-off.png"
+       inkscape:export-xdpi="89.996864"
+       inkscape:export-ydpi="89.996864" />
+    <path
+       inkscape:connector-curvature="0"
+       style="fill:#f2f2f2;fill-opacity:1;stroke:none"
+       d="m 56,1005.3622 c -3.865993,0 -7,3.134 -7,7 0,3.866 3.134007,7 7,7 3.865993,0 7,-3.134 7,-7 0,-3.866 -3.134007,-7 -7,-7 z m -0.15625,2.9687 a 1.0001,1.0001 0 0 1 0.09375,0 1.0001,1.0001 0 0 1 0.65625,1.8125 l -1.625,1.2188 5.03125,0 a 1.0001,1.0001 0 1 1 0,2 l -5,0 1.59375,1.1875 a 1.0001,1.0001 0 1 1 -1.1875,1.5937 l -3.71875,-2.7812 a 1.0043849,1.0043849 0 0 1 -0.15625,-1.9063 l 3.875,-2.9062 a 1.0001,1.0001 0 0 1 0.4375,-0.2188 z"
+       id="path5321"
+       inkscape:export-filename="/home/ybon/Code/js/leaflet-storage/src/img/arrow-left-16.png"
+       inkscape:export-xdpi="89.996864"
+       inkscape:export-ydpi="89.996864" />
+    <path
+       inkscape:export-ydpi="89.996864"
+       inkscape:export-xdpi="89.996864"
+       inkscape:export-filename="/home/ybon/Code/js/leaflet-storage/src/img/arrow-right-16.png"
+       id="path5338"
+       d="m 40,1019.3622 c 3.865993,0 7,-3.134 7,-7 0,-3.866 -3.134007,-7 -7,-7 -3.865993,0 -7,3.134 -7,7 0,3.866 3.134007,7 7,7 z m 0.15625,-2.9687 a 1.0001,1.0001 0 0 1 -0.09375,0 1.0001,1.0001 0 0 1 -0.65625,-1.8125 l 1.625,-1.2188 -5.03125,0 a 1.0001,1.0001 0 1 1 0,-2 l 5,0 -1.59375,-1.1875 a 1.0001,1.0001 0 1 1 1.1875,-1.5937 l 3.71875,2.7812 a 1.0043849,1.0043849 0 0 1 0.15625,1.9063 l -3.875,2.9062 a 1.0001,1.0001 0 0 1 -0.4375,0.2188 z"
+       style="fill:#f2f2f2;fill-opacity:1;stroke:none"
+       inkscape:connector-curvature="0" />
+    <path
+       inkscape:connector-curvature="0"
+       style="fill:#f2f2f2;fill-opacity:1;stroke:none"
+       d="m 24,1005.3622 c -3.865993,0 -7,3.134 -7,7 0,3.866 3.134007,7 7,7 3.865993,0 7,-3.134 7,-7 0,-3.866 -3.134007,-7 -7,-7 z m -0.15625,1.7187 a 1.250125,1.250125 0 0 1 0.125,0 1.250125,1.250125 0 0 1 1.28125,1.2813 l 0,2.75 2.75,0 a 1.250125,1.250125 0 1 1 0,2.5 l -2.75,0 0,2.75 a 1.250125,1.250125 0 1 1 -2.5,0 l 0,-2.75 -2.75,0 a 1.2515615,1.2515615 0 0 1 -0.125,-2.5 1.250125,1.250125 0 0 1 0.125,0 l 2.75,0 0,-2.75 a 1.250125,1.250125 0 0 1 1.09375,-1.2813 z"
+       id="path5340"
+       inkscape:export-filename="/home/ybon/Code/js/leaflet-storage/src/img/zoom-grey-16.png"
+       inkscape:export-xdpi="89.996864"
+       inkscape:export-ydpi="89.996864" />
+  </g>
+</svg>
