@@ -68,6 +68,10 @@ L.S.Layer.Cluster = L.MarkerClusterGroup.extend({
         if (field === "options.color") {
             this.options.polygonOptions.color = this.datalayer.getColor();
         }
+    },
+
+    eachFeature: function (method, context) {
+        this.eachLayer(method, context);
     }
 
 });
