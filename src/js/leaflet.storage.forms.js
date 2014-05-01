@@ -389,6 +389,7 @@ L.S.ElementHelper.PopupTemplate = L.S.ElementHelper.SelectAbstract.extend({
     selectOptions: [
         [undefined, L._('inherit')],
         ["Default", L._('Name and description')],
+        ["Large", L._('Name and description (large)')],
         ["Table", L._('Table')],
         ["GeoRSSImage", L._('GeoRSS (title + image)')],
         ["GeoRSSLink", L._('GeoRSS (only link)')]

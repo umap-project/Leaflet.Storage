@@ -11,6 +11,7 @@
 - GeoRSS support
 - heatmap support, thanks to https://github.com/Leaflet/Leaflet.heat
 - added optional caption bar
+- added new "large" popup template 
 
 ## 0.5.x
 - datalayers are now sent to backend as geojson

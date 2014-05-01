@@ -26,6 +26,10 @@ L.S.Popup = L.Popup.extend({
         if (this.feature.properties.description) {
             body = L.DomUtil.create('p');
             body.innerHTML = L.Util.toHTML(this.feature.properties.description);
+            var els = body.querySelectorAll('img,iframe');
+            for (var i = 0; i < els.length; i++) {
+                this.onElementLoaded(els[i]);
+            }
         }
         return body;
     },
@@ -74,14 +78,21 @@ L.S.Popup = L.Popup.extend({
         this.renderFooter();
     },
 
-    onImageLoad: function (img) {
-        L.DomEvent.on(img, 'load', function () {
+    onElementLoaded: function (el) {
+        L.DomEvent.on(el, 'load', function () {
             this._updateLayout();
             this._updatePosition();
             this._adjustPan();
         }, this);
     }
 
+});
+
+L.S.Popup.Large = L.S.Popup.extend({
+    options: {
+        maxWidth: 500,
+        className: 'storage-popup-large'
+    }
 });
 
 L.S.Popup.Table = L.S.Popup.extend({
@@ -114,7 +125,7 @@ L.S.Popup.GeoRSSImage = L.S.Popup.extend({
     options: {
         minWidth: 300,
         maxWidth: 500,
-        className: 'storage-georss-image'
+        className: 'storage-popup-large storage-georss-image'
     },
 
     renderBody: function () {
@@ -128,7 +139,7 @@ L.S.Popup.GeoRSSImage = L.S.Popup.extend({
             // See https://github.com/Leaflet/Leaflet/commit/61d746818b99d362108545c151a27f09d60960ee#commitcomment-6061847
             img.style.maxWidth = this.options.maxWidth + "px";
             img.style.maxHeight = this.options.maxWidth + "px";
-            this.onImageLoad(img);
+            this.onElementLoaded(img);
         }
         return container;
     }
