@@ -177,6 +177,7 @@ L.Storage.Map.include({
         }
 
         this.help = new L.Storage.Help(this);
+        this.initCaptionBar();
         if (this.options.allowEdit) {
             // Layer for items added by users
             this.on('draw:created', function (e) {
@@ -200,7 +201,6 @@ L.Storage.Map.include({
             L.Storage.on('ui:end ui:start', function (e) {
                 this.editedFeature = null;
             }, this);
-            this.initCaptionBar();
             this.initEditBar();
             var editShortcuts = function (e) {
                 var key = e.keyCode,
