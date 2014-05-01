@@ -1058,6 +1058,9 @@ L.Storage.Map.include({
         var about = L.DomUtil.add('a', 'storage-about-link', container, ' — ' + L._('About'));
         about.href = '#';
         L.DomEvent.on(about, 'click', this.displayCaption, this);
+        var browser = L.DomUtil.add('a', 'storage-open-browser-link', container, ' | ' + L._('Browse data'));
+        browser.href = '#';
+        L.DomEvent.on(browser, 'click', this.openBrowser, this);
         var setName = function () {
             name.innerHTML = this.getDisplayName();
         };
