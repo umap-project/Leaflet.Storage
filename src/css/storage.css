@@ -506,6 +506,7 @@ a.storage-control-text {
     background-color: #eeeee0;
     margin-bottom: 0;
     color: #666;
+    overflow: hidden;
 }
 .storage-browse-features li {
     padding: 2px 0;
