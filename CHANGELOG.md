@@ -12,6 +12,7 @@
 - heatmap support, thanks to https://github.com/Leaflet/Leaflet.heat
 - added optional caption bar
 - added new "large" popup template 
+- added a button to empty a layer without deleting it
 
 ## 0.5.x
 - datalayers are now sent to backend as geojson
