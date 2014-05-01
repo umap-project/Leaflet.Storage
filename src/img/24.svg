@@ -14,7 +14,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="icons_24.svg"
+   sodipodi:docname="24.svg"
    inkscape:export-filename="/home/ybon/Code/js/leaflet-storage/src/img/24.png"
    inkscape:export-xdpi="89.996864"
    inkscape:export-ydpi="89.996864">
@@ -27,9 +27,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="5.6"
-     inkscape:cx="116.3837"
-     inkscape:cy="66.9818"
+     inkscape:zoom="2.8"
+     inkscape:cx="101.31314"
+     inkscape:cy="104.38224"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -88,7 +88,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -392,6 +392,20 @@
          style="fill:#4d4d4d;fill-opacity:1;stroke:none"
          id="path5801"
          inkscape:connector-curvature="0" />
+    </g>
+    <g
+       id="g7291"
+       transform="translate(0,3.6429698)">
+      <path
+         id="path3378-6"
+         d="m 178.57143,979.21934 c -3.0625,0 -6.125,2.1197 -7,6.375 0,2.5532 1.75,7.6676 7,13.625 3.4166,-3.877 5.31568,-7.3755 6.25,-10.0625 -1.31416,-0.1622 -2.497,-0.7235 -3.40625,-1.5938 -0.63462,0.8653 -1.6677,1.4375 -2.84375,1.4375 -1.933,0 -3.5,-1.5261 -3.5,-3.4062 0,-1.8801 1.567,-3.4063 3.5,-3.4063 0.36776,0 0.72951,0.085 1.0625,0.1875 0.14352,-1.0312 0.55799,-1.956 1.15625,-2.75 -0.72276,-0.259 -1.46314,-0.4062 -2.21875,-0.4062 z"
+         style="fill:#4d4d4d;fill-opacity:1;stroke:none"
+         inkscape:connector-curvature="0" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path6764"
+         d="m 185.57143,978.21934 c -2.76142,0 -5,2.2386 -5,5 0,2.7615 2.23858,5 5,5 2.76142,0 5,-2.2385 5,-5 0,-2.7614 -2.23858,-5 -5,-5 z m -1.81818,2.2727 1.81818,1.8182 1.81818,-1.8182 0.90909,0.9091 -1.81818,1.8182 1.81818,1.8182 -0.90909,0.9091 -1.81818,-1.8182 -1.81818,1.8182 -0.90909,-0.9091 1.81818,-1.8182 -1.81818,-1.8182 0.90909,-0.9091 z"
+         style="fill:#4d4d4d;fill-opacity:1;fill-rule:nonzero;stroke:none" />
     </g>
   </g>
 </svg>

@@ -527,6 +527,12 @@ L.Storage.DataLayer = L.Class.extend({
         this.isDirty = true;
     },
 
+    empty: function () {
+    if (this.isRemoteLayer()) return;
+        this.clear();
+        this.isDirty = true;
+    },
+
     erase: function () {
         this.hide();
         delete this.map.datalayers[L.stamp(this)];
@@ -645,6 +651,13 @@ L.Storage.DataLayer = L.Class.extend({
                     this._delete();
                     L.S.fire('ui:end');
                 }, this);
+        if (!this.isRemoteLayer()) {
+            var emptyLink = L.DomUtil.create('a', 'storage-empty', advancedActions);
+            emptyLink.innerHTML = L._('Empty');
+            emptyLink.href = "#";
+            L.DomEvent.on(emptyLink, 'click', L.DomEvent.stop)
+                      .on(emptyLink, 'click', this.empty, this);
+        }
         L.S.fire('ui:start', {data: {html: container}});
 
     },

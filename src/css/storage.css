@@ -728,7 +728,7 @@ a.storage-control-text {
 /*         Forms utils               */
 /* ********************************* */
 
-.storage-delete, .storage-to-polygon,
+.storage-delete:before, .storage-empty:before, .storage-to-polygon,
 .clone-map-button, .delete_map_button,
 .storage-to-polyline {
     background-position: 7px center;
@@ -737,6 +737,8 @@ a.storage-control-text {
     height: 24px;
     line-height: 24px;
     display: inline-block;
+    background-image: url("../img/24.png");
+    vertical-align: bottom;
 }
 .storage-to-polygon {
     background-image: url("../img/draw_polygon.png");
@@ -747,10 +749,14 @@ a.storage-control-text {
 .clone-map-button {
     background-image: url("../img/clone-24.png");
 }
-.storage-delete,
+.storage-delete:before,
 .delete_map_button {
-    background-image: url("../img/delete-24.png");
-    color: rgb(198, 15, 19);
+    background-position: -40px -6px;
+    content: " ";
+}
+.storage-empty:before {
+    content: " ";
+    background-position: -160px -126px;
 }
 .storage-edit-actions li {
     background-repeat: no-repeat;
