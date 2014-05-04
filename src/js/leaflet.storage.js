@@ -516,22 +516,26 @@ L.Storage.Map.include({
         download.innerHTML = L._('Download data');
         download.download = "features.geojson";
         L.DomEvent.on(download, 'click', function () {
-            var features = [];
-            this.eachDataLayer(function (datalayer) {
-                if (datalayer.isVisible()) {
-                    features = features.concat(datalayer.featuresToGeoJSON());
-                }
-            });
-            var geojson = {
-                type: "FeatureCollection",
-                features: features
-            };
-            var content = JSON.stringify(geojson, null, 2);
+            var content = JSON.stringify(this.toGeoJSON(), null, 2);
             window.URL = window.URL || window.webkitURL;
             var blob = new Blob([content], {type: 'application/json'});
             download.href = window.URL.createObjectURL(blob);
         }, this);
         L.S.fire('ui:start', {data:{html:container}});
+    },
+
+    toGeoJSON: function () {
+        var features = [];
+        this.eachDataLayer(function (datalayer) {
+            if (datalayer.isVisible()) {
+                features = features.concat(datalayer.featuresToGeoJSON());
+            }
+        });
+        var geojson = {
+            type: "FeatureCollection",
+            features: features
+        };
+        return geojson;
     },
 
     updatePermissions: function () {

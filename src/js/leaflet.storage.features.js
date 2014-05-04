@@ -721,8 +721,11 @@ L.Storage.Polyline = L.Polyline.extend({
             toMerge = [thisLatlngs, otherLatlngs];
         }
         var a = toMerge[0],
-            b = toMerge[1];
-        if (a[a.length-1].equals(b[0])) {
+            b = toMerge[1],
+            p1 = this.map.latLngToContainerPoint(a[a.length-1]),
+            p2 = this.map.latLngToContainerPoint(b[0]),
+            tolerance = 5; // px on screen
+        if (Math.abs(p1.x - p2.x) <= tolerance && Math.abs(p1.y - p2.y) <= tolerance) {
             a.pop();
         }
         other.setLatLngs(a.concat(b));
