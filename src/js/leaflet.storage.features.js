@@ -573,10 +573,10 @@ L.Storage.PathMixin = {
         if (this.map._controls.measureControl) {
             this.map._controls.measureControl.handler.off('enabled', this.showMeasureTooltip, this);
         }
-        this.parentClass.prototype.onRemove.call(this, map);
         if (this.editing && this.editing.enabled()) {
             this.editing.removeHooks();
         }
+        L.S.FeatureMixin.onRemove.call(this, map);
     },
 
     getCenter: function () {
