@@ -551,7 +551,20 @@ L.Storage.PathMixin = {
     onAdd: function (map) {
         this._container = null;
         this._setStyleOptions();
+        if (this.map._controls.measureControl) {
+            this.map._controls.measureControl.handler.on('enabled', this.showMeasureTooltip, this);
+            this.map._controls.measureControl.handler.on('disabled', function () {
+                this.removeTooltip();
+            }, this);
+        }
         this.parentClass.prototype.onAdd.call(this, map);
+    },
+
+    onRemove: function (map) {
+        if (this.map._controls.measureControl) {
+            this.map._controls.measureControl.handler.off('enabled', this.showMeasureTooltip, this);
+        }
+        this.parentClass.prototype.onRemove.call(this, map);
     },
 
     getCenter: function () {
@@ -569,6 +582,12 @@ L.Storage.PathMixin = {
         }
     },
 
+    showMeasureTooltip: function () {
+        if (this.datalayer.isVisible()) {
+            this.showTooltip({text: this.getMeasure()});
+        }
+    },
+
     addInteractions: function () {
         L.Storage.FeatureMixin.addInteractions.call(this);
         this.on("dragend", this.edit);
@@ -578,16 +597,6 @@ L.Storage.PathMixin = {
         }
         this.on("mouseover", this._onMouseOver);
         this.on("edit", this.makeDirty);
-        if (this.map._controls.measureControl) {
-            this.map._controls.measureControl.handler.on('enabled', function () {
-                if (this.datalayer.isVisible()) {
-                    this.showTooltip({text: this.getMeasure()});
-                }
-            }, this);
-            this.map._controls.measureControl.handler.on('disabled', function () {
-                this.removeTooltip();
-            }, this);
-        }
     }
 
 };
@@ -639,6 +648,18 @@ L.Storage.Polyline = L.Polyline.extend({
             callback: this.toPolygon,
             context: this
         });
+        if (this.map.editedFeature
+            && this.map.editedFeature instanceof L.Storage.Polyline
+            && this.map.editedFeature !== this) {
+            items.push({
+                text: L._('Merge geometry with edited feature'),
+                callback: function () {
+                    this.mergeInto(this.map.editedFeature);
+                    this.map.editedFeature.editing.updateMarkers();
+                },
+                context: this
+            });
+        }
         return items;
     },
 
@@ -657,6 +678,39 @@ L.Storage.Polyline = L.Polyline.extend({
         toPolygon.href = "#";
         toPolygon.innerHTML = L._('Transform to polygon');
         L.DomEvent.on(toPolygon, "click", this.toPolygon, this);
+    },
+
+    mergeInto: function (other) {
+        if (!other instanceof L.Storage.Polyline) return;
+        var otherLatlngs = other.getLatLngs(),
+            otherLeft = otherLatlngs[0],
+            otherRight = otherLatlngs[otherLatlngs.length-1],
+            thisLatlngs = this.getLatLngs(),
+            thisLeft = thisLatlngs[0],
+            thisRight = thisLatlngs[thisLatlngs.length-1],
+            l2ldistance = otherLeft.distanceTo(thisLeft),
+            l2rdistance = otherLeft.distanceTo(thisRight),
+            r2ldistance = otherRight.distanceTo(thisLeft),
+            r2rdistance = otherRight.distanceTo(thisRight),
+            toMerge;
+            if (l2rdistance < Math.min(l2ldistance, r2ldistance, r2rdistance)) {
+                toMerge = [thisLatlngs, otherLatlngs];
+            } else if (r2ldistance < Math.min(l2ldistance, l2rdistance, r2rdistance)) {
+                toMerge = [otherLatlngs, thisLatlngs];
+            } else if (r2rdistance < Math.min(l2ldistance, l2rdistance, r2ldistance)) {
+                thisLatlngs.reverse();
+                toMerge = [otherLatlngs, thisLatlngs];
+            } else {
+                thisLatlngs.reverse();
+                toMerge = [thisLatlngs, otherLatlngs];
+            }
+            var a = toMerge[0],
+                b = toMerge[1];
+            if (a[a.length-1].equals(b[0])) {
+                a.pop();
+            }
+            other.setLatLngs(a.concat(b));
+            this.del();
     }
 
 });
