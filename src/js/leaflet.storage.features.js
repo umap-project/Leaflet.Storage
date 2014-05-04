@@ -103,6 +103,7 @@ L.Storage.FeatureMixin = {
         deleteLink.href = "#";
         deleteLink.innerHTML = L._('Delete');
         L.DomEvent.on(deleteLink, "click", function (e) {
+            L.DomEvent.stop(e);
             if (this.confirmDelete()) {
                 L.S.fire('ui:end');
             }
