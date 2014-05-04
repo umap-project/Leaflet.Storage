@@ -172,6 +172,27 @@ L.Draw.Polygon.include({
 
 });
 
+L.S.PolyEdit = L.Edit.Poly.extend({
+
+    _createMarker: function (latlng, index) {
+        var marker = L.Edit.Poly.prototype._createMarker.call(this, latlng, index);
+        marker._poly = this._poly;
+        marker.on('contextmenu', this._onMarkerContextMenu);
+        return marker;
+    },
+
+    _removeMarker: function (marker) {
+        marker.off('contextmenu', this._onMarkerContextMenu);
+        L.Edit.Poly.prototype._removeMarker.call(this, marker);
+    },
+
+    _onMarkerContextMenu: function (e) {
+        e._polyHandlerIndex = this._index;
+        this._poly.fire('contextmenu', e);
+    }
+
+});
+
 /* Share control */
 L.Control.Embed = L.Control.extend({
 

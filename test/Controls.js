@@ -40,12 +40,9 @@ describe('L.Storage.Controls', function(){
         });
 
         it('should redraw datalayer\'s features list on edit cancel', function() {
-            var oldConfirm = window.confirm;
-            window.confirm = function () {return true;};
-            happen.click(qs('.storage-main-edit-toolbox .leaflet-control-edit-cancel'));
+            clickCancel();
             happen.click(qs('.storage-browse-actions .storage-browse-link'));
             assert.equal(qsa('#browse_data_datalayer_62 ul li').length, 3);
-            window.confirm = oldConfirm;
         });
 
     });

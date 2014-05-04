@@ -206,5 +206,7 @@
     "None": "Aucun",
     "by": "par",
     "Name and description (large)": "Nom et description (large)",
-    "Empty": "Vider"
+    "Empty": "Vider",
+    "Merge geometry with edited feature": "Fusionner avec l'élément actif",
+    "Split line": "Scinder la ligne"
 }

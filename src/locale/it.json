@@ -206,5 +206,7 @@
     "None": "Niente",
     "by": "di",
     "Name and description (large)": "Name and description (large)",
-    "Empty": "Empty"
+    "Empty": "Empty",
+    "Merge geometry with edited feature": "Merge geometry with edited feature",
+    "Split line": "Split line"
 }

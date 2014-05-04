@@ -1213,7 +1213,7 @@ L.Storage.Map.include({
         }
         if (e && e.relatedTarget) {
             if (e.relatedTarget.getContextMenuItems) {
-                items = items.concat(e.relatedTarget.getContextMenuItems());
+                items = items.concat(e.relatedTarget.getContextMenuItems(e));
             }
         }
         if (this.options.allowEdit) {

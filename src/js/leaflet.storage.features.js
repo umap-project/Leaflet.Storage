@@ -224,15 +224,20 @@ L.Storage.FeatureMixin = {
         return this.datalayer.getPreviousFeature(this);
     },
 
-    toGeoJSON: function () {
+    cloneProperties: function () {
         var properties = L.extend({}, this.properties);
+        properties._storage_options = L.extend({}, properties._storage_options);
         if (Object.keys && Object.keys(properties._storage_options).length === 0) {
             delete properties._storage_options;  // It can make a difference on big data sets
         }
+        return properties;
+    },
+
+    toGeoJSON: function () {
         return {
             type: "Feature",
             geometry: this.geometry(),
-            properties: properties
+            properties: this.cloneProperties()
         };
     },
 
@@ -242,7 +247,7 @@ L.Storage.FeatureMixin = {
 
     _showContextMenu: function (e) {
         var pt = this.map.mouseEventToContainerPoint(e.originalEvent);
-        this.map.contextmenu.showAt(pt, {relatedTarget: this});
+        this.map.contextmenu.showAt(pt, {relatedTarget: this, _polyHandlerIndex: e._polyHandlerIndex});
     },
 
     makeDirty: function () {
@@ -253,15 +258,15 @@ L.Storage.FeatureMixin = {
         return this._map;
     },
 
-    getContextMenuItems: function () {
+    getContextMenuItems: function (e) {
         var items = [];
         if (this._map.editEnabled && !this.isReadOnly()) {
-            items = items.concat(this.getEditContextMenuItems());
+            items = items.concat(this.getEditContextMenuItems(e));
         }
         return items;
     },
 
-    getEditContextMenuItems: function () {
+    getEditContextMenuItems: function (e) {
         return ['-',
             {
                 text: L._('Edit this feature'),
@@ -558,6 +563,9 @@ L.Storage.PathMixin = {
             }, this);
         }
         this.parentClass.prototype.onAdd.call(this, map);
+        if (this.editing && this.editing.enabled()) {
+            this.editing.addHooks();
+        }
     },
 
     onRemove: function (map) {
@@ -565,6 +573,9 @@ L.Storage.PathMixin = {
             this.map._controls.measureControl.handler.off('enabled', this.showMeasureTooltip, this);
         }
         this.parentClass.prototype.onRemove.call(this, map);
+        if (this.editing && this.editing.enabled()) {
+            this.editing.removeHooks();
+        }
     },
 
     getCenter: function () {
@@ -597,6 +608,7 @@ L.Storage.PathMixin = {
         }
         this.on("mouseover", this._onMouseOver);
         this.on("edit", this.makeDirty);
+        this.editing = new L.S.PolyEdit(this);
     }
 
 };
@@ -612,16 +624,9 @@ L.Storage.Polyline = L.Polyline.extend({
 
     geometry: function() {
         /* Return a GeoJSON geometry Object */
-        var latlngs = this.getLatLngs(), coords = [];
-        for(var i = 0, len = latlngs.length; i < len; i++) {
-            coords.push([
-                latlngs[i].lng,
-                latlngs[i].lat
-            ]);
-        }
         return {
             type: "LineString",
-            coordinates: coords
+            coordinates: L.Util.latLngsForGeoJSON(this.getLatLngs())
         };
     },
 
@@ -641,8 +646,9 @@ L.Storage.Polyline = L.Polyline.extend({
         return L.GeometryUtil.readableDistance(distance, true);
     },
 
-    getEditContextMenuItems: function () {
-        var items = L.Storage.FeatureMixin.getEditContextMenuItems.call(this);
+    getEditContextMenuItems: function (e) {
+        var items = L.Storage.FeatureMixin.getEditContextMenuItems.call(this),
+            handlerClicked = e._polyHandlerIndex;
         items.push({
             text: L._('Transform to polygon'),
             callback: this.toPolygon,
@@ -656,6 +662,15 @@ L.Storage.Polyline = L.Polyline.extend({
                 callback: function () {
                     this.mergeInto(this.map.editedFeature);
                     this.map.editedFeature.editing.updateMarkers();
+                },
+                context: this
+            });
+        }
+        if (handlerClicked && handlerClicked !== 0 && handlerClicked !== this._latlngs.length-1) {
+            items.push({
+                text: L._('Split line'),
+                callback: function () {
+                    this.splitAt(handlerClicked);
                 },
                 context: this
             });
@@ -693,24 +708,46 @@ L.Storage.Polyline = L.Polyline.extend({
             r2ldistance = otherRight.distanceTo(thisLeft),
             r2rdistance = otherRight.distanceTo(thisRight),
             toMerge;
-            if (l2rdistance < Math.min(l2ldistance, r2ldistance, r2rdistance)) {
-                toMerge = [thisLatlngs, otherLatlngs];
-            } else if (r2ldistance < Math.min(l2ldistance, l2rdistance, r2rdistance)) {
-                toMerge = [otherLatlngs, thisLatlngs];
-            } else if (r2rdistance < Math.min(l2ldistance, l2rdistance, r2ldistance)) {
-                thisLatlngs.reverse();
-                toMerge = [otherLatlngs, thisLatlngs];
-            } else {
-                thisLatlngs.reverse();
-                toMerge = [thisLatlngs, otherLatlngs];
-            }
-            var a = toMerge[0],
-                b = toMerge[1];
-            if (a[a.length-1].equals(b[0])) {
-                a.pop();
-            }
-            other.setLatLngs(a.concat(b));
-            this.del();
+        if (l2rdistance < Math.min(l2ldistance, r2ldistance, r2rdistance)) {
+            toMerge = [thisLatlngs, otherLatlngs];
+        } else if (r2ldistance < Math.min(l2ldistance, l2rdistance, r2rdistance)) {
+            toMerge = [otherLatlngs, thisLatlngs];
+        } else if (r2rdistance < Math.min(l2ldistance, l2rdistance, r2ldistance)) {
+            thisLatlngs.reverse();
+            toMerge = [otherLatlngs, thisLatlngs];
+        } else {
+            thisLatlngs.reverse();
+            toMerge = [thisLatlngs, otherLatlngs];
+        }
+        var a = toMerge[0],
+            b = toMerge[1];
+        if (a[a.length-1].equals(b[0])) {
+            a.pop();
+        }
+        other.setLatLngs(a.concat(b));
+        this.del();
+    },
+
+    splitAt: function (index) {
+        if (index === 0 || index === this._latlngs.length-1) return;
+        var latlngs = this.getLatLngs(),
+            thisLatlngs = latlngs.slice(0, index+1),
+            otherLatlngs = latlngs.slice(index);
+        var geojson = {
+            type: 'Feature',
+            geometry: {
+                type: 'LineString',
+                coordinates: L.Util.latLngsForGeoJSON(otherLatlngs)
+            },
+            properties: this.cloneProperties()
+        };
+        this.setLatLngs(thisLatlngs);
+        this.isDirty = true;
+        if (this.editing && this.editing.enabled()) {
+            this.editing.updateMarkers();
+        }
+        var other = this.datalayer.geojsonToFeatures(geojson);
+        return other;
     }
 
 });

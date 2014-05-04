@@ -180,4 +180,16 @@ describe('L.Storage.Poly', function () {
 
     });
 
+    describe('#splitAt()', function () {
+
+        it('should conserve split point on both lines', function () {
+            var original = this.datalayer._lineToLayer({}, [[0, 0], [0, 1], [0, 2]]);
+            var other = original.splitAt(1);
+            assert.deepEqual(original.getLatLngs(), [L.latLng([0, 0]), L.latLng([0, 1])]);
+            assert.deepEqual(other.getLatLngs(), [L.latLng([0, 1]), L.latLng([0, 2])]);
+        });
+
+
+    });
+
 });
