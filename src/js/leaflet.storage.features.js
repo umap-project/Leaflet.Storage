@@ -113,7 +113,7 @@ L.Storage.FeatureMixin = {
     endEdit: function () {},
 
     getDisplayName: function () {
-        return this.properties.name || this.properties.title;
+        return this.properties.name || this.properties.title || this.datalayer.options.name;
     },
 
     hasPopupFooter: function () {
