@@ -707,12 +707,12 @@ L.Storage.Map.include({
                 description = L.DomUtil.create('span', '', p);
                 datalayer.onceLoaded(function () {
                     color.style.backgroundColor = this.getColor();
+                    if (datalayer.options.description) {
+                        description.innerHTML = datalayer.options.description;
+                    }
                 });
             datalayer.renderToolbox(headline);
             L.DomUtil.add('span', '', headline, datalayer.options.name + ' ');
-            if (datalayer.options.description) {
-                description.innerHTML = datalayer.options.description;
-            }
         });
         var creditsContainer = L.DomUtil.create('div', 'credits-container', container),
             credits = L.DomUtil.createFieldset(creditsContainer, L._('Credits'));
