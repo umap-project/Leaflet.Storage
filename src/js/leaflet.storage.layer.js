@@ -269,12 +269,12 @@ L.Storage.DataLayer = L.Class.extend({
             return;
         }
         var self = this,
-            url = this.options.remoteData.url;
+            url = this.map.localizeUrl(this.options.remoteData.url);
         if (this.options.remoteData.proxy && this.map.options.urls.ajax_proxy) {
             url = L.Util.template(this.map.options.urls.ajax_proxy, {url: encodeURIComponent(url)});
         }
         this.map.ajax({
-            uri: this.map.localizeUrl(url),
+            uri: url,
             verb: 'GET',
             callback: function (raw) {
                 self.clear();
