@@ -33,6 +33,8 @@ L.Storage.Xhr = {
             }
         }
 
+        var loaded = function () {if (settings.listener) settings.listener.fire('dataload', {id: id});}
+
         xhr.onreadystatechange = function(e) {
             if (xhr.readyState === 4) {
                 if (xhr.status == 200) {
@@ -46,11 +48,17 @@ L.Storage.Xhr = {
                         L.Storage.fire("ui:alert", {"content": L._("Problem in the response"), "level": "error"});
                     }
                 }
-                if (settings.listener) settings.listener.fire('dataload', {id: id});
+                loaded();
             }
         };
 
-        xhr.send(settings.data);
+        try {
+            xhr.send(settings.data);
+        } catch (e) {
+            // Pass
+            loaded();
+            console.error('Bad Request', e);
+        }
     },
 
     // supports only JSON as response data type
