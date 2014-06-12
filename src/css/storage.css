@@ -730,7 +730,7 @@ a.storage-control-text {
 /* ********************************* */
 
 .storage-delete:before, .storage-empty:before, .storage-to-polygon,
-.clone-map-button, .delete_map_button,
+.storage-clone, .delete_map_button,
 .storage-to-polyline {
     background-position: 7px center;
     background-repeat: no-repeat;
@@ -747,7 +747,7 @@ a.storage-control-text {
 .storage-to-polyline {
     background-image: url("../img/draw_polyline.png");
 }
-.clone-map-button {
+.storage-clone {
     background-image: url("../img/clone-24.png");
 }
 .storage-delete:before,

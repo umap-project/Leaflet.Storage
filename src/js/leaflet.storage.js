@@ -1026,7 +1026,7 @@ L.Storage.Map.include({
         L.DomEvent
             .on(del, 'click', L.DomEvent.stop)
             .on(del, 'click', this.del, this);
-        var clone = L.DomUtil.create('a', 'clone-map-button', advancedActions);
+        var clone = L.DomUtil.create('a', 'storage-clone', advancedActions);
         clone.href = "#";
         clone.innerHTML = L._('Clone this map');
         L.DomEvent
