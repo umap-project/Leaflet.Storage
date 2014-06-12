@@ -208,5 +208,7 @@
     "Name and description (large)": "Nombre y Descripción (Larga) ",
     "Empty": "Vacio",
     "Merge geometry with edited feature": "Merge geometry with edited feature",
-    "Split line": "Linea de división"
+    "Split line": "Linea de división",
+    "Clone": "Clone",
+    "Clone of {name}": "Clone of {name}"
 }

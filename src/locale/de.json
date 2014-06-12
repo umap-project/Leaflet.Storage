@@ -208,5 +208,7 @@
     "Name and description (large)": "Name und Beschreibung (groß)",
     "Empty": "Leeren",
     "Merge geometry with edited feature": "Verbinde Geometrie mit bearbeitetem Element",
-    "Split line": "Linie teilen"
+    "Split line": "Linie teilen",
+    "Clone": "Clone",
+    "Clone of {name}": "Clone of {name}"
 }

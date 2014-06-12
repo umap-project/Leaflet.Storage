@@ -208,5 +208,7 @@
     "Name and description (large)": "Nom et description (large)",
     "Empty": "Vider",
     "Merge geometry with edited feature": "Fusionner avec l'élément actif",
-    "Split line": "Scinder la ligne"
+    "Split line": "Scinder la ligne",
+    "Clone": "Cloner",
+    "Clone of {name}": "Clone de {name}"
 }

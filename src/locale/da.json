@@ -208,5 +208,7 @@
     "Name and description (large)": "Navn og beskrivelse (meget tekst)",
     "Empty": "Tomt",
     "Merge geometry with edited feature": "Flet geometri sammen med redigeret objekt",
-    "Split line": "Spilt linjen op"
+    "Split line": "Spilt linjen op",
+    "Clone": "Clone",
+    "Clone of {name}": "Clone of {name}"
 }
