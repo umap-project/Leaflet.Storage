@@ -532,9 +532,19 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     empty: function () {
-    if (this.isRemoteLayer()) return;
+        if (this.isRemoteLayer()) return;
         this.clear();
         this.isDirty = true;
+    },
+
+    clone: function () {
+        var options = L.Util.CopyJSON(this.options);
+        options.name = L._('Clone of {name}', {name: this.options.name});
+        delete options.id;
+        var geojson = L.Util.CopyJSON(this._geojson),
+            datalayer = this.map._createDataLayer(options);
+        datalayer.fromGeoJSON(geojson);
+        return datalayer;
     },
 
     erase: function () {
@@ -662,6 +672,14 @@ L.Storage.DataLayer = L.Class.extend({
             L.DomEvent.on(emptyLink, 'click', L.DomEvent.stop)
                       .on(emptyLink, 'click', this.empty, this);
         }
+        var cloneLink = L.DomUtil.create('a', 'storage-clone', advancedActions);
+        cloneLink.innerHTML = L._('Clone');
+        cloneLink.href = "#";
+        L.DomEvent.on(cloneLink, 'click', L.DomEvent.stop)
+                  .on(cloneLink, 'click', function () {
+                    datalayer = this.clone();
+                    datalayer.edit();
+                }, this);
         L.S.fire('ui:start', {data: {html: container}});
 
     },

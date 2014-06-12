@@ -202,6 +202,20 @@ describe('L.DataLayer', function () {
 
     });
 
+    describe('#clone()', function () {
+
+        it('should clone everything but the id and the name', function () {
+            var clone = this.datalayer.clone();
+            assert.notOk(clone.storage_id);
+            assert.notEqual(clone.options.name, this.datalayer.name);
+            assert.ok(clone.options.name);
+            assert.equal(clone.options.color, this.datalayer.options.color);
+            assert.equal(clone.options.stroke, this.datalayer.options.stroke);
+            clone._delete();
+        });
+
+    });
+
     describe('#delete()', function () {
         var deleteLink, deletePath = '/map/99/datalayer/delete/62/';
 

@@ -108,6 +108,9 @@ L.Util.latLngsForGeoJSON = function (latlngs) {
     }
     return coords;
 };
+L.Util.CopyJSON = function (geojson) {
+    return JSON.parse(JSON.stringify(geojson));
+}
 
 
 L.DomUtil.add = function (tagName, className, container, content) {
