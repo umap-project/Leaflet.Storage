@@ -254,6 +254,7 @@ L.Storage.DataLayer = L.Class.extend({
     clear: function () {
         this.layer.clearLayers();
         this._layers = {};
+        this._index = Array();
         if (this._geojson) {
             this._geojson_bk = this._geojson;
             this._geojson = null;
@@ -427,7 +428,9 @@ L.Storage.DataLayer = L.Class.extend({
 
         if (features) {
             features.sort(function (a, b) {
-                if (!a.properties.name && !b.properties.name) {
+                if (!a.properties || !b.properties) {
+                    return 0;
+                } else if (!a.properties.name && !b.properties.name) {
                     return 0;
                 } else if (!a.properties.name) {
                     return -1;
@@ -467,6 +470,8 @@ L.Storage.DataLayer = L.Class.extend({
                     layer = this._polygonToLayer(geojson, latlngs);
                     break;
                 }
+            case 'GeometryCollection':
+                return this.geojsonToFeatures(geojson.geometries);
             default:
                 L.S.fire('ui:alert', {content: L._("Skipping unkown geometry.type: {type}", {type: geometry.type}), level: 'error'});
         }
@@ -582,7 +587,6 @@ L.Storage.DataLayer = L.Class.extend({
         delete this.map.datalayers[L.stamp(this)];
         this.map.datalayers_index.splice(this.map.datalayers_index.indexOf(this), 1);
         this.map.updateDatalayersControl();
-        this._index = Array();
         this.fire('erase');
         this._leaflet_events_bk = this._leaflet_events;
         this.off();

@@ -15,6 +15,7 @@
 - added a button to empty a layer without deleting it
 - added a button to clone a datalayer
 - added dataUrl and dataFormat on map creation page
+- basic support for GeometryCollection import
 
 ## 0.5.x
 - datalayers are now sent to backend as geojson
