@@ -209,6 +209,8 @@
     "Empty": "Tomt",
     "Merge geometry with edited feature": "Flet geometri sammen med redigeret objekt",
     "Split line": "Spilt linjen op",
-    "Clone": "Clone",
-    "Clone of {name}": "Clone of {name}"
+    "Clone": "Klone",
+    "Clone of {name}": "Klone af {name}",
+    "Add a layer now": "Add a layer now",
+    "Please add at least a layer to import in": "Please add at least a layer to import in"
 }

@@ -210,5 +210,7 @@
     "Merge geometry with edited feature": "Fusionner avec l'élément actif",
     "Split line": "Scinder la ligne",
     "Clone": "Cloner",
-    "Clone of {name}": "Clone de {name}"
+    "Clone of {name}": "Clone de {name}",
+    "Add a layer now": "Ajouter maintenant",
+    "Please add at least a layer to import in": "Merci d'ajouter au moins un calque pour l'import"
 }

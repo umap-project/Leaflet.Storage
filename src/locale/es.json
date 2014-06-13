@@ -210,5 +210,7 @@
     "Merge geometry with edited feature": "Merge geometry with edited feature",
     "Split line": "Linea de división",
     "Clone": "Clone",
-    "Clone of {name}": "Clone of {name}"
+    "Clone of {name}": "Clone of {name}",
+    "Add a layer now": "Add a layer now",
+    "Please add at least a layer to import in": "Please add at least a layer to import in"
 }
