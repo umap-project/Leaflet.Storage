@@ -111,6 +111,21 @@ L.Util.latLngsForGeoJSON = function (latlngs) {
 L.Util.CopyJSON = function (geojson) {
     return JSON.parse(JSON.stringify(geojson));
 }
+L.Util.detectFileType = function (f) {
+    var filename = f.name ? escape(f.name.toLowerCase()) : '';
+    function ext(_) {
+        return filename.indexOf(_) !== -1;
+    }
+    if (f.type === 'application/vnd.google-earth.kml+xml' || ext('.kml')) {
+        return 'kml';
+    }
+    if (ext('.gpx')) return 'gpx';
+    if (ext('.geojson') || ext('.json')) return 'geojson';
+    if (f.type === 'text/csv' || ext('.csv') || ext('.tsv') || ext('.dsv')) {
+        return 'dsv';
+    }
+    if (ext('.xml')) return 'osm';
+};
 
 
 L.DomUtil.add = function (tagName, className, container, content) {

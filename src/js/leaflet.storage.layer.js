@@ -442,8 +442,9 @@ L.Storage.DataLayer = L.Class.extend({
             return this;
         }
 
-        var geometry = geojson.type === 'Feature' ? geojson.geometry : geojson,
-            coords = geometry.coordinates,
+        var geometry = geojson.type === 'Feature' ? geojson.geometry : geojson;
+        if (!geometry) return;  // null geometry is valid geojson.
+        var coords = geometry.coordinates,
             layer;
 
         switch (geometry.type) {
@@ -500,6 +501,35 @@ L.Storage.DataLayer = L.Class.extend({
             latlngs,
             {"geojson": geojson, "datalayer": this}
         );
+    },
+
+    importRaw: function (raw, type) {
+        this.addRawData(raw, type);
+        this.isDirty = true;
+        this.zoomTo();
+    },
+
+    importFromFiles: function (files) {
+        for (var i = 0, f; f = files[i]; i++) {
+            this.importFromFile(f);
+        }
+    },
+
+    importFromFile: function (f) {
+        var reader = new FileReader(),
+            type = L.Util.detectFileType(f),
+            self = this;
+        reader.readAsText(f);
+        reader.onload = function (e) {
+            self.importRaw(e.target.result, type);
+        };
+    },
+
+    importFromUrl: function (url, type) {
+        url = this.map.localizeUrl(url), self = this;
+        L.S.Xhr._ajax({verb: 'GET', uri: url, callback: function (data) {
+            self.importRaw(data, type);
+        }});
     },
 
     getEditUrl: function() {

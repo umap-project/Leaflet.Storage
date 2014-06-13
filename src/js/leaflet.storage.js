@@ -174,6 +174,11 @@ L.Storage.Map.include({
             var datalayer = this._createDataLayer({name: L._('Layer 1')});
             datalayer.connectToMap();
             this.enableEdit();
+            var dataUrl = L.Util.queryString('dataUrl', null),
+                dataFormat = L.Util.queryString('dataFormat', 'geojson');
+            if (dataUrl) {
+                datalayer.importFromUrl(dataUrl, dataFormat);
+            }
         }
 
         this.help = new L.Storage.Help(this);
@@ -614,75 +619,27 @@ L.Storage.Map.include({
             presetBox.style.display = 'none';
         }
 
-        var processContent = function (raw) {
-            var type = typeInput.value,
-                layerId = layerInput[layerInput.selectedIndex].value;
-            layer = map.datalayers[layerId];
-            layer.addRawData(raw, type);
-            layer.isDirty = true;
-            L.S.fire('ui:end');
-            layer.zoomTo();
-        };
-
-        var detectTypeFromFile = function (f) {
-            var filename = f.name ? escape(f.name.toLowerCase()) : '';
-            function ext(_) {
-                return filename.indexOf(_) !== -1;
-            }
-            if (f.type === 'application/vnd.google-earth.kml+xml' || ext('.kml')) {
-                return 'kml';
-            }
-            if (ext('.gpx')) return 'gpx';
-            if (ext('.geojson') || ext('.json')) return 'geojson';
-            if (f.type === 'text/csv' || ext('.csv') || ext('.tsv') || ext('.dsv')) {
-                return 'dsv';
-            }
-            if (ext('.xml')) return 'osm';
-        };
-
-        var processFile = function () {
-            var files = fileInput.files,
-                output = [],
-                reader, content, geojson, layer;
-
-            var process = function (f) {
-                reader = new FileReader();
-                reader.readAsText(f);
-                reader.onload = function (e) {
-                    processContent(e.target.result);
-                };
-            };
-
-            for (var i = 0, f; f = files[i]; i++) {
-                process(f);
-            }
-        };
-
-        var processUrl = function (url) {
-            url = map.localizeUrl(url);
-            L.S.Xhr._ajax({verb: 'GET', uri: url, callback: function (data) {
-                processContent(data);
-            }});
-        };
-
         var submit = function () {
+            var type = typeInput.value,
+                layerId = layerInput[layerInput.selectedIndex].value,
+                layer = map.datalayers[layerId];
             if (fileInput.files) {
-                processFile();
+                layer.importFromFiles(fileInput.files);
             }
             if (rawInput.value) {
-                processContent(rawInput.value);
+                layer.importRaw(rawInput.value, type);
             }
             if (urlInput.value) {
-                processUrl(urlInput.value);
+                layer.importFromUrl(urlInput.value, type);
             }
             if (presetSelect.selectedIndex > 0) {
-                processUrl(presetSelect[presetSelect.selectedIndex].value);
+                layer.importFromUrl(presetSelect[presetSelect.selectedIndex].value, type);
             }
         };
         L.DomEvent.on(submitInput, 'click', submit, this);
         L.DomEvent.on(fileInput, 'change', function (e) {
             var f = e.target.files[0],
-                type = detectTypeFromFile(f);
+                type = L.Util.detectFileType(f);
             if (type) {
                 typeInput.value = type;
             }

@@ -26,7 +26,11 @@ L.Storage.Xhr = {
         var response, xhr = this._wrapper(), id = Math.random();
         if (settings.listener) settings.listener.fire('dataloading', {id: id});
         xhr.open(settings.verb, settings.uri, true);
-        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        if (settings.uri.indexOf('http') !== 0 || settings.uri.indexOf(window.location.origin) === 0) {
+            // "X-" mode headers cause the request to be in preflight mode,
+            // we don"t want that by default for CORS requests
+            xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        }
         if (settings.headers) {
             for (var name in settings.headers) {
                 xhr.setRequestHeader(name, settings.headers[name]);
