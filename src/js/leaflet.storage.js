@@ -590,6 +590,18 @@ L.Storage.Map.include({
             option = L.DomUtil.create('option', '', typeInput);
             option.value = option.innerHTML = types[i];
         }
+        if (layerInput.length === 0) {
+            var action = {
+                label: L._('Add a layer now'),
+                callback: function () {
+                    var datalayer = this._createDataLayer({});
+                    datalayer.edit();
+                },
+                callbackContext: this
+            };
+            L.S.fire('ui:alert', {content: L._('Please add at least a layer to import in'), level: 'info', duration: 30000, action: action});
+            return;
+        }
         if (this.options.importPresets.length) {
             var noPreset = L.DomUtil.create('option', '', presetSelect);
             noPreset.value = noPreset.innerHTML = L._('Choose a preset');

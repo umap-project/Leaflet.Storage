@@ -51,13 +51,21 @@ L.Storage.on('ui:alert', function (e) {
     L.DomUtil.addClass(body, 'storage-alert');
     var level_class = e.level && e.level == "info"? "info": "error";
     L.DomUtil.addClass(div, level_class);
-    var close_link = L.DomUtil.create('a', 'storage-close-link', div);
-    close_link.innerHTML = "&times;";
     var close = function (e) {
         div.innerHTML = "";
         L.DomUtil.removeClass(body, 'storage-alert');
         L.DomUtil.removeClass(div, level_class);
     };
+    if (e.action) {
+        var action = L.DomUtil.element('a', {'className': 'storage-action'}, div);
+        action.href = "#";
+        action.innerHTML = e.action.label;
+        L.DomEvent.on(action, 'click', L.DomEvent.stop)
+                  .on(action, 'click', e.action.callback, e.action.callbackContext || this)
+                  .on(action, 'click', close);
+    }
+    var close_link = L.DomUtil.create('a', 'storage-close-link', div);
+    close_link.innerHTML = "&times;";
     L.DomEvent
         .on(close_link, 'click', L.DomEvent.stopPropagation)
         .on(close_link, 'click', L.DomEvent.preventDefault)
