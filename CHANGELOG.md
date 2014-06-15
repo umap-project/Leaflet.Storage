@@ -1,6 +1,6 @@
 # Leaflet.Storage changelog
 
-## dev
+## 0.5.x
 - add TMS option to custom tilelayer
 - allow to define default properties at map level
 - support iframe in text formatting
@@ -16,6 +16,7 @@
 - added a button to clone a datalayer
 - added dataUrl and dataFormat on map creation page
 - basic support for GeometryCollection import
+- removed submodules and switched to grunt for assets management
 
 ## 0.5.x
 - datalayers are now sent to backend as geojson
