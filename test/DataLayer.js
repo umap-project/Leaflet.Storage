@@ -140,7 +140,7 @@ describe('L.DataLayer', function () {
             happen.once(input, {type: 'input'});
             assert.ok(this.map.isDirty);
             var response = function (request) {
-                request.respond(200, {}, JSON.stringify(defaultDatalayerData({pk: 63})));
+                return request.respond(200, {}, JSON.stringify(defaultDatalayerData({pk: 63})));
             };
             var spy = sinon.spy(response);
             this.server.respondWith('POST', '/map/99/datalayer/update/63/', spy);

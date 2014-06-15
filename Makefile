@@ -1,4 +1,8 @@
 .PHONY: test
+install:
+	npm install
+vendors:
+	grunt
 test:
 	firefox test/index.html
 i18n:
