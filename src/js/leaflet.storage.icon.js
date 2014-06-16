@@ -152,6 +152,7 @@ L.Storage.Icon.Ball = L.Storage.Icon.Default.extend({
 
 });
 
+_CACHE_COLOR = {};
 L.Storage.Icon.Cluster = L.DivIcon.extend({
     options: {
         iconSize: [40, 40]
@@ -165,9 +166,18 @@ L.Storage.Icon.Cluster = L.DivIcon.extend({
     createIcon: function (oldIcon) {
         var container = L.DomUtil.create('div', 'leaflet-marker-icon marker-cluster'),
             div = L.DomUtil.create('div', '', container),
-            span = L.DomUtil.create('span', '', div);
+            span = L.DomUtil.create('span', '', div),
+            backgroundColor = this.datalayer.getColor(),
+            color;
         span.innerHTML = this.cluster.getChildCount();
-        div.style.backgroundColor = this.datalayer.options.color || this.datalayer.map.getDefaultOption('color');
+        div.style.backgroundColor = backgroundColor;
+        if (typeof _CACHE_COLOR[backgroundColor] === "undefined") {
+            color = L.DomUtil.TextColorFromBackgroundColor(div)
+            _CACHE_COLOR[backgroundColor] = color;
+        } else {
+            color = _CACHE_COLOR[backgroundColor];
+        }
+        div.style.color = color;
         return container;
     }
 

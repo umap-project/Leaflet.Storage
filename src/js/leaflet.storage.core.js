@@ -185,6 +185,21 @@ L.DomUtil.after = function (target, el)
     return el;
 };
 
+L.DomUtil.RGBRegex = /rgb *\( *([0-9]{1,3}) *, *([0-9]{1,3}) *, *([0-9]{1,3}) *\)/;
+
+L.DomUtil.TextColorFromBackgroundColor = function (el) {
+    var out = '#000000';
+    if (!window.getComputedStyle) {return out;}
+    var rgb = window.getComputedStyle(el).getPropertyValue('background-color');
+    rgb = L.DomUtil.RGBRegex.exec(rgb);
+    if (!rgb || rgb.length != 4) {return out;}
+    rgb = parseInt(rgb[1], 10) + parseInt(rgb[2], 10) + parseInt(rgb[3], 10);
+    if (rgb < (255 * 3 / 2)) {
+        out = '#ffffff';
+    }
+    return out;
+}
+
 
 /*
 * Global events
