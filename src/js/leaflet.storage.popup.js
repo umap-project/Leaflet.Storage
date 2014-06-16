@@ -172,6 +172,7 @@ L.S.Popup.SimplePanel = L.S.Popup.extend({
         L.S.fire('ui:end');
         L.S.Popup.prototype.onRemove.call(this, map);
     },
+    _initLayout: function () {this._container = L.DomUtil.create('span');},
     _updateLayout: function () {},
     _updatePosition: function () {},
     _adjustPan: function () {}
