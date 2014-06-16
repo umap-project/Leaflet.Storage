@@ -51,7 +51,7 @@
   },
   "napa": {
     "leaflet-contextmenu": "aratcliffe/Leaflet.contextmenu",
-    "leaflet-loading": "ebrelsford/Leaflet.loading#v0.1.6",
+    "leaflet-loading": "ebrelsford/Leaflet.loading#v0.1.10",
     "leaflet-measure": "makinacorpus/Leaflet.MeasureControl"
   }
 }
