@@ -212,5 +212,6 @@
     "Clone": "Klone",
     "Clone of {name}": "Klone af {name}",
     "Add a layer now": "Tilføj et nyt lag nu",
-    "Please add at least a layer to import in": "Tilføj mindst et lag til at importere fra"
+    "Please add at least a layer to import in": "Tilføj mindst et lag til at importere fra",
+    "Side panel": "Sidepanel"
 }

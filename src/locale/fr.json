@@ -212,5 +212,6 @@
     "Clone": "Cloner",
     "Clone of {name}": "Clone de {name}",
     "Add a layer now": "Ajouter maintenant",
-    "Please add at least a layer to import in": "Merci d'ajouter au moins un calque pour l'import"
+    "Please add at least a layer to import in": "Merci d'ajouter au moins un calque pour l'import",
+    "Side panel": "Panneau latéral"
 }

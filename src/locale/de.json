@@ -212,5 +212,6 @@
     "Clone": "Duplizieren",
     "Clone of {name}": "Duplikat von {name}",
     "Add a layer now": "Jetzt eine Ebene hinzufügen",
-    "Please add at least a layer to import in": "Bitte füge eine Ebene hinzu in die importiert wird"
+    "Please add at least a layer to import in": "Bitte füge eine Ebene hinzu in die importiert wird",
+    "Side panel": "Seitenleiste"
 }

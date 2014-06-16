@@ -212,5 +212,6 @@
     "Clone": "Clone",
     "Clone of {name}": "Clone of {name}",
     "Add a layer now": "Add a layer now",
-    "Please add at least a layer to import in": "Please add at least a layer to import in"
+    "Please add at least a layer to import in": "Please add at least a layer to import in",
+    "Side panel": "Side panel"
 }
