@@ -3,6 +3,7 @@
 ## dev
 - introduce panel popup mode
 - upgraded leaflet.loading to 0.1.10
+- make the cluster text dynamic
 
 ## 0.6.x
 - add TMS option to custom tilelayer
