@@ -162,3 +162,17 @@ L.S.Popup.GeoRSSLink = L.S.Popup.extend({
         return a;
     }
 });
+
+L.S.Popup.SimplePanel = L.S.Popup.extend({
+
+    update: function () {
+        L.S.fire('ui:start', {data: {html: this._content}});
+    },
+    onRemove: function (map) {
+        L.S.fire('ui:end');
+        L.S.Popup.prototype.onRemove.call(this, map);
+    },
+    _updateLayout: function () {},
+    _updatePosition: function () {},
+    _adjustPan: function () {}
+});

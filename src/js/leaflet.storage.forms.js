@@ -392,7 +392,8 @@ L.S.ElementHelper.PopupTemplate = L.S.ElementHelper.SelectAbstract.extend({
         ["Large", L._('Name and description (large)')],
         ["Table", L._('Table')],
         ["GeoRSSImage", L._('GeoRSS (title + image)')],
-        ["GeoRSSLink", L._('GeoRSS (only link)')]
+        ["GeoRSSLink", L._('GeoRSS (only link)')],
+        ["SimplePanel", L._('Side panel')]
     ],
 
     toJS: function () {

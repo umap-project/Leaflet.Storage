@@ -8,7 +8,6 @@ L.Storage = new L.StorageSingleton();
 L.S = L.Storage;
 L.Storage.Map = L.Map.extend({});
 
-
 /*
 * Utils
 */

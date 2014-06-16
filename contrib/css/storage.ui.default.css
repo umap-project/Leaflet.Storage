@@ -173,6 +173,9 @@ fieldset.toggle.on .more_style_options {
     -webkit-box-sizing:border-box;
     box-sizing: border-box;
 }
+#storage-ui-container img {
+    max-width: 400px;
+}
 
 /* *********** */
 /*   Alerts    */

@@ -1,6 +1,9 @@
 # Leaflet.Storage changelog
 
-## 0.5.x
+## dev
+- introduce panel popup mode
+
+## 0.6.x
 - add TMS option to custom tilelayer
 - allow to define default properties at map level
 - support iframe in text formatting
