@@ -43,12 +43,12 @@ L.S.Popup = L.Popup.extend({
                 next = this.feature.getNext(),
                 prev = this.feature.getPrevious();
             if (next) {
-                next_li.title = L._("Go to «{feature}»", {feature: next.properties.name});
+                next_li.title = L._('Go to «{feature}»', {feature: next.properties.name});
             }
             if (prev) {
-                previous_li.title = L._("Go to «{feature}»", {feature: prev.properties.name});
+                previous_li.title = L._('Go to «{feature}»', {feature: prev.properties.name});
             }
-            zoom_li.title = L._("Zoom to this feature");
+            zoom_li.title = L._('Zoom to this feature');
             L.DomEvent.on(next_li, 'click', function (e) {
                 if (next) {
                     next.bringToCenter(e, function () {next.view(next.getCenter());});
@@ -59,7 +59,7 @@ L.S.Popup = L.Popup.extend({
                     prev.bringToCenter(e, function () {prev.view(prev.getCenter());});
                 }
             });
-            L.DomEvent.on(zoom_li, 'click', function (e) {
+            L.DomEvent.on(zoom_li, 'click', function () {
                 this.map._zoom = 16;  // Do not hardcode this
                 this.bringToCenter();
             }, this.feature);
