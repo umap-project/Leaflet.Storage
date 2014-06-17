@@ -176,6 +176,9 @@ fieldset.toggle.on .more_style_options {
 #storage-ui-container img {
     max-width: 400px;
 }
+#storage-ui-container .storage-popup-content {
+    max-height: inherit;
+}
 
 /* *********** */
 /*   Alerts    */
