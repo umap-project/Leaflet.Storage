@@ -611,11 +611,16 @@ a.storage-control-text {
 /* ********************************* */
 /*           Popup                   */
 /* ********************************* */
+.storage-popup{
+    display: flex;
+    flex-flow: column nowrap;
+    height:100%;
+}
+
 .storage-popup-footer {
     background-color: rgb(68, 68, 68);
     color: white;
     display: block;
-    height: 24px;
     line-height: 24px;
     margin-top: 14px;
     /*padding: 0 5px;*/
@@ -1020,6 +1025,7 @@ a.storage-control-text {
 }
 .storage-popup-content {
     max-height: 500px;
+    flex-grow: 1;
     overflow-y: auto;
     overflow-x: hidden;
 }
