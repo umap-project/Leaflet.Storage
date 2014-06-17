@@ -623,10 +623,9 @@ a.storage-control-text {
     display: block;
     line-height: 24px;
     margin-top: 14px;
-    /*padding: 0 5px;*/
-    /*text-align: right;*/
     min-width: 99px;
     border-radius: 2px;
+    max-height: 24px;
 }
 .storage-popup-footer li {
     background-position: center center;
