@@ -729,10 +729,9 @@ a.storage-control-text {
 /*         Forms utils               */
 /* ********************************* */
 
-.storage-delete:before, .storage-empty:before, .storage-to-polygon,
-.storage-clone, .delete_map_button,
-.storage-to-polyline {
-    background-position: 7px center;
+.storage-delete:before, .storage-empty:before, .storage-to-polygon:before,
+.storage-clone:before,
+.storage-to-polyline:before {
     background-repeat: no-repeat;
     text-indent: 38px;
     height: 24px;
@@ -740,23 +739,21 @@ a.storage-control-text {
     display: inline-block;
     background-image: url("../img/24.png");
     vertical-align: bottom;
-}
-.storage-to-polygon {
-    background-image: url("../img/draw_polygon.png");
-}
-.storage-to-polyline {
-    background-image: url("../img/draw_polyline.png");
-}
-.storage-clone {
-    background-image: url("../img/clone-24.png");
-}
-.storage-delete:before,
-.delete_map_button {
-    background-position: -40px -6px;
     content: " ";
+}
+.storage-to-polygon:before {
+    background-position: -80px -48px;
+}
+.storage-to-polyline:before {
+    background-position: -120px -48px;
+}
+.storage-clone:before {
+    background-position: -160px -88px;
+}
+.storage-delete:before {
+    background-position: -40px -6px;
 }
 .storage-empty:before {
-    content: " ";
     background-position: -160px -126px;
 }
 .storage-edit-actions li {
