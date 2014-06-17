@@ -2,7 +2,7 @@ L.S.Popup = L.Popup.extend({
 
     initialize: function (feature) {
         this.feature = feature;
-        this.container = L.DomUtil.create('div', '');
+        this.container = L.DomUtil.create('div', 'storage-popup');
         this.format();
         L.Popup.prototype.initialize.call(this, {}, feature);
         this.setContent(this.container);
