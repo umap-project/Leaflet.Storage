@@ -7,14 +7,14 @@ L.Map.mergeOptions({
     hash: true,
     embedControl: true,
     datalayersControl: true,
-    default_color: "DarkBlue",
+    default_color: 'DarkBlue',
     default_smoothFactor: 1.0,
     default_opacity: 0.5,
     default_fillOpacity: 0.3,
     default_stroke: true,
     default_fill: true,
     default_weight: 3,
-    default_iconClass: "Default",
+    default_iconClass: 'Default',
     attributionControl: true,
     allowEdit: true,
     homeControl: true,
@@ -51,7 +51,7 @@ L.Storage.Map.include({
         if (geojson.properties && geojson.properties.locale) {
             L.setLocale(geojson.properties.locale);
         }
-        var zoomControl = typeof geojson.properties.zoomControl !== "undefined" ? geojson.properties.zoomControl : true;
+        var zoomControl = typeof geojson.properties.zoomControl !== 'undefined' ? geojson.properties.zoomControl : true;
         geojson.properties.zoomControl = false;
         L.Util.setBooleanFromQueryString(geojson.properties, 'scrollWheelZoom');
         L.Map.prototype.initialize.call(this, el, geojson.properties);
@@ -63,14 +63,14 @@ L.Storage.Map.include({
             this.options.center = geojson.geometry;
         }
         this.options.zoomControl = zoomControl;
-        this.overrideBooleanOptionFromQueryString("zoomControl");
-        this.overrideBooleanOptionFromQueryString("moreControl");
-        this.overrideBooleanOptionFromQueryString("miniMap");
-        this.overrideBooleanOptionFromQueryString("scaleControl");
-        this.overrideBooleanOptionFromQueryString("allowEdit");
-        this.overrideBooleanOptionFromQueryString("datalayersControl");
-        this.overrideBooleanOptionFromQueryString("displayDataBrowserOnLoad");
-        this.overrideBooleanOptionFromQueryString("displayCaptionOnLoad");
+        this.overrideBooleanOptionFromQueryString('zoomControl');
+        this.overrideBooleanOptionFromQueryString('moreControl');
+        this.overrideBooleanOptionFromQueryString('miniMap');
+        this.overrideBooleanOptionFromQueryString('scaleControl');
+        this.overrideBooleanOptionFromQueryString('allowEdit');
+        this.overrideBooleanOptionFromQueryString('datalayersControl');
+        this.overrideBooleanOptionFromQueryString('displayDataBrowserOnLoad');
+        this.overrideBooleanOptionFromQueryString('displayCaptionOnLoad');
         if (L.Browser.ielt9) {
             // TODO include ie9
             this.options.allowEdit = false;
@@ -116,20 +116,20 @@ L.Storage.Map.include({
         if (this.options.displayCaptionOnLoad) {
             // Retrocompat
             if (!this.options.onLoadPanel) {
-                this.options.onLoadPanel = "caption";
+                this.options.onLoadPanel = 'caption';
             }
             delete this.options.displayCaptionOnLoad;
         }
         if (this.options.displayDataBrowserOnLoad) {
             // Retrocompat
             if (!this.options.onLoadPanel) {
-                this.options.onLoadPanel = "databrowser";
+                this.options.onLoadPanel = 'databrowser';
             }
             delete this.options.displayDataBrowserOnLoad;
         }
-        if (this.options.onLoadPanel === "databrowser") {
+        if (this.options.onLoadPanel === 'databrowser') {
             this.openBrowser();
-        } else if (this.options.onLoadPanel === "caption") {
+        } else if (this.options.onLoadPanel === 'caption') {
             this.displayCaption();
         }
 
@@ -149,9 +149,9 @@ L.Storage.Map.include({
                         self.fire('isdirty');
                     }
                     if (status) {
-                        L.DomUtil.addClass(this._container, "storage-is-dirty");
+                        L.DomUtil.addClass(this._container, 'storage-is-dirty');
                     } else {
-                        L.DomUtil.removeClass(this._container, "storage-is-dirty");
+                        L.DomUtil.removeClass(this._container, 'storage-is-dirty');
                     }
                     isDirty = status;
                 }
@@ -459,14 +459,14 @@ L.Storage.Map.include({
     },
 
     getDefaultOption: function (option) {
-        return this.options["default_" + option] || null;
+        return this.options['default_' + option] || null;
     },
 
     updateExtent: function() {
         this.options.center = this.getCenter();
         this.options.zoom = this.getZoom();
         this.isDirty = true;
-        L.Storage.fire("ui:alert", {content: L._('The zoom and center have been setted.'), "level": "info"});
+        L.Storage.fire('ui:alert', {content: L._('The zoom and center have been setted.'), 'level': 'info'});
     },
 
     updateTileLayers: function () {
@@ -511,7 +511,7 @@ L.Storage.Map.include({
             L.DomUtil.create('hr', '', container);
             L.DomUtil.add('h4', '', container, L._('Short URL'));
             var shortUrl = L.DomUtil.create('input', 'storage-short-url', container);
-            shortUrl.type = "text";
+            shortUrl.type = 'text';
             shortUrl.value = this.options.shortUrl;
         }
         L.DomUtil.create('hr', '', container);
@@ -519,7 +519,7 @@ L.Storage.Map.include({
         L.DomUtil.add('p', '', container, L._('Only visible features will be downloaded.'));
         var download = L.DomUtil.create('a', 'button', container);
         download.innerHTML = L._('Download data');
-        download.download = "features.geojson";
+        download.download = 'features.geojson';
         L.DomEvent.on(download, 'click', function () {
             var content = JSON.stringify(this.toGeoJSON(), null, 2);
             window.URL = window.URL || window.webkitURL;
@@ -537,7 +537,7 @@ L.Storage.Map.include({
             }
         });
         var geojson = {
-            type: "FeatureCollection",
+            type: 'FeatureCollection',
             features: features
         };
         return geojson;
@@ -569,18 +569,18 @@ L.Storage.Map.include({
             map = this, option,
             types = ['geojson', 'csv', 'gpx', 'kml', 'osm', 'georss'];
         title.innerHTML = L._('Import data');
-        fileInput.type = "file";
-        submitInput.type = "button";
+        fileInput.type = 'file';
+        submitInput.type = 'button';
         submitInput.value = L._('Import');
-        submitInput.className = "button";
+        submitInput.className = 'button';
         typeLabel.innerHTML = L._('Choose the format of the data to import');
         this.help.button(typeLabel, 'importFormats');
         var typeInput = L.DomUtil.create('select', '', typeLabel);
-        typeInput.name = "format";
+        typeInput.name = 'format';
         layerLabel.innerHTML = L._('Choose the layer to import in');
         var layerInput = L.DomUtil.create('select', '', layerLabel);
-        layerInput.name = "datalayer";
-        urlInput.type = "text";
+        layerInput.name = 'datalayer';
+        urlInput.type = 'text';
         urlInput.placeholder = L._('Provide an URL here');
         rawInput.placeholder = L._('Paste here your data');
         this.eachDataLayer(function (datalayer) {
@@ -710,7 +710,7 @@ L.Storage.Map.include({
                 django: 'https://www.djangoproject.com',
                 umap: 'http://wiki.openstreetmap.org/wiki/UMap'
             };
-        umapCredit.innerHTML = L._("Powered by <a href='{leaflet}'>Leaflet</a> and <a href='{django}'>Django</a>, glued by <a href='{umap}'>uMap project</a>.", urls);
+        umapCredit.innerHTML = L._('Powered by <a href="{leaflet}">Leaflet</a> and <a href="{django}">Django</a>, glued by <a href="{umap}">uMap project</a>.', urls);
 
         L.S.fire('ui:start', {data: {html: container}});
     },
@@ -802,20 +802,20 @@ L.Storage.Map.include({
             'captionBar'
         ], properties = {};
         for (var i = editableOptions.length - 1; i >= 0; i--) {
-            if (typeof this.options[editableOptions[i]] !== "undefined") {
+            if (typeof this.options[editableOptions[i]] !== 'undefined') {
                 properties[editableOptions[i]] = this.options[editableOptions[i]];
             }
         }
         var geojson = {
-            type: "Feature",
+            type: 'Feature',
             geometry: this.geometry(),
             properties: properties
         };
         this.backupOptions();
         var formData = new FormData();
-        formData.append("name", this.options.name);
-        formData.append("center", JSON.stringify(this.geometry()));
-        formData.append("settings", JSON.stringify(geojson));
+        formData.append('name', this.options.name);
+        formData.append('center', JSON.stringify(this.geometry()));
+        formData.append('settings', JSON.stringify(geojson));
         this.post(this.getSaveUrl(), {
             data: formData,
             callback: function (data) {
@@ -845,7 +845,7 @@ L.Storage.Map.include({
         /* Return a GeoJSON geometry Object */
         var latlng = this.latLng(this.options.center || this.getCenter());
         return {
-            type: "Point",
+            type: 'Point',
             coordinates: [
                 latlng.lng,
                 latlng.lat
@@ -932,7 +932,7 @@ L.Storage.Map.include({
 
         builder = new L.S.FormBuilder(this, optionsFields, {
             callback: function (field) {
-                if (field !== "options.popupTemplate") {
+                if (field !== 'options.popupTemplate') {
                     this.eachDataLayer(function (datalayer) {
                         datalayer.redraw();
                     });
@@ -947,7 +947,7 @@ L.Storage.Map.include({
         }
         var tilelayerFields = [
             ['options.tilelayer.name', {handler: 'BlurInput', placeholder: L._('display name')}],
-            ['options.tilelayer.url_template', {handler: 'BlurInput', helpText: L._("Supported scheme") + ': http://{s}.domain.com/{z}/{x}/{y}.png', placeholder: 'url'}],
+            ['options.tilelayer.url_template', {handler: 'BlurInput', helpText: L._('Supported scheme') + ': http://{s}.domain.com/{z}/{x}/{y}.png', placeholder: 'url'}],
             ['options.tilelayer.maxZoom', {handler: 'BlurIntInput', placeholder: L._('max zoom')}],
             ['options.tilelayer.minZoom', {handler: 'BlurIntInput', placeholder: L._('min zoom')}],
             ['options.tilelayer.attribution', {handler: 'BlurInput', placeholder: L._('attribution')}],
@@ -976,7 +976,7 @@ L.Storage.Map.include({
         });
         limitBounds.appendChild(boundsBuilder.build());
         var setCurrentButton = L.DomUtil.add('a', '', limitBounds, L._('Use current bounds'));
-        setCurrentButton.href = "#";
+        setCurrentButton.href = '#';
         L.DomEvent.on(setCurrentButton, 'click', function (e) {
             var bounds = this.getBounds();
             this.options.limitBounds.south = L.Util.formatNum(bounds.getSouth());
@@ -990,13 +990,13 @@ L.Storage.Map.include({
 
         var advancedActions = L.DomUtil.createFieldset(container, L._('Advanced actions'));
         var del = L.DomUtil.create('a', 'storage-delete', advancedActions);
-        del.href = "#";
+        del.href = '#';
         del.innerHTML = L._('Delete');
         L.DomEvent
             .on(del, 'click', L.DomEvent.stop)
             .on(del, 'click', this.del, this);
         var clone = L.DomUtil.create('a', 'storage-clone', advancedActions);
-        clone.href = "#";
+        clone.href = '#';
         clone.innerHTML = L._('Clone this map');
         L.DomEvent
             .on(clone, 'click', L.DomEvent.stop)
@@ -1005,13 +1005,15 @@ L.Storage.Map.include({
     },
 
     enableEdit: function(e) {
-        L.DomUtil.addClass(document.body, "storage-edit-enabled");
+        L.DomUtil.addClass(document.body, 'storage-edit-enabled');
         this.editEnabled = true;
+        this.fire('edit:enabled');
     },
 
     disableEdit: function(e) {
-        L.DomUtil.removeClass(document.body, "storage-edit-enabled");
+        L.DomUtil.removeClass(document.body, 'storage-edit-enabled');
         this.editEnabled = false;
+        this.fire('edit:disabled');
     },
 
     getDisplayName: function () {
@@ -1043,7 +1045,7 @@ L.Storage.Map.include({
 
     initEditBar: function () {
         var container = L.DomUtil.create('div', 'storage-main-edit-toolbox', this._controlContainer),
-            title = L.DomUtil.add('h3', '', container, L._("Editing") + '&nbsp;'),
+            title = L.DomUtil.add('h3', '', container, L._('Editing') + '&nbsp;'),
             name = L.DomUtil.create('a', 'storage-click-to-edit', title),
             setName = function () {
                 name.innerHTML = this.getDisplayName();
@@ -1052,15 +1054,15 @@ L.Storage.Map.include({
         L.DomEvent.on(name, 'click', this.edit, this);
         this.on('synced', L.bind(setName, this));
         this.help.button(title, 'edit');
-        var save = L.DomUtil.create('a', "leaflet-control-edit-save button", container);
+        var save = L.DomUtil.create('a', 'leaflet-control-edit-save button', container);
         save.href = '#';
-        save.title = L._("Save current edits") + ' (Ctrl-S)';
+        save.title = L._('Save current edits') + ' (Ctrl-S)';
         save.innerHTML = L._('Save');
-        var cancel = L.DomUtil.create('a', "leaflet-control-edit-cancel button", container);
+        var cancel = L.DomUtil.create('a', 'leaflet-control-edit-cancel button', container);
         cancel.href = '#';
-        cancel.title = L._("Cancel edits");
+        cancel.title = L._('Cancel edits');
         cancel.innerHTML = L._('Cancel');
-        var disable = L.DomUtil.create('a', "leaflet-control-edit-disable", container);
+        var disable = L.DomUtil.create('a', 'leaflet-control-edit-disable', container);
         disable.href = '#';
         disable.title = disable.innerHTML = L._('Disable editing');
 
@@ -1082,7 +1084,7 @@ L.Storage.Map.include({
     },
 
     askForReset: function (e) {
-        if (!confirm(L._("Are you sure you want to cancel your changes?"))) return;
+        if (!confirm(L._('Are you sure you want to cancel your changes?'))) return;
         this.disableEdit(e);
         L.S.fire('ui:end');
         this.reset();
