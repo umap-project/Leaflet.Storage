@@ -219,7 +219,6 @@ L.Storage.Map.include({
                 }
                 if (key == L.S.Keys.S && e.ctrlKey) {
                     L.DomEvent.stop(e);
-                    console.log('want to save', this.isDirty)
                     if (this.isDirty) {
                         this.save();
                     }
