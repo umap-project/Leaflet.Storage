@@ -6,7 +6,7 @@ L.S.Slideshow = L.Class.extend({
 
     options: {
         delay: 5000,
-        autorun: false
+        autoplay: false
     },
 
     initialize: function (map, options) {
@@ -31,7 +31,7 @@ L.S.Slideshow = L.Class.extend({
         catch (e) {
             // Certainly IE8, which has a limited version of defineProperty
         }
-        if  (this.options.autorun) {
+        if  (this.options.autoplay) {
             this.map.onceDatalayersLoaded(function () {
                 this.play();
             }, this);

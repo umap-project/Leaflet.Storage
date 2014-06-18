@@ -1005,7 +1005,7 @@ L.Storage.Map.include({
         var slideshow = L.DomUtil.createFieldset(container, L._('Slideshow'));
         var slideshowFields = [
             ['options.slideshow.delay', {handler: 'IntInput', placeholder: L._('Set a value for adding a slideshow'), helpText: L._('Delay between elements (in milliseconds)')}],
-            ['options.slideshow.autorun', {handler: 'CheckBox', helpText: L._('Autostart slideshow when map is loaded?')}]
+            ['options.slideshow.autoplay', {handler: 'CheckBox', helpText: L._('Autostart slideshow when map is loaded?')}]
         ];
         var slideshowHandler = function () {
             this.slideshow.setOptions(this.options.slideshow);
