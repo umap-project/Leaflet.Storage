@@ -7,7 +7,7 @@ L.Toolbar.include({
 
     _createButton: function (options) {
         var title = options.title;
-        options.title = "";  // We don't want our tooltip AND default HTML one
+        options.title = '';  // We don't want our tooltip AND default HTML one
         var button = this._createButtonOrig(options);
         L.DomEvent.on(button, 'mouseover', function (e) {
             L.Storage.fire('ui:tooltip', {content: L._(title)});
@@ -71,7 +71,7 @@ L.Storage.EditControl = L.Control.extend({
         var container = L.DomUtil.create('div', 'leaflet-control-edit-enable storage-control'),
             edit = L.DomUtil.create('a', '', container);
         edit.href = '#';
-        edit.title = L._("Enable editing") + ' (Ctrl-E)';
+        edit.title = L._('Enable editing') + ' (Ctrl-E)';
 
         L.DomEvent
             .addListener(edit, 'click', L.DomEvent.stop)
@@ -197,7 +197,7 @@ L.S.PolyEdit = L.Edit.Poly.extend({
 L.Control.Embed = L.Control.extend({
 
     options: {
-        position: "topleft"
+        position: 'topleft'
     },
 
     onAdd: function (map) {
@@ -205,7 +205,7 @@ L.Control.Embed = L.Control.extend({
 
         var link = L.DomUtil.create('a', '', container);
         link.href = '#';
-        link.title = L._("Embed and share this map");
+        link.title = L._('Embed and share this map');
 
         L.DomEvent
             .on(link, 'click', L.DomEvent.stopPropagation)
@@ -220,7 +220,7 @@ L.Control.Embed = L.Control.extend({
 L.Storage.MoreControls = L.Control.extend({
 
     options: {
-        position: "topleft"
+        position: 'topleft'
     },
 
     onAdd: function (map) {
@@ -228,7 +228,7 @@ L.Storage.MoreControls = L.Control.extend({
             more = L.DomUtil.create('a', 'storage-control-more storage-control-text', container),
             less = L.DomUtil.create('a', 'storage-control-less storage-control-text', container);
         more.href = '#';
-        more.title = L._("More controls");
+        more.title = L._('More controls');
         more.innerHTML = L._('More');
 
         L.DomEvent
@@ -236,7 +236,7 @@ L.Storage.MoreControls = L.Control.extend({
             .on(more, 'click', this.toggle, this);
 
         less.href = '#';
-        less.title = L._("Hide controls");
+        less.title = L._('Hide controls');
         less.innerHTML = L._('Less');
 
         L.DomEvent
@@ -263,7 +263,7 @@ L.Storage.MoreControls = L.Control.extend({
 L.Storage.DataLayersControl = L.Control.extend({
 
     options: {
-        position: "topleft"
+        position: 'topleft'
     },
 
     labels: {
@@ -277,15 +277,15 @@ L.Storage.DataLayersControl = L.Control.extend({
             actions = L.DomUtil.create('div', 'storage-browse-actions', container);
         this._datalayers_container = L.DomUtil.create('ul', 'storage-browse-datalayers', actions);
 
-        var link = L.DomUtil.create('a', "storage-browse-link", actions);
+        var link = L.DomUtil.create('a', 'storage-browse-link', actions);
         link.href = '#';
-        link.title = link.innerHTML = L._("Browse data");
+        link.title = link.innerHTML = L._('Browse data');
 
-        var add = L.DomUtil.create('a', "show-on-edit block add-datalayer", actions);
+        var add = L.DomUtil.create('a', 'show-on-edit block add-datalayer', actions);
         add.href = '#';
         add.innerHTML = add.title = L._('Add a layer');
 
-        var toggle = L.DomUtil.create('a', "storage-browse-toggle", container);
+        var toggle = L.DomUtil.create('a', 'storage-browse-toggle', container);
         toggle.href = '#';
 
         L.DomEvent
@@ -327,7 +327,7 @@ L.Storage.DataLayersControl = L.Control.extend({
         datalayer.renderToolbox(datalayer_li);
         var title = L.DomUtil.add('span', 'layer-title', datalayer_li, datalayer.options.name);
 
-        datalayer_li.id = "browse_data_toggle_" + datalayer.storage_id;
+        datalayer_li.id = 'browse_data_toggle_' + datalayer.storage_id;
         L.DomUtil.classIf(datalayer_li, 'off', !datalayer.isVisible());
 
         title.innerHTML = datalayer.options.name;
@@ -345,7 +345,7 @@ L.Storage.DataLayer.include({
     renderToolbox: function (container) {
         var toggle = L.DomUtil.create('i', 'layer-toggle', container),
             zoom_to = L.DomUtil.create('i', 'layer-zoom_to', container),
-            edit = L.DomUtil.create('i', "layer-edit show-on-edit", container);
+            edit = L.DomUtil.create('i', 'layer-edit show-on-edit', container);
         zoom_to.title = L._('Zoom to layer extent');
         toggle.title = L._('Show/hide layer');
         edit.title = L._('Edit');
@@ -357,7 +357,7 @@ L.Storage.DataLayer.include({
     },
 
     getLocalId: function () {
-        return this.storage_id || "tmp" + L.Util.stamp(this);
+        return this.storage_id || 'tmp' + L.Util.stamp(this);
     },
 
     getHidableElements: function () {
@@ -411,8 +411,8 @@ L.Storage.Map.include({
                 color = L.DomUtil.create('i', 'feature-color', feature_li),
                 title = L.DomUtil.create('span', 'feature-title', feature_li),
                 symbol = feature._getIconUrl ? L.S.Icon.prototype.formatUrl(feature._getIconUrl(), feature): null;
-            zoom_to.title = L._("Bring feature to center");
-            edit.title = L._("Edit this feature");
+            zoom_to.title = L._('Bring feature to center');
+            edit.title = L._('Edit this feature');
             title.innerHTML = feature.getDisplayName() || '—';
             color.style.backgroundColor = feature.getOption('color');
             if (symbol) {
@@ -437,9 +437,9 @@ L.Storage.Map.include({
             L.DomUtil.classIf(container, 'off', !datalayer.isVisible());
 
             var build = function () {
-                ul.innerHTML = "";
+                ul.innerHTML = '';
                 datalayer.eachFeature(function (feature) {
-                    if (filterValue && (feature.getDisplayName() || "").toLowerCase().indexOf(filterValue) === -1) return;
+                    if (filterValue && (feature.getDisplayName() || '').toLowerCase().indexOf(filterValue) === -1) return;
                     ul.appendChild(addFeature(feature));
                 });
             };
@@ -479,9 +479,9 @@ L.Storage.TileLayerControl = L.Control.extend({
     onAdd: function (map) {
         var container = L.DomUtil.create('div', 'leaflet-control-tilelayers storage-control');
 
-        var link = L.DomUtil.create('a', "", container);
+        var link = L.DomUtil.create('a', '', container);
         link.href = '#';
-        link.title = L._("Change map background");
+        link.title = L._('Change map background');
 
         L.DomEvent
             .on(link, 'click', L.DomEvent.stopPropagation)
@@ -502,7 +502,7 @@ L.Storage.TileLayerControl = L.Control.extend({
         this._map.eachTileLayer(function (tilelayer) {
             this.addTileLayerElement(tilelayer, options);
         }, this);
-        L.Storage.fire("ui:start", {data: {html: this._tilelayers_container}});
+        L.Storage.fire('ui:start', {data: {html: this._tilelayers_container}});
     },
 
     addTileLayerElement: function (tilelayer, options) {
@@ -551,10 +551,10 @@ L.Storage.HomeControl = L.Control.extend({
 
     onAdd: function (map) {
         var container = L.DomUtil.create('div', 'leaflet-control-home storage-control'),
-            link = L.DomUtil.create('a', "", container);
+            link = L.DomUtil.create('a', '', container);
 
         link.href = '/';
-        link.title = L._("Go to home page");
+        link.title = L._('Go to home page');
 
         return container;
     }
@@ -569,9 +569,9 @@ L.Storage.LocateControl = L.Control.extend({
 
     onAdd: function (map) {
         var container = L.DomUtil.create('div', 'leaflet-control-locate storage-control'),
-            link = L.DomUtil.create('a', "", container);
+            link = L.DomUtil.create('a', '', container);
         link.href = '#';
-        link.title = L._("Center map on your location");
+        link.title = L._('Center map on your location');
         var fn = function (e) {
             map.locate({
                 setView: true,
@@ -601,12 +601,12 @@ L.Storage.JumpToLocationControl = L.Control.extend({
             self = this;
 
         L.DomEvent.disableClickPropagation(container);
-        var link = L.DomUtil.create('a', "", container);
-        var form = L.DomUtil.create('form', "", container);
-        var input = L.DomUtil.create('input', "", form);
+        var link = L.DomUtil.create('a', '', container);
+        var form = L.DomUtil.create('form', '', container);
+        var input = L.DomUtil.create('input', '', form);
         link.href = '#';
-        link.title = input.placeholder = L._("Jump to location");
-        link.innerHTML = "&nbsp;";
+        link.title = input.placeholder = L._('Jump to location');
+        link.innerHTML = '&nbsp;';
         var fn = function (e) {
             var search_terms = input.value;
             if (!search_terms) {
@@ -629,7 +629,7 @@ L.Storage.JumpToLocationControl = L.Control.extend({
                 viewbox: viewbox, // this is just a preferred area, not a constraint
                 limit: 1
             };
-            url = self.options.server_url + "?" + L.S.Xhr.buildQueryString(params);
+            url = self.options.server_url + '?' + L.S.Xhr.buildQueryString(params);
             L.Storage.Xhr.get(url, {
                 callback: function (data) {
                     L.DomUtil.removeClass(link, 'loading');
@@ -713,7 +713,7 @@ L.S.ContextMenu = L.Map.ContextMenu.extend({
 
     _showAtPoint: function (pt, e) {
         this._items = [];
-        this._container.innerHTML = "";
+        this._container.innerHTML = '';
         this._createItems(e);
         L.Map.ContextMenu.prototype._showAtPoint.call(this, pt, e);
     }
@@ -751,7 +751,7 @@ L.S.IframeExporter = L.Class.extend({
         allowEdit: false,
         moreControl: true,
         datalayersControl: true,
-        onLoadPanel: "none"
+        onLoadPanel: 'none'
     },
 
     dimensions: {
