@@ -214,5 +214,17 @@
     "Powered by <a href=\"{leaflet}\">Leaflet</a> and <a href=\"{django}\">Django</a>, glued by <a href=\"{umap}\">uMap project</a>.": "Propulsé par <a href=\"{leaflet}\">Leaflet</a> et <a href=\"{django}\">Django</a>, mis en musique par <a href=\"{umap}\">uMap project</a>.",
     "Zoom level for automatic zooms": "Niveau de zoom automatique",
     "A string that defines the stroke dash pattern. Ex.: «5, 10, 15».": "Chaîne représentant les pointillés de ligne. Ex.: «5, 10, 15».",
-    "Do you want to display the «more» control?": "Voulez-vous afficher le bouton «Plus»?"
+    "Do you want to display the «more» control?": "Voulez-vous afficher le bouton «Plus»?",
+    "Auto": "Auto",
+    "Autostart slideshow when map is loaded?": "Commencer le diaporama au chargement?",
+    "Default: name": "Par défaut: name",
+    "Delay between elements (in milliseconds)": "Rythme de changement (en millisecondes)",
+    "Property to use for sorting features": "Propriété utilisée pour trier les éléments",
+    "Set a value for adding a slideshow": "Entrez une valeur pour activer le mode diaporama",
+    "Slideshow": "Diaporama",
+    "Start slideshow": "Commencer",
+    "Stop slideshow": "Arrêter",
+    "Text color for the cluster label": "Couleur du texte du cluster",
+    "Zoom to the next": "Suivant",
+    "Zoom to the previous": "Précédent"
 }
