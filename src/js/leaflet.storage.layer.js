@@ -19,7 +19,7 @@ L.S.Layer = {
 };
 
 L.S.Layer.Default = L.FeatureGroup.extend({
-    _type: "Default",
+    _type: 'Default',
     includes: [L.S.Layer],
 
     initialize: function (datalayer) {
@@ -30,7 +30,7 @@ L.S.Layer.Default = L.FeatureGroup.extend({
 });
 
 L.S.Layer.Cluster = L.MarkerClusterGroup.extend({
-    _type: "Cluster",
+    _type: 'Cluster',
     includes: [L.S.Layer],
 
     initialize: function (datalayer) {
@@ -60,12 +60,12 @@ L.S.Layer.Cluster = L.MarkerClusterGroup.extend({
     },
 
     postUpdate: function (field) {
-        if (field === "options.cluster.radius") {
+        if (field === 'options.cluster.radius') {
             // No way to reset radius of an already instanciated MarkerClusterGroup...
             this.datalayer.resetLayer(true);
             return;
         }
-        if (field === "options.color") {
+        if (field === 'options.color') {
             this.options.polygonOptions.color = this.datalayer.getColor();
         }
     },
@@ -77,7 +77,7 @@ L.S.Layer.Cluster = L.MarkerClusterGroup.extend({
 });
 
 L.S.Layer.Heat = L.HeatLayer.extend({
-    _type: "Heat",
+    _type: 'Heat',
     includes: [L.S.Layer],
     isBrowsable: false,
 
@@ -187,7 +187,7 @@ L.Storage.DataLayer = L.Class.extend({
     resetLayer: function (force) {
         // Backward compat, to be removed
         if (this.options.markercluster) {
-            this.options.type = "Cluster";
+            this.options.type = 'Cluster';
             delete this.options.markercluster;
         }
 
@@ -335,7 +335,7 @@ L.Storage.DataLayer = L.Class.extend({
 
     _dataUrl: function() {
         var template = this.map.options.urls.datalayer_view;
-        return L.Util.template(template, {"pk": this.storage_id, "map_id": this.map.options.storage_id});
+        return L.Util.template(template, {'pk': this.storage_id, 'map_id': this.map.options.storage_id});
     },
 
     isRemoteLayer: function () {
@@ -343,7 +343,7 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     isClustered: function () {
-        return this.options.type === "Cluster";
+        return this.options.type === 'Cluster';
     },
 
     addLayer: function (feature) {
@@ -386,7 +386,7 @@ L.Storage.DataLayer = L.Class.extend({
             };
 
         // TODO add a duck typing guessType
-        if (type === "csv") {
+        if (type === 'csv') {
             csv2geojson.csv2geojson(c, {
                 delimiter: 'auto',
                 includeLatLon: false
@@ -411,7 +411,7 @@ L.Storage.DataLayer = L.Class.extend({
                 d = toDom(c);
             }
             callback(osmtogeojson(d, {flatProperties: true}));
-        } else if (type === "geojson") {
+        } else if (type === 'geojson') {
             try {
                 gj = JSON.parse(c);
                 callback(gj);
@@ -473,7 +473,7 @@ L.Storage.DataLayer = L.Class.extend({
             case 'GeometryCollection':
                 return this.geojsonToFeatures(geojson.geometries);
             default:
-                L.S.fire('ui:alert', {content: L._("Skipping unkown geometry.type: {type}", {type: geometry.type}), level: 'error'});
+                L.S.fire('ui:alert', {content: L._('Skipping unkown geometry.type: {type}', {type: geometry.type}), level: 'error'});
         }
         if (layer) {
             this.addLayer(layer);
@@ -488,7 +488,7 @@ L.Storage.DataLayer = L.Class.extend({
         return new L.Storage.Marker(
             this.map,
             latlng,
-            {"geojson": geojson, "datalayer": this}
+            {'geojson': geojson, 'datalayer': this}
         );
     },
 
@@ -496,7 +496,7 @@ L.Storage.DataLayer = L.Class.extend({
         return new L.Storage.Polyline(
             this.map,
             latlngs,
-            {"geojson": geojson, "datalayer": this, color: null}
+            {'geojson': geojson, 'datalayer': this, color: null}
         );
     },
 
@@ -504,7 +504,7 @@ L.Storage.DataLayer = L.Class.extend({
         return new L.Storage.Polygon(
             this.map,
             latlngs,
-            {"geojson": geojson, "datalayer": this}
+            {'geojson': geojson, 'datalayer': this}
         );
     },
 
@@ -633,7 +633,7 @@ L.Storage.DataLayer = L.Class.extend({
         var builder = new L.S.FormBuilder(this, metadata_fields, {
             callback: function (field) {
                 this.map.updateDatalayersControl();
-                if (field === "options.type") {
+                if (field === 'options.type') {
                     this.resetLayer();
                     this.edit();
                 }
@@ -694,7 +694,7 @@ L.Storage.DataLayer = L.Class.extend({
         var advancedActions = L.DomUtil.createFieldset(container, L._('Advanced actions'));
         var deleteLink = L.DomUtil.create('a', 'delete_datalayer_button storage-delete', advancedActions);
         deleteLink.innerHTML = L._('Delete');
-        deleteLink.href = "#";
+        deleteLink.href = '#';
         L.DomEvent.on(deleteLink, 'click', L.DomEvent.stop)
                   .on(deleteLink, 'click', function () {
                     this._delete();
@@ -703,13 +703,13 @@ L.Storage.DataLayer = L.Class.extend({
         if (!this.isRemoteLayer()) {
             var emptyLink = L.DomUtil.create('a', 'storage-empty', advancedActions);
             emptyLink.innerHTML = L._('Empty');
-            emptyLink.href = "#";
+            emptyLink.href = '#';
             L.DomEvent.on(emptyLink, 'click', L.DomEvent.stop)
                       .on(emptyLink, 'click', this.empty, this);
         }
         var cloneLink = L.DomUtil.create('a', 'storage-clone', advancedActions);
         cloneLink.innerHTML = L._('Clone');
-        cloneLink.href = "#";
+        cloneLink.href = '#';
         L.DomEvent.on(cloneLink, 'click', L.DomEvent.stop)
                   .on(cloneLink, 'click', function () {
                     datalayer = this.clone();
@@ -809,17 +809,17 @@ L.Storage.DataLayer = L.Class.extend({
     save: function () {
         if (!this.isLoaded()) {return;}
         var geojson = {
-            type: "FeatureCollection",
+            type: 'FeatureCollection',
             features: this.isRemoteLayer() ? [] : this.featuresToGeoJSON(),
             _storage: this.options
         };
         this._geojson = geojson;
         var formData = new FormData();
-        formData.append("name", this.options.name);
-        formData.append("display_on_load", !!this.options.displayOnLoad);
+        formData.append('name', this.options.name);
+        formData.append('display_on_load', !!this.options.displayOnLoad);
         // filename support is shaky, don't do it for now
         var blob = new Blob([JSON.stringify(geojson)], {type: 'application/json'});
-        formData.append("geojson", blob);
+        formData.append('geojson', blob);
         this.map.post(this.getSaveUrl(), {
             data: formData,
             callback: function (data) {
