@@ -825,7 +825,8 @@ L.Storage.Map.include({
             'popupTemplate',
             'zoomTo',
             'captionBar',
-            'slideshow'
+            'slideshow',
+            'sortKey'
         ], properties = {};
         for (var i = editableOptions.length - 1; i >= 0; i--) {
             if (typeof this.options[editableOptions[i]] !== 'undefined') {
@@ -952,7 +953,8 @@ L.Storage.Map.include({
             'options.fillOpacity',
             'options.dashArray',
             'options.popupTemplate',
-            'options.zoomTo'
+            'options.zoomTo',
+            ['options.sortKey', {handler: 'Input', helpText: L._('Property to use for sorting features'), placeholder: L._('Default: name')}]
         ];
 
         builder = new L.S.FormBuilder(this, optionsFields, {

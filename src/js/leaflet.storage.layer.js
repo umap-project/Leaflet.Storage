@@ -424,20 +424,20 @@ L.Storage.DataLayer = L.Class.extend({
 
     geojsonToFeatures: function (geojson) {
         var features = geojson instanceof Array ? geojson : geojson.features,
-            i, len;
+            i, len, sortKey = this.map.options.sortKey || 'name';
 
         if (features) {
             features.sort(function (a, b) {
                 if (!a.properties || !b.properties) {
                     return 0;
-                } else if (!a.properties.name && !b.properties.name) {
+                } else if (!a.properties[sortKey] && !b.properties[sortKey]) {
                     return 0;
-                } else if (!a.properties.name) {
+                } else if (!a.properties[sortKey]) {
                     return -1;
-                } else if (!b.properties.name) {
+                } else if (!b.properties[sortKey]) {
                     return 1;
                 }
-                return a.properties.name.localeCompare(b.properties.name);
+                return a.properties.name.toString().localeCompare(b.properties.name.toString());
             });
             for (i = 0, len = features.length; i < len; i++) {
                 this.geojsonToFeatures(features[i]);
