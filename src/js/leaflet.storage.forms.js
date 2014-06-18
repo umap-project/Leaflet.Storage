@@ -773,7 +773,7 @@ L.Storage.FormBuilder = L.Class.extend({
         onLoadPanel: {handler: 'onLoadPanel', helpText: L._("Do you want to display a panel on load?")},
         displayPopupFooter: {handler: 'CheckBox', helpText: L._("Do you want to display popup footer?")},
         captionBar: {handler: 'CheckBox', helpText: L._("Do you want to display a caption bar?")},
-        zoomTo: {handler: 'BlurIntInput', placeholder: L._('Inherit'), helpText: L._('Zoom level for automatic zooms')}
+        zoomTo: {handler: 'IntInput', placeholder: L._('Inherit'), helpText: L._('Zoom level for automatic zooms')}
     }
 
 });
