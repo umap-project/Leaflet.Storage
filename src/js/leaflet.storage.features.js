@@ -1,11 +1,11 @@
 L.Storage.FeatureMixin = {
 
-    form_id: "feature_form",
+    form_id: 'feature_form',
     staticOptions: {},
 
     initialize: function (map, latlng, options) {
         this.map = map;
-        if(typeof options == "undefined") {
+        if(typeof options === 'undefined') {
             options = {};
         }
         // DataLayer the marker belongs to
@@ -57,8 +57,7 @@ L.Storage.FeatureMixin = {
 
     edit: function(e) {
         if(!this.map.editEnabled || this.isReadOnly()) return;
-        var self = this,
-            container = L.DomUtil.create('div'), form ;
+        var container = L.DomUtil.create('div'), form ;
 
         var builder = new L.S.FormBuilder(this, ['datalayer'], {
             callback: function () {this.edit(e);}  // removeLayer step will close the edit panel, let's reopen it
@@ -67,8 +66,8 @@ L.Storage.FeatureMixin = {
 
         var properties = [];
         for (var i in this.properties) {
-            if (typeof this.properties[i] === "object" ||
-                ["name", "description"].indexOf(i) !== -1) {continue;}
+            if (typeof this.properties[i] === 'object' ||
+                ['name', 'description'].indexOf(i) !== -1) {continue;}
             properties.push(['properties.' + i, {label: i}]);
         }
         // We always want name and description for now (properties management to come)
@@ -84,7 +83,7 @@ L.Storage.FeatureMixin = {
         container.appendChild(form);
         var options_fields = this.getAdvancedOptions();
         builder = new L.S.FormBuilder(this, options_fields, {
-            id: "storage-feature-advanced-properties",
+            id: 'storage-feature-advanced-properties',
             callback: this._redraw,
             callbackContext: this
         });
@@ -100,9 +99,9 @@ L.Storage.FeatureMixin = {
 
     getAdvancedEditActions: function (container) {
         var deleteLink = L.DomUtil.create('a', 'storage-delete', container);
-        deleteLink.href = "#";
+        deleteLink.href = '#';
         deleteLink.innerHTML = L._('Delete');
-        L.DomEvent.on(deleteLink, "click", function (e) {
+        L.DomEvent.on(deleteLink, 'click', function (e) {
             L.DomEvent.stop(e);
             if (this.confirmDelete()) {
                 L.S.fire('ui:end');
@@ -180,12 +179,12 @@ L.Storage.FeatureMixin = {
     },
 
     usableOption: function (options, option) {
-        return typeof options[option] !== "undefined" && options[option] !== "" && options[option] !== null;
+        return typeof options[option] !== 'undefined' && options[option] !== '' && options[option] !== null;
     },
 
     getOption: function (option, fallback) {
         var value = fallback || null;
-        if (typeof this.staticOptions[option] !== "undefined") {
+        if (typeof this.staticOptions[option] !== 'undefined') {
             value = this.staticOptions[option];
         }
         else if (this.usableOption(this.properties._storage_options, option)) {
@@ -236,7 +235,7 @@ L.Storage.FeatureMixin = {
 
     toGeoJSON: function () {
         return {
-            type: "Feature",
+            type: 'Feature',
             geometry: this.geometry(),
             properties: this.cloneProperties()
         };
@@ -276,7 +275,7 @@ L.Storage.FeatureMixin = {
                 iconCls: 'storage-edit'
             },
             {
-                text: L._("Edit feature's layer"),
+                text: L._('Edit feature\'s layer'),
                 callback: this.datalayer.edit,
                 context: this.datalayer,
                 iconCls: 'storage-edit'
@@ -344,15 +343,15 @@ L.Storage.Marker = L.Marker.extend({
 
     addInteractions: function () {
         L.Storage.FeatureMixin.addInteractions.call(this);
-        this.on("dragend", function (e) {
+        this.on('dragend', function (e) {
             this.isDirty = true;
             this.edit(e);
         }, this);
-        this.on("click", this._onClick);
+        this.on('click', this._onClick);
         if (!this.isReadOnly()) {
-            this.on("mouseover", this._enableDragging);
+            this.on('mouseover', this._enableDragging);
         }
-        this.on("mouseout", this._onMouseOut);
+        this.on('mouseout', this._onMouseOut);
         this._popupHandlersAdded = true; // prevent Leaflet from binding event on bindPopup
     },
 
@@ -413,7 +412,7 @@ L.Storage.Marker = L.Marker.extend({
         /* Return a GeoJSON geometry Object */
         var latlng = this.getLatLng();
         return {
-            type: "Point",
+            type: 'Point',
             coordinates: [
                 latlng.lng,
                 latlng.lat
@@ -422,8 +421,8 @@ L.Storage.Marker = L.Marker.extend({
     },
 
     _getIconUrl: function (name) {
-        if (typeof name === "undefined") {
-            name = "icon";
+        if (typeof name === 'undefined') {
+            name = 'icon';
         }
         return this.getOption(name + 'Url');
     },
@@ -590,7 +589,7 @@ L.Storage.PathMixin = {
 
     _onMouseOver: function (e) {
         if (this.map.editEnabled && !this.editing._enabled) {
-            L.Storage.fire('ui:tooltip', {content: L._("Double-click to edit")});
+            L.Storage.fire('ui:tooltip', {content: L._('Double-click to edit')});
         }
     },
 
@@ -602,13 +601,13 @@ L.Storage.PathMixin = {
 
     addInteractions: function () {
         L.Storage.FeatureMixin.addInteractions.call(this);
-        this.on("dragend", this.edit);
-        this.on("click", this._onClick);
+        this.on('dragend', this.edit);
+        this.on('click', this._onClick);
         if (!this.isReadOnly()) {
-            this.on("dblclick", this._toggleEditing);
+            this.on('dblclick', this._toggleEditing);
         }
-        this.on("mouseover", this._onMouseOver);
-        this.on("edit", this.makeDirty);
+        this.on('mouseover', this._onMouseOver);
+        this.on('edit', this.makeDirty);
         this.editing = new L.S.PolyEdit(this);
     }
 
@@ -626,7 +625,7 @@ L.Storage.Polyline = L.Polyline.extend({
     geometry: function() {
         /* Return a GeoJSON geometry Object */
         return {
-            type: "LineString",
+            type: 'LineString',
             coordinates: L.Util.latLngsForGeoJSON(this.getLatLngs())
         };
     },
@@ -681,7 +680,7 @@ L.Storage.Polyline = L.Polyline.extend({
 
     toPolygon: function () {
         var geojson = this.toGeoJSON();
-        geojson.geometry.type = "Polygon";
+        geojson.geometry.type = 'Polygon';
         geojson.geometry.coordinates = [geojson.geometry.coordinates];
         var polygon = this.datalayer.geojsonToFeatures(geojson);
         polygon.edit();
@@ -691,9 +690,9 @@ L.Storage.Polyline = L.Polyline.extend({
     getAdvancedEditActions: function (container) {
         L.Storage.FeatureMixin.getAdvancedEditActions.call(this, container);
         var toPolygon = L.DomUtil.create('a', 'storage-to-polygon', container);
-        toPolygon.href = "#";
+        toPolygon.href = '#';
         toPolygon.innerHTML = L._('Transform to polygon');
-        L.DomEvent.on(toPolygon, "click", this.toPolygon, this);
+        L.DomEvent.on(toPolygon, 'click', this.toPolygon, this);
     },
 
     mergeInto: function (other) {
@@ -774,7 +773,7 @@ L.Storage.Polygon = L.Polygon.extend({
             ]);
         }
         return {
-            type: "Polygon",
+            type: 'Polygon',
             coordinates: [coords]
         };
     },
@@ -790,7 +789,7 @@ L.Storage.Polygon = L.Polygon.extend({
             'properties._storage_options.fillColor',
             'properties._storage_options.fillOpacity'
         );
-        options.push(['properties._storage_options.outlink', {label: L._('outlink'), helpText: L._("Define output link to open a new window on polygon click."), placeholder: 'http://...'}]);
+        options.push(['properties._storage_options.outlink', {label: L._('outlink'), helpText: L._('Define output link to open a new window on polygon click.'), placeholder: 'http://...'}]);
         return options;
     },
 
@@ -831,7 +830,7 @@ L.Storage.Polygon = L.Polygon.extend({
 
     toPolyline: function () {
         var geojson = this.toGeoJSON();
-        geojson.geometry.type = "LineString";
+        geojson.geometry.type = 'LineString';
         geojson.geometry.coordinates = geojson.geometry.coordinates[0];
         var polyline = this.datalayer.geojsonToFeatures(geojson);
         polyline.edit();
@@ -841,8 +840,8 @@ L.Storage.Polygon = L.Polygon.extend({
     getAdvancedEditActions: function (container) {
         L.Storage.FeatureMixin.getAdvancedEditActions.call(this, container);
         var toPolyline = L.DomUtil.create('a', 'storage-to-polyline', container);
-        toPolyline.href = "#";
+        toPolyline.href = '#';
         toPolyline.innerHTML = L._('Transform to lines');
-        L.DomEvent.on(toPolyline, "click", this.toPolyline, this);
+        L.DomEvent.on(toPolyline, 'click', this.toPolyline, this);
     }
 });
