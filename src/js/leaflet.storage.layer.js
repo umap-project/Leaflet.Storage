@@ -55,6 +55,7 @@ L.S.Layer.Cluster = L.MarkerClusterGroup.extend({
         }
         return [
             ['options.cluster.radius', {handler: 'BlurIntInput', placeholder: L._('Clustering radius'), helpText: L._('Override clustering radius (default 80)')}],
+            ['options.cluster.textColor', {handler: 'TextColorPicker', placeholder: L._('Auto'), helpText: L._('Text color for the cluster label')}],
         ];
 
     },

@@ -6,6 +6,7 @@
 - make the cluster text dynamic
 - fix missing icons for transorm to polygon/polyline actions
 - add a slideshow mode
+- make possible to set cluster color by hand
 
 ## 0.6.x
 - add TMS option to custom tilelayer

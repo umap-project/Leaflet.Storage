@@ -232,7 +232,7 @@ L.S.ElementHelper.ColorPicker = L.S.ElementHelper.Input.extend({
 
     build: function () {
         L.S.ElementHelper.Input.prototype.build.call(this);
-        this.input.placeholder = L._('Inherit');
+        this.input.placeholder = this.options.placeholder || L._('Inherit');
         this.container = L.DomUtil.create('div', 'storage-color-picker');
         this.container.style.display = 'none';
         this.input.parentNode.insertBefore(this.container, this.input.nextSibling);
@@ -277,13 +277,21 @@ L.S.ElementHelper.ColorPicker = L.S.ElementHelper.Input.extend({
     addColor: function (colorName) {
         var span = L.DomUtil.create('span', '', this.container);
         span.style.backgroundColor = span.title = colorName;
-        var updateColorInput = function (e) {
+        var updateColorInput = function () {
             this.input.value = colorName;
             this.onChange();
             this.container.style.display = 'none';
         };
         L.DomEvent.on(span, 'mousedown', updateColorInput, this);
     }
+
+});
+
+L.S.ElementHelper.TextColorPicker = L.S.ElementHelper.ColorPicker.extend({
+    colors: [
+        'Black', 'DarkSlateGrey', 'DimGrey', 'SlateGrey', 'LightSlateGrey',
+        'Grey', 'DarkGrey', 'LightGrey', 'White'
+    ]
 
 });
 
@@ -451,7 +459,6 @@ L.S.ElementHelper.onLoadPanel = L.S.ElementHelper.SelectAbstract.extend({
     ]
 
 });
-
 
 L.S.ElementHelper.DataFormat = L.S.ElementHelper.SelectAbstract.extend({
 
