@@ -321,7 +321,7 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     resetOptions: function (options) {
-        this.options = L.Util.extend({}, options);
+        this.options = L.Util.CopyJSON(options || {});
         this.resetLayer();
     },
 
@@ -623,8 +623,7 @@ L.Storage.DataLayer = L.Class.extend({
 
     edit: function () {
         if(!this.map.editEnabled || !this.isLoaded()) {return;}
-        var self = this,
-            container = L.DomUtil.create('div'),
+        var container = L.DomUtil.create('div'),
             metadata_fields = [
                 'options.name',
                 'options.description',
