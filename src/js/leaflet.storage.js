@@ -41,7 +41,8 @@ L.Map.mergeOptions({
         // {url: 'http://localhost:8019/en/datalayer/1502/', label: 'Simplified World Countries', format: 'geojson'}
     ],
     moreControl: true,
-    captionBar: false
+    captionBar: false,
+    slideshow: {}
 });
 
 L.Storage.Map.include({
@@ -108,11 +109,7 @@ L.Storage.Map.include({
         this.datalayers_index = Array();
         this.deleted_datalayers = Array();
         // create datalayers
-        for(var j in this.options.datalayers) {
-            if(this.options.datalayers.hasOwnProperty(j)){
-                this._createDataLayer(this.options.datalayers[j]);
-            }
-        }
+        this.initDatalayers();
         if (this.options.displayCaptionOnLoad) {
             // Retrocompat
             if (!this.options.onLoadPanel) {
@@ -258,6 +255,7 @@ L.Storage.Map.include({
         };
         this.backupOptions();
         this.initContextMenu();
+        this.slideshow = new L.S.Slideshow(this, this.options.slideshow);
     },
 
     overrideBooleanOptionFromQueryString: function (name) {
@@ -271,7 +269,7 @@ L.Storage.Map.include({
             delete this._controls[i];
         }
 
-        L.DomUtil.classIf(document.body, 'storage-caption-bar-enabled', this.options.captionBar);
+        L.DomUtil.classIf(document.body, 'storage-caption-bar-enabled', this.options.captionBar || (this.options.slideshow && this.options.slideshow.delay));
         if (this.options.zoomControl) {
             this._controls.zoomControl = (new L.Control.Zoom({zoomInTitle: L._('Zoom in'), zoomOutTitle: L._('Zoom out')})).addTo(this);
         }
@@ -327,6 +325,40 @@ L.Storage.Map.include({
             });
         }
 
+    },
+
+    initDatalayers: function () {
+        var toload = 0, datalayer, seen = 0, self = this;
+        var decrementToLoad = function () {
+            toload--;
+            if (toload === 0) {
+                loaded();
+            }
+        };
+        var loaded = function () {
+            self.fire('datalayersloaded');
+            self.datalayersLoaded = true;
+        };
+        for(var j in this.options.datalayers) {
+            if(this.options.datalayers.hasOwnProperty(j)){
+                toload++;
+                seen++;
+                datalayer = this._createDataLayer(this.options.datalayers[j]);
+                datalayer.onceLoaded(decrementToLoad);
+            }
+        }
+        if (seen === 0) { // no datalayer
+            loaded();
+        }
+    },
+
+    onceDatalayersLoaded: function (callback, context) {
+        if (this.datalayersLoaded) {
+            callback.call(context || this, this);
+        } else {
+            this.once('datalayersloaded', callback, context);
+        }
+        return this;
     },
 
     updateDatalayersControl: function () {
@@ -792,7 +824,8 @@ L.Storage.Map.include({
             'dashArray',
             'popupTemplate',
             'zoomTo',
-            'captionBar'
+            'captionBar',
+            'slideshow'
         ], properties = {};
         for (var i = editableOptions.length - 1; i >= 0; i--) {
             if (typeof this.options[editableOptions[i]] !== 'undefined') {
@@ -967,6 +1000,21 @@ L.Storage.Map.include({
             callbackContext: this
         });
         limitBounds.appendChild(boundsBuilder.build());
+        var slideshow = L.DomUtil.createFieldset(container, L._('Slideshow'));
+        var slideshowFields = [
+            ['options.slideshow.delay', {handler: 'IntInput', placeholder: L._('Set a value for adding a slideshow'), helpText: L._('Delay between elements (in milliseconds)')}],
+            ['options.slideshow.autorun', {handler: 'CheckBox', helpText: L._('Autostart slideshow when map is loaded?')}]
+        ];
+        var slideshowHandler = function () {
+            this.slideshow.setOptions(this.options.slideshow);
+            this.initControls();
+        };
+        var slideshowBuilder = new L.S.FormBuilder(this, slideshowFields, {
+            callback: slideshowHandler,
+            callbackContext: this
+        });
+        slideshow.appendChild(slideshowBuilder.build());
+
         var setCurrentButton = L.DomUtil.add('a', '', limitBounds, L._('Use current bounds'));
         setCurrentButton.href = '#';
         L.DomEvent.on(setCurrentButton, 'click', function () {
@@ -996,13 +1044,13 @@ L.Storage.Map.include({
         L.S.fire('ui:start', {data: {html: container}});
     },
 
-    enableEdit: function(e) {
+    enableEdit: function() {
         L.DomUtil.addClass(document.body, 'storage-edit-enabled');
         this.editEnabled = true;
         this.fire('edit:enabled');
     },
 
-    disableEdit: function(e) {
+    disableEdit: function() {
         L.DomUtil.removeClass(document.body, 'storage-edit-enabled');
         this.editEnabled = false;
         this.fire('edit:disabled');
@@ -1027,12 +1075,18 @@ L.Storage.Map.include({
         L.DomEvent.on(about, 'click', this.displayCaption, this);
         var browser = L.DomUtil.add('a', 'storage-open-browser-link', container, ' | ' + L._('Browse data'));
         browser.href = '#';
-        L.DomEvent.on(browser, 'click', this.openBrowser, this);
+        L.DomEvent.on(browser, 'click', L.DomEvent.stop)
+                  .on(browser, 'click', this.openBrowser, this);
         var setName = function () {
             name.innerHTML = this.getDisplayName();
         };
         L.bind(setName, this)();
         this.on('synced', L.bind(setName, this));
+        if (this.options.slideshow && this.options.slideshow.delay) {
+            this.onceDatalayersLoaded(function () {
+                container.appendChild(this.slideshow.renderToolbox());
+            });
+        }
     },
 
     initEditBar: function () {
