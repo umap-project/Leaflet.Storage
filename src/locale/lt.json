@@ -1,5 +1,4 @@
 {
-    "A string that defines the stroke dash pattern. Ex.: '5, 10, 15'.": "Tekstas, kuris nustato brūkšnio raštą, pvz.: '5, 10, 15'.",
     "About": "Apie",
     "Action not allowed :(": "Veiksmas nėra leidžiamas :(",
     "Add a layer": "Pridėti sluoksnį",
@@ -36,7 +35,6 @@
     "Display on load": "Rodyti pasikrovus",
     "Do you want to display a minimap?": "Ar norite rodyti mini žemėlapį?",
     "Do you want to display popup footer?": "Ar norite rodyti iškylančio lango paraštę?",
-    "Do you want to display the 'more' control?": "Ar norite rodyti mygtuką 'daugiau'?",
     "Do you want to display the data layers control?": "Ar norite rodyti duomenų sluoksnių valdymą?",
     "Do you want to display the scale control?": "Ar norite rodyti žemėlapio skalės valdymą?",
     "Do you want to display zoom control?": "Ar norite rodyti mastelio valdymą?",
@@ -214,5 +212,7 @@
     "Please add at least a layer to import in": "Please add at least a layer to import in",
     "Side panel": "Side panel",
     "Powered by <a href=\"{leaflet}\">Leaflet</a> and <a href=\"{django}\">Django</a>, glued by <a href=\"{umap}\">uMap project</a>.": "Powered by <a href=\"{leaflet}\">Leaflet</a> and <a href=\"{django}\">Django</a>, glued by <a href=\"{umap}\">uMap project</a>.",
-    "Zoom level for automatic zooms": "Zoom level for automatic zooms"
+    "Zoom level for automatic zooms": "Zoom level for automatic zooms",
+    "A string that defines the stroke dash pattern. Ex.: «5, 10, 15».": "A string that defines the stroke dash pattern. Ex.: «5, 10, 15».",
+    "Do you want to display the «more» control?": "Do you want to display the «more» control?"
 }

@@ -155,11 +155,11 @@ L.S.ElementHelper.BlurInput = L.S.ElementHelper.Input.extend({
 L.S.ElementHelper.IntegerMixin = {
 
     value: function () {
-        return !isNaN(this.input.value) && this.input.value !== "" ? parseInt(this.input.value, 10): undefined;
+        return !isNaN(this.input.value) && this.input.value !== '' ? parseInt(this.input.value, 10): undefined;
     },
 
     type: function () {
-        return "number";
+        return 'number';
     }
 
 };
@@ -177,11 +177,11 @@ L.S.ElementHelper.BlurIntInput = L.S.ElementHelper.BlurInput.extend({
 L.S.ElementHelper.FloatMixin = {
 
     value: function () {
-        return !isNaN(this.input.value) && this.input.value !== "" ? parseFloat(this.input.value): undefined;
+        return !isNaN(this.input.value) && this.input.value !== '' ? parseFloat(this.input.value): undefined;
     },
 
     type: function () {
-        return "number";
+        return 'number';
     }
 
 };
@@ -197,50 +197,50 @@ L.S.ElementHelper.BlurFloatInput = L.S.ElementHelper.BlurInput.extend({
 
 L.S.ElementHelper.ColorPicker = L.S.ElementHelper.Input.extend({
     colors: [
-        "Black", "Navy", "DarkBlue", "MediumBlue", "Blue", "DarkGreen",
-        "Green", "Teal", "DarkCyan", "DeepSkyBlue", "DarkTurquoise",
-        "MediumSpringGreen", "Lime", "SpringGreen", "Aqua", "Cyan",
-        "MidnightBlue", "DodgerBlue", "LightSeaGreen", "ForestGreen",
-        "SeaGreen", "DarkSlateGray", "DarkSlateGrey", "LimeGreen",
-        "MediumSeaGreen", "Turquoise", "RoyalBlue", "SteelBlue",
-        "DarkSlateBlue", "MediumTurquoise", "Indigo", "DarkOliveGreen",
-        "CadetBlue", "CornflowerBlue", "MediumAquaMarine", "DimGray",
-        "DimGrey", "SlateBlue", "OliveDrab", "SlateGray", "SlateGrey",
-        "LightSlateGray", "LightSlateGrey", "MediumSlateBlue", "LawnGreen",
-        "Chartreuse", "Aquamarine", "Maroon", "Purple", "Olive", "Gray",
-        "Grey", "SkyBlue", "LightSkyBlue", "BlueViolet", "DarkRed",
-        "DarkMagenta", "SaddleBrown", "DarkSeaGreen", "LightGreen",
-        "MediumPurple", "DarkViolet", "PaleGreen", "DarkOrchid",
-        "YellowGreen", "Sienna", "Brown", "DarkGray", "DarkGrey",
-        "LightBlue", "GreenYellow", "PaleTurquoise", "LightSteelBlue",
-        "PowderBlue", "FireBrick", "DarkGoldenRod", "MediumOrchid",
-        "RosyBrown", "DarkKhaki", "Silver", "MediumVioletRed", "IndianRed",
-        "Peru", "Chocolate", "Tan", "LightGray", "LightGrey", "Thistle",
-        "Orchid", "GoldenRod", "PaleVioletRed", "Crimson", "Gainsboro",
-        "Plum", "BurlyWood", "LightCyan", "Lavender", "DarkSalmon",
-        "Violet", "PaleGoldenRod", "LightCoral", "Khaki", "AliceBlue",
-        "HoneyDew", "Azure", "SandyBrown", "Wheat", "Beige", "WhiteSmoke",
-        "MintCream", "GhostWhite", "Salmon", "AntiqueWhite", "Linen",
-        "LightGoldenRodYellow", "OldLace", "Red", "Fuchsia", "Magenta",
-        "DeepPink", "OrangeRed", "Tomato", "HotPink", "Coral", "DarkOrange",
-        "LightSalmon", "Orange", "LightPink", "Pink", "Gold", "PeachPuff",
-        "NavajoWhite", "Moccasin", "Bisque", "MistyRose", "BlanchedAlmond",
-        "PapayaWhip", "LavenderBlush", "SeaShell", "Cornsilk",
-        "LemonChiffon", "FloralWhite", "Snow", "Yellow", "LightYellow",
-        "Ivory", "White"
+        'Black', 'Navy', 'DarkBlue', 'MediumBlue', 'Blue', 'DarkGreen',
+        'Green', 'Teal', 'DarkCyan', 'DeepSkyBlue', 'DarkTurquoise',
+        'MediumSpringGreen', 'Lime', 'SpringGreen', 'Aqua', 'Cyan',
+        'MidnightBlue', 'DodgerBlue', 'LightSeaGreen', 'ForestGreen',
+        'SeaGreen', 'DarkSlateGray', 'DarkSlateGrey', 'LimeGreen',
+        'MediumSeaGreen', 'Turquoise', 'RoyalBlue', 'SteelBlue',
+        'DarkSlateBlue', 'MediumTurquoise', 'Indigo', 'DarkOliveGreen',
+        'CadetBlue', 'CornflowerBlue', 'MediumAquaMarine', 'DimGray',
+        'DimGrey', 'SlateBlue', 'OliveDrab', 'SlateGray', 'SlateGrey',
+        'LightSlateGray', 'LightSlateGrey', 'MediumSlateBlue', 'LawnGreen',
+        'Chartreuse', 'Aquamarine', 'Maroon', 'Purple', 'Olive', 'Gray',
+        'Grey', 'SkyBlue', 'LightSkyBlue', 'BlueViolet', 'DarkRed',
+        'DarkMagenta', 'SaddleBrown', 'DarkSeaGreen', 'LightGreen',
+        'MediumPurple', 'DarkViolet', 'PaleGreen', 'DarkOrchid',
+        'YellowGreen', 'Sienna', 'Brown', 'DarkGray', 'DarkGrey',
+        'LightBlue', 'GreenYellow', 'PaleTurquoise', 'LightSteelBlue',
+        'PowderBlue', 'FireBrick', 'DarkGoldenRod', 'MediumOrchid',
+        'RosyBrown', 'DarkKhaki', 'Silver', 'MediumVioletRed', 'IndianRed',
+        'Peru', 'Chocolate', 'Tan', 'LightGray', 'LightGrey', 'Thistle',
+        'Orchid', 'GoldenRod', 'PaleVioletRed', 'Crimson', 'Gainsboro',
+        'Plum', 'BurlyWood', 'LightCyan', 'Lavender', 'DarkSalmon',
+        'Violet', 'PaleGoldenRod', 'LightCoral', 'Khaki', 'AliceBlue',
+        'HoneyDew', 'Azure', 'SandyBrown', 'Wheat', 'Beige', 'WhiteSmoke',
+        'MintCream', 'GhostWhite', 'Salmon', 'AntiqueWhite', 'Linen',
+        'LightGoldenRodYellow', 'OldLace', 'Red', 'Fuchsia', 'Magenta',
+        'DeepPink', 'OrangeRed', 'Tomato', 'HotPink', 'Coral', 'DarkOrange',
+        'LightSalmon', 'Orange', 'LightPink', 'Pink', 'Gold', 'PeachPuff',
+        'NavajoWhite', 'Moccasin', 'Bisque', 'MistyRose', 'BlanchedAlmond',
+        'PapayaWhip', 'LavenderBlush', 'SeaShell', 'Cornsilk',
+        'LemonChiffon', 'FloralWhite', 'Snow', 'Yellow', 'LightYellow',
+        'Ivory', 'White'
     ],
 
     build: function () {
         L.S.ElementHelper.Input.prototype.build.call(this);
         this.input.placeholder = L._('Inherit');
         this.container = L.DomUtil.create('div', 'storage-color-picker');
-        this.container.style.display = "none";
+        this.container.style.display = 'none';
         this.input.parentNode.insertBefore(this.container, this.input.nextSibling);
         for (var idx in this.colors) {
             this.addColor(this.colors[idx]);
         }
         this.spreadColor();
-        this.input.autocomplete = "off";
+        this.input.autocomplete = 'off';
         L.DomEvent.on(this.input, 'focus', this.onFocus, this);
         L.DomEvent.on(this.input, 'blur', this.onBlur, this);
         L.DomEvent.on(this.input, 'change', this.onChange, this);
@@ -249,13 +249,13 @@ L.S.ElementHelper.ColorPicker = L.S.ElementHelper.Input.extend({
     },
 
     onFocus: function () {
-        this.container.style.display = "block";
+        this.container.style.display = 'block';
     },
 
     onBlur: function () {
         var self = this,
             closePicker = function () {
-                self.container.style.display = "none";
+                self.container.style.display = 'none';
             };
         // We must leave time for the click to be listened
         window.setTimeout(closePicker, 100);
@@ -270,7 +270,7 @@ L.S.ElementHelper.ColorPicker = L.S.ElementHelper.Input.extend({
         if (this.input.value) {
             this.input.style.backgroundColor = this.input.value;
         } else {
-            this.input.style.backgroundColor = "inherit";
+            this.input.style.backgroundColor = 'inherit';
         }
     },
 
@@ -280,9 +280,9 @@ L.S.ElementHelper.ColorPicker = L.S.ElementHelper.Input.extend({
         var updateColorInput = function (e) {
             this.input.value = colorName;
             this.onChange();
-            this.container.style.display = "none";
+            this.container.style.display = 'none';
         };
-        L.DomEvent.on(span, "mousedown", updateColorInput, this);
+        L.DomEvent.on(span, 'mousedown', updateColorInput, this);
     }
 
 });
@@ -292,7 +292,7 @@ L.S.ElementHelper.CheckBox = L.S.ElementHelper.extend({
     build: function () {
         var container = L.DomUtil.create('div', 'formbox', this.form);
         this.input = L.DomUtil.create('input', '', container);
-        this.input.type = "checkbox";
+        this.input.type = 'checkbox';
         this.input.name = this.name;
         this.input._helper = this;
         this.fetch();
@@ -317,7 +317,7 @@ L.S.ElementHelper.CheckBox = L.S.ElementHelper.extend({
 L.S.ElementHelper.SelectAbstract = L.S.ElementHelper.extend({
 
     selectOptions: [
-        ["value", "label"]
+        ['value', 'label']
     ],
 
     build: function () {
@@ -337,7 +337,7 @@ L.S.ElementHelper.SelectAbstract = L.S.ElementHelper.extend({
     },
 
     buildOptions: function () {
-        this.select.innerHTML = "";
+        this.select.innerHTML = '';
         var options = this.getOptions();
         for (var i=0, l=options.length; i<l; i++) {
             this.buildOption(options[i][0], options[i][1]);
@@ -350,7 +350,7 @@ L.S.ElementHelper.SelectAbstract = L.S.ElementHelper.extend({
         option.value = value;
         option.innerHTML = label;
         if (this.toHTML() === value) {
-            option.selected = "selected";
+            option.selected = 'selected';
         }
     },
 
@@ -378,10 +378,10 @@ L.S.ElementHelper.IconClassSwitcher = L.S.ElementHelper.SelectAbstract.extend({
 
     selectOptions: [
         [undefined, L._('inherit')],
-        ["Default", L._('Default')],
-        ["Circle", L._('Circle')],
-        ["Drop", L._('Drop')],
-        ["Ball", L._('Ball')]
+        ['Default', L._('Default')],
+        ['Circle', L._('Circle')],
+        ['Drop', L._('Drop')],
+        ['Ball', L._('Ball')]
     ]
 
 });
@@ -390,17 +390,17 @@ L.S.ElementHelper.PopupTemplate = L.S.ElementHelper.SelectAbstract.extend({
 
     selectOptions: [
         [undefined, L._('inherit')],
-        ["Default", L._('Name and description')],
-        ["Large", L._('Name and description (large)')],
-        ["Table", L._('Table')],
-        ["GeoRSSImage", L._('GeoRSS (title + image)')],
-        ["GeoRSSLink", L._('GeoRSS (only link)')],
-        ["SimplePanel", L._('Side panel')]
+        ['Default', L._('Name and description')],
+        ['Large', L._('Name and description (large)')],
+        ['Table', L._('Table')],
+        ['GeoRSSImage', L._('GeoRSS (title + image)')],
+        ['GeoRSSLink', L._('GeoRSS (only link)')],
+        ['SimplePanel', L._('Side panel')]
     ],
 
     toJS: function () {
         var value = L.S.ElementHelper.SelectAbstract.prototype.toJS.apply(this);
-        if (value === "table") { value = "Table"; }
+        if (value === 'table') { value = 'Table'; }
         return value;
     }
 
@@ -409,9 +409,9 @@ L.S.ElementHelper.PopupTemplate = L.S.ElementHelper.SelectAbstract.extend({
 L.S.ElementHelper.LayerTypeChooser = L.S.ElementHelper.SelectAbstract.extend({
 
     selectOptions: [
-        ["Default", L._('Default')],
-        ["Cluster", L._('Clustered')],
-        ["Heat", L._('Heatmap')],
+        ['Default', L._('Default')],
+        ['Cluster', L._('Clustered')],
+        ['Heat', L._('Heatmap')],
     ]
 
 });
@@ -500,11 +500,11 @@ L.S.ElementHelper.NullableBoolean = L.S.ElementHelper.SelectAbstract.extend({
     toJS: function () {
         var value = this.value();
         switch (value) {
-            case "true":
+            case 'true':
             case true:
                 value = true;
                 break;
-            case "false":
+            case 'false':
             case false:
                 value = false;
                 break;
@@ -519,102 +519,102 @@ L.S.ElementHelper.NullableBoolean = L.S.ElementHelper.SelectAbstract.extend({
 L.S.ElementHelper.IconUrl = L.S.ElementHelper.Input.extend({
 
     type: function () {
-        return "hidden";
+        return 'hidden';
     },
 
     build: function () {
         L.S.ElementHelper.Input.prototype.build.call(this);
         this.parentContainer = L.DomUtil.create('div', 'storage-form-iconfield', this.form);
-        this.buttonsContainer = L.DomUtil.create("div", "", this.parentContainer);
-        this.pictogramsContainer = L.DomUtil.create("div", "storage-pictogram-list", this.parentContainer);
-        this.input.type = "hidden";
+        this.buttonsContainer = L.DomUtil.create('div', '', this.parentContainer);
+        this.pictogramsContainer = L.DomUtil.create('div', 'storage-pictogram-list', this.parentContainer);
+        this.input.type = 'hidden';
         this.input.placeholder = L._('Url');
-        this.label.style.display = "none";
+        this.label.style.display = 'none';
         this.createButtonsBar();
     },
 
     createButtonsBar: function () {
         if (this.value() && this.value().indexOf('{') == -1) { // Do not try to render URL with variables
-            var img = L.DomUtil.create('img', '', L.DomUtil.create('div', "storage-icon-choice", this.buttonsContainer));
+            var img = L.DomUtil.create('img', '', L.DomUtil.create('div', 'storage-icon-choice', this.buttonsContainer));
             img.src = this.value();
-            L.DomEvent.on(img, "click", this.fetchIconList, this);
+            L.DomEvent.on(img, 'click', this.fetchIconList, this);
         }
         this.button = L.DomUtil.create('a', '', this.buttonsContainer);
         this.button.innerHTML = this.value() ? L._('Change symbol') : L._('Add symbol');
-        this.button.href = "#";
+        this.button.href = '#';
         L.DomEvent
-            .on(this.button, "click", L.DomEvent.stop)
-            .on(this.button, "click", this.fetchIconList, this);
+            .on(this.button, 'click', L.DomEvent.stop)
+            .on(this.button, 'click', this.fetchIconList, this);
     },
 
     addIconPreview: function (pictogram) {
-        var baseClass = "storage-icon-choice",
+        var baseClass = 'storage-icon-choice',
             value = pictogram.src,
-            className = value === this.value() ? baseClass + " selected" : baseClass,
+            className = value === this.value() ? baseClass + ' selected' : baseClass,
             container = L.DomUtil.create('div', className, this.pictogramsContainer),
             img = L.DomUtil.create('img', '', container);
         img.src = value;
         if (pictogram.name && pictogram.attribution) {
-            img.title = pictogram.name + " — © " + pictogram.attribution;
+            img.title = pictogram.name + ' — © ' + pictogram.attribution;
         }
-        L.DomEvent.on(container, "click", function (e) {
+        L.DomEvent.on(container, 'click', function (e) {
             this.input.value = value;
             this.sync();
             this.unselectAll(this.pictogramsContainer);
-            L.DomUtil.addClass(container, "selected");
-            this.pictogramsContainer.innerHTML = "";
+            L.DomUtil.addClass(container, 'selected');
+            this.pictogramsContainer.innerHTML = '';
             this.createButtonsBar();
         }, this);
     },
 
     empty: function () {
-        this.input.value = "";
+        this.input.value = '';
         this.unselectAll(this.pictogramsContainer);
         this.sync();
-        this.pictogramsContainer.innerHTML = "";
+        this.pictogramsContainer.innerHTML = '';
         this.createButtonsBar();
     },
 
     fetchIconList: function (e) {
         this.map.get(this.map.options.urls.pictogram_list_json, {
             callback: function (data) {
-                this.pictogramsContainer.innerHTML = "";
-                this.buttonsContainer.innerHTML = "";
+                this.pictogramsContainer.innerHTML = '';
+                this.buttonsContainer.innerHTML = '';
                 var title = L.DomUtil.create('h5', '', this.pictogramsContainer);
-                title.innerHTML = L._("Choose a symbol");
+                title.innerHTML = L._('Choose a symbol');
                 for (var idx in data.pictogram_list) {
                     this.addIconPreview(data.pictogram_list[idx]);
                 }
-                var deleteButton = L.DomUtil.create("a", "", this.pictogramsContainer);
+                var deleteButton = L.DomUtil.create('a', '', this.pictogramsContainer);
                 deleteButton.innerHTML = L._('Remove icon symbol');
-                deleteButton.href = "#";
-                deleteButton.style.display = "block";
-                deleteButton.style.clear = "both";
+                deleteButton.href = '#';
+                deleteButton.style.display = 'block';
+                deleteButton.style.clear = 'both';
                 L.DomEvent
-                    .on(deleteButton, "click", L.DomEvent.stop)
-                    .on(deleteButton, "click", this.empty, this);
-                var cancelButton = L.DomUtil.create("a", "", this.pictogramsContainer);
+                    .on(deleteButton, 'click', L.DomEvent.stop)
+                    .on(deleteButton, 'click', this.empty, this);
+                var cancelButton = L.DomUtil.create('a', '', this.pictogramsContainer);
                 cancelButton.innerHTML = L._('Cancel');
-                cancelButton.href = "#";
-                cancelButton.style.display = "block";
-                cancelButton.style.clear = "both";
+                cancelButton.href = '#';
+                cancelButton.style.display = 'block';
+                cancelButton.style.clear = 'both';
                 L.DomEvent
-                    .on(cancelButton, "click", L.DomEvent.stop)
-                    .on(cancelButton, "click", function (e) {
-                        this.pictogramsContainer.innerHTML = "";
+                    .on(cancelButton, 'click', L.DomEvent.stop)
+                    .on(cancelButton, 'click', function (e) {
+                        this.pictogramsContainer.innerHTML = '';
                         this.createButtonsBar();
                     }, this);
-                var customButton = L.DomUtil.create("a", "", this.pictogramsContainer);
+                var customButton = L.DomUtil.create('a', '', this.pictogramsContainer);
                 customButton.innerHTML = L._('Custom');
-                customButton.href = "#";
-                customButton.style.display = "block";
-                customButton.style.clear = "both";
+                customButton.href = '#';
+                customButton.style.display = 'block';
+                customButton.style.clear = 'both';
                 this.map.help.button(customButton, 'formatIconURL');
                 L.DomEvent
-                    .on(customButton, "click", L.DomEvent.stop)
-                    .on(customButton, "click", function (e) {
-                        this.input.type = "url";
-                        this.pictogramsContainer.innerHTML = "";
+                    .on(customButton, 'click', L.DomEvent.stop)
+                    .on(customButton, 'click', function (e) {
+                        this.input.type = 'url';
+                        this.pictogramsContainer.innerHTML = '';
                     }, this);
             },
             context: this
@@ -625,7 +625,7 @@ L.S.ElementHelper.IconUrl = L.S.ElementHelper.Input.extend({
         var els = container.querySelectorAll('div.selected');
         for (var el in els) {
             if (els.hasOwnProperty(el)) {
-                L.DomUtil.removeClass(els[el], "selected");
+                L.DomUtil.removeClass(els[el], 'selected');
             }
         }
     }
@@ -635,7 +635,7 @@ L.S.ElementHelper.IconUrl = L.S.ElementHelper.Input.extend({
 L.S.ElementHelper.Url = L.S.ElementHelper.Input.extend({
 
     type: function () {
-        return "url";
+        return 'url';
     }
 
 });
@@ -654,7 +654,7 @@ L.Storage.FormBuilder = L.Class.extend({
     },
 
     build: function () {
-        this.form.innerHTML = "";
+        this.form.innerHTML = '';
         for (var idx in this.fields) {
             this.buildField(this.fields[idx]);
         }
@@ -670,7 +670,7 @@ L.Storage.FormBuilder = L.Class.extend({
         } else {
             options = this.defaultOptions[this.getName(field)] || {};
         }
-        type = options.handler || "Input";
+        type = options.handler || 'Input';
         if (L.S.ElementHelper[type]) {
             helper = new L.S.ElementHelper[type](this, field, options);
         } else {
@@ -710,7 +710,7 @@ L.Storage.FormBuilder = L.Class.extend({
         for (var i=0, l=path.length; i<l; i++) {
             what = path[i];
             if (what === path[l-1]) {
-                if (typeof value === "undefined") {
+                if (typeof value === 'undefined') {
                     delete obj[what];
                 } else {
                     obj[what] = value;
@@ -760,21 +760,21 @@ L.Storage.FormBuilder = L.Class.extend({
         fill: {handler: 'NullableBoolean', label: L._('fill'), helpText: L._('Whether to fill the path with color.')},
         fillColor: {handler: 'ColorPicker', label: L._('fill color'), helpText: L._('Optional. Same as color if not set.')},
         fillOpacity: {label: L._('fill opacity'), helpText: L._('Fill opacity, from 0.1 to 1.0 (opaque).')},
-        smoothFactor: {label: L._('smooth factor'), helpText: L._("How much to simplify the polyline on each zoom level (more = better performance and smoother look, less = more accurate)")},
-        dashArray: {label: L._('dash array'), helpText: L._("A string that defines the stroke dash pattern. Ex.: '5, 10, 15'.")},
+        smoothFactor: {label: L._('smooth factor'), helpText: L._('How much to simplify the polyline on each zoom level (more = better performance and smoother look, less = more accurate)')},
+        dashArray: {label: L._('dash array'), helpText: L._('A string that defines the stroke dash pattern. Ex.: «5, 10, 15».')},
         iconClass: {handler: 'IconClassSwitcher', label: L._('type of icon')},
         iconUrl: {handler: 'IconUrl', label: L._('symbol of the icon')},
         popupTemplate: {handler: 'PopupTemplate', label: L._('template to use for the popup')},
         datalayer: {handler: 'DataLayerSwitcher', label: L._('Choose the layer of the feature')},
-        moreControl: {handler: 'CheckBox', helpText: L._("Do you want to display the 'more' control?")},
-        datalayersControl: {handler: 'CheckBox', helpText: L._("Do you want to display the data layers control?")},
-        zoomControl: {handler: 'CheckBox', helpText: L._("Do you want to display zoom control?")},
-        scrollWheelZoom: {handler: 'CheckBox', helpText: L._("Allow scroll wheel zoom?")},
-        miniMap: {handler: 'CheckBox', helpText: L._("Do you want to display a minimap?")},
-        scaleControl: {handler: 'CheckBox', helpText: L._("Do you want to display the scale control?")},
-        onLoadPanel: {handler: 'onLoadPanel', helpText: L._("Do you want to display a panel on load?")},
-        displayPopupFooter: {handler: 'CheckBox', helpText: L._("Do you want to display popup footer?")},
-        captionBar: {handler: 'CheckBox', helpText: L._("Do you want to display a caption bar?")},
+        moreControl: {handler: 'CheckBox', helpText: L._('Do you want to display the «more» control?')},
+        datalayersControl: {handler: 'CheckBox', helpText: L._('Do you want to display the data layers control?')},
+        zoomControl: {handler: 'CheckBox', helpText: L._('Do you want to display zoom control?')},
+        scrollWheelZoom: {handler: 'CheckBox', helpText: L._('Allow scroll wheel zoom?')},
+        miniMap: {handler: 'CheckBox', helpText: L._('Do you want to display a minimap?')},
+        scaleControl: {handler: 'CheckBox', helpText: L._('Do you want to display the scale control?')},
+        onLoadPanel: {handler: 'onLoadPanel', helpText: L._('Do you want to display a panel on load?')},
+        displayPopupFooter: {handler: 'CheckBox', helpText: L._('Do you want to display popup footer?')},
+        captionBar: {handler: 'CheckBox', helpText: L._('Do you want to display a caption bar?')},
         zoomTo: {handler: 'IntInput', placeholder: L._('Inherit'), helpText: L._('Zoom level for automatic zooms')}
     }
 

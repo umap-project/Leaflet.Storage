@@ -1,5 +1,4 @@
 {
-    "A string that defines the stroke dash pattern. Ex.: '5, 10, 15'.": "Délky čárek použitých v přerušované čáře. Např. \"5, 10, 15\"",
     "About": "O mapě",
     "Action not allowed :(": "Akce nepovolena :(",
     "Add a layer": "Přidat vrstvu",
@@ -36,7 +35,6 @@
     "Display on load": "Zobrazit na startu",
     "Do you want to display a minimap?": "Chcete zobrazit minimapu?",
     "Do you want to display popup footer?": "Chcete v bublině zobrazit navigační panel?",
-    "Do you want to display the 'more' control?": "Chcete zobrazit tlačítko \"Více\"?",
     "Do you want to display the data layers control?": "Chcete zobrazit tlačítko mapových vrstev.",
     "Do you want to display the scale control?": "Chcete zobrazit měřítko mapy?",
     "Do you want to display zoom control?": "Chcete zobrazit tlačítka přiblížení a oddálení?",
@@ -214,5 +212,7 @@
     "Please add at least a layer to import in": "Please add at least a layer to import in",
     "Side panel": "Side panel",
     "Powered by <a href=\"{leaflet}\">Leaflet</a> and <a href=\"{django}\">Django</a>, glued by <a href=\"{umap}\">uMap project</a>.": "Powered by <a href=\"{leaflet}\">Leaflet</a> and <a href=\"{django}\">Django</a>, glued by <a href=\"{umap}\">uMap project</a>.",
-    "Zoom level for automatic zooms": "Zoom level for automatic zooms"
+    "Zoom level for automatic zooms": "Zoom level for automatic zooms",
+    "A string that defines the stroke dash pattern. Ex.: «5, 10, 15».": "A string that defines the stroke dash pattern. Ex.: «5, 10, 15».",
+    "Do you want to display the «more» control?": "Do you want to display the «more» control?"
 }
