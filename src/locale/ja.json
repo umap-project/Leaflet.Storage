@@ -80,7 +80,6 @@
     "Paste here your data": "手持ちのデータからペースト",
     "Path weight in pixels. From 0 to 10.": "輪郭の太さ。0から10ピクセルまで。",
     "Please be sure the licence is compliant with your use.": "利用目的に沿ったライセンスを選択するようにしてください",
-    "Powered by <a href='{leaflet}'>Leaflet</a> and <a href='{django}'>Django</a>, glued by <a href='{umap}'>uMap project</a>.": "Powered by <a href='{leaflet}'>Leaflet</a> and <a href='{django}'>Django</a>, glued by <a href='{umap}'>uMap project</a>.",
     "Problem in the response": "レスポンスに問題があります",
     "Problem in the response format": "レスポンス形式に問題があります",
     "Provide an URL here": "URLを入力してください",
@@ -213,5 +212,7 @@
     "Clone of {name}": "Clone of {name}",
     "Add a layer now": "Add a layer now",
     "Please add at least a layer to import in": "Please add at least a layer to import in",
-    "Side panel": "Side panel"
+    "Side panel": "Side panel",
+    "Powered by <a href=\"{leaflet}\">Leaflet</a> and <a href=\"{django}\">Django</a>, glued by <a href=\"{umap}\">uMap project</a>.": "Powered by <a href=\"{leaflet}\">Leaflet</a> and <a href=\"{django}\">Django</a>, glued by <a href=\"{umap}\">uMap project</a>.",
+    "Zoom level for automatic zooms": "Zoom level for automatic zooms"
 }

@@ -15,6 +15,7 @@ L.Map.mergeOptions({
     default_fill: true,
     default_weight: 3,
     default_iconClass: 'Default',
+    default_zoomTo: 16,
     attributionControl: true,
     allowEdit: true,
     homeControl: true,
@@ -40,7 +41,6 @@ L.Map.mergeOptions({
         // {url: 'http://localhost:8019/en/datalayer/1502/', label: 'Simplified World Countries', format: 'geojson'}
     ],
     moreControl: true,
-    jumpToZoom: 15,
     captionBar: false
 });
 
@@ -799,6 +799,7 @@ L.Storage.Map.include({
             'fillOpacity',
             'dashArray',
             'popupTemplate',
+            'zoomTo',
             'captionBar'
         ], properties = {};
         for (var i = editableOptions.length - 1; i >= 0; i--) {
@@ -854,8 +855,7 @@ L.Storage.Map.include({
     },
 
     defaultDataLayer: function () {
-        var self = this,
-            datalayer;
+        var datalayer;
         for (var i in this.datalayers) {
             if (this.datalayers.hasOwnProperty(i)) {
                 datalayer = this.datalayers[i];
@@ -886,8 +886,7 @@ L.Storage.Map.include({
 
     edit: function () {
         if(!this.editEnabled) return;
-        var self = this,
-            container = L.DomUtil.create('div'),
+        var container = L.DomUtil.create('div'),
             metadataFields = [
                 'options.name',
                 'options.description',
@@ -928,6 +927,7 @@ L.Storage.Map.include({
             'options.fillOpacity',
             'options.dashArray',
             'options.popupTemplate',
+            'options.zoomTo'
         ];
 
         builder = new L.S.FormBuilder(this, optionsFields, {
@@ -977,7 +977,7 @@ L.Storage.Map.include({
         limitBounds.appendChild(boundsBuilder.build());
         var setCurrentButton = L.DomUtil.add('a', '', limitBounds, L._('Use current bounds'));
         setCurrentButton.href = '#';
-        L.DomEvent.on(setCurrentButton, 'click', function (e) {
+        L.DomEvent.on(setCurrentButton, 'click', function () {
             var bounds = this.getBounds();
             this.options.limitBounds.south = L.Util.formatNum(bounds.getSouth());
             this.options.limitBounds.west = L.Util.formatNum(bounds.getWest());

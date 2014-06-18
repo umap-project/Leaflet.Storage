@@ -654,7 +654,8 @@ L.Storage.DataLayer = L.Class.extend({
             'options.fillColor',
             'options.fillOpacity',
             'options.dashArray',
-            'options.popupTemplate'
+            'options.popupTemplate',
+            'options.zoomTo'
         ];
 
         optionsFields = optionsFields.concat(this.layer.getEditableOptions());

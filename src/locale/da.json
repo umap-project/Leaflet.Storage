@@ -80,7 +80,6 @@
     "Paste here your data": "Indsæt dine geodata her",
     "Path weight in pixels. From 0 to 10.": "Stivægtning i pixels. Fra 0 til 10.",
     "Please be sure the licence is compliant with your use.": "Vær sikker på at licensen er kompatibel med din brug.",
-    "Powered by <a href='{leaflet}'>Leaflet</a> and <a href='{django}'>Django</a>, glued by <a href='{umap}'>uMap project</a>.": "Håndteret af <a href='{leaflet}'>Leaflet</a> og <a href='{django}'>Django</a>,  flettet ind i <a href='{umap}'>uMap projektet</a>.",
     "Problem in the response": "Problem med responsen",
     "Problem in the response format": "Der er et problem med det kaldte format",
     "Provide an URL here": "Indsæt en URL her",
@@ -213,5 +212,7 @@
     "Clone of {name}": "Klone af {name}",
     "Add a layer now": "Tilføj et nyt lag nu",
     "Please add at least a layer to import in": "Tilføj mindst et lag til at importere fra",
-    "Side panel": "Sidepanel"
+    "Side panel": "Sidepanel",
+    "Powered by <a href=\"{leaflet}\">Leaflet</a> and <a href=\"{django}\">Django</a>, glued by <a href=\"{umap}\">uMap project</a>.": "Powered by <a href=\"{leaflet}\">Leaflet</a> and <a href=\"{django}\">Django</a>, glued by <a href=\"{umap}\">uMap project</a>.",
+    "Zoom level for automatic zooms": "Zoom level for automatic zooms"
 }

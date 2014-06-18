@@ -80,7 +80,6 @@
     "Paste here your data": "Collez ici les données",
     "Path weight in pixels. From 0 to 10.": "Épaisseur du trait, en pixels. Max 10.",
     "Please be sure the licence is compliant with your use.": "Pensez à vérifier que la licence de ces données vous autorise à les utiliser.",
-    "Powered by <a href='{leaflet}'>Leaflet</a> and <a href='{django}'>Django</a>, glued by <a href='{umap}'>uMap project</a>.": "Propulsé par <a href='{leaflet}'>Leaflet</a> et <a href='{django}'>Django</a>, mis en musique par <a href='{umap}'>uMap project</a>.",
     "Problem in the response": "Problème dans la réponse du serveur",
     "Problem in the response format": "Problème dans le format de la réponse",
     "Provide an URL here": "Renseignez une URL",
@@ -213,5 +212,7 @@
     "Clone of {name}": "Clone de {name}",
     "Add a layer now": "Ajouter maintenant",
     "Please add at least a layer to import in": "Merci d'ajouter au moins un calque pour l'import",
-    "Side panel": "Panneau latéral"
+    "Side panel": "Panneau latéral",
+    "Powered by <a href=\"{leaflet}\">Leaflet</a> and <a href=\"{django}\">Django</a>, glued by <a href=\"{umap}\">uMap project</a>.": "Propulsé par <a href=\"{leaflet}\">Leaflet</a> et <a href=\"{django}\">Django</a>, mis en musique par <a href=\"{umap}\">uMap project</a>.",
+    "Zoom level for automatic zooms": "Niveau de zoom automatique"
 }

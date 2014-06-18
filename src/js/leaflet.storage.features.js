@@ -204,6 +204,9 @@ L.Storage.FeatureMixin = {
 
     bringToCenter: function (e, callback) {
         var latlng;
+        if (e && e.zoomTo) {
+            this.map._zoom = e.zoomTo;
+        }
         if (e && e.latlng) {
             latlng = e.latlng;
         }
@@ -457,6 +460,7 @@ L.Storage.Marker = L.Marker.extend({
             'properties._storage_options.iconClass',
             'properties._storage_options.iconUrl',
             'properties._storage_options.popupTemplate',
+            'properties._storage_options.zoomTo',
             ['properties._storage_options.showLabel', {handler: 'CheckBox', helpText: L._('Add a permanent label')}]
         ];
     },
@@ -540,7 +544,8 @@ L.Storage.PathMixin = {
             'properties._storage_options.weight',
             'properties._storage_options.smoothFactor',
             'properties._storage_options.dashArray',
-            'properties._storage_options.popupTemplate'
+            'properties._storage_options.popupTemplate',
+            'properties._storage_options.zoomTo'
         ];
     },
 
