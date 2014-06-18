@@ -270,6 +270,7 @@ L.Storage.Map.include({
         }
 
         L.DomUtil.classIf(document.body, 'storage-caption-bar-enabled', this.options.captionBar || (this.options.slideshow && this.options.slideshow.delay));
+        L.DomUtil.classIf(document.body, 'storage-slideshow-enabled', this.options.slideshow && this.options.slideshow.delay);
         if (this.options.zoomControl) {
             this._controls.zoomControl = (new L.Control.Zoom({zoomInTitle: L._('Zoom in'), zoomOutTitle: L._('Zoom out')})).addTo(this);
         }
@@ -1084,11 +1085,9 @@ L.Storage.Map.include({
         };
         L.bind(setName, this)();
         this.on('synced', L.bind(setName, this));
-        if (this.options.slideshow && this.options.slideshow.delay) {
-            this.onceDatalayersLoaded(function () {
-                container.appendChild(this.slideshow.renderToolbox());
-            });
-        }
+        this.onceDatalayersLoaded(function () {
+            container.appendChild(this.slideshow.renderToolbox());
+        });
     },
 
     initEditBar: function () {

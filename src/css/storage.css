@@ -384,8 +384,11 @@ a.storage-control-text {
     font-style: italic;
 }
 .storage-slideshow-toolbox {
-    display: inline-block;
     float: right;
+    display: none;
+}
+.storage-slideshow-enabled .storage-slideshow-toolbox {
+    display: inline-block;
 }
 .storage-slideshow-toolbox li {
     display: inline-block;
