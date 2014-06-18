@@ -216,15 +216,15 @@
     "A string that defines the stroke dash pattern. Ex.: «5, 10, 15».": "En streng der angiver stiplet mønstre. Fx '5, 10, 15'.",
     "Do you want to display the «more» control?": "Vil du vise mere af kontrolpanel?",
     "Auto": "Auto",
-    "Autostart slideshow when map is loaded?": "Autostart slideshow when map is loaded?",
-    "Default: name": "Default: name",
-    "Delay between elements (in milliseconds)": "Delay between elements (in milliseconds)",
+    "Autostart slideshow when map is loaded?": "Autostart slideshowet når kortet er indlæst?",
+    "Default: name": "Standardnavn:",
+    "Delay between elements (in milliseconds)": "Forsinkelse mellem de forskellige elementer (i millisekunder)",
     "Property to use for sorting features": "Property to use for sorting features",
-    "Set a value for adding a slideshow": "Set a value for adding a slideshow",
+    "Set a value for adding a slideshow": "Sæt en værdi for tilføjelse af et slideshow",
     "Slideshow": "Slideshow",
     "Start slideshow": "Start slideshow",
     "Stop slideshow": "Stop slideshow",
-    "Text color for the cluster label": "Text color for the cluster label",
-    "Zoom to the next": "Zoom to the next",
-    "Zoom to the previous": "Zoom to the previous"
+    "Text color for the cluster label": "Tekstfarve for klynge label",
+    "Zoom to the next": "Zoom hen til næste",
+    "Zoom to the previous": "Zoom hen til forrige"
 }
