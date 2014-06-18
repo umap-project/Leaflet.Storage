@@ -203,55 +203,48 @@ L.Storage.Map.include({
             this.on('draw:start', function (e) {
                 e.layer.isDirty = true;
             });
-            L.Storage.on('ui:end ui:start', function (e) {
+            L.Storage.on('ui:end ui:start', function () {
                 this.editedFeature = null;
             }, this);
             this.initEditBar();
             var editShortcuts = function (e) {
-                var key = e.keyCode,
-                chars = {
-                    E: 69,
-                    H: 72,
-                    I: 73,
-                    L: 76,
-                    M: 77,
-                    P: 80,
-                    S: 83,
-                    Z: 90
-                };
-                if (key == chars.E && e.ctrlKey && !this.editEnabled) {
+                var key = e.keyCode;
+                if (key == L.S.Keys.E && e.ctrlKey && !this.editEnabled) {
                     L.DomEvent.stop(e);
                     this.enableEdit();
-                } else if (key == chars.E && e.ctrlKey && this.editEnabled && !this.isDirty) {
+                } else if (key == L.S.Keys.E && e.ctrlKey && this.editEnabled && !this.isDirty) {
                     L.DomEvent.stop(e);
                     this.disableEdit();
                     L.S.fire('ui:end');
                 }
-                if (key == chars.S && e.ctrlKey && this.isDirty) {
+                if (key == L.S.Keys.S && e.ctrlKey) {
                     L.DomEvent.stop(e);
-                    this.save();
+                    console.log('want to save', this.isDirty)
+                    if (this.isDirty) {
+                        this.save();
+                    }
                 }
-                if (key == chars.Z && e.ctrlKey && this.isDirty) {
+                if (key == L.S.Keys.Z && e.ctrlKey && this.isDirty) {
                     L.DomEvent.stop(e);
                     this.askForReset();
                 }
-                if (key == chars.M && e.ctrlKey && this.editEnabled) {
+                if (key == L.S.Keys.M && e.ctrlKey && this.editEnabled) {
                     L.DomEvent.stop(e);
                     this._controls.draw.startMarker();
                 }
-                if (key == chars.P && e.ctrlKey && this.editEnabled) {
+                if (key == L.S.Keys.P && e.ctrlKey && this.editEnabled) {
                     L.DomEvent.stop(e);
                     this._controls.draw.startPolygon();
                 }
-                if (key == chars.L && e.ctrlKey && this.editEnabled) {
+                if (key == L.S.Keys.L && e.ctrlKey && this.editEnabled) {
                     L.DomEvent.stop(e);
                     this._controls.draw.startPolyline();
                 }
-                if (key == chars.I && e.ctrlKey && this.editEnabled) {
+                if (key == L.S.Keys.I && e.ctrlKey && this.editEnabled) {
                     L.DomEvent.stop(e);
                     this.importPanel();
                 }
-                if (key == chars.H && e.ctrlKey && this.editEnabled) {
+                if (key == L.S.Keys.H && e.ctrlKey && this.editEnabled) {
                     L.DomEvent.stop(e);
                     this.help.show('edit');
                 }
@@ -259,7 +252,7 @@ L.Storage.Map.include({
             L.DomEvent.addListener(document, 'keydown', editShortcuts, this);
         }
 
-        window.onbeforeunload = function (e) {
+        window.onbeforeunload = function () {
             if (isDirty) {
                 return true;
             }

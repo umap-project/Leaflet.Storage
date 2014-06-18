@@ -97,11 +97,11 @@ L.Storage.ElementHelper.Input = L.S.ElementHelper.extend({
             this.input.placeholder = this.options.placeholder;
         }
         L.DomEvent.on(this.input, this.getSyncEvent(), this.sync, this);
-        L.DomEvent.on(this.input, 'keypress', this.onKeyPress, this);
+        L.DomEvent.on(this.input, 'keydown', this.onKeyDown, this);
     },
 
     fetch: function () {
-        this.input.value = this.backup = (typeof this.toHTML() !== "undefined" ? this.toHTML() : null);
+        this.input.value = this.backup = (typeof this.toHTML() !== 'undefined' ? this.toHTML() : null);
     },
 
     getSyncEvent: function () {
@@ -120,11 +120,13 @@ L.Storage.ElementHelper.Input = L.S.ElementHelper.extend({
         L.S.fire('ui:end');
     },
 
-    onKeyPress: function (e) {
-        var key = e.keyCode,
-            ENTER = 13;
-        if (key == ENTER) {
+    onKeyDown: function (e) {
+        var key = e.keyCode;
+        if (key == L.S.Keys.ENTER) {
             L.DomEvent.stop(e);
+            this.finish();
+        }
+        if (key == L.S.Keys.S && e.ctrlKey) {
             this.finish();
         }
     }

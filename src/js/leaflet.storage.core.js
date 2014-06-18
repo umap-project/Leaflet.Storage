@@ -198,7 +198,7 @@ L.DomUtil.TextColorFromBackgroundColor = function (el) {
         out = '#ffffff';
     }
     return out;
-}
+};
 
 
 /*
@@ -210,12 +210,20 @@ L.S.Keys = {
     RIGHT: 39,
     DOWN: 40,
     TAB: 9,
-    RETURN: 13,
+    ENTER: 13,
     ESC: 27,
     APPLE: 91,
     SHIFT: 16,
     ALT: 17,
-    CTRL: 18
+    CTRL: 18,
+    E: 69,
+    H: 72,
+    I: 73,
+    L: 76,
+    M: 77,
+    P: 80,
+    S: 83,
+    Z: 90
 };
 L.S._onKeyDown = function (e) {
     if (e.keyCode == L.S.Keys.ESC) {
