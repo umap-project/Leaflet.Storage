@@ -91,9 +91,9 @@ L.S.Slideshow = L.Class.extend({
 
     renderToolbox: function () {
         var box = L.DomUtil.create('ul', 'storage-slideshow-toolbox'),
-            prev = L.DomUtil.create('li', 'prev', box),
             play = L.DomUtil.create('li', 'play', box),
             stop = L.DomUtil.create('li', 'stop', box),
+            prev = L.DomUtil.create('li', 'prev', box),
             next = L.DomUtil.create('li', 'next', box);
         play.title = L._('Start slideshow');
         stop.title = L._('Stop slideshow');
