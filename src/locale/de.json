@@ -213,6 +213,6 @@
     "Side panel": "Seitenleiste",
     "Powered by <a href=\"{leaflet}\">Leaflet</a> and <a href=\"{django}\">Django</a>, glued by <a href=\"{umap}\">uMap project</a>.": "Bereitgestellt von <a href=\"{leaflet}\">Leaflet</a> und <a href=\"{django}\">Django</a>, vereinigt vom <a href=\"{umap}\">uMap Projekt</a>.",
     "Zoom level for automatic zooms": "Zommstufe für automatischen Zoom",
-    "A string that defines the stroke dash pattern. Ex.: «5, 10, 15».": "A string that defines the stroke dash pattern. Ex.: «5, 10, 15».",
+    "A string that defines the stroke dash pattern. Ex.: «5, 10, 15».": "Eine Zeichenfolge, die die Linienart (Strichmuster) definiert, z.B.: \"5, 10, 15\".",
     "Do you want to display the «more» control?": "Möchtest du die \"Mehr\"-Schaltfläche anzeigen?"
 }

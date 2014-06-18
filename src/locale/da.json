@@ -211,8 +211,8 @@
     "Add a layer now": "Tilføj et nyt lag nu",
     "Please add at least a layer to import in": "Tilføj mindst et lag til at importere fra",
     "Side panel": "Sidepanel",
-    "Powered by <a href=\"{leaflet}\">Leaflet</a> and <a href=\"{django}\">Django</a>, glued by <a href=\"{umap}\">uMap project</a>.": "Powered by <a href=\"{leaflet}\">Leaflet</a> and <a href=\"{django}\">Django</a>, glued by <a href=\"{umap}\">uMap project</a>.",
-    "Zoom level for automatic zooms": "Zoom level for automatic zooms",
-    "A string that defines the stroke dash pattern. Ex.: «5, 10, 15».": "A string that defines the stroke dash pattern. Ex.: «5, 10, 15».",
-    "Do you want to display the «more» control?": "Do you want to display the «more» control?"
+    "Powered by <a href=\"{leaflet}\">Leaflet</a> and <a href=\"{django}\">Django</a>, glued by <a href=\"{umap}\">uMap project</a>.": "Håndteret af <a href='{leaflet}'>Leaflet</a> og <a href='{django}'>Django</a>,  flettet ind i <a href='{umap}'>uMap projektet</a>.",
+    "Zoom level for automatic zooms": "Zoomniveau for automatisk zoomniveauer",
+    "A string that defines the stroke dash pattern. Ex.: «5, 10, 15».": "En streng der angiver stiplet mønstre. Fx '5, 10, 15'.",
+    "Do you want to display the «more» control?": "Vil du vise mere af kontrolpanel?"
 }
