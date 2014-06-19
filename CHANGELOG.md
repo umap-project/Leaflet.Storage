@@ -7,6 +7,10 @@
 - fix missing icons for transorm to polygon/polyline actions
 - add a slideshow mode
 - make possible to set cluster color by hand
+- make possible to manage showLabel from layer and map
+- basic kml/gpx download support
+- MultiLineString are merged at import
+- catch setMaxBounds errors (when using useless bounds)
 
 ## 0.6.x
 - add TMS option to custom tilelayer

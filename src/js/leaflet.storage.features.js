@@ -461,7 +461,7 @@ L.Storage.Marker = L.Marker.extend({
             'properties._storage_options.iconUrl',
             'properties._storage_options.popupTemplate',
             'properties._storage_options.zoomTo',
-            ['properties._storage_options.showLabel', {handler: 'CheckBox', helpText: L._('Add a permanent label')}]
+            'properties._storage_options.showLabel'
         ];
     },
 

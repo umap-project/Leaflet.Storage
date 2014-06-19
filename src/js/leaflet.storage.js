@@ -986,6 +986,7 @@ L.Storage.Map.include({
             'options.dashArray',
             'options.popupTemplate',
             'options.zoomTo',
+            'options.showLabel',
             ['options.sortKey', {handler: 'Input', helpText: L._('Property to use for sorting features'), placeholder: L._('Default: name')}]
         ];
 
