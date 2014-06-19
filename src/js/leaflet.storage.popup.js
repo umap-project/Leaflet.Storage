@@ -117,7 +117,7 @@ L.S.Popup.Table = L.S.Popup.extend({
                 continue;
             }
             // TODO, manage links (url, mailto, wikipedia...)
-            this.addRow(table, key, L.Util.escapeHTML(this.feature.properties[key]));
+            this.addRow(table, key, L.Util.escapeHTML(this.feature.properties[key]).trim());
         }
         return table;
     }
