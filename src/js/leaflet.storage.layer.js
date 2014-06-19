@@ -14,7 +14,7 @@ L.S.Layer = {
 
     getEditableOptions: function () {return [];},
 
-    postUpdate: function (field) {}
+    postUpdate: function () {}
 
 };
 
@@ -142,12 +142,11 @@ L.Storage.DataLayer = L.Class.extend({
         displayOnLoad: true
     },
 
-    initialize: function (map, datalayer, options) {
+    initialize: function (map, data) {
         this.map = map;
         this._index = Array();
         this._layers = {};
         this._geojson = null;
-        L.Util.setOptions(this, options);
 
         var isDirty = false,
             self = this;
@@ -168,7 +167,8 @@ L.Storage.DataLayer = L.Class.extend({
         catch (e) {
             // Certainly IE8, which has a limited version of defineProperty
         }
-        this.populate(datalayer);
+        this.setStorageId(data.id);
+        this.setOptions(data);
         this.connectToMap();
         if(this.options.displayOnLoad) {
             this.show();
@@ -177,7 +177,7 @@ L.Storage.DataLayer = L.Class.extend({
             this.isDirty = true;
         }
         this.onceLoaded(function () {
-            this.map.on('moveend', function (e) {
+            this.map.on('moveend', function () {
                 if (this.isRemoteLayer() && this.options.remoteData.dynamic && this.isVisible()) {
                     this.fetchRemoteData();
                 }
@@ -231,7 +231,7 @@ L.Storage.DataLayer = L.Class.extend({
         this.map.get(this._dataUrl(), {
             callback: function (geojson) {
                 if (geojson._storage) {
-                    this.resetOptions(geojson._storage);
+                    this.setOptions(geojson._storage);
                 }
                 if (this.isRemoteLayer()) {
                     this.fetchRemoteData();
@@ -311,17 +311,24 @@ L.Storage.DataLayer = L.Class.extend({
         return !this.storage_id || this._geojson !== null;
     },
 
-    populate: function (datalayer) {
+    setStorageId: function (id) {
         // Datalayer is null when listening creation form
-        if (!this.storage_id && datalayer && datalayer.id) {
-            this.storage_id = datalayer.id || null;
+        if (!this.storage_id && id) {
+            this.storage_id = id;
         }
-        L.Util.setOptions(this, datalayer);
-        this.resetLayer();
     },
 
-    resetOptions: function (options) {
-        this.options = L.Util.CopyJSON(options || {});
+    backupOptions: function () {
+        this._backupOptions = L.Util.CopyJSON(this.options);
+    },
+
+    resetOptions: function () {
+        this.options = L.Util.CopyJSON(this._backupOptions);
+    },
+
+    setOptions: function (options) {
+        L.Util.setOptions(this, options);
+        this.backupOptions();
         this.resetLayer();
     },
 
@@ -608,6 +615,7 @@ L.Storage.DataLayer = L.Class.extend({
 
     reset: function () {
         if (this.storage_id) {
+            this.resetOptions();
             if (this._leaflet_events_bk && !this._leaflet_events) {
                 this._leaflet_events = this._leaflet_events_bk;
             }
@@ -616,7 +624,6 @@ L.Storage.DataLayer = L.Class.extend({
             if (this.isRemoteLayer()) {
                 this.fetchRemoteData();
             } else if (this._geojson_bk) {
-                this.resetOptions(this._geojson_bk._storage);
                 this.fromGeoJSON(this._geojson_bk);
             }
             this._loaded = true;
@@ -825,6 +832,7 @@ L.Storage.DataLayer = L.Class.extend({
             features: this.isRemoteLayer() ? [] : this.featuresToGeoJSON(),
             _storage: this.options
         };
+        this.backupOptions();
         this._geojson = geojson;
         var formData = new FormData();
         formData.append('name', this.options.name);
@@ -835,7 +843,8 @@ L.Storage.DataLayer = L.Class.extend({
         this.map.post(this.getSaveUrl(), {
             data: formData,
             callback: function (data) {
-                this.populate(data);
+                this.setStorageId(data.id);
+                this.setOptions(data);
                 this.connectToMap();
                 this.reset();  // Needed for reordering features
             },
