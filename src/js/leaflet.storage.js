@@ -858,7 +858,8 @@ L.Storage.Map.include({
             'zoomTo',
             'captionBar',
             'slideshow',
-            'sortKey'
+            'sortKey',
+            'showLabel'
         ], properties = {};
         for (var i = editableOptions.length - 1; i >= 0; i--) {
             if (typeof this.options[editableOptions[i]] !== 'undefined') {
