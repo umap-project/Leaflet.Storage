@@ -257,7 +257,7 @@ L.Storage.DataLayer = L.Class.extend({
         this._layers = {};
         this._index = Array();
         if (this._geojson) {
-            this._geojson_bk = this._geojson;
+            this._geojson_bk = L.Util.CopyJSON(this._geojson);
             this._geojson = null;
         }
     },
