@@ -449,7 +449,7 @@ L.Storage.DataLayer = L.Class.extend({
         var geometry = geojson.type === 'Feature' ? geojson.geometry : geojson;
         if (!geometry) return;  // null geometry is valid geojson.
         var coords = geometry.coordinates,
-            layer;
+            layer, tmp;
 
         switch (geometry.type) {
             case 'Point':
@@ -464,6 +464,17 @@ L.Storage.DataLayer = L.Class.extend({
                 latlngs = L.GeoJSON.coordsToLatLngs(coords, 1);
                 layer = this._polygonToLayer(geojson, latlngs);
                 break;
+            case 'MultiLineString':
+                // Merge instead of failing for now
+                if (coords.length >= 1) {
+                    tmp = [];
+                    for (var j=0, l=coords.length; j<l; j++) {
+                        tmp = tmp.concat(coords[j]);
+                    }
+                    latlngs = L.GeoJSON.coordsToLatLngs(tmp);
+                    layer = this._lineToLayer(geojson, latlngs);
+                    break;
+                }
             case 'MultiPolygon':
                 // Hack: we handle only MultiPolygon with one polygon
                 if (coords.length === 1) {
