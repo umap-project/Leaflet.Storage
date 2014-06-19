@@ -96,21 +96,28 @@ L.S.Popup.Large = L.S.Popup.extend({
 
 L.S.Popup.Table = L.S.Popup.extend({
 
+    formatRow: function (key, value) {
+        if (value.indexOf('http') === 0) {
+            value = '<a href="' + value + '" target="_blank">' + value + '</a>';
+        }
+        return value;
+    },
+
+    addRow: function (container, key, value) {
+        var tr = L.DomUtil.create('tr', '', container);
+        L.DomUtil.add('th', '', tr, key);
+        L.DomUtil.add('td', '', tr, this.formatRow(key, value));
+    },
+
     renderBody: function () {
         var table = L.DomUtil.create('table');
 
-        var addRow = function (key, value) {
-            var tr = L.DomUtil.create('tr', '', table);
-            L.DomUtil.add('th', '', tr, key);
-            L.DomUtil.add('td', '', tr, value);
-        };
-
         for (var key in this.feature.properties) {
-            if (typeof this.feature.properties[key] === "object" || key === "name") {
+            if (typeof this.feature.properties[key] === 'object' || key === 'name') {
                 continue;
             }
             // TODO, manage links (url, mailto, wikipedia...)
-            addRow(key, L.Util.escapeHTML(this.feature.properties[key]));
+            this.addRow(table, key, L.Util.escapeHTML(this.feature.properties[key]));
         }
         return table;
     }
@@ -130,14 +137,14 @@ L.S.Popup.GeoRSSImage = L.S.Popup.extend({
     renderBody: function () {
         var container = L.DomUtil.create('a');
         container.href = this.feature.properties.link;
-        container.target = "_blank";
+        container.target = '_blank';
         if (this.feature.properties.img) {
             var img = L.DomUtil.create('img', '', container);
             img.src = this.feature.properties.img;
             // Sadly, we are unable to override this from JS the clean way
             // See https://github.com/Leaflet/Leaflet/commit/61d746818b99d362108545c151a27f09d60960ee#commitcomment-6061847
-            img.style.maxWidth = this.options.maxWidth + "px";
-            img.style.maxHeight = this.options.maxWidth + "px";
+            img.style.maxWidth = this.options.maxWidth + 'px';
+            img.style.maxHeight = this.options.maxWidth + 'px';
             this.onElementLoaded(img);
         }
         return container;
@@ -156,7 +163,7 @@ L.S.Popup.GeoRSSLink = L.S.Popup.extend({
         var title = L.S.Popup.prototype.renderTitle.call(this),
             a = L.DomUtil.add('a');
         a.href = this.feature.properties.link;
-        a.target = "_blank";
+        a.target = '_blank';
         a.appendChild(title);
         return a;
     }
