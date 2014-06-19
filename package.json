@@ -35,23 +35,25 @@
   },
   "homepage": "http://wiki.openstreetmap.org/wiki/UMap",
   "dependencies": {
+    "csv2geojson": "^3.7.0",
+    "georsstogeojson": "^0.0.1",
+    "heat": "git+https://github.com/Leaflet/Leaflet.heat.git#gh-pages",
+    "label": "git+https://github.com/Leaflet/Leaflet.label.git#0.2.1",
     "leaflet": "^0.7.3",
     "leaflet-draw": "^0.2.3",
-    "leaflet.markercluster": "^0.4.0",
-    "leaflet-hash": "^0.2.1",
-    "csv2geojson": "^3.7.0",
     "leaflet-editinosm": "0.1.0",
+    "leaflet-hash": "^0.2.1",
     "leaflet-i18n": "0.1.0",
-    "togeojson": "^0.7.0",
-    "osmtogeojson": "^2.0.5",
-    "georsstogeojson": "^0.0.1",
+    "leaflet.markercluster": "^0.4.0",
     "minimap": "git+https://github.com/Norkart/Leaflet-MiniMap.git#v1.0.0",
-    "label": "git+https://github.com/Leaflet/Leaflet.label.git#0.2.1",
-    "heat": "git+https://github.com/Leaflet/Leaflet.heat.git#gh-pages"
+    "osmtogeojson": "^2.0.5",
+    "togeojson": "^0.7.0",
+    "togpx": "^0.3.1"
   },
   "napa": {
     "leaflet-contextmenu": "aratcliffe/Leaflet.contextmenu",
     "leaflet-loading": "ebrelsford/Leaflet.loading#v0.1.11",
-    "leaflet-measure": "makinacorpus/Leaflet.MeasureControl"
+    "leaflet-measure": "makinacorpus/Leaflet.MeasureControl",
+    "tokml": "mapbox/tokml"
   }
 }

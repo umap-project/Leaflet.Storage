@@ -545,15 +545,41 @@ L.Storage.Map.include({
             shortUrl.value = this.options.shortUrl;
         }
         L.DomUtil.create('hr', '', container);
-        L.DomUtil.add('h4', '', container, L._('Download raw data (GeoJSON)'));
-        L.DomUtil.add('p', '', container, L._('Only visible features will be downloaded.'));
+        L.DomUtil.add('h4', '', container, L._('Download raw data'));
+        var typeInput = L.DomUtil.create('select', '', container);
+        typeInput.name = 'format';
+        L.DomUtil.add('small', 'help-text', container, L._('Only visible features will be downloaded.'));
+        var types = {
+            geojson: {
+                formatter: function (gj) {return JSON.stringify(gj, null, 2);},
+                ext: '.geojson',
+                filetype: 'application/json'
+            },
+            gpx: {
+                formatter: togpx,
+                ext: '.gpx',
+                filetype: 'application/xml'
+            },
+            kml: {
+                formatter: tokml,
+                ext: '.kml',
+                filetype: 'application/vnd.google-earth.kml+xml'
+            }
+        };
+        for (var key in types) {
+            if (types.hasOwnProperty(key)) {
+                option = L.DomUtil.create('option', '', typeInput);
+                option.value = option.innerHTML = key;
+            }
+        }
         var download = L.DomUtil.create('a', 'button', container);
         download.innerHTML = L._('Download data');
-        download.download = 'features.geojson';
         L.DomEvent.on(download, 'click', function () {
-            var content = JSON.stringify(this.toGeoJSON(), null, 2);
+            var type = types[typeInput.value],
+                content = type.formatter(this.toGeoJSON());
+            download.download = 'features' + type.ext;
             window.URL = window.URL || window.webkitURL;
-            var blob = new Blob([content], {type: 'application/json'});
+            var blob = new Blob([content], {type: type.filetype});
             download.href = window.URL.createObjectURL(blob);
         }, this);
         L.S.fire('ui:start', {data:{html:container}});
