@@ -472,7 +472,12 @@ L.Storage.Map.include({
         if (!isNaN(south) && !isNaN(west) && !isNaN(north) && !isNaN(east)) {
             var bounds = L.latLngBounds([[south, west], [north, east]]);
             this.options.minZoom = this.getBoundsZoom(bounds, true);
-            this.setMaxBounds(bounds);
+            try {
+                this.setMaxBounds(bounds);
+            } catch (e) {
+                // Unusable bounds, like -2 -2 -2 -2?
+                console.error('Error limiting bounds', e);
+            }
         } else {
             this.options.minZoom = 0;
             this.setMaxBounds();
