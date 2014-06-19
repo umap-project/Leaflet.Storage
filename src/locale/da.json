@@ -219,7 +219,7 @@
     "Autostart slideshow when map is loaded?": "Autostart slideshowet når kortet er indlæst?",
     "Default: name": "Standardnavn:",
     "Delay between elements (in milliseconds)": "Forsinkelse mellem de forskellige elementer (i millisekunder)",
-    "Property to use for sorting features": "Property to use for sorting features",
+    "Property to use for sorting features": "Egenskab til brug for at sortere objekter\n",
     "Set a value for adding a slideshow": "Sæt en værdi for tilføjelse af et slideshow",
     "Slideshow": "Slideshow",
     "Start slideshow": "Start slideshow",
