@@ -179,6 +179,7 @@ L.Storage.Map.include({
         }
 
         this.help = new L.Storage.Help(this);
+        this.slideshow = new L.S.Slideshow(this, this.options.slideshow);
         this.initCaptionBar();
         if (this.options.allowEdit) {
             // Layer for items added by users
@@ -255,7 +256,6 @@ L.Storage.Map.include({
         };
         this.backupOptions();
         this.initContextMenu();
-        this.slideshow = new L.S.Slideshow(this, this.options.slideshow);
     },
 
     overrideBooleanOptionFromQueryString: function (name) {
