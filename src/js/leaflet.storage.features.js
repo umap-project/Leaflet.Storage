@@ -51,6 +51,9 @@ L.Storage.FeatureMixin = {
             var win = window.open(this.properties._storage_options.outlink);
             return;
         }
+        if (this.map.slideshow) {
+            this.map.slideshow.current = this;
+        }
         this.attachPopup();
         this.openPopup(latlng || this.getCenter());
     },

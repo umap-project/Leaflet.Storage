@@ -13,7 +13,8 @@ L.S.Slideshow = L.Class.extend({
         L.setOptions(this, options);
         this.map = map;
         this._id = null;
-        var current = null;  // current feature
+        var current = null,  // current feature
+            self = this;
         try {
             Object.defineProperty(this, 'current', {
                 get: function () {
@@ -25,6 +26,19 @@ L.S.Slideshow = L.Class.extend({
                 },
                 set: function (feature) {
                     current = feature;
+                }
+            });
+        }
+        catch (e) {
+            // Certainly IE8, which has a limited version of defineProperty
+        }
+        try {
+            Object.defineProperty(this, 'next', {
+                get: function () {
+                    if (!current) {
+                        return self.current;
+                    }
+                    return current.getNext();
                 }
             });
         }
@@ -48,15 +62,14 @@ L.S.Slideshow = L.Class.extend({
     play: function () {
         if (this._id) return;
         if (this.map.editEnabled) return;
-        if (!this.current) return;
         L.DomUtil.addClass(document.body, L.S.Slideshow.CLASSNAME);
         this._id = window.setInterval(L.bind(this.loop, this), this.options.delay);
         this.loop();
     },
 
     loop: function () {
+        this.current = this.next;
         this.step();
-        this.current = this.current.getNext();
     },
 
     pause: function () {
@@ -74,17 +87,20 @@ L.S.Slideshow = L.Class.extend({
 
     forward: function () {
         this.pause();
-        this.current = this.current.getNext();
+        this.current = this.next;
         this.step();
     },
 
     backward: function () {
         this.pause();
-        this.current = this.current.getPrevious();
+        if (this.current) {
+            this.current = this.current.getPrevious();
+        }
         this.step();
     },
 
     step: function () {
+        if(!this.current) this.stop();
         this.current.zoomTo();
         this.current.view();
     },
