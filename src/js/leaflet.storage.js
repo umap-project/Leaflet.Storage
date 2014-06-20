@@ -269,8 +269,8 @@ L.Storage.Map.include({
             delete this._controls[i];
         }
 
-        L.DomUtil.classIf(document.body, 'storage-caption-bar-enabled', this.options.captionBar || (this.options.slideshow && this.options.slideshow.delay));
-        L.DomUtil.classIf(document.body, 'storage-slideshow-enabled', this.options.slideshow && this.options.slideshow.delay);
+        L.DomUtil.classIf(document.body, 'storage-caption-bar-enabled', this.options.captionBar || (this.options.slideshow && (this.options.slideshow.delay || this.options.slideshow.autoplay)));
+        L.DomUtil.classIf(document.body, 'storage-slideshow-enabled', this.options.slideshow && (this.options.slideshow.delay || this.options.slideshow.autoplay));
         if (this.options.zoomControl) {
             this._controls.zoomControl = (new L.Control.Zoom({zoomInTitle: L._('Zoom in'), zoomOutTitle: L._('Zoom out')})).addTo(this);
         }
