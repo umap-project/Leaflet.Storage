@@ -85,8 +85,8 @@ L.S.Slideshow = L.Class.extend({
     },
 
     step: function () {
-        var view = function () {this.view(this.getCenter());};
-        this.current.bringToCenter({zoomTo: this.current.getOption('zoomTo')}, L.bind(view, this.current));
+        this.current.zoomTo();
+        this.current.view();
     },
 
     renderToolbox: function () {

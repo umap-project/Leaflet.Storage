@@ -46,13 +46,13 @@ L.Storage.FeatureMixin = {
         return this.datalayer && this.datalayer.isRemoteLayer();
     },
 
-    view: function(e) {
+    view: function(latlng) {
         if (this.properties._storage_options.outlink) {
             var win = window.open(this.properties._storage_options.outlink);
             return;
         }
         this.attachPopup();
-        this.openPopup(e.latlng);
+        this.openPopup(latlng || this.getCenter());
     },
 
     edit: function(e) {
@@ -219,6 +219,10 @@ L.Storage.FeatureMixin = {
         }
     },
 
+    zoomTo: function () {
+        this.bringToCenter({zoomTo: this.getOption('zoomTo')});
+    },
+
     getNext: function () {
         return this.datalayer.getNextFeature(this);
     },
@@ -269,7 +273,7 @@ L.Storage.FeatureMixin = {
         return items;
     },
 
-    getEditContextMenuItems: function (e) {
+    getEditContextMenuItems: function () {
         return ['-',
             {
                 text: L._('Edit this feature'),
@@ -307,7 +311,7 @@ L.Storage.FeatureMixin = {
         }
     },
 
-    updateTooltipPosition: function (e) {
+    updateTooltipPosition: function () {
         if (!this.tooltip) {return;}
         this.tooltip.updatePosition(this.getCenter());
     },
@@ -363,11 +367,11 @@ L.Storage.Marker = L.Marker.extend({
             this.edit(e);
         }
         else {
-            this.view(e);
+            this.view(e.latlng);
         }
     },
 
-    _onMouseOut: function (e) {
+    _onMouseOut: function () {
         if(this.dragging && this.dragging._draggable && !this.dragging._draggable._moving) {
             // Do not disable if the mouse went out while dragging
             this._disableDragging();
@@ -488,7 +492,7 @@ L.Storage.PathMixin = {
     _onClick: function(e){
         this._popupHandlersAdded = true;  // Prevent leaflet from managing event
         if(!this.map.editEnabled) {
-            this.view(e);
+            this.view(e.latlng);
         }
     },
 
@@ -587,12 +591,20 @@ L.Storage.PathMixin = {
         return this._latlng || this._latlngs[Math.floor(this._latlngs.length / 2)];
     },
 
+    zoomTo: function () {
+        if (this.options.zoomTo) {
+            L.S.FeatureMixin.zoomTo.call(this);
+        } else {
+            this.map.fitBounds(this.getBounds());
+        }
+    },
+
     endEdit: function () {
         this.editing.disable();
         L.Storage.FeatureMixin.endEdit.call(this);
     },
 
-    _onMouseOver: function (e) {
+    _onMouseOver: function () {
         if (this.map.editEnabled && !this.editing._enabled) {
             L.Storage.fire('ui:tooltip', {content: L._('Double-click to edit')});
         }

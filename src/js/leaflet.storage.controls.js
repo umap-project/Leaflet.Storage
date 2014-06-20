@@ -419,9 +419,9 @@ L.Storage.Map.include({
                 color.style.backgroundImage = 'url(' + symbol + ')';
             }
             L.DomEvent.on(zoom_to, 'click', function (e) {
-                this.bringToCenter(e, L.bind(this.view, this, {latlng: this.getCenter()}));
+                this.bringToCenter(e, L.bind(this.view, this));
             }, feature);
-            L.DomEvent.on(edit, 'click', function (e) {
+            L.DomEvent.on(edit, 'click', function () {
                 this.edit();
             }, feature);
             return feature_li;
