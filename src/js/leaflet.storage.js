@@ -576,8 +576,10 @@ L.Storage.Map.include({
         download.innerHTML = L._('Download data');
         L.DomEvent.on(download, 'click', function () {
             var type = types[typeInput.value],
-                content = type.formatter(this.toGeoJSON());
-            download.download = 'features' + type.ext;
+                content = type.formatter(this.toGeoJSON()),
+                name = this.options.name || 'data';
+            name = name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            download.download = name + type.ext;
             window.URL = window.URL || window.webkitURL;
             var blob = new Blob([content], {type: type.filetype});
             download.href = window.URL.createObjectURL(blob);
