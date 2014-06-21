@@ -492,6 +492,14 @@ L.Storage.Map.include({
         return this.options['default_' + option] || null;
     },
 
+    getOption: function (option) {
+        if (L.Util.usableOption(this.options, option)) {
+            return this.options[option];
+        } else {
+            return this.getDefaultOption(option);
+        }
+    },
+
     updateExtent: function() {
         this.options.center = this.getCenter();
         this.options.zoom = this.getZoom();

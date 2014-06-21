@@ -109,7 +109,7 @@ L.Util.latLngsForGeoJSON = function (latlngs) {
 };
 L.Util.CopyJSON = function (geojson) {
     return JSON.parse(JSON.stringify(geojson));
-}
+};
 L.Util.detectFileType = function (f) {
     var filename = f.name ? escape(f.name.toLowerCase()) : '';
     function ext(_) {
@@ -125,6 +125,11 @@ L.Util.detectFileType = function (f) {
     }
     if (ext('.xml')) return 'osm';
 };
+
+L.Util.usableOption = function (options, option) {
+    return typeof options[option] !== 'undefined' && options[option] !== '' && options[option] !== null;
+};
+
 
 
 L.DomUtil.add = function (tagName, className, container, content) {

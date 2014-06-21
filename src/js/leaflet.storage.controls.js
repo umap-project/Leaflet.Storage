@@ -607,7 +607,7 @@ L.Storage.JumpToLocationControl = L.Control.extend({
         link.href = '#';
         link.title = input.placeholder = L._('Jump to location');
         link.innerHTML = '&nbsp;';
-        var fn = function (e) {
+        var fn = function () {
             var search_terms = input.value;
             if (!search_terms) {
                 return;
@@ -635,7 +635,7 @@ L.Storage.JumpToLocationControl = L.Control.extend({
                     L.DomUtil.removeClass(link, 'loading');
                     if (data.length > 0 && data[0].lon && data[0].lat) {
                         map.panTo([data[0].lat, data[0].lon]);
-                        map.setZoom(map.options.jumpToZoom);
+                        map.setZoom(map.getOption('zoomTo'));
                     }
                     else {
                         L.S.fire('ui:alert', {content: L._('Sorry, no location found for {location}', {location: search_terms})});

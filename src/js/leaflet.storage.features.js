@@ -181,26 +181,19 @@ L.Storage.FeatureMixin = {
         this._redraw();
     },
 
-    usableOption: function (options, option) {
-        return typeof options[option] !== 'undefined' && options[option] !== '' && options[option] !== null;
-    },
-
     getOption: function (option, fallback) {
         var value = fallback || null;
         if (typeof this.staticOptions[option] !== 'undefined') {
             value = this.staticOptions[option];
         }
-        else if (this.usableOption(this.properties._storage_options, option)) {
+        else if (L.Util.usableOption(this.properties._storage_options, option)) {
             value = this.properties._storage_options[option];
         }
-        else if (this.datalayer && this.usableOption(this.datalayer.options, option)) {
+        else if (this.datalayer && L.Util.usableOption(this.datalayer.options, option)) {
             value = this.datalayer.options[option];
         }
-        else if (this.usableOption(this.map.options, option)) {
-            value = this.map.options[option];
-        }
         else {
-            value = this.map.getDefaultOption(option);
+            value = this.map.getOption(option);
         }
         return value;
     },
