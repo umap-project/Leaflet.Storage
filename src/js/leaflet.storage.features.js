@@ -58,6 +58,13 @@ L.Storage.FeatureMixin = {
         this.openPopup(latlng || this.getCenter());
     },
 
+    openPopup: function () {
+        if (this.map.editEnabled) {
+            return;
+        }
+        this.parentClass.prototype.openPopup.apply(this, arguments);
+    },
+
     edit: function(e) {
         if(!this.map.editEnabled || this.isReadOnly()) return;
         var container = L.DomUtil.create('div'), form ;
@@ -441,13 +448,6 @@ L.Storage.Marker = L.Marker.extend({
 
     getCenter: function () {
         return this._latlng;
-    },
-
-    openPopup: function () {
-        if (this.map.editEnabled) {
-            return;
-        }
-        L.Marker.prototype.openPopup.call(this);
     },
 
     getClassName: function () {
