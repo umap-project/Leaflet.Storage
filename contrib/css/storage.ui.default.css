@@ -154,6 +154,12 @@ fieldset.toggle.on .more_style_options {
     background-color: #fff;
     opacity: 0.93;
 }
+#storage-ui-container.fullwidth {
+    width: 100%;
+    z-index: 10000;
+    padding-left: 0;
+    padding-right: 0;
+}
 .storage-edit-enabled #storage-ui-container {
     top: 46px;
 }

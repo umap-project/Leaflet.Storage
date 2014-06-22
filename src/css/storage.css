@@ -615,8 +615,6 @@ a.storage-control-text {
 /*          Table Editor             */
 /* ********************************* */
 #storage-ui-container.storage-table-editor {
-    width: 100%;
-    z-index: 10000;
     padding-left: 0;
     padding-right: 0;
 }
