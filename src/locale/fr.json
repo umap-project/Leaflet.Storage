@@ -125,7 +125,6 @@
     "yes": "oui",
     "Editing": "Edition en cours",
     "Must be a CSS valid name (eg.: DarkBlue or #123456)": "Doit être une chaîne CSS valide (ex. DarkBlud ou #123456)",
-    "Download raw data (GeoJSON)": "Données brutes (GeoJSON)",
     "Embed the map": "Embarquer la carte en iframe",
     "Short URL": "URL courte",
     "# one hash for main heading": "# un dièse pour titre 1",
@@ -226,5 +225,14 @@
     "Stop slideshow": "Arrêter",
     "Text color for the cluster label": "Couleur du texte du cluster",
     "Zoom to the next": "Suivant",
-    "Zoom to the previous": "Précédent"
+    "Zoom to the previous": "Précédent",
+    "Add a new property": "Ajouter une propriété",
+    "Are you sure you want to delete this property on all the features?": "Supprimer la propriété sur tous les éléments?",
+    "Close": "Fermer",
+    "Delete this property on all the features": "Supprimer cette propriété",
+    "Download raw data": "Télécharger les données",
+    "Edit properties in a table": "Éditer dans un tableau",
+    "Please enter the name of the property": "Merci d'entrer le nom de la propriété",
+    "Please enter the new name of this property": "Veuillez entrer le nouveau nom de la propriété",
+    "Rename this property on all the features": "Renommer la propriété"
 }
