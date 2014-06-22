@@ -657,8 +657,10 @@ a.storage-control-text {
 .storage-table-editor .tbody .trow input {
     margin: 0;
     border-right: none;
-    border-bottom: none;
     display: inline;
+}
+.storage-table-editor .tbody .trow + .trow input {
+    border-top: none;
 }
 .storage-table-editor .thead i {
     display: none;
