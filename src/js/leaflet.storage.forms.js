@@ -37,9 +37,11 @@ L.Storage.ElementHelper = L.Class.extend({
     },
 
     buildLabel: function () {
-        this.label = L.DomUtil.add('label', '', this.formBuilder.form, this.options.label);
-        if (this.options.helpEntries) {
-            this.map.help.button(this.label, this.options.helpEntries);
+        if (this.options.label) {
+            this.label = L.DomUtil.add('label', '', this.formBuilder.form, this.options.label);
+            if (this.options.helpEntries) {
+                this.map.help.button(this.label, this.options.helpEntries);
+            }
         }
     },
 
@@ -88,7 +90,10 @@ L.S.ElementHelper.Textarea = L.S.ElementHelper.extend({
 L.Storage.ElementHelper.Input = L.S.ElementHelper.extend({
 
     build: function () {
-        this.input = L.DomUtil.create('input', '', this.form);
+        if (this.options.wrapper) {
+            this.wrapper = L.DomUtil.create(this.options.wrapper, this.options.wrapperClass || '', this.form);
+        }
+        this.input = L.DomUtil.create('input', '', this.wrapper || this.form);
         this.input.type = this.type();
         this.input.name = this.name;
         this.input._helper = this;
@@ -536,7 +541,6 @@ L.S.ElementHelper.IconUrl = L.S.ElementHelper.Input.extend({
         this.pictogramsContainer = L.DomUtil.create('div', 'storage-pictogram-list', this.parentContainer);
         this.input.type = 'hidden';
         this.input.placeholder = L._('Url');
-        this.label.style.display = 'none';
         this.createButtonsBar();
     },
 
@@ -658,6 +662,9 @@ L.Storage.FormBuilder = L.Class.extend({
         if (this.options.id) {
             this.form.id = this.options.id;
         }
+        if (this.options.className) {
+            L.DomUtil.addClass(this.form, this.options.className);
+        }
     },
 
     build: function () {
@@ -671,7 +678,7 @@ L.Storage.FormBuilder = L.Class.extend({
     buildField: function (field) {
         var type, helper, options;
         if (field instanceof Array) {
-            options = field[1];
+            options = field[1] || {};
             helpText = field[2] || null;
             field = field[0];
         } else {

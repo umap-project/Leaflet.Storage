@@ -333,7 +333,7 @@ L.Storage.DataLayersControl = L.Control.extend({
         title.innerHTML = datalayer.options.name;
     },
 
-    newDataLayer: function (e) {
+    newDataLayer: function () {
         var datalayer = this._map._createDataLayer({});
         datalayer.edit();
     }
@@ -345,13 +345,16 @@ L.Storage.DataLayer.include({
     renderToolbox: function (container) {
         var toggle = L.DomUtil.create('i', 'layer-toggle', container),
             zoom_to = L.DomUtil.create('i', 'layer-zoom_to', container),
-            edit = L.DomUtil.create('i', 'layer-edit show-on-edit', container);
+            edit = L.DomUtil.create('i', 'layer-edit show-on-edit', container),
+            table = L.DomUtil.create('i', 'layer-table-edit show-on-edit', container);
         zoom_to.title = L._('Zoom to layer extent');
         toggle.title = L._('Show/hide layer');
         edit.title = L._('Edit');
+        table.title = L._('Edit properties in a table');
         L.DomEvent.on(toggle, 'click', this.toggle, this);
         L.DomEvent.on(zoom_to, 'click', this.zoomTo, this);
         L.DomEvent.on(edit, 'click', this.edit, this);
+        L.DomEvent.on(table, 'click', this.tableEdit, this);
         L.DomUtil.addClass(container, this.getHidableClass());
         L.DomUtil.classIf(container, 'off', !this.isVisible());
     },
@@ -366,6 +369,13 @@ L.Storage.DataLayer.include({
 
     getHidableClass: function () {
         return 'show_with_datalayer_' + this.getLocalId();
+    },
+
+    propagateRemote: function () {
+        var els = this.getHidableElements();
+        for (var i = 0; i < els.length; i++) {
+            L.DomUtil.classIf(els[i], 'remotelayer', this.isRemoteLayer());
+        }
     },
 
     propagateHide: function () {

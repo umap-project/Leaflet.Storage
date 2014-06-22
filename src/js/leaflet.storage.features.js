@@ -243,6 +243,16 @@ L.Storage.FeatureMixin = {
         return properties;
     },
 
+    deleteProperty: function (property) {
+        delete this.properties[property];
+        this.makeDirty();
+    },
+
+    renameProperty: function (from, to) {
+        this.properties[to] = this.properties[from];
+        this.deleteProperty(from);
+    },
+
     toGeoJSON: function () {
         return {
             type: 'Feature',

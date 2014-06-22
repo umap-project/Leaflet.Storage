@@ -131,7 +131,6 @@ L.Util.usableOption = function (options, option) {
 };
 
 
-
 L.DomUtil.add = function (tagName, className, container, content) {
     var el = L.DomUtil.create(tagName, className, container);
     if (content) {
@@ -245,9 +244,13 @@ L.Storage.Help = L.Class.extend({
         this.parentContainer = L.DomUtil.create('div', 'storage-help-container', document.body);
         this.overlay = L.DomUtil.create('div', 'storage-help-overlay', this.parentContainer);
         this.box = L.DomUtil.create('div', 'storage-help-box', this.parentContainer);
-        this.closeButton = L.DomUtil.add('a', 'storage-close-link', this.box, '&times;');
+        var closeLink = L.DomUtil.create('a', 'storage-close-link', this.box);
+        closeLink.href = '#';
+        L.DomUtil.add('i', 'storage-close-icon', closeLink);
+        var label = L.DomUtil.create('span', '', closeLink);
+        label.title = label.innerHTML = L._('Close');
         this.content = L.DomUtil.create('div', 'storage-help-content', this.box);
-        L.DomEvent.on(this.closeButton, 'click', this.hide, this);
+        L.DomEvent.on(closeLink, 'click', this.hide, this);
         L.DomEvent.addListener(this.parentContainer, 'keydown', this.onKeyDown, this);
     },
 

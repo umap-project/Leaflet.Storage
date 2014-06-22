@@ -11,6 +11,7 @@
 - basic kml/gpx download support
 - MultiLineString are merged at import
 - catch setMaxBounds errors (when using useless bounds)
+- first version of a table editor
 
 ## 0.6.x
 - add TMS option to custom tilelayer

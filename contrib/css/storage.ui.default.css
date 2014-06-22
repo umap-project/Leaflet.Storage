@@ -146,7 +146,7 @@ fieldset.toggle.on .more_style_options {
     top: 0;
     bottom: 0;
     right: 0;
-    padding: 30px 20px;
+    padding: 0 20px 40px 20px;
     border-left: 1px solid #ddd;
     display: none;
     overflow-x: auto;
@@ -178,6 +178,23 @@ fieldset.toggle.on .more_style_options {
 }
 #storage-ui-container .storage-popup-content {
     max-height: inherit;
+}
+#storage-ui-container .body {
+    clear: both;
+}
+#storage-ui-container .toolbox li {
+    color: #464646;
+    line-height: 46px;
+    cursor: pointer;
+    float: right;
+    display: inline;
+    padding: 0 5px;
+}
+#storage-ui-container .toolbox li:hover {
+    text-decoration: underline;
+}
+#storage-ui-container .toolbox li + li {
+    margin-left: 10px;
 }
 
 /* *********** */
@@ -222,6 +239,7 @@ fieldset.toggle.on .more_style_options {
 .storage-alert .storage-action:hover {
     color: #000;
 }
+
 /* *********** */
 /*   Tooltip   */
 /* *********** */
@@ -249,18 +267,22 @@ fieldset.toggle.on .more_style_options {
 /* *********** */
 /* Close link  */
 /* *********** */
-.storage-close-link {
-    position: absolute;
-    top: 13px;
-    right: 20px;
+.storage-close-icon {
+    background-repeat: no-repeat;
+    background-image: url("../../src/img/16.png");
+    background-position: -52px -9px;
+    display: inline;
+    padding: 0 10px;
+}
+.storage-alert .storage-close-link {
     color: #fff;
-    line-height: 20px;
-    font-size: 20px;
-    cursor: pointer;
+    float: right;
+    padding-right: 10px;
 }
-#storage-ui-container .storage-close-link {
-    color: #000;
+.storage-alert .storage-close-icon {
+    background-position: -128px -90px;
 }
+
 
 /* *********** */
 /*    Mobile   */

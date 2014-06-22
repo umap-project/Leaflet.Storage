@@ -226,17 +226,18 @@ a.storage-control-text {
     font-size: 0.8em;
 }
 .storage-help-box .storage-close-link {
-    color: #000;
+    float: right;
+    color: #464646;
 }
 .storage-help-button {
     display: inline-block;
     width: 16px;
     height: 16px;
     margin-left: 5px;
-    background-position: center center;
+    background-position: -12px -12px;
     background-repeat: no-repeat;
-    background-image: url("../img/help-16.png");
-    vertical-align: text-top;
+    background-image: url("../img/16.png");
+    vertical-align: middle;
 }
 
 /* ********************************* */
@@ -453,40 +454,45 @@ a.storage-control-text {
 .storage-browse-features i,
 .storage-caption i,
 .leaflet-control-browse .storage-browse-datalayers i {
-    width: 24px;
+    background-repeat: no-repeat;
+    background-image: url("../../src/img/16.png");
+    display: inline;
+    padding: 0 10px;
+    cursor: pointer;
     height: 24px;
     line-height: 24px;
-    background-position: center center;
-    background-repeat: no-repeat;
-    display: inline-block;
     vertical-align: middle;
-    cursor: pointer;
-    font-size: 12px;
 }
 .leaflet-control-browse .storage-browse-datalayers .off i {
     cursor: inherit;
 }
 .layer-toggle {
-    background-image: url("../img/eye-on.png");
+    background-position: -90px -51px;
 }
 .off .layer-toggle {
-    background-image: url("../img/eye-off.png");
+    background-position: -130px -51px;
 }
-.storage-browse-features .feature-zoom_to {
-    background-image: url("../img/zoom_to-18.png");
+.feature-zoom_to {
+    background-position: -10px -88px;
 }
 .layer-zoom_to {
-    background-image: url("../img/zoom_to.png");
+    background-position: -10px -91px;
 }
-.storage-browse-features .feature-edit,
+.layer-table-edit {
+    background-position: -90px -9px;
+}
+.feature-edit,
 .layer-edit {
-    background-image: url("../img/edit-16.png");
+    background-position: -90px -89px;
+}
+.off .layer-table-edit {
+    background-position: -130px -129px;
 }
 .off .layer-edit {
-    background-image: url("../img/edit-off-16.png");
+    background-position: -90px -129px;
 }
 .off .layer-zoom_to {
-    background-image: url("../img/zoom_to-off.png");
+    background-position: -50px -91px;
 }
 .storage-browse-features .feature-title,
 .leaflet-control-browse .storage-browse-actions .layer-title {
@@ -551,6 +557,10 @@ a.storage-control-text {
     margin-bottom: 0;
     color: #666;
     overflow: hidden;
+    padding-left: 5px;
+}
+.storage-browse-features h5 span {
+    margin-left: 10px;
 }
 .storage-browse-features li {
     padding: 2px 0;
@@ -567,6 +577,10 @@ a.storage-control-text {
     -moz-box-sizing:border-box;
     -webkit-box-sizing:border-box;
     box-sizing: border-box;
+    background-position: center;
+    display: inline-block;
+    padding: 0;
+    width: 24px;
 }
 .storage-browse-features .polyline .feature-color {
     box-shadow: 0 0 4px 0 black inset;
@@ -596,6 +610,95 @@ a.storage-control-text {
     margin-bottom: 14px;
 }
 
+
+/* ********************************* */
+/*          Table Editor             */
+/* ********************************* */
+#storage-ui-container.storage-table-editor {
+    width: 100%;
+    z-index: 10000;
+    padding-left: 0;
+    padding-right: 0;
+}
+#storage-ui-container.storage-table-editor .toolbox li {
+    float: left;
+}
+
+.storage-table-editor .storage-close-link {
+    right: auto;
+    left: 20px;
+}
+.storage-table-editor .table {
+    display: table;
+    width: 100%;
+    white-space: nowrap;
+    table-layout: fixed;
+}
+.storage-table-editor .tbody {
+    display: table-row-group;
+}
+.storage-table-editor .thead,
+.storage-table-editor .trow {
+    display: table-row;
+}
+.storage-table-editor .tcell {
+    display: table-cell;
+    width: 200px;
+}
+.storage-table-editor .thead {
+    text-align: center;
+    height: 48px;
+    line-height: 48px;
+    background-color: #ddd;
+}
+.storage-table-editor .thead .tcell {
+    border-left: 1px solid #ccc;
+}
+.storage-table-editor .tbody .trow input {
+    margin: 0;
+    border-right: none;
+    border-bottom: none;
+    display: inline;
+}
+.storage-table-editor .thead i {
+    display: none;
+    width: 50%;
+    cursor: pointer;
+    padding: 10px 0;
+    height: 24px;
+    line-height: 24px;
+}
+.storage-table-editor .thead i:before {
+    width: 40px;
+}
+.storage-table-editor .thead i + i {
+    border-left: 1px solid #fff;
+}
+.storage-table-editor .thead .tcell:hover i {
+    display: inline-block;
+}
+.storage-table-editor .thead .tcell i:hover {
+    background-color: #d0d0d0;
+}
+.storage-table-editor .thead .tcell:hover span {
+    display: none;
+}
+.remotelayer .layer-table-edit {
+    display: none !important;
+}
+
+/* ********************************* */
+/*              Icons                */
+/* ********************************* */
+.storage-icon-16 {
+    background-repeat: no-repeat;
+    background-image: url("../../src/img/16.png");
+    display: inline;
+    padding: 0 10px;
+}
+.storage-add {
+    background-position: -12px -49px;
+}
 
 /* ********************************* */
 /*      Tilelayer switcher           */
@@ -672,22 +775,31 @@ a.storage-control-text {
     max-height: 24px;
 }
 .storage-popup-footer li {
-    background-position: center center;
-    background-repeat: no-repeat;
     line-height: 24px;
     height: 24px;
     display: table-cell;
     width: 33.3%;
     cursor: pointer;
+    text-align: center;
 }
-.storage-popup-footer li.zoom {
-    background-image: url("../img/zoom-grey-16.png");
+.storage-popup-footer li:before {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-left: 5px;
+    background-repeat: no-repeat;
+    background-image: url("../img/16.png");
+    vertical-align: middle;
+    content: " ";
 }
-.storage-popup-footer li.previous {
-    background-image: url("../img/arrow-left-grey-16.png");
+.storage-popup-footer li.zoom:before {
+    background-position: -12px -172px;
 }
-.storage-popup-footer li.next {
-    background-image: url("../img/arrow-right-grey-16.png");
+.storage-popup-footer li.previous:before {
+    background-position: -52px -132px;
+}
+.storage-popup-footer li.next:before {
+    background-position: -12px -132px;
 }
 
 
@@ -779,7 +891,7 @@ a.storage-control-text {
 /* ********************************* */
 
 .storage-delete:before, .storage-empty:before, .storage-to-polygon:before,
-.storage-clone:before,
+.storage-clone:before, .storage-edit:before,
 .storage-to-polyline:before {
     background-repeat: no-repeat;
     text-indent: 38px;
@@ -801,6 +913,9 @@ a.storage-control-text {
 }
 .storage-delete:before {
     background-position: -40px -6px;
+}
+.storage-edit:before {
+    background-position: -6px -6px;
 }
 .storage-empty:before {
     background-position: -160px -126px;

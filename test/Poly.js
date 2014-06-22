@@ -192,4 +192,31 @@ describe('L.Storage.Poly', function () {
 
     });
 
+    describe('#properties()', function () {
+
+        it('should rename property', function () {
+            var poly = this.datalayer._lineToLayer({}, [[0, 0], [0, 1], [0, 2]]);
+            poly.properties.prop1 = 'xxx';
+            poly.renameProperty('prop1', 'prop2');
+            assert.equal(poly.properties.prop2, 'xxx');
+            assert.ok(typeof poly.properties.prop1 === 'undefined');
+        });
+
+        it('should not create property when renaming', function () {
+            var poly = this.datalayer._lineToLayer({}, [[0, 0], [0, 1], [0, 2]]);
+            delete poly.properties.prop2;  // Make sure it doesn't exist
+            poly.renameProperty('prop1', 'prop2');
+            assert.ok(typeof poly.properties.prop2 === 'undefined');
+        });
+
+        it('should delete property', function () {
+            var poly = this.datalayer._lineToLayer({}, [[0, 0], [0, 1], [0, 2]]);
+            poly.properties.prop = 'xxx';
+            assert.equal(poly.properties.prop, 'xxx');
+            poly.deleteProperty('prop');
+            assert.ok(typeof poly.properties.prop === 'undefined');
+        });
+
+    });
+
 });

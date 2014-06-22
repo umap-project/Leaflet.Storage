@@ -193,7 +193,7 @@ L.Storage.DataLayer = L.Class.extend({
         }
 
         if (this.layer && this.options.type === this.layer._type && !force) return;
-        var visible = this.isVisible(), self = this;
+        var visible = this.isVisible();
         if (visible) {
             this.map.removeLayer(this.layer);
         }
@@ -208,6 +208,7 @@ L.Storage.DataLayer = L.Class.extend({
         if (visible) {
             this.map.addLayer(this.layer);
         }
+        this.propagateRemote();
     },
 
     eachLayer: function (method, context) {
@@ -219,7 +220,7 @@ L.Storage.DataLayer = L.Class.extend({
 
     eachFeature: function (method, context) {
         if (this.layer) {
-            this.layer.eachFeature(method, context | this);
+            this.layer.eachFeature(method, context || this);
         }
         return this;
     },
@@ -862,6 +863,12 @@ L.Storage.DataLayer = L.Class.extend({
 
     getName: function () {
         return this.options.name || L._('Untitled layer');
+    },
+
+    tableEdit: function () {
+        if (this.isRemoteLayer() || !this.isVisible()) return;
+        var editor = new L.S.TableEditor(this);
+        editor.edit();
     }
 
 });
