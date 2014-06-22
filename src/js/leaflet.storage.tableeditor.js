@@ -68,8 +68,10 @@ L.S.TableEditor = L.Class.extend({
             }
         }, this);
         if (this.properties.length === 0) {
-            this.properties = ['name', 'description'];
+            this.properties = ['name'];
         }
+        // description is a forced textarea, don't edit it in a text input, or you lose cariage returns
+        this.properties.splice(this.properties.indexOf('description'), 1);
         this.properties.sort();
         this.field_properties = [];
         for (var i = 0; i < this.properties.length; i++) {
