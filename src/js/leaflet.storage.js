@@ -1129,7 +1129,7 @@ L.Storage.Map.include({
         L.bind(setName, this)();
         this.on('synced', L.bind(setName, this));
         this.onceDatalayersLoaded(function () {
-            container.appendChild(this.slideshow.renderToolbox());
+            this.slideshow.renderToolbox(container);
         });
     },
 

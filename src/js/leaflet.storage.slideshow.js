@@ -10,7 +10,7 @@ L.S.Slideshow = L.Class.extend({
     },
 
     initialize: function (map, options) {
-        L.setOptions(this, options);
+        this.setOptions(options);
         this.map = map;
         this._id = null;
         var current = null,  // current feature
@@ -57,6 +57,31 @@ L.S.Slideshow = L.Class.extend({
 
     setOptions: function (options) {
         L.setOptions(this, options);
+        this.timeSpinner();
+    },
+
+    timeSpinner: function () {
+        var time = parseInt(this.options.delay, 10);
+        if (!time) return;
+        var css = 'rotation ' + time / 1000 + 's infinite linear',
+            spinners = document.querySelectorAll('.storage-slideshow-toolbox .play .spinner');
+        for (var i = 0; i < spinners.length; i++) {
+            spinners[i].style.animation = css;
+            spinners[i].style['-webkit-animation'] = css;
+            spinners[i].style['-moz-animation'] = css;
+            spinners[i].style['-o-animation'] = css;
+        }
+    },
+
+    resetSpinners: function () {
+        // Make that animnation is coordinated with user actions
+        var spinners = document.querySelectorAll('.storage-slideshow-toolbox .play .spinner'),
+            el, newOne;
+        for (var i = 0; i < spinners.length; i++) {
+            el = spinners[i];
+            newOne = el.cloneNode(true);
+            el.parentNode.replaceChild(newOne, el);
+        }
     },
 
     play: function () {
@@ -64,6 +89,7 @@ L.S.Slideshow = L.Class.extend({
         if (this.map.editEnabled) return;
         L.DomUtil.addClass(document.body, L.S.Slideshow.CLASSNAME);
         this._id = window.setInterval(L.bind(this.loop, this), this.options.delay);
+        this.resetSpinners();
         this.loop();
     },
 
@@ -105,12 +131,13 @@ L.S.Slideshow = L.Class.extend({
         this.current.view();
     },
 
-    renderToolbox: function () {
+    renderToolbox: function (container) {
         var box = L.DomUtil.create('ul', 'storage-slideshow-toolbox'),
             play = L.DomUtil.create('li', 'play', box),
             stop = L.DomUtil.create('li', 'stop', box),
             prev = L.DomUtil.create('li', 'prev', box),
             next = L.DomUtil.create('li', 'next', box);
+        L.DomUtil.create('div', 'spinner', play);
         play.title = L._('Start slideshow');
         stop.title = L._('Stop slideshow');
         next.title = L._('Zoom to the next');
@@ -127,6 +154,8 @@ L.S.Slideshow = L.Class.extend({
                   .on(prev, 'click', this.backward, this);
         L.DomEvent.on(next, 'click', L.DomEvent.stop)
                   .on(next, 'click', this.forward, this);
+        container.appendChild(box);
+        this.timeSpinner();
         return box;
     }
 

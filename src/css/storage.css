@@ -412,6 +412,8 @@ a.storage-control-text {
 .storage-slideshow-active .storage-slideshow-toolbox .play,
 .storage-slideshow-toolbox .play {
     width: 100px;
+    text-align: left;
+    padding-left: 20px;
 }
 .storage-slideshow-toolbox .play:after {
     content: ' ▶';
@@ -428,7 +430,43 @@ a.storage-control-text {
 .storage-slideshow-toolbox .prev:before {
     content: '⬅';
 }
-
+.storage-slideshow-toolbox .play div {
+    height: 20px;
+    width: 20px;
+    margin: 0px auto;
+    position: relative;
+    top: 5px;
+    -webkit-animation: rotation 5s infinite linear;
+    -moz-animation: rotation 5s infinite linear;
+    -o-animation: rotation 5s infinite linear;
+    animation: rotation 5s infinite linear;
+    border-left: 3px solid rgba(255,255,239,.15);
+    border-right: 3px solid rgba(255,255,255,.15);
+    border-bottom: 3px solid rgba(255,255,255,.15);
+    border-top: 3px solid rgba(255,255,255,.8);
+    border-radius:100%;
+    display: inline-block;
+    visibility: hidden;
+}
+@-webkit-keyframes rotation {
+    from {-webkit-transform: rotate(0deg);}
+    to {-webkit-transform: rotate(359deg);}
+}
+@-moz-keyframes rotation {
+    from {-moz-transform: rotate(0deg);}
+    to {-moz-transform: rotate(359deg);}
+}
+@-o-keyframes rotation {
+    from {-o-transform: rotate(0deg);}
+    to {-o-transform: rotate(359deg);}
+}
+@keyframes rotation {
+    from {transform: rotate(0deg);}
+    to {transform: rotate(359deg);}
+}
+.storage-slideshow-active .storage-slideshow-toolbox .play .spinner {
+    visibility: visible;
+}
 
 /* ********************************* */
 /*   Datalayers Control              */
