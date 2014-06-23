@@ -42,7 +42,8 @@ L.Map.mergeOptions({
     ],
     moreControl: true,
     captionBar: false,
-    slideshow: {}
+    slideshow: {},
+    clickable: true
 });
 
 L.Storage.Map.include({

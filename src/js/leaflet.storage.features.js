@@ -536,7 +536,8 @@ L.Storage.PathMixin = {
         'fill',
         'fillColor',
         'fillOpacity',
-        'dashArray'
+        'dashArray',
+        'clickable'
     ],
 
     _setStyleOptions: function () {
@@ -562,6 +563,11 @@ L.Storage.PathMixin = {
     _updateStyle: function () {
         this._setStyleOptions();
         L.Polyline.prototype._updateStyle.call(this);
+        if (!this.options.clickable) {
+            this._path.setAttribute('pointer-events', 'stroke');
+        } else {
+            this._path.removeAttribute('pointer-events');
+        }
     },
 
     _redraw: function () {
@@ -813,6 +819,7 @@ L.Storage.Polygon = L.Polygon.extend({
             'properties._storage_options.fillOpacity'
         );
         options.push(['properties._storage_options.outlink', {label: L._('outlink'), helpText: L._('Define output link to open a new window on polygon click.'), placeholder: 'http://...'}]);
+        options.push(['properties._storage_options.clickable', {handler: 'NullableBoolean', label: L._('Mouse interactions'), helpText: L._('If false, the polygon will act as a part of the underlying map.')}]);
         return options;
     },
 
