@@ -72,7 +72,7 @@ L.Util.toHTML = function (r) {
     // links
     r = r.replace(/(\[\[http)/g, '[[h_t_t_p');  // Escape for avoiding clash between [[http://xxx]] and http://xxx
     r = r.replace(/({{http)/g, '{{h_t_t_p');
-    r = r.replace(/(https?[^ \)\n]*)/g, '<a target="_blank" href="$1">$1</a>');
+    r = r.replace(/(https?:[^ \)\n]*)/g, '<a target="_blank" href="$1">$1</a>');
     r = r.replace(/\[\[(h_t_t_ps?:[^\]|]*?)\]\]/g, '<a target="_blank" href="$1">$1</a>');
     r = r.replace(/\[\[(h_t_t_ps?:[^|]*?)\|(.*?)\]\]/g, '<a target="_blank" href="$1">$2</a>');
     r = r.replace(/\[\[([^\]|]*?)\]\]/g, '<a href="$1">$1</a>');
@@ -276,17 +276,17 @@ L.Storage.Help = L.Class.extend({
     },
 
     resolve: function (name) {
-        return typeof this[name] === "function" ? this[name]() : this[name];
+        return typeof this[name] === 'function' ? this[name]() : this[name];
     },
 
     button: function (container, entries) {
         var helpButton = L.DomUtil.create('a', 'storage-help-button', container);
-        helpButton.href = "#";
+        helpButton.href = '#';
         if (entries) {
             L.DomEvent
                 .on(helpButton, 'click', L.DomEvent.stop)
                 .on(helpButton, 'click', function (e) {
-                    var args = typeof entries === "string"? [entries] : entries;
+                    var args = typeof entries === 'string'? [entries] : entries;
                     this.show.apply(this, args);
                 }, this);
         }
@@ -357,8 +357,8 @@ L.Storage.Help = L.Class.extend({
         L.DomUtil.add('li', '', elements, L._('Link with text: [[http://example.com|text of the link]]'));
         L.DomUtil.add('li', '', elements, L._('Image: {{http://image.url.com}}'));
         L.DomUtil.add('li', '', elements, L._('Image with custom width (in px): {{http://image.url.com|width}}'));
-        L.DomUtil.add('li', '', elements, L._('Iframe: {{{http://image.url.com}}}'));
-        L.DomUtil.add('li', '', elements, L._('Iframe with custom height (in px): {{{http://image.url.com|height}}}'));
+        L.DomUtil.add('li', '', elements, L._('Iframe: {{{http://iframe.url.com}}}'));
+        L.DomUtil.add('li', '', elements, L._('Iframe with custom height (in px): {{{http://iframe.url.com|height}}}'));
         L.DomUtil.add('li', '', elements, L._('--- for an horizontal rule'));
         return container;
     },

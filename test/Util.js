@@ -14,6 +14,10 @@ describe('L.Util', function () {
             assert.equal(L.Util.toHTML('A simple http://osm.org link'), 'A simple <a target="_blank" href="http://osm.org">http://osm.org</a> link');
         });
 
+        it('should handle links with url parameter', function () {
+            assert.equal(L.Util.toHTML('A simple https://osm.org/?url=https%3A//anotherurl.com link'), 'A simple <a target="_blank" href="https://osm.org/?url=https%3A//anotherurl.com">https://osm.org/?url=https%3A//anotherurl.com</a> link');
+        });
+
         it('should handle simple link inside parenthesis', function () {
             assert.equal(L.Util.toHTML('A simple link (http://osm.org)'), 'A simple link (<a target="_blank" href="http://osm.org">http://osm.org</a>)');
         });
@@ -44,6 +48,10 @@ describe('L.Util', function () {
 
         it('should handle iframe with height', function () {
             assert.equal(L.Util.toHTML('A simple iframe: {{{http://osm.org/pouet.html|200}}}'), 'A simple iframe: <iframe frameBorder="0" src="http://osm.org/pouet.html" width="100%" height="200px"></iframe>');
+        });
+
+        it('should handle iframe with url parameter', function () {
+            assert.equal(L.Util.toHTML('A simple iframe: {{{https://osm.org/?url=https%3A//anotherurl.com}}}'), 'A simple iframe: <iframe frameBorder="0" src="https://osm.org/?url=https%3A//anotherurl.com" width="100%" height="300px"></iframe>');
         });
 
     });
