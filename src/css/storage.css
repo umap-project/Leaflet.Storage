@@ -1254,6 +1254,10 @@ a.storage-control-text {
 .leaflet-label {
     border-width: 2px;
 }
+.storage-popup-content img,
+.storage-popup-content iframe {
+    max-width: 300px !important;
+}
 .storage-popup-large iframe,
 .storage-popup-large img {
     /* See https://github.com/Leaflet/Leaflet/commit/61d746818b99d362108545c151a27f09d60960ee#commitcomment-6061847 */
