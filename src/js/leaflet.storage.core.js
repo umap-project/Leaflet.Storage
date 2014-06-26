@@ -95,7 +95,7 @@ L.Util.toHTML = function (r) {
     return r;
 };
 L.Util.isObject = function (what) {
-    return typeof what === "object" && what !== null;
+    return typeof what === 'object' && what !== null;
 };
 L.Util.latLngsForGeoJSON = function (latlngs) {
     coords = [];
@@ -129,6 +129,18 @@ L.Util.detectFileType = function (f) {
 L.Util.usableOption = function (options, option) {
     return typeof options[option] !== 'undefined' && options[option] !== '' && options[option] !== null;
 };
+
+L.Util.greedyTemplate = function (str, data, fallback) {
+    // Don't throw error if some key is missing
+    return str.replace(/\{ *([\w_]+) *\}/g, function (str, key) {
+        var value = data[key];
+        if (value === undefined) {
+            value = fallback || '';
+        }
+        return value;
+    });
+};
+
 
 
 L.DomUtil.add = function (tagName, className, container, content) {
@@ -360,6 +372,13 @@ L.Storage.Help = L.Class.extend({
         L.DomUtil.add('li', '', elements, L._('Iframe: {{{http://iframe.url.com}}}'));
         L.DomUtil.add('li', '', elements, L._('Iframe with custom height (in px): {{{http://iframe.url.com|height}}}'));
         L.DomUtil.add('li', '', elements, L._('--- for an horizontal rule'));
+        return container;
+    },
+
+    dynamicProperties: function () {
+        var container = L.DomUtil.create('div');
+        L.DomUtil.add('h3', '', container, L._('Dynamic properties'));
+        L.DomUtil.add('p', '', container, L._('Use placeholders with feature properties between brackets, eg. &#123;name&#125;, they will be dynamically replaced by the corresponding values.'));
         return container;
     },
 

@@ -14,6 +14,8 @@
 - first version of a table editor
 - it's now possible to cancel every mouse action of a polygon
   (useful when using them as background)
+- simple custom popup templates
+
 
 ## 0.6.x
 - add TMS option to custom tilelayer

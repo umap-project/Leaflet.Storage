@@ -194,3 +194,19 @@ L.S.Popup.SimplePanel = L.S.Popup.extend({
     _updatePosition: function () {},
     _adjustPan: function () {}
 });
+
+L.S.Popup.Custom = L.S.Popup.extend({
+
+    renderTitle: function () {},
+
+    renderBody: function () {
+        var template = this.feature.getOption('popupCustom'),
+            container = L.DomUtil.create('div', 'storage-content-custom'),
+            content;
+        content = L.Util.greedyTemplate(template, this.feature.properties);
+        content = L.Util.toHTML(content);
+        container.innerHTML = content;
+        return container;
+    }
+
+});

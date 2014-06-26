@@ -16,6 +16,7 @@ L.Map.mergeOptions({
     default_weight: 3,
     default_iconClass: 'Default',
     default_zoomTo: 16,
+    default_popupCustom: '# {name}',
     attributionControl: true,
     allowEdit: true,
     homeControl: true,
@@ -866,6 +867,7 @@ L.Storage.Map.include({
             'fillOpacity',
             'dashArray',
             'popupTemplate',
+            'popupCustom',
             'zoomTo',
             'captionBar',
             'slideshow',
@@ -997,6 +999,7 @@ L.Storage.Map.include({
             'options.fillOpacity',
             'options.dashArray',
             'options.popupTemplate',
+            'options.popupCustom',
             'options.zoomTo',
             'options.showLabel',
             ['options.sortKey', {handler: 'Input', helpText: L._('Property to use for sorting features'), placeholder: L._('Default: name')}]
