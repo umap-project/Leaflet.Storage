@@ -168,8 +168,6 @@
     "Only visible features will be downloaded.": "Seuls les éléments visibles seront téléchargés.",
     "Open this map extent in a map editor to provide more accurate data to OpenStreetMap": "Ouvrir cette carte dans OpenStreetMap pour améliorer les données",
     "Default properties": "Propriétés par défaut",
-    "Iframe with custom height (in px): {{{http://image.url.com|height}}}": "Iframe avec hauteur (en pixels): {{{http://image.url.com|hauteur}}}",
-    "Iframe: {{{http://image.url.com}}}": "Iframe: {{{http://image.url.com}}}",
     "User interface options": "Options d'interface",
     "Image with custom width (in px): {{http://image.url.com|width}}": "Image avec largeur (en pixels): {{http://image.url.com|largeur}}",
     "Current view instead of default map view?": "Vue courante plutôt que la vue par défaut?",
@@ -234,5 +232,10 @@
     "Edit properties in a table": "Éditer dans un tableau",
     "Please enter the name of the property": "Merci d'entrer le nom de la propriété",
     "Please enter the new name of this property": "Veuillez entrer le nouveau nom de la propriété",
-    "Rename this property on all the features": "Renommer la propriété"
+    "Rename this property on all the features": "Renommer la propriété",
+    "If false, the polygon will act as a part of the underlying map.": "Choisir «non» pour que le polygone se comporte comme faisant partie du fond de carte.",
+    "Iframe with custom height (in px): {{{http://iframe.url.com|height}}}": "Iframe avec hauteur (en pixels): {{{http://iframe.url.com|hauteur}}}",
+    "Iframe: {{{http://iframe.url.com}}}": "Iframe: {{{http://iframe.url.com}}}",
+    "Mouse interactions": "Clickable",
+    "See all": "Tout voir"
 }

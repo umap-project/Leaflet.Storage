@@ -168,8 +168,6 @@
     "Only visible features will be downloaded.": "Sólo se descargarán las características visibles.",
     "Open this map extent in a map editor to provide more accurate data to OpenStreetMap": "Abre la extensión de este mapa en un editor de mapas para proveer de datos más precisos a OpenStreetMap",
     "Default properties": "Propiedades predeterminadas",
-    "Iframe with custom height (in px): {{{http://image.url.com|height}}}": "Marco de imagen con altura personalizada (en píxeles): {{{http://imagen.url.com|altura}}}",
-    "Iframe: {{{http://image.url.com}}}": "Marco de imagen: {{{http://imagen.url.com}}}",
     "User interface options": "Opciones de la interface de usuario",
     "Image with custom width (in px): {{http://image.url.com|width}}": "Marco de imagen con anchura personalizada (en píxeles): {{http://imagen.url.com|anchura}}",
     "Current view instead of default map view?": "¿Vista actual en lugar de la vista predeterminada?",
@@ -183,8 +181,8 @@
     "Clustering radius": "Radio de Agrupación",
     "GeoRSS (only link)": "GeoRSS (Solo enlace)",
     "GeoRSS (title + image)": "GeoRSS (Titulo + Imagen)",
-    "Heatmap": "Heatmap",
-    "Heatmap radius": "Heatmap radius",
+    "Heatmap": "Mapa de calor",
+    "Heatmap radius": "Radio del mapa de calor",
     "Name and description": "Nombre y Descripcioón",
     "Override clustering radius (default 80)": "Override clustering radius (default 80)",
     "Override heatmap radius (default 25)": "Override heatmap radius (default 25)",
@@ -234,5 +232,10 @@
     "Edit properties in a table": "Edit properties in a table",
     "Please enter the name of the property": "Please enter the name of the property",
     "Please enter the new name of this property": "Please enter the new name of this property",
-    "Rename this property on all the features": "Rename this property on all the features"
+    "Rename this property on all the features": "Rename this property on all the features",
+    "If false, the polygon will act as a part of the underlying map.": "If false, the polygon will act as a part of the underlying map.",
+    "Iframe with custom height (in px): {{{http://iframe.url.com|height}}}": "Iframe with custom height (in px): {{{http://iframe.url.com|height}}}",
+    "Iframe: {{{http://iframe.url.com}}}": "Iframe: {{{http://iframe.url.com}}}",
+    "Mouse interactions": "Mouse interactions",
+    "See all": "See all"
 }

@@ -171,13 +171,24 @@ L.S.Popup.GeoRSSLink = L.S.Popup.extend({
 
 L.S.Popup.SimplePanel = L.S.Popup.extend({
 
-    update: function () {
-        L.S.fire('ui:start', {data: {html: this._content}});
+    allButton: function () {
+        var button = L.DomUtil.create('li', '');
+        L.DomUtil.create('i', 'storage-icon-16 storage-list', button);
+        var label = L.DomUtil.create('span', '', button);
+        label.innerHTML = label.title = L._('See all');
+        L.DomEvent.on(button, 'click', this.feature.map.openBrowser, this.feature.map);
+        return button;
     },
+
+    update: function () {
+        L.S.fire('ui:start', {data: {html: this._content}, actions: [this.allButton()]});
+    },
+
     onRemove: function (map) {
         L.S.fire('ui:end');
         L.S.Popup.prototype.onRemove.call(this, map);
     },
+
     _initLayout: function () {this._container = L.DomUtil.create('span');},
     _updateLayout: function () {},
     _updatePosition: function () {},

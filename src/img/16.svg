@@ -28,8 +28,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.8"
-     inkscape:cx="100.68639"
-     inkscape:cy="90.45728"
+     inkscape:cx="123.25947"
+     inkscape:cy="72.178608"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -291,5 +291,14 @@
        id="path3684-2"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccccccccccccc" />
+    <path
+       id="table-5-8-8-6"
+       style="fill:#464646;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       d="m 54,1026.3622 0,1 1,0 0,-1 z m 2,0 0,1 10,0 0,-1 z m -2,2 0,1 1,0 0,-1 z m 2,0 0,1 10,0 0,-1 z m -2,2 0,1 1,0 0,-1 z m 2,0 0,1 10,0 0,-1 z m -2,2 0,1 1,0 0,-1 z m 2,0 0,1 10,0 0,-1 z m -2,2 0,1 1,0 0,-1 z m 2,0 0,1 10,0 0,-1 z m -2,2 0,1 1,0 0,-1 z m 2,0 0,1 10,0 0,-1 z" />
+    <path
+       inkscape:connector-curvature="0"
+       id="table-5-8-8-6-1"
+       style="fill:#f2f2f2;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       d="m 94,1026.3622 0,1 1,0 0,-1 z m 2,0 0,1 10,0 0,-1 z m -2,2 0,1 1,0 0,-1 z m 2,0 0,1 10,0 0,-1 z m -2,2 0,1 1,0 0,-1 z m 2,0 0,1 10,0 0,-1 z m -2,2 0,1 1,0 0,-1 z m 2,0 0,1 10,0 0,-1 z m -2,2 0,1 1,0 0,-1 z m 2,0 0,1 10,0 0,-1 z m -2,2 0,1 1,0 0,-1 z m 2,0 0,1 10,0 0,-1 z" />
   </g>
 </svg>

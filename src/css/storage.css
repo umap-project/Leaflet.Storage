@@ -560,9 +560,7 @@ a.storage-control-text {
 }
 .leaflet-control-browse a.add-datalayer,
 .leaflet-control-browse a.storage-browse-link {
-    background-image: url("../img/browse-data.png");
-    background-position: 7px center;
-    background-repeat: no-repeat;
+    background-image: none;
     background-color: rgb(68, 68, 68);
     color: white;
     display: block;
@@ -575,8 +573,19 @@ a.storage-control-text {
     width: 100%;
     border-radius: 2px;
 }
-.leaflet-control-browse a.add-datalayer {
-    background-image: url("../img/add-layer-grey-18.png");
+.leaflet-control-browse a.add-datalayer:before,
+.leaflet-control-browse a.storage-browse-link:before {
+    background-image: url("../img/16.png");
+    background-repeat: no-repeat;
+    background-position: -92px -168px;
+    width: 24px;
+    height: 24px;
+    content: " ";
+    display: block;
+    float: left;
+}
+.leaflet-control-browse a.add-datalayer:before {
+    background-position: -52px -49px;
 }
 .leaflet-control-browse a.add-datalayer:hover,
 .leaflet-control-browse a.storage-browse-link:hover {
@@ -744,6 +753,12 @@ a.storage-control-text {
 }
 .storage-add {
     background-position: -12px -49px;
+}
+.storage-list {
+    background-position: -52px -168px;
+}
+.storage-list-white {
+    background-position: -92px -168px;
 }
 
 /* ********************************* */

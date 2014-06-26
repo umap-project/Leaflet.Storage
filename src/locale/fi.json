@@ -168,8 +168,6 @@
     "Only visible features will be downloaded.": "Vain näkyvät kohteet ladataan",
     "Open this map extent in a map editor to provide more accurate data to OpenStreetMap": "Avaa rajauksen mukainen alue editorissa parantaaksesi OpenStreetMapin tietosisältöä.",
     "Default properties": "Default properties",
-    "Iframe with custom height (in px): {{{http://image.url.com|height}}}": "Iframe with custom height (in px): {{{http://image.url.com|height}}}",
-    "Iframe: {{{http://image.url.com}}}": "Iframe: {{{http://image.url.com}}}",
     "User interface options": "User interface options",
     "Image with custom width (in px): {{http://image.url.com|width}}": "Image with custom width (in px): {{http://image.url.com|width}}",
     "Current view instead of default map view?": "Current view instead of default map view?",
@@ -234,5 +232,10 @@
     "Edit properties in a table": "Edit properties in a table",
     "Please enter the name of the property": "Please enter the name of the property",
     "Please enter the new name of this property": "Please enter the new name of this property",
-    "Rename this property on all the features": "Rename this property on all the features"
+    "Rename this property on all the features": "Rename this property on all the features",
+    "If false, the polygon will act as a part of the underlying map.": "If false, the polygon will act as a part of the underlying map.",
+    "Iframe with custom height (in px): {{{http://iframe.url.com|height}}}": "Iframe with custom height (in px): {{{http://iframe.url.com|height}}}",
+    "Iframe: {{{http://iframe.url.com}}}": "Iframe: {{{http://iframe.url.com}}}",
+    "Mouse interactions": "Mouse interactions",
+    "See all": "See all"
 }
