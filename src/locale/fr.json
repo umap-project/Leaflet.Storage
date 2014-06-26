@@ -237,5 +237,9 @@
     "Iframe with custom height (in px): {{{http://iframe.url.com|height}}}": "Iframe avec hauteur (en pixels): {{{http://iframe.url.com|hauteur}}}",
     "Iframe: {{{http://iframe.url.com}}}": "Iframe: {{{http://iframe.url.com}}}",
     "Mouse interactions": "Clickable",
-    "See all": "Tout voir"
+    "See all": "Tout voir",
+    "Custom template": "Gabarit personnalisé",
+    "Dynamic properties": "Propriétés dynamiques",
+    "Use placeholders with feature properties between brackets, eg. &#123;name&#125;, they will be dynamically replaced by the corresponding values.": "Utilisez des variables avec les noms de propriétés de vos éléments entre accolades, ex.  &#123;name&#125;, elles seront remplacées dynamiquement par les valeurs correspondantes.",
+    "You can use formatting and &#123;properties&#125; from your features.": "Il est possible d'utiliser le formatage, ainsi que des propriétés dynamiques."
 }

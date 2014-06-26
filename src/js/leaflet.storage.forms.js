@@ -780,7 +780,7 @@ L.Storage.FormBuilder = L.Class.extend({
         iconClass: {handler: 'IconClassSwitcher', label: L._('type of icon')},
         iconUrl: {handler: 'IconUrl', label: L._('symbol of the icon')},
         popupTemplate: {handler: 'PopupTemplate', label: L._('template to use for the popup')},
-        popupCustom: {label: L._('Custom template'), handler: 'Textarea', helpEntries: ['dynamicProperties', 'textFormatting'], helpText: L._('You can use formatting and {properties} from your features.')},
+        popupCustom: {label: L._('Custom template'), handler: 'Textarea', helpEntries: ['dynamicProperties', 'textFormatting'], helpText: L._('You can use formatting and &#123;properties&#125; from your features.')},
         datalayer: {handler: 'DataLayerSwitcher', label: L._('Choose the layer of the feature')},
         moreControl: {handler: 'CheckBox', helpText: L._('Do you want to display the «more» control?')},
         datalayersControl: {handler: 'CheckBox', helpText: L._('Do you want to display the data layers control?')},

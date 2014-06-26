@@ -240,6 +240,6 @@
     "See all": "See all",
     "Custom template": "Custom template",
     "Dynamic properties": "Dynamic properties",
-    "You can use formatting and {properties} from your features.": "You can use formatting and {properties} from your features.",
-    "Use placeholders with feature properties between brackets, eg. &#123;name&#125;, they will be dynamically replaced by the corresponding values.": "Use placeholders with feature properties between brackets, eg. &#123;name&#125;, they will be dynamically replaced by the corresponding values."
+    "Use placeholders with feature properties between brackets, eg. &#123;name&#125;, they will be dynamically replaced by the corresponding values.": "Use placeholders with feature properties between brackets, eg. &#123;name&#125;, they will be dynamically replaced by the corresponding values.",
+    "You can use formatting and &#123;properties&#125; from your features.": "You can use formatting and &#123;properties&#125; from your features."
 }
