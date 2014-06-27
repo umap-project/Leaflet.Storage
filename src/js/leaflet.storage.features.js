@@ -275,12 +275,12 @@ L.Storage.FeatureMixin = {
     },
 
     getMap: function () {
-        return this._map;
+        return this.map;
     },
 
     getContextMenuItems: function (e) {
         var items = [];
-        if (this._map.editEnabled && !this.isReadOnly()) {
+        if (this.map.editEnabled && !this.isReadOnly()) {
             items = items.concat(this.getEditContextMenuItems(e));
         }
         return items;
