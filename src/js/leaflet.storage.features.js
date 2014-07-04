@@ -47,6 +47,9 @@ L.Storage.FeatureMixin = {
     },
 
     view: function(latlng) {
+        if (this.map.editEnabled) {
+            return;
+        }
         if (this.properties._storage_options.outlink) {
             var win = window.open(this.properties._storage_options.outlink);
             return;

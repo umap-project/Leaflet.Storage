@@ -126,7 +126,10 @@ L.S.Slideshow = L.Class.extend({
     },
 
     step: function () {
-        if(!this.current) this.stop();
+        if(!this.current) {
+            this.stop();
+            return;
+        }
         this.current.zoomTo();
         this.current.view();
     },
