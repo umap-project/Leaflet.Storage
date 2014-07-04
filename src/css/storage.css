@@ -637,15 +637,17 @@ a.storage-control-text {
     padding: 0;
     width: 24px;
 }
+.storage-browse-features .polygon .feature-color,
 .storage-browse-features .polyline .feature-color {
     box-shadow: 0 0 4px 0 black inset;
-    background-size: 50% 50%;
-    background-image: url("../img/draw_polyline.png");
+    background-image: url("../img/24.png");
+    background-size: 500%;
+}
+.storage-browse-features .polyline .feature-color {
+    background-position: -48px -16px;
 }
 .storage-browse-features .polygon .feature-color {
-    box-shadow: 0 0 4px 0 black inset;
-    background-size: 50% 50%;
-    background-image: url("../img/draw_polygon.png");
+    background-position: -32px -16px;
 }
 .show-on-edit {
     display: none!important;
