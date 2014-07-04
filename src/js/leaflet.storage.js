@@ -319,6 +319,7 @@ L.Storage.Map.include({
         if (this.options.scaleControl) {
             this._controls.scaleControl = L.control.scale().addTo(this);
         }
+        this._controls.attribution = new L.S.AttributionControl().addTo(this);
         if (this.options.miniMap) {
             this.whenReady(function () {
                 if (this.selected_tilelayer) {
@@ -327,7 +328,6 @@ L.Storage.Map.include({
                 }
             });
         }
-        this._controls.attribution = new L.S.AttributionControl().addTo(this);
 
     },
 
