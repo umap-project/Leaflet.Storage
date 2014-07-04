@@ -15,6 +15,7 @@
 - it's now possible to cancel every mouse action of a polygon
   (useful when using them as background)
 - simple custom popup templates
+- more control over map data attribution (custom inputs added)
 
 
 ## 0.6.x

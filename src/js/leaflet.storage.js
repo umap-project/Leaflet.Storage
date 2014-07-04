@@ -17,7 +17,7 @@ L.Map.mergeOptions({
     default_iconClass: 'Default',
     default_zoomTo: 16,
     default_popupContentTemplate: '# {name}\n{description}',
-    attributionControl: true,
+    attributionControl: false,
     allowEdit: true,
     homeControl: true,
     zoomControl: true,
@@ -327,6 +327,7 @@ L.Storage.Map.include({
                 }
             });
         }
+        this._controls.attribution = new L.S.AttributionControl().addTo(this);
 
     },
 
@@ -753,15 +754,16 @@ L.Storage.Map.include({
         });
         var creditsContainer = L.DomUtil.create('div', 'credits-container', container),
             credits = L.DomUtil.createFieldset(creditsContainer, L._('Credits'));
-        title = L.DomUtil.create('h5', '', credits);
-        title.innerHTML = L._('User content credits');
-        var contentCredit = L.DomUtil.create('p', '', credits),
-            licence = L.DomUtil.create('a', '', contentCredit);
+        title = L.DomUtil.add('h5', '', credits, L._('User content credits'));
+        if (this.options.shortCredit || this.options.longCredit) {
+            L.DomUtil.add('p', '', credits, L.Util.toHTML(this.options.longCredit || this.options.shortCredit));
+        }
         if (this.options.licence) {
-            licence.innerHTML = this.options.licence.name;
-            licence.href = this.options.licence.url;
-            contentCredit.innerHTML =  L._('Map user content has been published under licence')
-                                       + ' ' + contentCredit.innerHTML;
+            var licence = L.DomUtil.add('p', '', credits, L._('Map user content has been published under licence') + ' '),
+                link = L.DomUtil.add('a', '', licence, this.options.licence.name);
+            link.href = this.options.licence.url;
+        } else {
+            L.DomUtil.add('p', '', credits, L._('No licence has been set'));
         }
         L.DomUtil.create('hr', '', credits);
         title = L.DomUtil.create('h5', '', credits);
@@ -872,7 +874,9 @@ L.Storage.Map.include({
             'captionBar',
             'slideshow',
             'sortKey',
-            'showLabel'
+            'showLabel',
+            'shortCredit',
+            'longCredit'
         ], properties = {};
         for (var i = editableOptions.length - 1; i >= 0; i--) {
             if (typeof this.options[editableOptions[i]] !== 'undefined') {
@@ -961,8 +965,7 @@ L.Storage.Map.include({
         var container = L.DomUtil.create('div'),
             metadataFields = [
                 'options.name',
-                'options.description',
-                ['options.licence', {handler: 'LicenceChooser', label: L._('licence')}]
+                'options.description'
             ],
             title = L.DomUtil.create('h4', '', container);
         title.innerHTML = L._('Edit map properties');
@@ -1050,6 +1053,19 @@ L.Storage.Map.include({
             callbackContext: this
         });
         limitBounds.appendChild(boundsBuilder.build());
+        var setCurrentButton = L.DomUtil.add('a', '', limitBounds, L._('Use current bounds'));
+        setCurrentButton.href = '#';
+        L.DomEvent.on(setCurrentButton, 'click', function () {
+            var bounds = this.getBounds();
+            this.options.limitBounds.south = L.Util.formatNum(bounds.getSouth());
+            this.options.limitBounds.west = L.Util.formatNum(bounds.getWest());
+            this.options.limitBounds.north = L.Util.formatNum(bounds.getNorth());
+            this.options.limitBounds.east = L.Util.formatNum(bounds.getEast());
+            boundsBuilder.fetchAll();
+            this.isDirty = true;
+            this.handleLimitBounds();
+        }, this);
+
         var slideshow = L.DomUtil.createFieldset(container, L._('Slideshow'));
         var slideshowFields = [
             ['options.slideshow.delay', {handler: 'IntInput', placeholder: L._('Set a value for adding a slideshow'), helpText: L._('Delay between elements (in milliseconds)')}],
@@ -1065,18 +1081,17 @@ L.Storage.Map.include({
         });
         slideshow.appendChild(slideshowBuilder.build());
 
-        var setCurrentButton = L.DomUtil.add('a', '', limitBounds, L._('Use current bounds'));
-        setCurrentButton.href = '#';
-        L.DomEvent.on(setCurrentButton, 'click', function () {
-            var bounds = this.getBounds();
-            this.options.limitBounds.south = L.Util.formatNum(bounds.getSouth());
-            this.options.limitBounds.west = L.Util.formatNum(bounds.getWest());
-            this.options.limitBounds.north = L.Util.formatNum(bounds.getNorth());
-            this.options.limitBounds.east = L.Util.formatNum(bounds.getEast());
-            boundsBuilder.fetchAll();
-            this.isDirty = true;
-            this.handleLimitBounds();
-        }, this);
+        var credits = L.DomUtil.createFieldset(container, L._('Credits'));
+        var creditsFields = [
+            ['options.licence', {handler: 'LicenceChooser', label: L._('licence')}],
+            ['options.shortCredit', {handler: 'Input', label: L._('Short credits'), helpText: L._('Will be displayed in the bottom right corner of the map')}],
+            ['options.longCredit', {handler: 'Textarea', label: L._('Long credits'), helpText: L._('Will be visible in the caption of the map')}]
+        ];
+        var creditsBuilder = new L.S.FormBuilder(this, creditsFields, {
+            callback: function () {this._controls.attribution._update();},
+            callbackContext: this
+        });
+        credits.appendChild(creditsBuilder.build());
 
         var advancedActions = L.DomUtil.createFieldset(container, L._('Advanced actions'));
         var del = L.DomUtil.create('a', 'storage-delete', advancedActions);

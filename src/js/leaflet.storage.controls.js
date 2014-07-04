@@ -534,16 +534,18 @@ L.Storage.TileLayerControl = L.Control.extend({
 
 });
 
-L.Control.Attribution.prototype._updateOrig = L.Control.Attribution.prototype._update;
-L.Control.Attribution.mergeOptions({
-    prefix: ''
-});
-L.Control.Attribution.include({
+L.S.AttributionControl = L.Control.Attribution.extend({
+
+    options: {
+        prefix: ''
+    },
 
     _update: function () {
-        this._updateOrig();
-        var link = L.DomUtil.create('a', '', this._container);
-        link.innerHTML = ' — ' + L._('About');
+        L.Control.Attribution.prototype._update.call(this);
+        if (this._map.options.shortCredit) {
+            L.DomUtil.add('span', '', this._container, ' — ' + L.Util.toHTML(this._map.options.shortCredit));
+        }
+        var link = L.DomUtil.add('a', '', this._container, ' — ' + L._('About'));
         L.DomEvent
             .on(link, 'click', L.DomEvent.stop)
             .on(link, 'click', this._map.displayCaption, this._map)
