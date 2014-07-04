@@ -1084,8 +1084,8 @@ L.Storage.Map.include({
         var credits = L.DomUtil.createFieldset(container, L._('Credits'));
         var creditsFields = [
             ['options.licence', {handler: 'LicenceChooser', label: L._('licence')}],
-            ['options.shortCredit', {handler: 'Input', label: L._('Short credits'), helpText: L._('Will be displayed in the bottom right corner of the map')}],
-            ['options.longCredit', {handler: 'Textarea', label: L._('Long credits'), helpText: L._('Will be visible in the caption of the map')}]
+            ['options.shortCredit', {handler: 'Input', label: L._('Short credits'), helpText: L._('Will be displayed in the bottom right corner of the map'), helpEntries: 'textFormatting'}],
+            ['options.longCredit', {handler: 'Textarea', label: L._('Long credits'), helpText: L._('Will be visible in the caption of the map'), helpEntries: 'textFormatting'}]
         ];
         var creditsBuilder = new L.S.FormBuilder(this, creditsFields, {
             callback: function () {this._controls.attribution._update();},
