@@ -19,8 +19,10 @@ L.S.Slideshow = L.Class.extend({
             Object.defineProperty(this, 'current', {
                 get: function () {
                     if (!current) {
-                        var datalayer = map.defaultDataLayer();
-                        current = datalayer.getFeatureByIndex(0);
+                        var datalayer = this.defaultDatalayer();
+                        if (datalayer) {
+                            current = datalayer.getFeatureByIndex(0);
+                        }
                     }
                     return current;
                 },
@@ -58,6 +60,18 @@ L.S.Slideshow = L.Class.extend({
     setOptions: function (options) {
         L.setOptions(this, options);
         this.timeSpinner();
+    },
+
+    defaultDatalayer: function () {
+        var datalayer;
+        for (var i in this.map.datalayers) {
+            if (this.map.datalayers.hasOwnProperty(i)) {
+                datalayer = this.map.datalayers[i];
+                if (datalayer.isVisible() && datalayer.isBrowsable()) {
+                    return datalayer;
+                }
+            }
+        }
     },
 
     timeSpinner: function () {

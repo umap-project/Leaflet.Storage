@@ -945,7 +945,7 @@ L.Storage.Map.include({
             this.addLayer(datalayer.layer);
             return datalayer;
         }
-        return new L.S.DataLayer(this, {});
+        return this._createDataLayer({});
     },
 
     getDataLayerByStorageId: function (storage_id) {
