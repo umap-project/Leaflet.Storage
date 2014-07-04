@@ -2,12 +2,36 @@ describe('L.Util', function () {
 
     describe('#toHTML()', function () {
 
+        it('should handle title', function () {
+            assert.equal(L.Util.toHTML('# A title'), '<h3>A title</h3>');
+        });
+
+        it('should handle title in the middle of the content', function () {
+            assert.equal(L.Util.toHTML('A phrase\n## A title'), 'A phrase<br>\n<h4>A title</h4>');
+        });
+
+        it('should handle hr', function () {
+            assert.equal(L.Util.toHTML('---'), '<hr>');
+        });
+
         it('should handle bold', function () {
             assert.equal(L.Util.toHTML('Some **bold**'), 'Some <strong>bold</strong>');
         });
 
         it('should handle italic', function () {
             assert.equal(L.Util.toHTML('Some *italic*'), 'Some <em>italic</em>');
+        });
+
+        it('should handle newlines', function () {
+            assert.equal(L.Util.toHTML('two\nlines'), 'two<br>\nlines');
+        });
+
+        it('should not change last newline', function () {
+            assert.equal(L.Util.toHTML('two\nlines\n'), 'two<br>\nlines\n');
+        });
+
+        it('should not change two successive newlines', function () {
+            assert.equal(L.Util.toHTML('two\n\n\nlines\n'), 'two\n\n<br>\nlines\n');
         });
 
         it('should handle links without formatting', function () {

@@ -1,5 +1,9 @@
 L.S.Popup = L.Popup.extend({
 
+    options: {
+        parseTemplate: true
+    },
+
     initialize: function (feature) {
         this.feature = feature;
         this.container = L.DomUtil.create('div', 'storage-popup');
@@ -12,26 +16,26 @@ L.S.Popup = L.Popup.extend({
         return this.feature.hasPopupFooter();
     },
 
-    renderTitle: function () {
-        var title;
-        if (this.feature.getDisplayName()) {
-            title = L.DomUtil.create('h3', 'popup-title');
-            title.innerHTML = L.Util.escapeHTML(this.feature.getDisplayName());
-        }
-        return title;
-    },
+    renderTitle: function () {},
 
     renderBody: function () {
-        var body;
-        if (this.feature.properties.description) {
-            body = L.DomUtil.create('p');
-            body.innerHTML = L.Util.toHTML(this.feature.properties.description);
-            var els = body.querySelectorAll('img,iframe');
-            for (var i = 0; i < els.length; i++) {
-                this.onElementLoaded(els[i]);
-            }
+        var template = this.feature.getOption('popupContentTemplate'),
+            container = L.DomUtil.create('div', ''),
+            content;
+        if (this.options.parseTemplate) {
+            content = L.Util.greedyTemplate(template, this.feature.properties);
         }
-        return body;
+        content = L.Util.toHTML(content);
+        container.innerHTML = content;
+        var els = container.querySelectorAll('img,iframe');
+        for (var i = 0; i < els.length; i++) {
+            this.onElementLoaded(els[i]);
+        }
+        if (container.textContent.replace('\n', '') === '') {
+            container.innerHTML = '';
+            L.DomUtil.add('h3', '', container, this.feature.getDisplayName());
+        }
+        return container;
     },
 
     renderFooter: function () {
@@ -72,7 +76,7 @@ L.S.Popup = L.Popup.extend({
         }
         var body = this.renderBody();
         if (body) {
-            this.bodyContainer = L.DomUtil.add('div', 'storage-popup-content', this.container, body);
+            L.DomUtil.add('div', 'storage-popup-content', this.container, body);
         }
         this.renderFooter();
     },
@@ -94,7 +98,20 @@ L.S.Popup.Large = L.S.Popup.extend({
     }
 });
 
-L.S.Popup.Table = L.S.Popup.extend({
+L.S.Popup.BaseWithTitle = L.S.Popup.extend({
+
+    renderTitle: function () {
+        var title;
+        if (this.feature.getDisplayName()) {
+            title = L.DomUtil.create('h3', 'popup-title');
+            title.innerHTML = L.Util.escapeHTML(this.feature.getDisplayName());
+        }
+        return title;
+    }
+
+});
+
+L.S.Popup.Table = L.S.Popup.BaseWithTitle.extend({
 
     formatRow: function (key, value) {
         if (value.indexOf('http') === 0) {
@@ -126,7 +143,7 @@ L.S.Popup.Table = L.S.Popup.extend({
 
 L.S.Popup.table = L.S.Popup.Table;  // backward compatibility
 
-L.S.Popup.GeoRSSImage = L.S.Popup.extend({
+L.S.Popup.GeoRSSImage = L.S.Popup.BaseWithTitle.extend({
 
     options: {
         minWidth: 300,
@@ -158,9 +175,8 @@ L.S.Popup.GeoRSSLink = L.S.Popup.extend({
         className: 'storage-georss-link'
     },
 
-    renderBody: function () {},
-    renderTitle: function () {
-        var title = L.S.Popup.prototype.renderTitle.call(this),
+    renderBody: function () {
+        var title = this.renderTitle(this),
             a = L.DomUtil.add('a');
         a.href = this.feature.properties.link;
         a.target = '_blank';
@@ -193,20 +209,4 @@ L.S.Popup.SimplePanel = L.S.Popup.extend({
     _updateLayout: function () {},
     _updatePosition: function () {},
     _adjustPan: function () {}
-});
-
-L.S.Popup.Custom = L.S.Popup.extend({
-
-    renderTitle: function () {},
-
-    renderBody: function () {
-        var template = this.feature.getOption('popupCustom'),
-            container = L.DomUtil.create('div', 'storage-content-custom'),
-            content;
-        content = L.Util.greedyTemplate(template, this.feature.properties);
-        content = L.Util.toHTML(content);
-        container.innerHTML = content;
-        return container;
-    }
-
 });

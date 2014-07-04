@@ -60,6 +60,9 @@ L.S.ElementHelper.Textarea = L.S.ElementHelper.extend({
 
     build: function () {
         this.input = L.DomUtil.create('textarea', '', this.form);
+        if (this.options.placeholder) {
+            this.input.placeholder = this.options.placeholder;
+        }
         this.fetch();
         L.DomEvent.on(this.input, 'input', this.sync, this);
         L.DomEvent.on(this.input, 'keypress', this.onKeyPress, this);
@@ -408,8 +411,7 @@ L.S.ElementHelper.PopupTemplate = L.S.ElementHelper.SelectAbstract.extend({
         ['Table', L._('Table')],
         ['GeoRSSImage', L._('GeoRSS (title + image)')],
         ['GeoRSSLink', L._('GeoRSS (only link)')],
-        ['SimplePanel', L._('Side panel')],
-        ['Custom', L._('Custom template')]
+        ['SimplePanel', L._('Side panel')]
     ],
 
     toJS: function () {
@@ -780,7 +782,7 @@ L.Storage.FormBuilder = L.Class.extend({
         iconClass: {handler: 'IconClassSwitcher', label: L._('type of icon')},
         iconUrl: {handler: 'IconUrl', label: L._('symbol of the icon')},
         popupTemplate: {handler: 'PopupTemplate', label: L._('template to use for the popup')},
-        popupCustom: {label: L._('Custom template'), handler: 'Textarea', helpEntries: ['dynamicProperties', 'textFormatting'], helpText: L._('You can use formatting and &#123;properties&#125; from your features.')},
+        popupContentTemplate: {label: L._('Popup content template'), handler: 'Textarea', helpEntries: ['dynamicProperties', 'textFormatting'], helpText: L._('You can use formatting and &#123;properties&#125; from your features.'), placeholder: '# {name}'},
         datalayer: {handler: 'DataLayerSwitcher', label: L._('Choose the layer of the feature')},
         moreControl: {handler: 'CheckBox', helpText: L._('Do you want to display the «more» control?')},
         datalayersControl: {handler: 'CheckBox', helpText: L._('Do you want to display the data layers control?')},

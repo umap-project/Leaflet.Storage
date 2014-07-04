@@ -1238,6 +1238,7 @@ a.storage-control-text {
 }
 .leaflet-popup-content {
     min-width: 100px;
+    line-height: inherit;
 }
 .leaflet-popup-content-wrapper, .leaflet-popup-tip {
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
@@ -1250,7 +1251,6 @@ a.storage-control-text {
     flex-grow: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    margin-bottom: 14px;
 }
 .storage-popup-content iframe {
     min-width: 300px;

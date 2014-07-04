@@ -36,12 +36,12 @@ L.Util.setFromQueryString = function (options, name) {
 
 L.Util.setBooleanFromQueryString = function (options, name) {
     var value = L.Util.queryString(name);
-    if (typeof value !== "undefined") {
-        options[name] = value == "1" || value == "true";
+    if (typeof value !== 'undefined') {
+        options[name] = value == '1' || value == 'true';
     }
 };
 L.Util.escapeHTML = function (s) {
-    s = s? s.toString() : "";
+    s = s? s.toString() : '';
     return s.replace(/</gm, '&lt;');
 };
 L.Util.toHTML = function (r) {
@@ -55,10 +55,10 @@ L.Util.toHTML = function (r) {
 
 
     // headings and hr
-    r = r.replace(/^### (.*)=*/gm, '<h5>$1</h5>');
-    r = r.replace(/^## (.*)=*/gm, '<h4>$1</h4>');
-    r = r.replace(/^# (.*)=*/gm, '<h3>$1</h3>');
-    r = r.replace(/^[-*][-*][-*]+/gm, '<hr>');
+    r = r.replace(/^### (.*)/gm, '<h5>$1</h5>');
+    r = r.replace(/^## (.*)/gm, '<h4>$1</h4>');
+    r = r.replace(/^# (.*)/gm, '<h3>$1</h3>');
+    r = r.replace(/^---/gm, '<hr>');
 
     // bold, italics
     r = r.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -90,7 +90,7 @@ L.Util.toHTML = function (r) {
     r = r.replace(/(h_t_t_p)/g, 'http');
 
     // Preserver line breaks
-    if (newline) r = r.replace(new RegExp(newline, 'g'), '<br>' + newline);
+    if (newline) r = r.replace(new RegExp(newline + '([^\n]{1})', 'g'), '<br>' + newline + '$1');
 
     return r;
 };
