@@ -1251,6 +1251,7 @@ a.storage-control-text {
     flex-grow: 1;
     overflow-y: auto;
     overflow-x: hidden;
+    margin-bottom: 14px;
 }
 .storage-popup-content iframe {
     min-width: 300px;
