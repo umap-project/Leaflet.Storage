@@ -574,7 +574,7 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     getColor: function () {
-        return this.options.color || this.map.getDefaultOption('color');
+        return this.options.color || this.map.getOption('color');
     },
 
     getDeleteUrl: function () {
