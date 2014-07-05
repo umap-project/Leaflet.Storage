@@ -389,8 +389,7 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     rawToGeoJSON: function (c, type, callback) {
-        var self = this,
-            toDom = function (x) {
+        var toDom = function (x) {
                 return (new DOMParser()).parseFromString(x, 'text/xml');
             };
 
@@ -401,7 +400,12 @@ L.Storage.DataLayer = L.Class.extend({
                 includeLatLon: false
             }, function(err, result) {
                 if (err) {
-                    L.S.fire('ui:alert', {content: 'error in csv', level: 'error'});
+                    var message = '';
+                    for (var i = 0; i < err.length; i++) {
+                        message += err[i].message;
+                    }
+                    L.S.fire('ui:alert', {content: message, level: 'error'});
+                    console.log(err);
                 } else {
                     callback(result);
                 }
