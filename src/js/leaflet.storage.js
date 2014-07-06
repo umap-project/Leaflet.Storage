@@ -328,6 +328,11 @@ L.Storage.Map.include({
                 }
             });
         }
+        if (this.options.scrollWheelZoom) {
+            this.scrollWheelZoom.enable();
+        } else {
+            this.scrollWheelZoom.disable();
+        }
 
     },
 
