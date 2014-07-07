@@ -90,7 +90,7 @@ L.Util.toHTML = function (r) {
     r = r.replace(/(h_t_t_p)/g, 'http');
 
     // Preserver line breaks
-    if (newline) r = r.replace(new RegExp(newline + '([^\n]{1})', 'g'), '<br>' + newline + '$1');
+    if (newline) r = r.replace(new RegExp(newline + '(?=[^]+)', 'g'), '<br>' + newline);
 
     return r;
 };

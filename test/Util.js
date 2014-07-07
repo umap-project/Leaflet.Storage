@@ -30,8 +30,8 @@ describe('L.Util', function () {
             assert.equal(L.Util.toHTML('two\nlines\n'), 'two<br>\nlines\n');
         });
 
-        it('should not change two successive newlines', function () {
-            assert.equal(L.Util.toHTML('two\n\n\nlines\n'), 'two\n\n<br>\nlines\n');
+        it('should handle two successive newlines', function () {
+            assert.equal(L.Util.toHTML('two\n\nlines\n'), 'two<br>\n<br>\nlines\n');
         });
 
         it('should handle links without formatting', function () {
