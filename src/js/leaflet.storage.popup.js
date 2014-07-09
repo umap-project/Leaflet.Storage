@@ -21,9 +21,15 @@ L.S.Popup = L.Popup.extend({
     renderBody: function () {
         var template = this.feature.getOption('popupContentTemplate'),
             container = L.DomUtil.create('div', ''),
-            content;
+            content, properties, center = this.feature.getCenter();
         if (this.options.parseTemplate) {
-            content = L.Util.greedyTemplate(template, this.feature.properties);
+            // Include context properties
+            properties = {
+                lat: center.lat,
+                lon: center.lng,
+                lng: center.lng
+            };
+            content = L.Util.greedyTemplate(template, L.extend(properties, this.feature.properties));
         }
         content = L.Util.toHTML(content);
         container.innerHTML = content;
