@@ -30,7 +30,7 @@ L.S.Popup = L.Popup.extend({
                 lng: center.lng
             };
             if (typeof this.feature.getMeasure !== 'undefined') {
-                properties['measure'] = parseFloat(this.feature.getMeasure());
+                properties['measure'] = this.feature.getMeasure();
             }
             content = L.Util.greedyTemplate(template, L.extend(properties, this.feature.properties));
         }
