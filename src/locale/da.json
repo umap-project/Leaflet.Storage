@@ -238,8 +238,13 @@
     "Iframe: {{{http://iframe.url.com}}}": "Iframe: {{{http://iframe.url.com}}}",
     "Mouse interactions": "Muse interaktioner",
     "See all": "Se alle",
-    "Custom template": "Brugerdefineret skabelon",
     "Dynamic properties": "Dynamiske egenskaber",
     "Use placeholders with feature properties between brackets, eg. &#123;name&#125;, they will be dynamically replaced by the corresponding values.": "Brug pladsholdere med objekt egenskaberne mellem tuborgklammer fx &#123;navn&#125; så vil de dynamatisk blive erstattet med de tilhørende værdier. ",
-    "You can use formatting and &#123;properties&#125; from your features.": "Du kan bruge formattering og &#123;egenskaber&#125; fra dine objekter."
+    "You can use formatting and &#123;properties&#125; from your features.": "Du kan bruge formattering og &#123;egenskaber&#125; fra dine objekter.",
+    "Long credits": "Lang kreditering",
+    "No licence has been set": "Ingen licens angivet",
+    "Popup content template": "Popul indholdsskabelon",
+    "Short credits": "Kort kreditering",
+    "Will be displayed in the bottom right corner of the map": "Vil blive vist nede i højre hjørne af kortet",
+    "Will be visible in the caption of the map": "Vil blive synlig i tekstfeltet på kortet"
 }

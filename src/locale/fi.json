@@ -238,8 +238,13 @@
     "Iframe: {{{http://iframe.url.com}}}": "Iframe: {{{http://iframe.url.com}}}",
     "Mouse interactions": "Mouse interactions",
     "See all": "See all",
-    "Custom template": "Custom template",
     "Dynamic properties": "Dynamic properties",
     "Use placeholders with feature properties between brackets, eg. &#123;name&#125;, they will be dynamically replaced by the corresponding values.": "Use placeholders with feature properties between brackets, eg. &#123;name&#125;, they will be dynamically replaced by the corresponding values.",
-    "You can use formatting and &#123;properties&#125; from your features.": "You can use formatting and &#123;properties&#125; from your features."
+    "You can use formatting and &#123;properties&#125; from your features.": "You can use formatting and &#123;properties&#125; from your features.",
+    "Long credits": "Long credits",
+    "No licence has been set": "No licence has been set",
+    "Popup content template": "Popup content template",
+    "Short credits": "Short credits",
+    "Will be displayed in the bottom right corner of the map": "Will be displayed in the bottom right corner of the map",
+    "Will be visible in the caption of the map": "Will be visible in the caption of the map"
 }
