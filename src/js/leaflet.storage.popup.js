@@ -32,7 +32,10 @@ L.S.Popup = L.Popup.extend({
             if (typeof this.feature.getMeasure !== 'undefined') {
                 properties['measure'] = this.feature.getMeasure();
             }
-            content = L.Util.greedyTemplate(template, L.extend(properties, this.feature.properties));
+            properties = L.extend(properties, this.feature.properties);
+            // Resolve properties inside description
+            properties.description = L.Util.greedyTemplate(this.feature.properties.description || '', properties);
+            content = L.Util.greedyTemplate(template, properties);
         }
         content = L.Util.toHTML(content);
         container.innerHTML = content;
