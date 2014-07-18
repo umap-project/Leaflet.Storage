@@ -1029,7 +1029,7 @@ L.Storage.Map.include({
 
         builder = new L.S.FormBuilder(this, optionsFields, {
             callback: function (field) {
-                if (field !== 'options.popupTemplate') {
+                if (field !== 'options.popupTemplate' && field !== 'options.popupContentTemplate') {
                     this.eachDataLayer(function (datalayer) {
                         datalayer.redraw();
                     });
