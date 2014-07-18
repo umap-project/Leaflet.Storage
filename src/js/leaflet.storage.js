@@ -109,7 +109,7 @@ L.Storage.Map.include({
         // Global storage for retrieving datalayers
         this.datalayers = {};
         this.datalayers_index = Array();
-        this.deleted_datalayers = Array();
+        this.dirty_datalayers = Array();
         // create datalayers
         this.initDatalayers();
         if (this.options.displayCaptionOnLoad) {
@@ -141,18 +141,14 @@ L.Storage.Map.include({
         try {
             Object.defineProperty(this, 'isDirty', {
                 get: function () {
-                    return isDirty;
+                    return isDirty || this.dirty_datalayers.length;
                 },
                 set: function (status) {
                     if (!isDirty && status) {
                         self.fire('isdirty');
                     }
-                    if (status) {
-                        L.DomUtil.addClass(this._container, 'storage-is-dirty');
-                    } else {
-                        L.DomUtil.removeClass(this._container, 'storage-is-dirty');
-                    }
                     isDirty = status;
+                    self.checkDirty();
                 }
             });
         }
@@ -252,7 +248,7 @@ L.Storage.Map.include({
         }
 
         window.onbeforeunload = function () {
-            if (isDirty) {
+            if (self.isDirty) {
                 return true;
             }
         };
@@ -426,7 +422,6 @@ L.Storage.Map.include({
                 this.setZoom(this.selected_tilelayer.options.maxZoom);
             }
         } catch (e) {
-            console.log(e.message, e.name);
             this.removeLayer(tilelayer);
             L.S.fire('ui:alert', {content: L._('Error in the tilelayer URL') + ': ' + tilelayer._url, level: 'error'});
             // Users can put tilelayer URLs by hand, and if they add wrong {variable},
@@ -678,7 +673,7 @@ L.Storage.Map.include({
                 },
                 callbackContext: this
             };
-            L.S.fire('ui:alert', {content: L._('Please add at least a layer to import in'), level: 'info', duration: 30000, action: action});
+            L.S.fire('ui:alert', {content: L._('Please add at least a layer to import in'), level: 'info', duration: 30000, actions: [action]});
             return;
         }
         if (this.options.importPresets.length) {
@@ -800,52 +795,55 @@ L.Storage.Map.include({
 
     reset: function () {
         this.resetOptions();
-        this.eachDataLayer(function (datalayer) {
+        this.dirty_datalayers.forEach(function (datalayer) {
+            if (datalayer.isDeleted) {
+                datalayer.connectToMap();
+            }
             datalayer.reset();
         });
-        this.deleted_datalayers.forEach(function (datalayer) {
-            datalayer.connectToMap();
-            datalayer.reset();
-        });
+        this.dirty_datalayers = Array();
         this.updateDatalayersControl();
         this.initTileLayers();
         this.isDirty = false;
     },
 
-    saveDatalayers: function () {
-        this.eachDataLayer(function (datalayer) {
-            if (datalayer.isDirty) {
-                datalayer.save();
-            }
-        });
-    },
-
-    deleteDatalayers: function () {
-        this.deleted_datalayers.forEach(function (datalayer) {
-            datalayer.saveDelete();
-        });
-        this.deleted_datalayers = Array();
-    },
-
-    save: function () {
+    checkDirty: function () {
         if (this.isDirty) {
-            this.selfSave();
+            L.DomUtil.addClass(this._container, 'storage-is-dirty');
+        } else {
+            L.DomUtil.removeClass(this._container, 'storage-is-dirty');
         }
     },
 
-    getEditUrl: function() {
-        return L.Util.template(this.options.urls.map_update, {'map_id': this.options.storage_id});
+    addDirtyDatalayer: function (datalayer) {
+        if (this.dirty_datalayers.indexOf(datalayer) === -1) {
+            this.dirty_datalayers.push(datalayer);
+            this.isDirty = true;
+        }
     },
 
-    getCreateUrl: function() {
-        return L.Util.template(this.options.urls.map_create);
+    removeDirtyDatalayer: function (datalayer) {
+        if (this.dirty_datalayers.indexOf(datalayer) !== -1) {
+            this.dirty_datalayers.splice(this.dirty_datalayers.indexOf(datalayer), 1);
+            this.checkDirty();
+        }
     },
 
-    getSaveUrl: function () {
-        return (this.options.storage_id && this.getEditUrl()) || this.getCreateUrl();
+    continueSaving: function () {
+        if (this.dirty_datalayers.length) {
+            this.dirty_datalayers[0].save();
+        } else {
+            if (this._post_save_alert) {
+                L.S.fire('ui:alert', this._post_save_alert);
+                delete this._post_save_alert;
+            }
+        }
     },
 
-    selfSave: function () {
+    save: function () {
+        if (!this.isDirty) {
+            return;
+        }
         // save options to DB
         var editableOptions = [
             'zoom',
@@ -911,16 +909,32 @@ L.Storage.Map.include({
                         window.location = data.url;
                     }
                 }
-                this.saveDatalayers();
-                this.deleteDatalayers();
                 if (data.info) {
-                    L.S.fire('ui:alert', {content: data.info, level: 'info', duration: duration});
+                    msg = data.info;
+                } else {
+                    msg = L._('Map has been saved!');
                 }
+                // Delegate alert to the end of the save process
+                // (how to do that the light and clean way without endless and unmaintainable callbacks chains?)
+                this._post_save_alert = {content: msg, level: 'info', duration: duration};
                 L.S.fire('ui:end');
                 this.isDirty = false;
+                this.continueSaving();
             },
             context: this
         });
+    },
+
+    getEditUrl: function() {
+        return L.Util.template(this.options.urls.map_update, {'map_id': this.options.storage_id});
+    },
+
+    getCreateUrl: function() {
+        return L.Util.template(this.options.urls.map_create);
+    },
+
+    getSaveUrl: function () {
+        return (this.options.storage_id && this.getEditUrl()) || this.getCreateUrl();
     },
 
     geometry: function() {

@@ -241,10 +241,17 @@ fieldset.toggle.on .more_style_options {
     background-color: #fff;
     color: #999;
     padding: 5px;
-    border-radius: 2px;
+    border-radius: 4px;
 }
 .storage-alert .storage-action:hover {
     color: #000;
+}
+.storage-alert .error .storage-action {
+    background-color: #666;
+    color: #eee;
+}
+.storage-alert .error .storage-action:hover {
+    color: #fff;
 }
 
 /* *********** */

@@ -23,7 +23,7 @@ describe('L.DataLayer', function () {
     });
 
     describe('#edit()', function () {
-        var editButton, form, input;
+        var editButton, form, input, forceButton;
 
         it('row in control should be active', function () {
             assert.notOk(qs('.leaflet-control-browse #browse_data_toggle_62.off'));
@@ -51,7 +51,7 @@ describe('L.DataLayer', function () {
         });
 
         it('should update name on input change', function () {
-            var new_name = "This is a new name";
+            var new_name = 'This is a new name';
             input.value = new_name;
             happen.once(input, {type: 'input'});
             assert.equal(this.datalayer.options.name, new_name);
@@ -59,6 +59,7 @@ describe('L.DataLayer', function () {
 
         it('should have made datalayer dirty', function () {
             assert.ok(this.datalayer.isDirty);
+            assert.notEqual(this.map.dirty_datalayers.indexOf(this.datalayer), -1);
         });
 
         it('should have made Map dirty', function () {
@@ -66,14 +67,45 @@ describe('L.DataLayer', function () {
         });
 
         it('should call datalayer.save on save button click', function (done) {
-            sinon.spy(this.datalayer, "save");
+            sinon.spy(this.datalayer, 'save');
+            this.server.flush();
             this.server.respondWith('POST', '/map/99/update/settings/', JSON.stringify({id: 99}));
             this.server.respondWith('POST', '/map/99/datalayer/update/62/', JSON.stringify(defaultDatalayerData()));
             clickSave();
             this.server.respond();
+            this.server.respond();
             assert(this.datalayer.save.calledOnce);
             this.datalayer.save.restore();
             done();
+        });
+
+        it('should show alert if server respond 412', function () {
+            cleanAlert();
+            this.server.flush();
+            this.server.respondWith('POST', '/map/99/update/settings/', JSON.stringify({id: 99}));
+            this.server.respondWith('POST', '/map/99/datalayer/update/62/', [412, {}, '']);
+            happen.click(editButton);
+            input = qs('form.storage-form input[name="name"]');
+            input.value = 'a new name';
+            happen.once(input, {type: 'input'});
+            clickSave();
+            this.server.respond();
+            this.server.respond();
+            assert(L.DomUtil.hasClass(document.body, 'storage-alert'));
+            assert.notEqual(this.map.dirty_datalayers.indexOf(this.datalayer), -1);
+            forceButton = qs('#storage-alert-container .storage-action');
+            assert.ok(forceButton);
+        });
+
+        it('should save anyway on force save button click', function () {
+            sinon.spy(this.map, 'continueSaving');
+            happen.click(forceButton);
+            this.server.flush();
+            this.server.respond('POST', '/map/99/datalayer/update/62/', JSON.stringify(defaultDatalayerData()));
+            assert.notOk(qs('#storage-alert-container .storage-action'));
+            assert(this.map.continueSaving.calledOnce);
+            this.map.continueSaving.restore();
+            assert.equal(this.map.dirty_datalayers.indexOf(this.datalayer), -1);
         });
 
     });
@@ -81,7 +113,9 @@ describe('L.DataLayer', function () {
     describe('#save() new', function () {
         var newLayerButton, form, input, newDatalayer, editButton;
 
+
         it('should have a new layer button', function () {
+            enableEdit();
             newLayerButton = qs('.leaflet-control-browse .add-datalayer');
             assert.ok(newLayerButton);
         });
@@ -108,19 +142,21 @@ describe('L.DataLayer', function () {
         });
 
         it('should update name on input change', function () {
-            var new_name = "This is a new name";
+            var new_name = 'This is a new name';
             input.value = new_name;
             happen.once(input, {type: 'input'});
             assert.equal(newDatalayer.options.name, new_name);
         });
 
-        it('should set storage_id on save callback', function (done) {
+        it('should set storage_id on save callback', function () {
             assert.notOk(newDatalayer.storage_id);
+            this.server.flush();
+            this.server.respondWith('POST', '/map/99/update/settings/', JSON.stringify({id: 99}));
             this.server.respondWith('POST', '/map/99/datalayer/create/', JSON.stringify(defaultDatalayerData({id: 63})));
             clickSave();
             this.server.respond();
+            this.server.respond();  // First respond will then trigger another Xhr request (continueSaving)
             assert.equal(newDatalayer.storage_id, 63);
-            done();
         });
 
         it('should have unset map dirty', function () {
@@ -136,15 +172,18 @@ describe('L.DataLayer', function () {
             happen.click(editButton);
             assert.notOk(this.map.isDirty);
             input = qs('form.storage-form input[name="name"]');
-            input.value = "a new name again but we don't care which";
+            input.value = 'a new name again but we don\'t care which';
             happen.once(input, {type: 'input'});
             assert.ok(this.map.isDirty);
             var response = function (request) {
                 return request.respond(200, {}, JSON.stringify(defaultDatalayerData({pk: 63})));
             };
             var spy = sinon.spy(response);
+            this.server.flush();
+            this.server.respondWith('POST', '/map/99/update/settings/', JSON.stringify({id: 99}));
             this.server.respondWith('POST', '/map/99/datalayer/update/63/', spy);
             clickSave();
+            this.server.respond();
             this.server.respond();
             assert.ok(spy.calledOnce);
         });
@@ -155,16 +194,16 @@ describe('L.DataLayer', function () {
 
         it('should change icon class', function (done) {
             var response = {
-                "crs": null,
-                "type": "FeatureCollection",
-                "features": [{
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [-0.274658203125, 52.57634993749885]
+                'crs': null,
+                'type': 'FeatureCollection',
+                'features': [{
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': [-0.274658203125, 52.57634993749885]
                     },
-                    "type": "Feature",
-                    "id": 1807,
-                    "properties": {"options": {}, "datalayer_id": 62, "name": "test", "icon": {"url": null, "class": "Circle"}}
+                    'type': 'Feature',
+                    'id': 1807,
+                    'properties': {'options': {}, 'datalayer_id': 62, 'name': 'test', 'icon': {'url': null, 'class': 'Circle'}}
                 }]
             };
             this.server.flush();

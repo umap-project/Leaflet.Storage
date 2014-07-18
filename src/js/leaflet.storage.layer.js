@@ -149,6 +149,7 @@ L.Storage.DataLayer = L.Class.extend({
         this._geojson = null;
 
         var isDirty = false,
+            isDeleted = false,
             self = this;
         try {
             Object.defineProperty(this, 'isDirty', {
@@ -157,10 +158,32 @@ L.Storage.DataLayer = L.Class.extend({
                 },
                 set: function (status) {
                     if (!isDirty && status) {
-                        self.fire('isdirty');
+                        self.fire('dirty');
                     }
                     isDirty = status;
-                    self.map.isDirty = status;
+                    if (status) {
+                        self.map.addDirtyDatalayer(self);
+                    } else {
+                        self.map.removeDirtyDatalayer(self);
+                        self.isDeleted = false;
+                    }
+                }
+            });
+        }
+        catch (e) {
+            // Certainly IE8, which has a limited version of defineProperty
+        }
+        try {
+            Object.defineProperty(this, 'isDeleted', {
+                get: function () {
+                    return isDeleted;
+                },
+                set: function (status) {
+                    if (!isDeleted && status) {
+                        self.fire('deleted');
+                    }
+                    isDeleted = status;
+                    if (status) self.isDirty = status;
                 }
             });
         }
@@ -230,10 +253,11 @@ L.Storage.DataLayer = L.Class.extend({
             return;
         }
         this.map.get(this._dataUrl(), {
-            callback: function (geojson) {
+            callback: function (geojson, response) {
                 if (geojson._storage) {
                     this.setOptions(geojson._storage);
                 }
+                this._etag = response.getResponseHeader('ETag');
                 if (this.isRemoteLayer()) {
                     this.fetchRemoteData();
                 } else {
@@ -555,7 +579,8 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     importFromUrl: function (url, type) {
-        url = this.map.localizeUrl(url), self = this;
+        url = this.map.localizeUrl(url);
+        var self = this;
         L.S.Xhr._ajax({verb: 'GET', uri: url, callback: function (data) {
             self.importRaw(data, type);
         }});
@@ -583,11 +608,8 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     _delete: function () {
-        if (this.storage_id) {
-            this.map.deleted_datalayers.push(this);
-        }
+        this.isDeleted = true;
         this.erase();
-        this.isDirty = true;
     },
 
     empty: function () {
@@ -831,6 +853,10 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     save: function () {
+        if (this.isDeleted) {
+            this.saveDelete();
+            return;
+        }
         if (!this.isLoaded()) {return;}
         var geojson = {
             type: 'FeatureCollection',
@@ -838,7 +864,6 @@ L.Storage.DataLayer = L.Class.extend({
             _storage: this.options
         };
         this.backupOptions();
-        this._geojson = geojson;
         var formData = new FormData();
         formData.append('name', this.options.name);
         formData.append('display_on_load', !!this.options.displayOnLoad);
@@ -847,18 +872,28 @@ L.Storage.DataLayer = L.Class.extend({
         formData.append('geojson', blob);
         this.map.post(this.getSaveUrl(), {
             data: formData,
-            callback: function (data) {
+            callback: function (data, response) {
+                this._geojson = geojson;
+                this._etag = response.getResponseHeader('ETag');
                 this.setStorageId(data.id);
                 this.setOptions(data);
                 this.connectToMap();
                 this.reset();  // Needed for reordering features
+                this.map.continueSaving();
             },
-            context: this
+            context: this,
+            headers: {'If-Match': this._etag}
         });
     },
 
     saveDelete: function () {
-        L.S.Xhr.post(this.getDeleteUrl());
+        L.S.Xhr.post(this.getDeleteUrl(), {
+            callback: function () {
+                this.isDirty = false;
+                this.map.continueSaving();
+            },
+            context: this
+        });
     },
 
     getMap: function () {

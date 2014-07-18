@@ -4,7 +4,7 @@ var resetMap = function () {
     var mapElement = qs('#map');
     mapElement.innerHTML = 'Done';
     delete mapElement._leaflet;
-    document.body.className = "";
+    document.body.className = '';
 };
 var enableEdit = function () {
     happen.click(qs('div.leaflet-control-edit-enable a'));
@@ -28,20 +28,25 @@ var changeInputValue = function (input, value) {
     input.value = value;
     happen.once(input, {type: 'input'});
 };
+var cleanAlert = function () {
+    L.DomUtil.removeClass(document.body, 'storage-alert');
+    L.DomUtil.get('storage-alert-container').innerHTML = '';
+    UI_ALERT_ID = null;  // Prevent setTimeout to be called
+};
 var defaultDatalayerData = function (custom) {
     var _default = {
-        icon_class: "Default",
-        name: "Elephants",
+        icon_class: 'Default',
+        name: 'Elephants',
         displayOnLoad: true,
         id: 62,
         pictogram_url: null,
         opacity: null,
         weight: null,
-        fillColor: "",
-        color: "",
+        fillColor: '',
+        color: '',
         stroke: true,
         smoothFactor: null,
-        dashArray: "",
+        dashArray: '',
         fillOpacity: null,
         fill: true
     };
@@ -250,3 +255,18 @@ var gpx_example = '<gpx' +
 
 var csv_example = 'Foo,Latitude,Longitude,title,description\n' +
 'bar,41.34,122.86,a point somewhere,the description of this point';
+
+// Make Sinon log readable
+sinon.format = function (what) {
+    if (typeof what === 'object') {
+        return JSON.stringify(what, null, 4);
+    } else if (typeof what === "undefined") {
+        return '';
+    } else {
+        return what.toString();
+    }
+};
+
+sinon.log = function (message) {
+    console.log(message);
+};

@@ -1,17 +1,18 @@
 L.Storage.Xhr = {
 
     _wrapper: function () {
+        var wrapper;
         if (window.XMLHttpRequest === undefined) {
             wrapper = function() {
                 try {
-                    return new ActiveXObject("Microsoft.XMLHTTP.6.0");
+                    return new window.ActiveXObject('Microsoft.XMLHTTP.6.0');
                 }
                 catch (e1) {
                     try {
-                        return new ActiveXObject("Microsoft.XMLHTTP.3.0");
+                        return new window.ActiveXObject('Microsoft.XMLHTTP.3.0');
                     }
                     catch (e2) {
-                        throw new Error("XMLHttpRequest is not supported");
+                        throw new Error('XMLHttpRequest is not supported');
                     }
                 }
             };
@@ -23,13 +24,13 @@ L.Storage.Xhr = {
     },
 
     _ajax: function (settings) {
-        var response, xhr = this._wrapper(), id = Math.random();
+        var xhr = this._wrapper(), id = Math.random(), self = this;
         if (settings.listener) settings.listener.fire('dataloading', {id: id});
         xhr.open(settings.verb, settings.uri, true);
         if (settings.uri.indexOf('http') !== 0 || settings.uri.indexOf(window.location.origin) === 0) {
             // "X-" mode headers cause the request to be in preflight mode,
             // we don"t want that by default for CORS requests
-            xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         }
         if (settings.headers) {
             for (var name in settings.headers) {
@@ -37,19 +38,36 @@ L.Storage.Xhr = {
             }
         }
 
-        var loaded = function () {if (settings.listener) settings.listener.fire('dataload', {id: id});}
+        var loaded = function () {if (settings.listener) settings.listener.fire('dataload', {id: id});};
 
-        xhr.onreadystatechange = function(e) {
+        xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
                 if (xhr.status == 200) {
-                    settings.callback.call(settings.context || xhr, xhr.responseText);
+                    settings.callback.call(settings.context || xhr, xhr.responseText, xhr);
                 }
                 else if (xhr.status === 403) {
-                    L.Storage.fire("ui:alert", {"content": L._("Action not allowed :("), "level": "error"});
+                    L.Storage.fire('ui:alert', {content: L._('Action not allowed :('), level: 'error'});
+                }
+                else if (xhr.status === 412) {
+                    var msg = L._('Woops! Someone else seems to have edited the data. You can save anyway, but this will erase the changes made by others.');
+                    var actions = [
+                        {
+                            label: L._('Save anyway'),
+                            callback: function () {
+                                delete settings.headers['If-Match'];
+                                self._ajax(settings);
+                            },
+                            callbackContext: self
+                        },
+                        {
+                            label: L._('Cancel')
+                        }
+                    ];
+                    L.Storage.fire('ui:alert', {content: msg, level: 'error', duration: 100000, actions: actions});
                 }
                 else {
                     if (xhr.status !== 0) {  // 0 === request cut by user
-                        L.Storage.fire("ui:alert", {"content": L._("Problem in the response"), "level": "error"});
+                        L.Storage.fire('ui:alert', {'content': L._('Problem in the response'), 'level': 'error'});
                     }
                 }
                 loaded();
@@ -72,34 +90,34 @@ L.Storage.Xhr = {
         var default_options = {
             'async': true,
             'callback': null,
-            'responseType': "text",
+            'responseType': 'text',
             'data': null,
             'listen_form': null // optional form to listen in default callback
         };
         var settings = L.Util.extend({}, default_options, options);
 
-        if (verb == "POST") {
+        if (verb === 'POST') {
             // find a way not to make this django specific
-            var token = document.cookie.replace(/(?:(?:^|.*;\s*)csrftoken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+            var token = document.cookie.replace(/(?:(?:^|.*;\s*)csrftoken\s*\=\s*([^;]*).*$)|^.*$/, '$1');
             if (token) {
                 settings.headers = settings.headers || {};
                 settings.headers['X-CSRFToken'] = token;
             }
         }
 
-        var callback = function(responseText) {
+        var callback = function(responseText, response) {
             var data;
             try {
                 data = JSON.parse(responseText);
             }
             catch (err) {
                 console.log(err);
-                L.Storage.fire("ui:alert", {"content": L._("Problem in the response format"), "level": "error"});
+                L.Storage.fire('ui:alert', {content: L._('Problem in the response format'), level: 'error'});
                 return;
             }
             if (data.errors) {
                 console.log(data.errors);
-                L.Storage.fire("ui:alert", {"content": L._("An error occured"), "level": "error"});
+                L.Storage.fire('ui:alert', {content: L._('An error occured'), level: 'error'});
             } else if (data.login_required) {
                 // login_required should be an URL for the login form
                 if (settings.login_callback) {
@@ -111,9 +129,9 @@ L.Storage.Xhr = {
             }
             else {
                 if (settings.callback) {
-                    L.bind(settings.callback, settings.context || this)(data);
+                    L.bind(settings.callback, settings.context || this)(data, response);
                 } else {
-                    self.default_callback(data, settings);
+                    self.default_callback(data, settings, response);
                 }
             }
         };
@@ -129,15 +147,15 @@ L.Storage.Xhr = {
     },
 
     get: function(uri, options) {
-        L.Storage.Xhr._json("GET", uri, options);
+        L.Storage.Xhr._json('GET', uri, options);
     },
 
     post: function(uri, options) {
-        L.Storage.Xhr._json("POST", uri, options);
+        L.Storage.Xhr._json('POST', uri, options);
     },
 
     submit_form: function(form_id, options) {
-        if(typeof options == "undefined") {
+        if(typeof options === 'undefined') {
             options = {};
         }
         var form = L.DomUtil.get(form_id);
@@ -158,7 +176,7 @@ L.Storage.Xhr = {
         L.DomEvent
             .on(form, 'submit', L.DomEvent.stopPropagation)
             .on(form, 'submit', L.DomEvent.preventDefault)
-            .on(form, 'submit', function (e) {
+            .on(form, 'submit', function () {
                 L.Storage.Xhr.submit_form(form_id, options);
             });
     },
@@ -168,7 +186,7 @@ L.Storage.Xhr = {
         if (link) {
             L.DomEvent
                 .on(link, 'click', L.DomEvent.stop)
-                .on(link, 'click', function (e) {
+                .on(link, 'click', function () {
                     if (options.confirm && !confirm(options.confirm)) { return;}
                     L.Storage.Xhr.get(link.href, options);
                 });
@@ -187,17 +205,17 @@ L.Storage.Xhr = {
             }
         }
         else if (data.info) {
-            L.Storage.fire("ui:alert", {"content": data.info, "level": "info"});
+            L.Storage.fire('ui:alert', {content: data.info, level: 'info'});
             L.Storage.fire('ui:end');
         }
         else if (data.error) {
-            L.Storage.fire("ui:alert", {"content": data.error, "level": "error"});
+            L.Storage.fire('ui:alert', {content: data.error, level: 'error'});
         }
         else if (data.html) {
             var ui_options = {'data': data},
                 listen_options;
             if (options.cssClass) {
-                ui_options['cssClass'] = options.cssClass;
+                ui_options.cssClass = options.cssClass;
             }
             L.Storage.fire('ui:start', ui_options);
             // To low boilerplate, if there is a form, listen it
@@ -226,7 +244,7 @@ L.Storage.Xhr = {
         var self = this;
         var proceed = function () {
             L.Storage.fire('ui:end');
-            if (typeof args !== "undefined") {
+            if (typeof args !== 'undefined') {
                 L.Storage.Xhr._json.apply(self, args);
             }
             else {
@@ -247,13 +265,13 @@ L.Storage.Xhr = {
                 }
             });
             // Auth links
-            var links = document.getElementsByClassName("storage-login-popup");
+            var links = document.getElementsByClassName('storage-login-popup');
             Object.keys(links).forEach(function (el) {
                 var link = links[el];
                 L.DomEvent
                     .on(link, 'click', L.DomEvent.stopPropagation)
                     .on(link, 'click', L.DomEvent.preventDefault)
-                    .on(link, 'click', function (e) {
+                    .on(link, 'click', function () {
                         L.Storage.fire('ui:end');
                         var win = window.open(link.href);
                         window.storage_proceed = function () {
@@ -283,7 +301,7 @@ L.Storage.Xhr = {
     buildQueryString: function (params) {
         var query_string = [];
         for (var key in params) {
-            query_string.push(encodeURIComponent(key) + "=" + encodeURIComponent(params[key]));
+            query_string.push(encodeURIComponent(key) + '=' + encodeURIComponent(params[key]));
         }
         return query_string.join('&');
     }

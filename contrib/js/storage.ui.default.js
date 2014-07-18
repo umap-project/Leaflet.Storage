@@ -40,7 +40,7 @@ L.Storage.on('ui:start', function (e) {
     L.DomEvent.on(closeLink, 'click', close);
 });
 
-L.Storage.on('ui:end', function (e) {
+L.Storage.on('ui:end', function () {
     var div = L.DomUtil.get('storage-ui-container');
     div.innerHTML = '';
     L.DomUtil.removeClass(document.body, 'storage-ui');
@@ -50,35 +50,62 @@ L.Storage.on('ui:end', function (e) {
 /*
 * Alerts
 */
+var UI_ALERTS = Array();
+var UI_ALERT_ID =  null;
 L.Storage.on('ui:alert', function (e) {
-    var div = L.DomUtil.get('storage-alert-container');
-    var body = document.getElementsByTagName('body')[0];
-    div.innerHTML = '';
-    div.innerHTML = e.content;
-    L.DomUtil.addClass(body, 'storage-alert');
-    var level_class = e.level && e.level == 'info'? 'info': 'error';
-    L.DomUtil.addClass(div, level_class);
-    var close = function (e) {
+    var pop = function (e) {
+        if(!e) {
+            if (UI_ALERTS.length) {
+                e = UI_ALERTS.pop();
+            } else {
+                return;
+            }
+        }
+        var div = L.DomUtil.get('storage-alert-container'),
+            timeoutID,
+            level_class = e.level && e.level == 'info'? 'info': 'error';
         div.innerHTML = '';
-        L.DomUtil.removeClass(body, 'storage-alert');
-        L.DomUtil.removeClass(div, level_class);
+        div.innerHTML = e.content;
+        L.DomUtil.addClass(document.body, 'storage-alert');
+        L.DomUtil.addClass(div, level_class);
+        var close = function () {
+            if (timeoutID !== UI_ALERT_ID) { return;}  // Another alert has been forced
+            div.innerHTML = '';
+            L.DomUtil.removeClass(document.body, 'storage-alert');
+            L.DomUtil.removeClass(div, level_class);
+            if (timeoutID) {
+                window.clearTimeout(timeoutID);
+            }
+            pop();
+        };
+        if (e.actions) {
+            var action, el;
+            for (var i = 0; i < e.actions.length; i++) {
+                action = e.actions[i];
+                el = L.DomUtil.element('a', {'className': 'storage-action'}, div);
+                el.href = '#';
+                el.innerHTML = action.label;
+                L.DomEvent.on(el, 'click', L.DomEvent.stop)
+                          .on(el, 'click', close);
+                if (action.callback) {
+                    L.DomEvent.on(el, 'click', action.callback, action.callbackContext || this);
+                }
+            }
+        }
+        var closeLink = L.DomUtil.create('a', 'storage-close-link', div);
+        closeLink.href = '#';
+        L.DomUtil.add('i', 'storage-close-icon', closeLink);
+        var label = L.DomUtil.create('span', '', closeLink);
+        label.title = label.innerHTML = L._('Close');
+        L.DomEvent.on(closeLink, 'click', L.DomEvent.stop)
+                  .on(closeLink, 'click', close);
+        UI_ALERT_ID = timeoutID = window.setTimeout(close, e.duration || 3000);
     };
-    if (e.action) {
-        var action = L.DomUtil.element('a', {'className': 'storage-action'}, div);
-        action.href = '#';
-        action.innerHTML = e.action.label;
-        L.DomEvent.on(action, 'click', L.DomEvent.stop)
-                  .on(action, 'click', e.action.callback, e.action.callbackContext || this)
-                  .on(action, 'click', close);
+    if (L.DomUtil.hasClass(document.body, 'storage-alert')) {
+        UI_ALERTS.push(e);
+    } else {
+        pop(e);
     }
-    var closeLink = L.DomUtil.create('a', 'storage-close-link', div);
-    closeLink.href = '#';
-    L.DomUtil.add('i', 'storage-close-icon', closeLink);
-    var label = L.DomUtil.create('span', '', closeLink);
-    label.title = label.innerHTML = L._('Close');
-    L.DomEvent.on(closeLink, 'click', L.DomEvent.stop)
-              .on(closeLink, 'click', close);
-    window.setTimeout(close, e.duration || 3000);
 });
 
 /*
@@ -87,7 +114,7 @@ L.Storage.on('ui:alert', function (e) {
 L.Storage.on('ui:tooltip', function (e) {
     var div = L.DomUtil.get('storage-tooltip-container');
     var body = document.getElementsByTagName('body')[0];
-    div.innerHTML = "";
+    div.innerHTML = '';
     div.innerHTML = e.content;
     L.DomUtil.addClass(body, 'storage-tooltip');
     var map = L.DomUtil.get('map'),
@@ -95,8 +122,8 @@ L.Storage.on('ui:tooltip', function (e) {
         top = map.offsetTop + 5,
         point = L.point(left, top);
     L.DomUtil.setPosition(div, point);
-    var close = function (e) {
-        div.innerHTML = "";
+    var close = function () {
+        div.innerHTML = '';
         L.DomUtil.removeClass(body, 'storage-tooltip');
     };
     L.DomEvent.on(div, 'mouseover', close);

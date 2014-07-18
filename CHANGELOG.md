@@ -16,6 +16,7 @@
   (useful when using them as background)
 - simple custom popup templates
 - more control over map data attribution (custom inputs added)
+- basic HTTP optimistic concurrency control
 
 
 ## 0.6.x
