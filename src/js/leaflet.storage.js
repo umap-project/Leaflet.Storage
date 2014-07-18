@@ -795,7 +795,7 @@ L.Storage.Map.include({
 
     reset: function () {
         this.resetOptions();
-        this.dirty_datalayers.forEach(function (datalayer) {
+        this.dirty_datalayers.slice().forEach(function (datalayer) {
             if (datalayer.isDeleted) {
                 datalayer.connectToMap();
             }
