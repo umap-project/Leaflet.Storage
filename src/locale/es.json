@@ -246,5 +246,8 @@
     "Popup content template": "Popup content template",
     "Short credits": "Short credits",
     "Will be displayed in the bottom right corner of the map": "Will be displayed in the bottom right corner of the map",
-    "Will be visible in the caption of the map": "Will be visible in the caption of the map"
+    "Will be visible in the caption of the map": "Will be visible in the caption of the map",
+    "Map has been saved!": "Map has been saved!",
+    "Save anyway": "Save anyway",
+    "Woops! Someone else seems to have edited the data. You can save anyway, but this will erase the changes made by others.": "Woops! Someone else seems to have edited the data. You can save anyway, but this will erase the changes made by others."
 }

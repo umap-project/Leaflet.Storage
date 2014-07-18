@@ -246,5 +246,8 @@
     "Popup content template": "Popul indholdsskabelon",
     "Short credits": "Kort kreditering",
     "Will be displayed in the bottom right corner of the map": "Vil blive vist nede i højre hjørne af kortet",
-    "Will be visible in the caption of the map": "Vil blive synlig i tekstfeltet på kortet"
+    "Will be visible in the caption of the map": "Vil blive synlig i tekstfeltet på kortet",
+    "Map has been saved!": "Map has been saved!",
+    "Save anyway": "Save anyway",
+    "Woops! Someone else seems to have edited the data. You can save anyway, but this will erase the changes made by others.": "Woops! Someone else seems to have edited the data. You can save anyway, but this will erase the changes made by others."
 }
