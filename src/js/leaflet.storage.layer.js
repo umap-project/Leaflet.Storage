@@ -882,7 +882,7 @@ L.Storage.DataLayer = L.Class.extend({
                 this.map.continueSaving();
             },
             context: this,
-            headers: {'If-Match': this._etag}
+            headers: {'If-Match': this._etag || ''}
         });
     },
 
