@@ -450,7 +450,7 @@ L.Storage.DataLayer = L.Class.extend({
             callback(osmtogeojson(d, {flatProperties: true}));
         } else if (type === 'geojson') {
             try {
-                gj = JSON.parse(c);
+                var gj = JSON.parse(c);
                 callback(gj);
             } catch(err) {
                 L.S.fire('ui:alert', {content: 'Invalid JSON file: ' + err});
@@ -562,16 +562,16 @@ L.Storage.DataLayer = L.Class.extend({
         this.zoomTo();
     },
 
-    importFromFiles: function (files) {
+    importFromFiles: function (files, type) {
         for (var i = 0, f; f = files[i]; i++) {
-            this.importFromFile(f);
+            this.importFromFile(f, type);
         }
     },
 
-    importFromFile: function (f) {
+    importFromFile: function (f, type) {
         var reader = new FileReader(),
-            type = L.Util.detectFileType(f),
             self = this;
+        type = type || L.Util.detectFileType(f);
         reader.readAsText(f);
         reader.onload = function (e) {
             self.importRaw(e.target.result, type);

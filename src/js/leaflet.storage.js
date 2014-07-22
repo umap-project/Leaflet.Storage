@@ -693,7 +693,7 @@ L.Storage.Map.include({
                 layerId = layerInput[layerInput.selectedIndex].value,
                 layer = map.datalayers[layerId];
             if (fileInput.files) {
-                layer.importFromFiles(fileInput.files);
+                layer.importFromFiles(fileInput.files, type);
             }
             if (rawInput.value) {
                 layer.importRaw(rawInput.value, type);
