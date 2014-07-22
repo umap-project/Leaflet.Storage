@@ -123,7 +123,7 @@ L.Util.detectFileType = function (f) {
     if (f.type === 'text/csv' || ext('.csv') || ext('.tsv') || ext('.dsv')) {
         return 'csv';
     }
-    if (ext('.xml')) return 'osm';
+    if (ext('.xml') || ext('.osm')) return 'osm';
 };
 
 L.Util.usableOption = function (options, option) {
