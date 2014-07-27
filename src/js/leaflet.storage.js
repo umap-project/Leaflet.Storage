@@ -1025,7 +1025,7 @@ L.Storage.Map.include({
             'options.popupContentTemplate',
             'options.zoomTo',
             'options.showLabel',
-            ['options.sortKey', {handler: 'Input', helpText: L._('Property to use for sorting features'), placeholder: L._('Default: name')}],
+            ['options.sortKey', {handler: 'BlurInput', helpText: L._('Property to use for sorting features'), placeholder: L._('Default: name')}],
             ['options.filterKey', {handler: 'Input', helpText: L._('Comma separated list of properties to use when filtering features'), placeholder: L._('Default: name')}]
         ];
 
@@ -1033,6 +1033,7 @@ L.Storage.Map.include({
             callback: function (field) {
                 if (field !== 'options.popupTemplate' && field !== 'options.popupContentTemplate') {
                     this.eachDataLayer(function (datalayer) {
+                        if (field === 'options.sortKey') datalayer.reindex();
                         datalayer.redraw();
                     });
                 }

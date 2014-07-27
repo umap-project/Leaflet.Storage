@@ -46,7 +46,7 @@ describe('L.Storage.Map', function(){
         it('enable edit on click on toggle button', function () {
             var el = qs('div.leaflet-control-edit-enable a');
             happen.click(el);
-            assert.isTrue(L.DomUtil.hasClass(document.body, "storage-edit-enabled"));
+            assert.isTrue(L.DomUtil.hasClass(document.body, 'storage-edit-enabled'));
         });
 
         it('should have only one datalayer in its index', function () {
@@ -55,8 +55,7 @@ describe('L.Storage.Map', function(){
     });
 
     describe('#editMetadata()', function () {
-        var form, input, request,
-            path = '/map/99/update/metadata/';
+        var form, input;
 
         it('should build a form on editMetadata control click', function (done) {
             var button = qs('a.update-map-settings');
@@ -70,7 +69,7 @@ describe('L.Storage.Map', function(){
         });
 
         it('should update map name on input change', function () {
-            var new_name = "This is a new name";
+            var new_name = 'This is a new name';
             input.value = new_name;
             happen.once(input, {type: 'input'});
             assert.equal(this.map.options.name, new_name);
@@ -87,14 +86,13 @@ describe('L.Storage.Map', function(){
     });
 
     describe('#delete()', function () {
-        var path = "/map/99/delete/",
-            submit, oldConfirm,
+        var path = '/map/99/delete/',
+            oldConfirm,
             newConfirm = function () {
                 return true;
             };
 
         before(function () {
-            var self = this;
             oldConfirm = window.confirm;
             window.confirm = newConfirm;
         });
@@ -108,8 +106,8 @@ describe('L.Storage.Map', function(){
             happen.click(button);
             var deleteLink = qs('a.storage-delete');
             assert.ok(deleteLink, 'delete map button exists');
-            sinon.spy(window, "confirm");
-            this.server.respondWith("POST", path, JSON.stringify({redirect: "#"}));
+            sinon.spy(window, 'confirm');
+            this.server.respondWith('POST', path, JSON.stringify({redirect: '#'}));
             happen.click(deleteLink);
             this.server.respond();
             assert(window.confirm.calledOnce);

@@ -5,13 +5,6 @@ L.S.Layer = {
         return this._layers;
     },
 
-    eachFeature: function (method, context) {
-        var features = this.getFeatures();
-        for (var i in features) {
-            method.call(context || this, features[i]);
-        }
-    },
-
     getEditableOptions: function () {return [];},
 
     postUpdate: function () {}
@@ -28,6 +21,7 @@ L.S.Layer.Default = L.FeatureGroup.extend({
     }
 
 });
+
 
 L.S.Layer.Cluster = L.MarkerClusterGroup.extend({
     _type: 'Cluster',
@@ -69,10 +63,6 @@ L.S.Layer.Cluster = L.MarkerClusterGroup.extend({
         if (field === 'options.color') {
             this.options.polygonOptions.color = this.datalayer.getColor();
         }
-    },
-
-    eachFeature: function (method, context) {
-        this.eachLayer(method, context);
     }
 
 });
@@ -242,8 +232,10 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     eachFeature: function (method, context) {
-        if (this.layer) {
-            this.layer.eachFeature(method, context || this);
+        if (this.layer && this.layer.isBrowsable) {
+            for (var i = 0; i < this._index.length; i++) {
+                method.call(context || this, this._layers[this._index[i]]);
+            }
         }
         return this;
     },
@@ -284,6 +276,18 @@ L.Storage.DataLayer = L.Class.extend({
         if (this._geojson) {
             this._geojson_bk = L.Util.CopyJSON(this._geojson);
             this._geojson = null;
+        }
+    },
+
+    reindex: function () {
+        var features = [];
+        this.eachFeature(function (feature) {
+            features.push(feature);
+        });
+        L.Util.sortFeatures(features, this.map.getOption('sortKey'));
+        this._index = [];
+        for (var i = 0; i < features.length; i++) {
+            this._index.push(L.Util.stamp(features[i]));
         }
     },
 
@@ -461,21 +465,10 @@ L.Storage.DataLayer = L.Class.extend({
 
     geojsonToFeatures: function (geojson) {
         var features = geojson instanceof Array ? geojson : geojson.features,
-            i, len, sortKey = this.map.options.sortKey || 'name';
+            i, len;
 
         if (features) {
-            features.sort(function (a, b) {
-                if (!a.properties || !b.properties) {
-                    return 0;
-                } else if (!a.properties[sortKey] && !b.properties[sortKey]) {
-                    return 0;
-                } else if (!a.properties[sortKey]) {
-                    return -1;
-                } else if (!b.properties[sortKey]) {
-                    return 1;
-                }
-                return a.properties.name.toString().localeCompare(b.properties.name.toString());
-            });
+            L.Util.sortFeatures(features, this.map.getOption('sortKey'));
             for (i = 0, len = features.length; i < len; i++) {
                 this.geojsonToFeatures(features[i]);
             }
@@ -834,7 +827,7 @@ L.Storage.DataLayer = L.Class.extend({
     getNextVisible: function () {
         var id = this.map.datalayers_index.indexOf(this),
             next = this.map.datalayers_index[id + 1] || this.map.datalayers_index[0];
-        while(!next.isVisible() || next._index.length === 0 || !next.isBrowsable()) {
+        while(!next.isVisible() || !next.isBrowsable() || next._index.length === 0) {
             next = next.getNextVisible();
         }
         return next;
@@ -843,7 +836,7 @@ L.Storage.DataLayer = L.Class.extend({
     getPreviousVisible: function () {
         var id = this.map.datalayers_index.indexOf(this),
             prev = this.map.datalayers_index[id - 1] || this.map.datalayers_index[this.map.datalayers_index.length - 1];
-        while(!prev.isVisible() || prev._index.length === 0 || !prev.isBrowsable()) {
+        while(!prev.isVisible() || !prev.isBrowsable() || prev._index.length === 0) {
             prev = prev.getPreviousVisible();
         }
         return prev;
