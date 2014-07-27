@@ -219,4 +219,29 @@ describe('L.Storage.Poly', function () {
 
     });
 
+    describe('#matchFilter()', function () {
+        var poly;
+
+        it('should filter on properties', function () {
+            poly = this.datalayer._lineToLayer({}, [[0, 0], [0, 1], [0, 2]]);
+            poly.properties.name = 'mooring';
+            assert.ok(poly.matchFilter('moo', ['name']));
+            assert.notOk(poly.matchFilter('foo', ['name']));
+        });
+
+        it('should be case unsensitive', function () {
+            assert.ok(poly.matchFilter('Moo', ['name']));
+        });
+
+        it('should match also in the middle of a string', function () {
+            assert.ok(poly.matchFilter('oor', ['name']));
+        });
+
+        it('should handle multiproperties', function () {
+            poly.properties.city = 'Teulada';
+            assert.ok(poly.matchFilter('eul', ['name', 'city', 'foo']));
+        });
+
+    });
+
 });

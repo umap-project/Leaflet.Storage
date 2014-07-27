@@ -18,6 +18,7 @@
 - more control over map data attribution (custom inputs added)
 - basic HTTP optimistic concurrency control
 - add "empty" button in limit bounds fieldset
+- make possible to decide which properties the data browser will filter on
 
 
 ## 0.6.x

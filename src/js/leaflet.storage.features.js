@@ -352,6 +352,14 @@ L.Storage.FeatureMixin = {
             this.bindLabel(L.Util.escapeHTML(this.properties.name), {noHide: true});
             this.showLabel();
         }
+    },
+
+    matchFilter: function (filter, keys) {
+        filter = filter.toLowerCase();
+        for (var i = 0; i < keys.length; i++) {
+            if ((this.properties[keys[i]] || '').toLowerCase().indexOf(filter) !== -1) return true;
+        }
+        return false;
     }
 
 };

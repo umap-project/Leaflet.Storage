@@ -249,5 +249,6 @@
     "Will be visible in the caption of the map": "Sera visible dans la légende de la carte",
     "Map has been saved!": "La carte a été sauvegardée!",
     "Save anyway": "Continuer",
-    "Woops! Someone else seems to have edited the data. You can save anyway, but this will erase the changes made by others.": "Aïe! Quelqu'un d'autre semble avoir modifié la carte. Vous pouvez continuer l'enregistrement, mais ses données seront perdues."
+    "Woops! Someone else seems to have edited the data. You can save anyway, but this will erase the changes made by others.": "Aïe! Quelqu'un d'autre semble avoir modifié la carte. Vous pouvez continuer l'enregistrement, mais ses données seront perdues.",
+    "Comma separated list of properties to use when filtering features": "Propriétés à utiliser pour filtrer les éléments (séparées par des virgules)"
 }

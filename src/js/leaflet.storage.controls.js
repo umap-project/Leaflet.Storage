@@ -410,7 +410,8 @@ L.Storage.Map.include({
             title = L.DomUtil.add('h3', 'storage-browse-title', browserContainer, this.options.name),
             filter = L.DomUtil.create('input', '', browserContainer),
             filterValue = '',
-            featuresContainer = L.DomUtil.create('div', 'storage-browse-features', browserContainer);
+            featuresContainer = L.DomUtil.create('div', 'storage-browse-features', browserContainer),
+            filterKeys = (this.options.filterKey || this.options.sortKey || 'name').split(',');
         filter.type = 'text';
         filter.placeholder = L._('Filter…');
 
@@ -442,14 +443,14 @@ L.Storage.Map.include({
                 headline = L.DomUtil.create('h5', '', container);
             container.id = 'browse_data_datalayer_' + datalayer.storage_id;
             datalayer.renderToolbox(headline);
-            var title = L.DomUtil.add('span', '', headline, datalayer.options.name),
-                ul = L.DomUtil.create('ul', '', container);
+            L.DomUtil.add('span', '', headline, datalayer.options.name);
+            var ul = L.DomUtil.create('ul', '', container);
             L.DomUtil.classIf(container, 'off', !datalayer.isVisible());
 
             var build = function () {
                 ul.innerHTML = '';
                 datalayer.eachFeature(function (feature) {
-                    if (filterValue && (feature.getDisplayName() || '').toLowerCase().indexOf(filterValue) === -1) return;
+                    if (filterValue && !feature.matchFilter(filterValue, filterKeys)) return;
                     ul.appendChild(addFeature(feature));
                 });
             };
