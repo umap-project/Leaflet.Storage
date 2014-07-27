@@ -17,6 +17,7 @@
 - simple custom popup templates
 - more control over map data attribution (custom inputs added)
 - basic HTTP optimistic concurrency control
+- add "empty" button in limit bounds fieldset
 
 
 ## 0.6.x
