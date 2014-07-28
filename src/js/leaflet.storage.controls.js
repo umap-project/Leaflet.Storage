@@ -44,9 +44,7 @@ L.Toolbar.include({
 L.Storage.SettingsToolbar = L.Toolbar.extend({
 
     addToolbar: function (map) {
-        var container = L.DomUtil.create('div', 'leaflet-draw-section'),
-        buttonIndex = 0,
-        buttonClassPrefix = 'leaflet-draw-draw';
+        var container = L.DomUtil.create('div', 'leaflet-draw-section');
         this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar');
         var actions = map.getEditActions(), action;
         for (var i = 0; i < actions.length; i++) {
