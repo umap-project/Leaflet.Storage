@@ -751,7 +751,8 @@ L.S.IframeExporter = L.Class.extend({
 
     options: {
         includeFullScreenLink: true,
-        currentView: false
+        currentView: false,
+        keepCurrentDatalayers: false
     },
 
     queryString : {
@@ -782,6 +783,17 @@ L.S.IframeExporter = L.Class.extend({
     },
 
     build: function () {
+        var datalayers = [];
+        if (this.options.keepCurrentDatalayers) {
+            this.map.eachDataLayer(function (datalayer) {
+                if (datalayer.isVisible() && datalayer.storage_id) {
+                    datalayers.push(datalayer.storage_id);
+                }
+            });
+            this.queryString.datalayers = datalayers.join(',');
+        } else {
+            delete this.queryString.datalayers;
+        }
         var currentView = this.options.currentView ? window.location.hash : '',
             iframeUrl = this.baseUrl + '?' + L.S.Xhr.buildQueryString(this.queryString) + currentView,
             code = '<iframe width="' + this.dimensions.width + '" height="' + this.dimensions.height + '" frameBorder="0" src="' + iframeUrl +'"></iframe>';

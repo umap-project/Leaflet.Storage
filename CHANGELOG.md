@@ -19,6 +19,7 @@
 - basic HTTP optimistic concurrency control
 - add "empty" button in limit bounds fieldset
 - make possible to decide which properties the data browser will filter on
+- add "datalayers" query string parameter to override shown datalayers on map load
 
 
 ## 0.6.x

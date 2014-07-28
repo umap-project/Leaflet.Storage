@@ -183,7 +183,8 @@ L.Storage.DataLayer = L.Class.extend({
         this.setStorageId(data.id);
         this.setOptions(data);
         this.connectToMap();
-        if(this.options.displayOnLoad) {
+        if ((this.map.datalayersOnLoad && this.storage_id && this.map.datalayersOnLoad.indexOf(this.storage_id.toString()) !== -1) ||
+            (!this.map.datalayersOnLoad && this.options.displayOnLoad)) {
             this.show();
         }
         if (!this.storage_id) {
