@@ -250,5 +250,6 @@
     "Map has been saved!": "Žemėlapis išsaugotas!",
     "Save anyway": "Išsaugoti bet kuriuo atveju",
     "Woops! Someone else seems to have edited the data. You can save anyway, but this will erase the changes made by others.": "Dėmesio! Kažkas kitas jau paredagavo šiuos duomenis. Jūs galite išsaugoti, bet tuomet bus prarasti kiti pakeitimai.",
-    "Comma separated list of properties to use when filtering features": "Comma separated list of properties to use when filtering features"
+    "Comma separated list of properties to use when filtering features": "Comma separated list of properties to use when filtering features",
+    "Keep current visible layers": "Keep current visible layers"
 }

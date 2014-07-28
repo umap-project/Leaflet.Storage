@@ -532,7 +532,7 @@ L.Storage.Map.include({
             ['dimensions.height', {handler: 'Input', label: L._('height')}],
             ['options.includeFullScreenLink', {handler: 'CheckBox', helpText: L._('Include full screen link?')}],
             ['options.currentView', {handler: 'CheckBox', helpText: L._('Current view instead of default map view?')}],
-            ['options.keepCurrentDatalayers', {handler: 'CheckBox', helpText: L._('Show current visible layers')}],
+            ['options.keepCurrentDatalayers', {handler: 'CheckBox', helpText: L._('Keep current visible layers')}],
             'queryString.moreControl',
             'queryString.datalayersControl',
             'queryString.zoomControl',
