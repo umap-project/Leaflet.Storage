@@ -94,15 +94,7 @@ L.Storage.FeatureMixin = {
         );
         form = builder.build();
         container.appendChild(form);
-        var options_fields = this.getAdvancedOptions();
-        builder = new L.S.FormBuilder(this, options_fields, {
-            id: 'storage-feature-advanced-properties',
-            callback: this._redraw,
-            callbackContext: this
-        });
-        var advancedProperties = L.DomUtil.createFieldset(container, L._('Advanced properties'));
-        form = builder.build();
-        advancedProperties.appendChild(form);
+        this.appendEditFieldsets(container);
         var advancedActions = L.DomUtil.createFieldset(container, L._('Advanced actions'));
         this.getAdvancedEditActions(advancedActions);
         L.S.fire('ui:start', {data: {html: container}});
@@ -120,6 +112,18 @@ L.Storage.FeatureMixin = {
                 L.S.fire('ui:end');
             }
         }, this);
+    },
+
+    appendEditFieldsets: function (container) {
+        var options_fields = this.getAdvancedOptions();
+        builder = new L.S.FormBuilder(this, options_fields, {
+            id: 'storage-feature-advanced-properties',
+            callback: this._redraw,
+            callbackContext: this
+        });
+        var advancedProperties = L.DomUtil.createFieldset(container, L._('Advanced properties'));
+        form = builder.build();
+        advancedProperties.appendChild(form);
     },
 
     endEdit: function () {},
@@ -484,6 +488,20 @@ L.Storage.Marker = L.Marker.extend({
             'properties._storage_options.zoomTo',
             'properties._storage_options.showLabel'
         ];
+    },
+
+    appendEditFieldsets: function (container) {
+        L.Storage.FeatureMixin.appendEditFieldsets.call(this, container);
+        var coordinatesOptions = [
+            ['_latlng.lat', {handler: 'FloatInput', label: L._('Latitude')}],
+            ['_latlng.lng', {handler: 'FloatInput', label: L._('Longitude')}]
+        ];
+        builder = new L.S.FormBuilder(this, coordinatesOptions, {
+            callback: this._redraw,
+            callbackContext: this
+        });
+        var fieldset = L.DomUtil.createFieldset(container, L._('Coordinates'));
+        fieldset.appendChild(builder.build());
     },
 
     bringToCenter: function (e, callback) {

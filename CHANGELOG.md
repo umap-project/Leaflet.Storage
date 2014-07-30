@@ -20,6 +20,7 @@
 - add "empty" button in limit bounds fieldset
 - make possible to decide which properties the data browser will filter on
 - add "datalayers" query string parameter to override shown datalayers on map load
+- add edit fieldset for changing marker latlng by hand
 
 
 ## 0.6.x

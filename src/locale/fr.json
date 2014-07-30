@@ -251,5 +251,8 @@
     "Save anyway": "Continuer",
     "Woops! Someone else seems to have edited the data. You can save anyway, but this will erase the changes made by others.": "Aïe! Quelqu'un d'autre semble avoir modifié la carte. Vous pouvez continuer l'enregistrement, mais ses données seront perdues.",
     "Comma separated list of properties to use when filtering features": "Propriétés à utiliser pour filtrer les éléments (séparées par des virgules)",
-    "Keep current visible layers": "Garder les calques visibles actuellement"
+    "Keep current visible layers": "Garder les calques visibles actuellement",
+    "Coordinates": "Coordonnées",
+    "Latitude": "Latitude",
+    "Longitude": "Longitude"
 }
