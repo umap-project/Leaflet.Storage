@@ -497,7 +497,10 @@ L.Storage.Marker = L.Marker.extend({
             ['_latlng.lng', {handler: 'FloatInput', label: L._('Longitude')}]
         ];
         builder = new L.S.FormBuilder(this, coordinatesOptions, {
-            callback: this._redraw,
+            callback: function () {
+                this._redraw();
+                this.bringToCenter();
+            },
             callbackContext: this
         });
         var fieldset = L.DomUtil.createFieldset(container, L._('Coordinates'));
