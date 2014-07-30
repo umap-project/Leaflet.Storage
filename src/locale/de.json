@@ -251,5 +251,5 @@
     "Save anyway": "Trotzdem speichern",
     "Woops! Someone else seems to have edited the data. You can save anyway, but this will erase the changes made by others.": "Hoppla! Jemand anders hat die Daten bearbeitet. Du kannst trotzdem speichern, aber dies wird Änderungen, welche andere Personen vorgenommen haben löschen.",
     "Comma separated list of properties to use when filtering features": "Kommagetrennte Liste der Merkmale, welche beim Filtern von Elementen verwendet werden sollen",
-    "Keep current visible layers": "Keep current visible layers"
+    "Keep current visible layers": "Aktuell eingeblendete Ebenen übernehmen?"
 }
