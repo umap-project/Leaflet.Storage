@@ -182,24 +182,19 @@ L.Storage.Map.include({
         this.slideshow = new L.S.Slideshow(this, this.options.slideshow);
         this.initCaptionBar();
         if (this.options.allowEdit) {
+            this.editTools = new L.S.Editable(this);
             // Layer for items added by users
-            this.on('draw:created', function (e) {
-                var datalayer = this.defaultDataLayer();
-                datalayer.addLayer(e.layer);
-                if (e.layerType == L.Draw.Polyline.TYPE || e.layerType == L.Draw.Polygon.TYPE) {
-                    e.layer.editing.enable();
-                    if (!e.latlng) {
-                        e.latlng = e.layer._latlngs[e.layer._latlngs.length-1];
-                    }
-                }
+            this.on('editable:edited', function (e) {
                 e.layer.isDirty = true;
-                e.layer.edit(e);
-            }, this);
-            this.on('draw:edited', function (e) {
+                if (e.layer._latlngs.length < e.layer.editor.MIN_VERTEX) e.layer.del();
+                else if (this.editedFeature !== e.layer) e.layer.edit(e);
+            });
+            this.on('editable:editing', function (e) {
                 e.layer.isDirty = true;
             });
-            this.on('draw:start', function (e) {
-                e.layer.isDirty = true;
+            this.on('editable:vertex:ctrlclick', function (e) {
+                if (e.position === 0) e.layer.editor.continueBackward();
+                else if (e.position === e.vertex.getLastIndex()) e.layer.editor.continueForward();
             });
             L.Storage.on('ui:end ui:start', function () {
                 this.editedFeature = null;
@@ -227,15 +222,15 @@ L.Storage.Map.include({
                 }
                 if (key == L.S.Keys.M && e.ctrlKey && this.editEnabled) {
                     L.DomEvent.stop(e);
-                    this._controls.draw.startMarker();
+                    this.editTools.startMarker();
                 }
                 if (key == L.S.Keys.P && e.ctrlKey && this.editEnabled) {
                     L.DomEvent.stop(e);
-                    this._controls.draw.startPolygon();
+                    this.editTools.startPolygon();
                 }
                 if (key == L.S.Keys.L && e.ctrlKey && this.editEnabled) {
                     L.DomEvent.stop(e);
-                    this._controls.draw.startPolyline();
+                    this.editTools.startPolyline();
                 }
                 if (key == L.S.Keys.I && e.ctrlKey && this.editEnabled) {
                     L.DomEvent.stop(e);
@@ -244,6 +239,9 @@ L.Storage.Map.include({
                 if (key == L.S.Keys.H && e.ctrlKey && this.editEnabled) {
                     L.DomEvent.stop(e);
                     this.help.show('edit');
+                }
+                if (e.keyCode == L.S.Keys.ESC && this.editEnabled) {
+                    this.editTools.stopDrawing();
                 }
             };
             L.DomEvent.addListener(document, 'keydown', editShortcuts, this);
@@ -280,9 +278,10 @@ L.Storage.Map.include({
         if (this.options.allowEdit) {
             this._controls.toggleEdit = new L.Storage.EditControl(this);
             this.addControl(this._controls.toggleEdit);
-            var options = this.options.editOptions ? this.options.editOptions : {};
-            this._controls.draw = new L.Storage.DrawControl(this, options);
-            this.addControl(this._controls.draw);
+            this._controls.drawToolbar = new L.S.DrawToolbar(this);
+            this.addControl(this._controls.drawToolbar);
+            this._controls.settingsToolbar = new L.S.SettingsToolbar(this);
+            this.addControl(this._controls.settingsToolbar);
         }
         if (this.options.moreControl) {
             this._controls.moreControl = (new L.Storage.MoreControls()).addTo(this);
@@ -1153,7 +1152,10 @@ L.Storage.Map.include({
     },
 
     disableEdit: function() {
+        if (this.isDirty) return;
         L.DomUtil.removeClass(document.body, 'storage-edit-enabled');
+        this.editedFeature = null;
+        if (this.editTools) this.editTools.stopDrawing();
         this.editEnabled = false;
         this.fire('edit:disabled');
     },
@@ -1231,9 +1233,9 @@ L.Storage.Map.include({
 
     askForReset: function (e) {
         if (!confirm(L._('Are you sure you want to cancel your changes?'))) return;
+        this.reset();
         this.disableEdit(e);
         L.S.fire('ui:end');
-        this.reset();
     },
 
     getEditActions: function () {
@@ -1273,6 +1275,47 @@ L.Storage.Map.include({
                     context: this
                 }
             ]);
+        }
+        return actions;
+    },
+
+    startMarker: function () {
+        return this.editTools.startMarker();
+    },
+
+    startPolyline: function () {
+        return this.editTools.startPolyline();
+    },
+
+    startPolygon: function () {
+        return this.editTools.startPolygon();
+    },
+
+    getDrawActions: function () {
+        var actions = [];
+        if (this.options.enableMarkerDraw) {
+            actions.push({
+                title: L._('Draw a marker'),
+                className: 'storage-draw-marker',
+                callback: this.startMarker,
+                context: this
+            });
+        }
+        if (this.options.enablePolylineDraw) {
+            actions.push({
+                title: L._('Draw a polyline'),
+                className: 'storage-draw-polyline',
+                callback: this.startPolyline,
+                context: this
+            });
+        }
+        if (this.options.enablePolygonDraw) {
+            actions.push({
+                title: L._('Draw a polygon'),
+                className: 'storage-draw-polygon',
+                callback: this.startPolygon,
+                context: this
+            });
         }
         return actions;
     },
@@ -1340,33 +1383,34 @@ L.Storage.Map.include({
         if (this.options.allowEdit) {
             items.push('-');
             if (this.editEnabled) {
-                items.push(
-                    {
+                if (!this.isDirty) {
+                    items.push({
                         text: L._('Stop editing') + ' (Ctrl+E)',
                         callback: this.disableEdit
                     });
+                }
                 if (this.options.enableMarkerDraw) {
                     items.push(
                         {
                             text: L._('Draw a marker') + ' (Ctrl-M)',
-                            callback: this._controls.draw.startMarker,
-                            context: this._controls.draw
+                            callback: this.startMarker,
+                            context: this
                         });
                 }
                 if (this.options.enablePolylineDraw) {
                     items.push(
                         {
                             text: L._('Draw a polygon') + ' (Ctrl-P)',
-                            callback: this._controls.draw.startPolygon,
-                            context: this._controls.draw
+                            callback: this.startPolygon,
+                            context: this
                         });
                 }
                 if (this.options.enablePolygonDraw) {
                     items.push(
                       {
                            text: L._('Draw a line') + ' (Ctrl-L)',
-                           callback: this._controls.draw.startPolyline,
-                           context: this._controls.draw
+                           callback: this.startPolyline,
+                           context: this
                        });
                 }
                 items.push('-');

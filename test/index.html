@@ -3,6 +3,7 @@
         <title>Leaflet.Storage Tests</title>
         <meta charset="utf-8">
         <script src="../reqs/leaflet/leaflet-src.js"></script>
+        <script src="../reqs/editable/Leaflet.Editable.js"></script>
         <script src="../reqs/draw/leaflet.draw-src.js"></script>
         <script src="../reqs/hash/leaflet-hash.js"></script>
         <script src="../reqs/i18n/Leaflet.i18n.js"></script>
@@ -72,6 +73,7 @@
             background-color: white;
             box-shadow: 0px 0px 8px 0px black;
             overflow-y: auto;
+            display: none;
         }
         #mocha-stats {
             position: absolute;
@@ -85,7 +87,15 @@
         <div id="storage-alert-container"></div>
         <div id="storage-tooltip-container"></div>
         <script>
-          mocha.run();
+            var runner = mocha.run(function (failures) {
+                if (window.location.search.indexOf('debug') === -1) qs('#mocha').style.display = 'block';
+                console.log(failures);
+            });
+            runner.on('fail', function(test, err) {
+                console.log(test.title, test.err);
+                console.log(test.err.expected, test.err.actual);
+                console.log(test.err.stack);
+            });
         </script>
     </body>
 </html>

@@ -12,7 +12,7 @@ L.Storage.Map = L.Map.extend({});
 * Utils
 */
 L.Util.queryString = function (name, fallback) {
-    var decode = function (s) { return decodeURIComponent(s.replace(/\+/g, " ")); };
+    var decode = function (s) { return decodeURIComponent(s.replace(/\+/g, ' ')); };
     var qs = window.location.search.slice(1).split('&'), qa = {};
     for(var i in qs) {
         var key = qs[i].split('=');
@@ -24,12 +24,12 @@ L.Util.queryString = function (name, fallback) {
 
 L.Util.booleanFromQueryString = function (name) {
     var value = L.Util.queryString(name);
-    return value === "1" || value === "true";
+    return value === '1' || value === 'true';
 };
 
 L.Util.setFromQueryString = function (options, name) {
     var value = L.Util.queryString(name);
-    if (typeof value !== "undefined") {
+    if (typeof value !== 'undefined') {
         options[name] = value;
     }
 };
@@ -349,20 +349,20 @@ L.Storage.Help = L.Class.extend({
         actions.unshift(
             {
                 title: L._('Draw a polyline') + ' (Ctrl+L)',
-                className: 'leaflet-draw-draw-polyline',
-                callback: function () {this.hide(); this.map._controls.draw.startPolyline();},
+                className: 'storage-draw-polyline',
+                callback: function () {this.hide(); this.map.startPolyline();},
                 context: this
             },
             {
                 title: L._('Draw a polygon') + ' (Ctrl+P)',
-                className: 'leaflet-draw-draw-polygon',
-                callback: function () {this.hide(); this.map._controls.draw.startPolygone();},
+                className: 'storage-draw-polygon',
+                callback: function () {this.hide(); this.map.startPolygon();},
                 context: this
             },
             {
                 title: L._('Draw a marker') + ' (Ctrl+M)',
-                className: 'leaflet-draw-draw-marker',
-                callback: function () {this.hide(); this.map._controls.draw.startMarker();},
+                className: 'storage-draw-marker',
+                callback: function () {this.hide(); this.map.startMarker();},
                 context: this
             }
         );

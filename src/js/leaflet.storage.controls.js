@@ -1,52 +1,25 @@
-/*
-* Hack for handling a custom tooltip on buttons over.
-*/
-L.Toolbar.prototype._createButtonOrig = L.Toolbar.prototype._createButton;
-
-L.Toolbar.include({
+L.Storage.Toolbar = L.Control.extend({
 
     _createButton: function (options) {
-        var title = options.title;
-        options.title = '';  // We don't want our tooltip AND default HTML one
-        var button = this._createButtonOrig(options);
-        L.DomEvent.on(button, 'mouseover', function (e) {
-            L.Storage.fire('ui:tooltip', {content: L._(title)});
-        });
-        return button;
+        var link = L.DomUtil.create('a', options.className || '', options.container);
+        link.href = '#';
+
+        L.DomEvent
+            .on(link, 'click', L.DomEvent.stop)
+            .on(link, 'mousedown', L.DomEvent.stop)
+            .on(link, 'dblclick', L.DomEvent.stop)
+            .on(link, 'click', options.callback, options.context)
+            .on(link, 'mouseover', function () {
+                L.Storage.fire('ui:tooltip', {content: options.title});
+            });
+
+        return link;
     },
 
-    // _showActionsToolbar: function () {
-    //     var buttonIndex = this._activeMode.buttonIndex,
-    //     lastButtonIndex = this._lastButtonIndex,
-    //     buttonWidth = 46, // TODO: this should be calculated
-    //     borderWidth = 1, // TODO: this should also be calculated
-    //     toolbarPosition = (buttonIndex * buttonWidth) + (buttonIndex * borderWidth) + 10;
-
-    //     // Correctly position the cancel button
-    //     this._actionsContainer.style.left = toolbarPosition + 'px';
-
-    //     if (buttonIndex === 0) {
-    //         L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-notop');
-    //         L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-top');
-    //     }
-
-    //     if (buttonIndex === lastButtonIndex) {
-    //         L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
-    //         L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
-    //     }
-
-    //     this._actionsContainer.style.display = 'block';
-    // }
-
-});
-
-
-L.Storage.SettingsToolbar = L.Toolbar.extend({
-
-    addToolbar: function (map) {
-        var container = L.DomUtil.create('div', 'leaflet-draw-section');
-        this._toolbarContainer = L.DomUtil.create('div', 'leaflet-draw-toolbar leaflet-bar');
-        var actions = map.getEditActions(), action;
+    onAdd: function (map) {
+        var container = L.DomUtil.create('div', 'storage-toolbar');
+        this._toolbarContainer = L.DomUtil.create('div', 'leaflet-bar');
+        var actions = this.getActions(map), action;
         for (var i = 0; i < actions.length; i++) {
             action = actions[i];
             action.container = this._toolbarContainer;
@@ -55,6 +28,23 @@ L.Storage.SettingsToolbar = L.Toolbar.extend({
 
         container.appendChild(this._toolbarContainer);
         return container;
+    }
+
+
+});
+
+L.Storage.SettingsToolbar = L.S.Toolbar.extend({
+
+    getActions: function (map) {
+        return map.getEditActions();
+    }
+
+});
+
+L.Storage.DrawToolbar = L.S.Toolbar.extend({
+
+    getActions: function (map) {
+        return map.getDrawActions();
     }
 
 });
@@ -75,118 +65,6 @@ L.Storage.EditControl = L.Control.extend({
             .addListener(edit, 'click', L.DomEvent.stop)
             .addListener(edit, 'click', map.enableEdit, map);
         return container;
-    }
-
-});
-
-L.Storage.DrawControl = L.Control.Draw.extend({
-    options: {
-        position: 'topright',
-        draw: {
-            marker: {
-                title: L._('Draw a marker')
-            },
-            rectangle: null,  // Later
-            circle: null  // Later
-        },
-        edit: false // Later...
-    },
-
-    initialize: function(map, options) {
-        this.editableLayers = new L.FeatureGroup();
-        map.addLayer(this.editableLayers);
-        this.options.edit.featureGroup = this.editableLayers;
-        this._map = map;
-        if (!map.options.enableMarkerDraw) {
-            this.options.draw.marker = null;
-        } else {
-            this.options.draw.marker.icon = new L.Storage.Icon.Default(this._map);
-        }
-        if (!map.options.enablePolylineDraw) {
-            this.options.draw.polyline = null;
-        }
-        if (!map.options.enablePolygonDraw) {
-            this.options.draw.polygon = null;
-        }
-
-        L.Control.Draw.prototype.initialize.call(this, options);
-
-        // Settings toolbar
-        var toolbar = new L.Storage.SettingsToolbar();
-        id = L.stamp(toolbar);
-        this._toolbars[id] = toolbar;
-        // Listen for when toolbar is enabled
-        this._toolbars[id].on('enable', this._toolbarEnabled, this);
-    },
-
-    getDrawToolbar: function () {
-        for (var toolbarId in this._toolbars) {
-            if (this._toolbars[toolbarId] instanceof L.DrawToolbar) {
-                return this._toolbars[toolbarId];
-            }
-        }
-    },
-
-    startMarker: function () {
-        this.getDrawToolbar()._modes.marker.handler.enable();
-    },
-
-    startPolygon: function () {
-        this.getDrawToolbar()._modes.polygon.handler.enable();
-    },
-
-    startPolyline: function () {
-        this.getDrawToolbar()._modes.polyline.handler.enable();
-    }
-
-});
-
-
-L.Draw.Marker.include({
-
-    _fireCreatedEvent: function () {
-        // Overriding to instanciate our own Marker class
-        // How to do it in a cleaner way? Asking upstream to add a hook?
-        var marker = new L.Storage.Marker(this._map, this._marker.getLatLng());
-        L.Draw.Feature.prototype._fireCreatedEvent.call(this, marker);
-    }
-});
-
-L.Draw.Polyline.include({
-
-    _fireCreatedEvent: function () {
-        var poly = new L.Storage.Polyline(this._map, this._poly.getLatLngs());
-        L.Draw.Feature.prototype._fireCreatedEvent.call(this, poly);
-    }
-
-});
-
-L.Draw.Polygon.include({
-
-    _fireCreatedEvent: function () {
-        var poly = new L.Storage.Polygon(this._map, this._poly.getLatLngs());
-        L.Draw.Feature.prototype._fireCreatedEvent.call(this, poly);
-    }
-
-});
-
-L.S.PolyEdit = L.Edit.Poly.extend({
-
-    _createMarker: function (latlng, index) {
-        var marker = L.Edit.Poly.prototype._createMarker.call(this, latlng, index);
-        marker._poly = this._poly;
-        marker.on('contextmenu', this._onMarkerContextMenu);
-        return marker;
-    },
-
-    _removeMarker: function (marker) {
-        marker.off('contextmenu', this._onMarkerContextMenu);
-        L.Edit.Poly.prototype._removeMarker.call(this, marker);
-    },
-
-    _onMarkerContextMenu: function (e) {
-        e._polyHandlerIndex = this._index;
-        this._poly.fire('contextmenu', e);
     }
 
 });
@@ -738,8 +616,8 @@ L.S.MeasureControl = L.Control.MeasureControl.extend({
         L.Control.MeasureControl.prototype.onAdd.call(this, map);
         L.DomUtil.removeClass(this._container, 'leaflet-bar');
         L.DomUtil.addClass(this._container, 'storage-measure-control storage-control');
-        if (map._controls.draw) {
-            map._controls.draw.getDrawToolbar().on('enable', this.handler.disable, this.handler);
+        if (map.editTools) {
+            map.on('editable:enable', this.handler.disable, this.handler);
         }
         return this._container;
     }
@@ -801,6 +679,23 @@ L.S.IframeExporter = L.Class.extend({
             code += '<p><a href="' + this.baseUrl + '">' + L._('See full screen') + '</a></p>';
         }
         return code;
+    }
+
+});
+
+L.S.Editable = L.Editable.extend({
+
+    createPolyline: function (latlngs) {
+        return new L.Storage.Polyline(this.map, latlngs);
+    },
+
+    createPolygon: function (latlngs) {
+        var polygon = new L.Storage.Polygon(this.map, latlngs);
+        return polygon;
+    },
+
+    createMarker: function (latlng) {
+        return new L.Storage.Marker(this.map, latlng);
     }
 
 });

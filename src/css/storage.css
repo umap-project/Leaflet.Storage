@@ -115,9 +115,12 @@ a.storage-control-text {
 /* *********** */
 /*    Draw     */
 /* *********** */
-
-.leaflet-draw .leaflet-draw-toolbar a,
-.leaflet-draw .leaflet-draw-toolbar a:hover {
+.leaflet-drawing-icon,
+.leaflet-editable-drawing {
+    cursor: crosshair;
+}
+.storage-toolbar a,
+.storage-toolbar a:hover {
     height: 40px;
     width: 40px;
     display: none;
@@ -129,42 +132,42 @@ a.storage-control-text {
     background-image: url("../img/24.png");
     background-size: auto auto;
 }
-.leaflet-draw-toolbar {
+.storage-toolbar {
     margin-top: 0;
 }
 .update-map-extent,
-.leaflet-container .leaflet-draw-toolbar .update-map-extent {
+.leaflet-container .storage-toolbar .update-map-extent {
     background-position: 0 -40px;
 }
-.leaflet-draw-toolbar .update-map-tilelayers,
+.storage-toolbar .update-map-tilelayers,
 .update-map-tilelayers {
     background-position: -80px 0;
 }
-.leaflet-draw-toolbar .update-map-permissions,
+.storage-toolbar .update-map-permissions,
 .update-map-permissions {
     background-position: -40px -40px;
 }
-.leaflet-draw-toolbar .upload-data,
+.storage-toolbar .upload-data,
 .upload-data {
     background-position: -160px 0;
 }
-.leaflet-draw-toolbar .update-map-settings,
+.storage-toolbar .update-map-settings,
 .update-map-settings {
     background-position: -120px 0;
 }
-.leaflet-draw-draw-marker,
-.leaflet-draw-toolbar .leaflet-draw-draw-marker {
+.storage-draw-marker,
+.storage-toolbar .storage-draw-marker {
     background-position: -160px -40px;
 }
-.leaflet-draw-draw-polyline,
-.leaflet-draw-toolbar .leaflet-draw-draw-polyline {
+.storage-draw-polyline,
+.storage-toolbar .storage-draw-polyline {
     background-position: -120px -40px;
 }
-.leaflet-draw-draw-polygon,
-.leaflet-draw-toolbar .leaflet-draw-draw-polygon {
+.storage-draw-polygon,
+.storage-toolbar .storage-draw-polygon {
     background-position: -80px -40px;
 }
-.storage-edit-enabled .leaflet-draw .leaflet-draw-toolbar a {
+.storage-edit-enabled .storage-toolbar a {
     display: block;
 }
 .leaflet-draw-section {

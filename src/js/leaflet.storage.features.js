@@ -169,6 +169,14 @@ L.Storage.FeatureMixin = {
         this.map.removeLayer(this);
     },
 
+    connectCreatedToMap: function (map) {
+        // Overrided from Leaflet.Editable
+        var datalayer = map.defaultDataLayer();
+        datalayer.addLayer(this);
+        this.isDirty = true;
+        return this;
+    },
+
     connectToDataLayer: function (datalayer) {
         this.datalayer = datalayer;
     },
@@ -269,12 +277,13 @@ L.Storage.FeatureMixin = {
     },
 
     addInteractions: function () {
-        this.on('contextmenu', this._showContextMenu, this);
+        this.on('contextmenu editable:vertex:contextmenu', this._showContextMenu, this);
     },
 
     _showContextMenu: function (e) {
         var pt = this.map.mouseEventToContainerPoint(e.originalEvent);
-        this.map.contextmenu.showAt(pt, {relatedTarget: this, _polyHandlerIndex: e._polyHandlerIndex});
+        e.relatedTarget = this;
+        this.map.contextmenu.showAt(pt, e);
     },
 
     makeDirty: function () {
@@ -409,7 +418,7 @@ L.Storage.Marker = L.Marker.extend({
     _enableDragging: function() {
         // TODO: start dragging after 1 second on mouse down
         if(this.map.editEnabled) {
-            this.dragging.enable();
+            this.enableEdit();
             // Enabling dragging on the marker override the Draggable._OnDown
             // event, which, as it stopPropagation, refrain the call of
             // _onDown with map-pane element, which is responsible to
@@ -421,7 +430,7 @@ L.Storage.Marker = L.Marker.extend({
 
     _disableDragging: function() {
         if(this.map.editEnabled) {
-            this.dragging.disable();
+            this.disableEdit();
         }
     },
 
@@ -536,14 +545,14 @@ L.Storage.PathMixin = {
 
     edit: function (e) {
         if(this.map.editEnabled) {
-            this.editing.enable();
+            if (!this.editEnabled()) this.enableEdit();
             L.Storage.FeatureMixin.edit.call(this, e);
         }
     },
 
     _toggleEditing: function(e) {
         if(this.map.editEnabled) {
-            if(this.editing._enabled) {
+            if(this.editEnabled()) {
                 this.endEdit();
                 L.Storage.fire('ui:end');
             }
@@ -644,12 +653,12 @@ L.Storage.PathMixin = {
     },
 
     endEdit: function () {
-        this.editing.disable();
+        this.disableEdit();
         L.Storage.FeatureMixin.endEdit.call(this);
     },
 
     _onMouseOver: function () {
-        if (this.map.editEnabled && !this.editing._enabled) {
+        if (this.map.editEnabled && !this.editEnabled()) {
             L.Storage.fire('ui:tooltip', {content: L._('Double-click to edit')});
         }
     },
@@ -669,7 +678,6 @@ L.Storage.PathMixin = {
         }
         this.on('mouseover', this._onMouseOver);
         this.on('edit', this.makeDirty);
-        this.editing = new L.S.PolyEdit(this);
     }
 
 };
@@ -709,32 +717,44 @@ L.Storage.Polyline = L.Polyline.extend({
 
     getEditContextMenuItems: function (e) {
         var items = L.Storage.FeatureMixin.getEditContextMenuItems.call(this),
-            handlerClicked = e._polyHandlerIndex;
+            vertexClicked = e.vertex;
         items.push({
             text: L._('Transform to polygon'),
             callback: this.toPolygon,
             context: this
         });
-        if (this.map.editedFeature
-            && this.map.editedFeature instanceof L.Storage.Polyline
-            && this.map.editedFeature !== this) {
+        if (this.map.editedFeature && this.map.editedFeature instanceof L.Storage.Polyline && this.map.editedFeature !== this) {
             items.push({
                 text: L._('Merge geometry with edited feature'),
                 callback: function () {
                     this.mergeInto(this.map.editedFeature);
-                    this.map.editedFeature.editing.updateMarkers();
+                    this.map.editedFeature.editor.reset();
                 },
                 context: this
             });
         }
-        if (handlerClicked && handlerClicked !== 0 && handlerClicked !== this._latlngs.length-1) {
-            items.push({
-                text: L._('Split line'),
-                callback: function () {
-                    this.splitAt(handlerClicked);
-                },
-                context: this
-            });
+        if (vertexClicked) {
+            if (e.position !== 0 && e.position !== this._latlngs.length-1) {
+                items.push({
+                    text: L._('Split line'),
+                    callback: function () {
+                        this.splitAt(e.position);
+                    },
+                    context: this
+                });
+            } else if (e.position === 0) {
+                items.push({
+                    text: L._('Continue line (Ctrl-click)'),
+                    callback: this.editor.continueBackward,
+                    context: this.editor
+                });
+            } else if (e.position === e.vertex.getLastIndex()) {
+                items.push({
+                    text: L._('Continue line (Ctrl-click)'),
+                    callback: this.editor.continueForward,
+                    context: this.editor
+                });
+            }
         }
         return items;
     },
@@ -807,8 +827,8 @@ L.Storage.Polyline = L.Polyline.extend({
         };
         this.setLatLngs(thisLatlngs);
         this.isDirty = true;
-        if (this.editing && this.editing.enabled()) {
-            this.editing.updateMarkers();
+        if (this.editEnabled()) {
+            this.editor.reset();
         }
         var other = this.datalayer.geojsonToFeatures(geojson);
         return other;
@@ -825,17 +845,18 @@ L.Storage.Polygon = L.Polygon.extend({
         /* Return a GeoJSON geometry Object */
         /* see: https://github.com/CloudMade/Leaflet/issues/1135 */
         /* and: https://github.com/CloudMade/Leaflet/issues/712 */
-        var latlngs = this.getLatLngs().slice(0), coords = [], closingPoint = latlngs[0];
+        var latlngs = this.getLatLngs().slice(0), closingPoint = latlngs[0];
         latlngs.push(closingPoint);  // Artificially create a LinearRing
-        for(var i = 0, len = latlngs.length; i < len; i++) {
-            coords.push([
-                latlngs[i].lng,
-                latlngs[i].lat
-            ]);
+        var coords = L.Util.latLngsForGeoJSON(latlngs),
+            coordinates = [coords];
+        if (this._holes) {
+            for (var i = 0; i < this._holes.length; i++) {
+                coordinates.push(L.Util.latLngsForGeoJSON(this._holes[i]));
+            }
         }
         return {
             type: 'Polygon',
-            coordinates: [coords]
+            coordinates: coordinates
         };
     },
 
@@ -882,12 +903,24 @@ L.Storage.Polygon = L.Polygon.extend({
 
     getEditContextMenuItems: function () {
         var items = L.Storage.FeatureMixin.getEditContextMenuItems.call(this);
+        if (!this._holes || !this._holes.length) {
+            items.push({
+                text: L._('Transform to lines'),
+                callback: this.toPolyline,
+                context: this
+            });
+        }
         items.push({
-            text: L._('Transform to lines'),
-            callback: this.toPolyline,
+            text: L._('Start a hole here'),
+            callback: this.startHole,
             context: this
         });
         return items;
+    },
+
+    startHole: function (e) {
+        this.enableEdit();
+        this.editor.newHole(e.latlng);
     },
 
     toPolyline: function () {
