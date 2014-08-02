@@ -1,6 +1,6 @@
 # Leaflet.Storage changelog
 
-## dev
+## 0.7.0
 - introduce panel popup mode
 - upgraded leaflet.loading to 0.1.10
 - make the cluster text dynamic
@@ -22,7 +22,6 @@
 - add "datalayers" query string parameter to override shown datalayers on map load
 - add edit fieldset for changing marker latlng by hand
 - moved from Leaflet.Draw to Leaflet.Editable
-
 
 ## 0.6.x
 - add TMS option to custom tilelayer

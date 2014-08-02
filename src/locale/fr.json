@@ -254,5 +254,7 @@
     "Keep current visible layers": "Garder les calques visibles actuellement",
     "Coordinates": "Coordonnées",
     "Latitude": "Latitude",
-    "Longitude": "Longitude"
+    "Longitude": "Longitude",
+    "Continue line (Ctrl-click)": "Continue la ligne (Ctrl-clic)",
+    "Start a hole here": "Ajouter un tracé intérieur"
 }

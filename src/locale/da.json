@@ -254,5 +254,7 @@
     "Keep current visible layers": "Behold nuværende synlige lag",
     "Coordinates": "Coordinates",
     "Latitude": "Latitude",
-    "Longitude": "Longitude"
+    "Longitude": "Longitude",
+    "Continue line (Ctrl-click)": "Continue line (Ctrl-click)",
+    "Start a hole here": "Start a hole here"
 }

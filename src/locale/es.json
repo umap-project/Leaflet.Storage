@@ -254,5 +254,7 @@
     "Keep current visible layers": "Guardar las capas visibles actuales",
     "Coordinates": "Coordenadas",
     "Latitude": "Latitud",
-    "Longitude": "Longitud"
+    "Longitude": "Longitud",
+    "Continue line (Ctrl-click)": "Continue line (Ctrl-click)",
+    "Start a hole here": "Start a hole here"
 }

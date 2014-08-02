@@ -254,5 +254,7 @@
     "Keep current visible layers": "Aktuell eingeblendete Ebenen übernehmen?",
     "Coordinates": "Koordinaten",
     "Latitude": "geogr. Breite",
-    "Longitude": "geogr. Länge"
+    "Longitude": "geogr. Länge",
+    "Continue line (Ctrl-click)": "Continue line (Ctrl-click)",
+    "Start a hole here": "Start a hole here"
 }
