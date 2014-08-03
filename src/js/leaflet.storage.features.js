@@ -415,10 +415,10 @@ L.Storage.Marker = L.Marker.extend({
         }
     },
 
-    _enableDragging: function() {
+    _enableDragging: function () {
         // TODO: start dragging after 1 second on mouse down
         if(this.map.editEnabled) {
-            this.enableEdit();
+            if (!this.editEnabled()) this.enableEdit();
             // Enabling dragging on the marker override the Draggable._OnDown
             // event, which, as it stopPropagation, refrain the call of
             // _onDown with map-pane element, which is responsible to
@@ -428,8 +428,10 @@ L.Storage.Marker = L.Marker.extend({
         }
     },
 
-    _disableDragging: function() {
+    _disableDragging: function () {
         if(this.map.editEnabled) {
+            if (this.editor && this.editor.drawing) return;  // when creating a new marker, the mouse can trigger the mouseover/mouseout event
+                                                             // do not listen to them
             this.disableEdit();
         }
     },

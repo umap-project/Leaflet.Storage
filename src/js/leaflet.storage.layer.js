@@ -543,6 +543,10 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     _polygonToLayer: function(geojson, latlngs) {
+        // Ensure no empty hole
+        // for (var i = latlngs.length - 1; i > 0; i--) {
+        //     if (!latlngs.slice()[i].length) latlngs.splice(i, 1);
+        // }
         return new L.Storage.Polygon(
             this.map,
             latlngs,

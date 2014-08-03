@@ -184,17 +184,21 @@ L.Storage.Map.include({
         if (this.options.allowEdit) {
             this.editTools = new L.S.Editable(this);
             // Layer for items added by users
-            this.on('editable:edited', function (e) {
-                e.layer.isDirty = true;
+            this.on('editable:drawing:cancel', function (e) {
                 if (e.layer._latlngs && e.layer._latlngs.length < e.layer.editor.MIN_VERTEX) e.layer.del();
-                else if (this.editedFeature !== e.layer) e.layer.edit(e);
+                if (e.layer instanceof L.S.Marker) e.layer.del();
+            });
+            this.on('editable:drawing:finish', function (e) {
+                e.layer.isDirty = true;
+                if (this.editedFeature !== e.layer) e.layer.edit(e);
             });
             this.on('editable:editing', function (e) {
                 e.layer.isDirty = true;
             });
             this.on('editable:vertex:ctrlclick', function (e) {
-                if (e.position === 0) e.layer.editor.continueBackward();
-                else if (e.position === e.vertex.getLastIndex()) e.layer.editor.continueForward();
+                var index = e.vertex.getIndex();
+                if (index === 0) e.layer.editor.continueBackward();
+                else if (index === e.vertex.getLastIndex()) e.layer.editor.continueForward();
             });
             L.Storage.on('ui:end ui:start', function () {
                 this.editedFeature = null;

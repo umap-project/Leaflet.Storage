@@ -1,5 +1,9 @@
 # Leaflet.Storage changelog
 
+## 0.7.1
+- upgrade Leaflet.Editable to 0.2.0
+- fixed some bugs after Leaflet.Editable switch
+
 ## 0.7.0
 - introduce panel popup mode
 - upgraded leaflet.loading to 0.1.10

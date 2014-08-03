@@ -1,6 +1,6 @@
 {
   "name": "leaflet-storage",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Manage map and features with Leaflet and expose them for backend storage through an API.",
   "directories": {
     "test": "test"
@@ -49,7 +49,7 @@
     "osmtogeojson": "^2.0.5",
     "togeojson": "^0.7.0",
     "togpx": "^0.3.1",
-    "leaflet-editable": "^0.1.0"
+    "leaflet-editable": "^0.2.0"
   },
   "napa": {
     "leaflet-contextmenu": "aratcliffe/Leaflet.contextmenu",
