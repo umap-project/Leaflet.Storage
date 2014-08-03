@@ -796,6 +796,7 @@ L.Storage.Map.include({
     },
 
     reset: function () {
+        if (this.editTools) this.editTools.stopDrawing();
         this.resetOptions();
         this.dirty_datalayers.slice().forEach(function (datalayer) {
             if (datalayer.isDeleted) {
@@ -1155,7 +1156,6 @@ L.Storage.Map.include({
         if (this.isDirty) return;
         L.DomUtil.removeClass(document.body, 'storage-edit-enabled');
         this.editedFeature = null;
-        if (this.editTools) this.editTools.stopDrawing();
         this.editEnabled = false;
         this.fire('edit:disabled');
     },
