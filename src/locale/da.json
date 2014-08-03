@@ -252,9 +252,9 @@
     "Woops! Someone else seems to have edited the data. You can save anyway, but this will erase the changes made by others.": "Oops! Det ser ud til at nogen har rettet i data. Du kan godt gemme alligevel, men dette vil så overskrive de ændringer de andre har lavet.",
     "Comma separated list of properties to use when filtering features": "Kommasepareret list af alle egenskaberne til brug ved filteret objekter.",
     "Keep current visible layers": "Behold nuværende synlige lag",
-    "Coordinates": "Coordinates",
-    "Latitude": "Latitude",
-    "Longitude": "Longitude",
-    "Continue line (Ctrl-click)": "Continue line (Ctrl-click)",
-    "Start a hole here": "Start a hole here"
+    "Coordinates": "Koordinater",
+    "Latitude": "Længdegrader",
+    "Longitude": "Breddegrader",
+    "Continue line (Ctrl-click)": "Fortsæt linje (Kontrol-klik)",
+    "Start a hole here": "Start et hul her"
 }
