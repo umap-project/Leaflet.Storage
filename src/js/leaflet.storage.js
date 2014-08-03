@@ -186,7 +186,7 @@ L.Storage.Map.include({
             // Layer for items added by users
             this.on('editable:edited', function (e) {
                 e.layer.isDirty = true;
-                if (e.layer._latlngs.length < e.layer.editor.MIN_VERTEX) e.layer.del();
+                if (e.layer._latlngs && e.layer._latlngs.length < e.layer.editor.MIN_VERTEX) e.layer.del();
                 else if (this.editedFeature !== e.layer) e.layer.edit(e);
             });
             this.on('editable:editing', function (e) {
