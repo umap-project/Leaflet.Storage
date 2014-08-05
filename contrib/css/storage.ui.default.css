@@ -270,8 +270,9 @@ fieldset.toggle.on .more_style_options {
     color: #fff;
     font-size: 0.8em;
     border-radius: 2px;
-    z-index: 10;
+    z-index: 10000;
     font-weight: normal;
+    white-space: nowrap;
 }
 .storage-tooltip #storage-tooltip-container {
     display: block;

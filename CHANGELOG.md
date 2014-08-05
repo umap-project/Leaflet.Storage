@@ -1,5 +1,8 @@
 # Leaflet.Storage changelog
 
+## dev
+- help tooltip now follows the mouse position
+
 ## 0.7.1
 - upgrade Leaflet.Editable to 0.2.0
 - fixed some bugs after Leaflet.Editable switch

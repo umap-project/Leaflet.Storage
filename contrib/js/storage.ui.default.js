@@ -111,21 +111,44 @@ L.Storage.on('ui:alert', function (e) {
 /*
 * Tooltips
 */
-L.Storage.on('ui:tooltip', function (e) {
-    var div = L.DomUtil.get('storage-tooltip-container');
-    var body = document.getElementsByTagName('body')[0];
-    div.innerHTML = '';
-    div.innerHTML = e.content;
-    L.DomUtil.addClass(body, 'storage-tooltip');
-    var map = L.DomUtil.get('map'),
-        left = map.offsetLeft + (map.clientWidth / 2) - (div.clientWidth / 2),
-        top = map.offsetTop + 5,
-        point = L.point(left, top);
-    L.DomUtil.setPosition(div, point);
+L.Storage.on('ui:tooltip:init', function (e) {
+    var tooltip = L.DomUtil.get('storage-tooltip-container');
     var close = function () {
-        div.innerHTML = '';
-        L.DomUtil.removeClass(body, 'storage-tooltip');
+        tooltip.innerHTML = '';
+        L.DomUtil.removeClass(document.body, 'storage-tooltip');
     };
-    L.DomEvent.on(div, 'mouseover', close);
-    window.setTimeout(close, 3000);
+
+    L.Storage.on('ui:tooltip', function (e) {
+        tooltip.innerHTML = '';
+        tooltip.innerHTML = e.content;
+        L.DomUtil.addClass(document.body, 'storage-tooltip');
+        window.setTimeout(close, e.duration || 3000);
+    });
+
+    L.Storage.on('ui:tooltip:abort', function (e) {
+        close();
+    });
+
+    L.DomEvent.on(document, 'mousemove', function (e) {
+        var maxY = document.documentElement.clientHeight,
+            maxX = document.documentElement.clientWidth,
+            width = tooltip.clientWidth,
+            height = tooltip.clientHeight,
+            marginX = 20,
+            x = e.clientX + marginX,
+            y = e.clientY - (height / 2);
+
+        if (x + width > maxX) {
+            x = e.clientX - width - marginX;
+        }
+
+        if (y + height > maxY) {
+            y = e.clientY - (height / 2);
+        }
+
+        if (tooltip) {
+            tooltip.style.left = x + 'px';
+            tooltip.style.top = y + 'px';
+        }
+    });
 });

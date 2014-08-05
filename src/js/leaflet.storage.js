@@ -182,6 +182,7 @@ L.Storage.Map.include({
         this.slideshow = new L.S.Slideshow(this, this.options.slideshow);
         this.initCaptionBar();
         if (this.options.allowEdit) {
+            L.Storage.fire('ui:tooltip:init');
             this.editTools = new L.S.Editable(this);
             // Layer for items added by users
             this.on('editable:drawing:cancel', function (e) {
