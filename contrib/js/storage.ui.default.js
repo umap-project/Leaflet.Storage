@@ -112,43 +112,40 @@ L.Storage.on('ui:alert', function (e) {
 * Tooltips
 */
 L.Storage.on('ui:tooltip:init', function (e) {
-    var tooltip = L.DomUtil.get('storage-tooltip-container');
-    var close = function () {
+    var tooltip = L.DomUtil.get('storage-tooltip-container'),
+        map = e.map,
+        ID;
+
+    var close = function (id) {
+        if (id && id !== ID) return;
         tooltip.innerHTML = '';
         L.DomUtil.removeClass(document.body, 'storage-tooltip');
     };
 
+    var setFixedPosition = function () {
+        var left = map._container.offsetLeft + (map._container.clientWidth / 2) - (tooltip.clientWidth / 2),
+            top = map._container.offsetTop + 5,
+            point = L.point(left, top);
+        L.DomUtil.setPosition(tooltip, point);
+    };
+
     L.Storage.on('ui:tooltip', function (e) {
-        tooltip.innerHTML = '';
-        tooltip.innerHTML = e.content;
+        ID = Math.random();
+        var id = ID;
         L.DomUtil.addClass(document.body, 'storage-tooltip');
-        window.setTimeout(close, e.duration || 3000);
+        setFixedPosition();
+        tooltip.innerHTML = e.content;
+        function closeIt () {close(id);}
+        if (e.attachTo) {
+            L.DomEvent.on(e.attachTo, 'mouseout', closeIt);
+        }
+        if (e.duration !== Infinity) {
+            window.setTimeout(closeIt, e.duration || 3000);
+        }
     });
 
-    L.Storage.on('ui:tooltip:abort', function (e) {
+    L.Storage.on('ui:tooltip:abort', function () {
         close();
     });
 
-    L.DomEvent.on(document, 'mousemove', function (e) {
-        var maxY = document.documentElement.clientHeight,
-            maxX = document.documentElement.clientWidth,
-            width = tooltip.clientWidth,
-            height = tooltip.clientHeight,
-            marginX = 20,
-            x = e.clientX + marginX,
-            y = e.clientY - (height / 2);
-
-        if (x + width > maxX) {
-            x = e.clientX - width - marginX;
-        }
-
-        if (y + height > maxY) {
-            y = e.clientY - (height / 2);
-        }
-
-        if (tooltip) {
-            tooltip.style.left = x + 'px';
-            tooltip.style.top = y + 'px';
-        }
-    });
 });

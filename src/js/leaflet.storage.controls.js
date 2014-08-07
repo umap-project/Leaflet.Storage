@@ -10,7 +10,7 @@ L.Storage.Toolbar = L.Control.extend({
             .on(link, 'dblclick', L.DomEvent.stop)
             .on(link, 'click', options.callback, options.context)
             .on(link, 'mouseover', function () {
-                L.Storage.fire('ui:tooltip', {content: options.title});
+                L.Storage.fire('ui:tooltip', {content: options.title, attachTo: link});
             });
 
         return link;
@@ -685,6 +685,12 @@ L.S.IframeExporter = L.Class.extend({
 
 L.S.Editable = L.Editable.extend({
 
+    initialize: function (map, options) {
+        L.Editable.prototype.initialize.call(this, map, options);
+        this.map.on('editable:drawing:start editable:drawing:click', this.drawingTooltip, this);
+        this.map.on('editable:drawing:end', this.closeTooltip, this);
+    },
+
     createPolyline: function (latlngs) {
         return new L.Storage.Polyline(this.map, latlngs);
     },
@@ -696,6 +702,26 @@ L.S.Editable = L.Editable.extend({
 
     createMarker: function (latlng) {
         return new L.Storage.Marker(this.map, latlng);
+    },
+
+    drawingTooltip: function (e) {
+        var content;
+        if (e.layer instanceof L.Marker) content = L._('Click to add a marker');
+        else if (e.layer instanceof L.Polyline) {
+            if (!e.layer.editor._drawnLatLngs.length) {
+                if (e.layer instanceof L.Polygon) content = L._('Click to start drawing a polygon');
+                else if (e.layer instanceof L.Polyline) content = L._('Click to start drawing a line');
+            } else if (e.layer.editor._drawnLatLngs.length < e.layer.editor.MIN_VERTEX) {
+                content = L._('Click to continue drawing');
+            } else {
+                content = L._('Click last point to finish shape');
+            }
+        }
+        if (content) L.S.fire('ui:tooltip', {content: content});
+    },
+
+    closeTooltip: function () {
+        L.S.fire('ui:tooltip:abort');
     }
 
 });

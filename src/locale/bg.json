@@ -256,5 +256,10 @@
     "Latitude": "Latitude",
     "Longitude": "Longitude",
     "Continue line (Ctrl-click)": "Continue line (Ctrl-click)",
-    "Start a hole here": "Start a hole here"
+    "Start a hole here": "Start a hole here",
+    "Click last point to finish shape": "Click last point to finish shape",
+    "Click to add a marker": "Click to add a marker",
+    "Click to continue drawing": "Click to continue drawing",
+    "Click to start drawing a line": "Click to start drawing a line",
+    "Click to start drawing a polygon": "Click to start drawing a polygon"
 }

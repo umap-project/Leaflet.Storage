@@ -256,5 +256,10 @@
     "Latitude": "Længdegrader",
     "Longitude": "Breddegrader",
     "Continue line (Ctrl-click)": "Fortsæt linje (Kontrol-klik)",
-    "Start a hole here": "Start et hul her"
+    "Start a hole here": "Start et hul her",
+    "Click last point to finish shape": "Klik på det det sidste punkt for at færdigegøre",
+    "Click to add a marker": "Klik for at tilføje en  markør",
+    "Click to continue drawing": "Klik for at fortsætte indtegning",
+    "Click to start drawing a line": "Klik for at starte med at indtegne en linje",
+    "Click to start drawing a polygon": "Klik for at starte indtegning af polygon"
 }

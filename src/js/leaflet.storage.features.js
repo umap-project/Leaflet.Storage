@@ -660,7 +660,7 @@ L.Storage.PathMixin = {
     },
 
     _onMouseOver: function () {
-        if (this.map.editEnabled && !this.editEnabled()) {
+        if (this.map.editEnabled && !this.map.editedFeature) {
             L.Storage.fire('ui:tooltip', {content: L._('Double-click to edit')});
             this.once('mouseout', function () { L.Storage.fire('ui:tooltip:abort');});
         }

@@ -266,11 +266,11 @@ fieldset.toggle.on .more_style_options {
     left: 10px;
     box-shadow: 0 1px 7px #999999;
     display: none;
-    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.5);
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.6);
     color: #fff;
     font-size: 0.8em;
     border-radius: 2px;
-    z-index: 10000;
+    z-index: 10;
     font-weight: normal;
     white-space: nowrap;
 }

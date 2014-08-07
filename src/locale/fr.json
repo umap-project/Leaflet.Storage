@@ -256,5 +256,10 @@
     "Latitude": "Latitude",
     "Longitude": "Longitude",
     "Continue line (Ctrl-click)": "Continue la ligne (Ctrl-clic)",
-    "Start a hole here": "Ajouter un tracé intérieur"
+    "Start a hole here": "Ajouter un tracé intérieur",
+    "Click last point to finish shape": "Cliquer sur le dernier point pour finir le tracé",
+    "Click to add a marker": "Cliquer pour ajouter le marqueur",
+    "Click to continue drawing": "Cliquer pour continuer le tracé",
+    "Click to start drawing a line": "Cliquer pour commencer une ligne",
+    "Click to start drawing a polygon": "Cliquer pour commencer un polygone"
 }

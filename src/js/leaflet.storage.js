@@ -182,14 +182,14 @@ L.Storage.Map.include({
         this.slideshow = new L.S.Slideshow(this, this.options.slideshow);
         this.initCaptionBar();
         if (this.options.allowEdit) {
-            L.Storage.fire('ui:tooltip:init');
+            L.Storage.fire('ui:tooltip:init', {map: this});
             this.editTools = new L.S.Editable(this);
             // Layer for items added by users
             this.on('editable:drawing:cancel', function (e) {
                 if (e.layer._latlngs && e.layer._latlngs.length < e.layer.editor.MIN_VERTEX) e.layer.del();
                 if (e.layer instanceof L.S.Marker) e.layer.del();
             });
-            this.on('editable:drawing:finish', function (e) {
+            this.on('editable:drawing:commit', function (e) {
                 e.layer.isDirty = true;
                 if (this.editedFeature !== e.layer) e.layer.edit(e);
             });
