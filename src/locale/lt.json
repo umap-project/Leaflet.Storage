@@ -64,7 +64,6 @@
     "Import data": "Importuoti duomenis",
     "Inherit": "Paveldėti",
     "Jump to location": "Peršokti į vietovę",
-    "Layer 1": "Sluoksnis 1",
     "Less": "Mažiau",
     "Licence": "Licenzija",
     "Map background credits": "Žemėlapio fono naudojimo sąlygos",
@@ -205,8 +204,6 @@
     "Split line": "Padalinti liniją",
     "Clone": "Kopijuoti",
     "Clone of {name}": "{name} kopija",
-    "Add a layer now": "Pridėti sluoksnį",
-    "Please add at least a layer to import in": "Prašom pridėti sluoksnį prieš importuojant",
     "Side panel": "Šoninis skydelis",
     "Powered by <a href=\"{leaflet}\">Leaflet</a> and <a href=\"{django}\">Django</a>, glued by <a href=\"{umap}\">uMap project</a>.": "Pagaminta naudojant <a href=\"{leaflet}\">Leaflet</a> ir <a href=\"{django}\">Django</a>, apjungta pagal <a href=\"{umap}\">uMap projektą</a>.",
     "Zoom level for automatic zooms": "Priartinimo lygis automatiniui režimui",
@@ -261,5 +258,8 @@
     "Click to add a marker": "Click to add a marker",
     "Click to continue drawing": "Click to continue drawing",
     "Click to start drawing a line": "Click to start drawing a line",
-    "Click to start drawing a polygon": "Click to start drawing a polygon"
+    "Click to start drawing a polygon": "Click to start drawing a polygon",
+    "Import in a new layer": "Import in a new layer",
+    "Layer": "Layer",
+    "Please choose a format": "Please choose a format"
 }

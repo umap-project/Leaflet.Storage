@@ -64,7 +64,6 @@
     "Import data": "Tuo tietoja",
     "Inherit": "Peri",
     "Jump to location": "Loikkaa sijaintiin",
-    "Layer 1": "Kerros 1",
     "Less": "Vähemmän",
     "Licence": "Lisenssi",
     "Map background credits": "Taustakartan tekijämerkinnät",
@@ -205,8 +204,6 @@
     "Split line": "Split line",
     "Clone": "Clone",
     "Clone of {name}": "Clone of {name}",
-    "Add a layer now": "Add a layer now",
-    "Please add at least a layer to import in": "Please add at least a layer to import in",
     "Side panel": "Side panel",
     "Powered by <a href=\"{leaflet}\">Leaflet</a> and <a href=\"{django}\">Django</a>, glued by <a href=\"{umap}\">uMap project</a>.": "Powered by <a href=\"{leaflet}\">Leaflet</a> and <a href=\"{django}\">Django</a>, glued by <a href=\"{umap}\">uMap project</a>.",
     "Zoom level for automatic zooms": "Zoom level for automatic zooms",
@@ -261,5 +258,8 @@
     "Click to add a marker": "Click to add a marker",
     "Click to continue drawing": "Click to continue drawing",
     "Click to start drawing a line": "Click to start drawing a line",
-    "Click to start drawing a polygon": "Click to start drawing a polygon"
+    "Click to start drawing a polygon": "Click to start drawing a polygon",
+    "Import in a new layer": "Import in a new layer",
+    "Layer": "Layer",
+    "Please choose a format": "Please choose a format"
 }

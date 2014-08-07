@@ -64,7 +64,6 @@
     "Import data": "Импортировать данные",
     "Inherit": "Наследовать",
     "Jump to location": "Переместиться к этому месту",
-    "Layer 1": "Слой 1",
     "Less": "Скрыть",
     "Licence": "Лицензия",
     "Map background credits": "Права на фоновый слой карты",
@@ -205,8 +204,6 @@
     "Split line": "Разделить линию",
     "Clone": "Создать копию",
     "Clone of {name}": "Копия {name}",
-    "Add a layer now": "Добавить слой",
-    "Please add at least a layer to import in": "Добавьте как минимум слой, в который импортировать",
     "Side panel": "Боковая панель",
     "Powered by <a href=\"{leaflet}\">Leaflet</a> and <a href=\"{django}\">Django</a>, glued by <a href=\"{umap}\">uMap project</a>.": "Работает на <a href=\"{leaflet}\">Leaflet</a> и <a href=\"{django}\">Django</a>, объединённые проектом <a href=\"{umap}\">uMap</a>.",
     "Zoom level for automatic zooms": "Масштабировать слой автоматически",
@@ -261,5 +258,8 @@
     "Click to add a marker": "Click to add a marker",
     "Click to continue drawing": "Click to continue drawing",
     "Click to start drawing a line": "Click to start drawing a line",
-    "Click to start drawing a polygon": "Click to start drawing a polygon"
+    "Click to start drawing a polygon": "Click to start drawing a polygon",
+    "Import in a new layer": "Import in a new layer",
+    "Layer": "Layer",
+    "Please choose a format": "Please choose a format"
 }

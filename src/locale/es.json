@@ -64,7 +64,6 @@
     "Import data": "Importar datos",
     "Inherit": "Heredar",
     "Jump to location": "Saltar a la ubicación",
-    "Layer 1": "Capa 1",
     "Less": "Menos",
     "Licence": "Licencia",
     "Map background credits": "Créditos del mapa de fondo",
@@ -205,8 +204,6 @@
     "Split line": "Linea de división",
     "Clone": "Clonar",
     "Clone of {name}": "Clón de {name}",
-    "Add a layer now": "Añadir una capa ahora",
-    "Please add at least a layer to import in": "Añada al menos una capa para la importación",
     "Side panel": "Panel lateral",
     "Powered by <a href=\"{leaflet}\">Leaflet</a> and <a href=\"{django}\">Django</a>, glued by <a href=\"{umap}\">uMap project</a>.": "Impulsado por <a href=\"{leaflet}\">Leaflet</a> y <a href=\"{django}\">Django</a>, pegado por <a href=\"{umap}\">proyecto uMap</a>.",
     "Zoom level for automatic zooms": "Nivel de zoom para acercamientos automáticos",
@@ -261,5 +258,8 @@
     "Click to add a marker": "Click to add a marker",
     "Click to continue drawing": "Click to continue drawing",
     "Click to start drawing a line": "Click to start drawing a line",
-    "Click to start drawing a polygon": "Click to start drawing a polygon"
+    "Click to start drawing a polygon": "Click to start drawing a polygon",
+    "Import in a new layer": "Import in a new layer",
+    "Layer": "Layer",
+    "Please choose a format": "Please choose a format"
 }

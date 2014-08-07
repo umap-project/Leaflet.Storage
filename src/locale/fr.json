@@ -64,7 +64,6 @@
     "Import data": "Importer des données",
     "Inherit": "Hériter",
     "Jump to location": "Zoom sur une localité",
-    "Layer 1": "Calque 1",
     "Less": "Moins",
     "Licence": "Licence",
     "Map background credits": "Crédits pour le fond de carte",
@@ -205,8 +204,6 @@
     "Split line": "Scinder la ligne",
     "Clone": "Cloner",
     "Clone of {name}": "Clone de {name}",
-    "Add a layer now": "Ajouter maintenant",
-    "Please add at least a layer to import in": "Merci d'ajouter au moins un calque pour l'import",
     "Side panel": "Panneau latéral",
     "Powered by <a href=\"{leaflet}\">Leaflet</a> and <a href=\"{django}\">Django</a>, glued by <a href=\"{umap}\">uMap project</a>.": "Propulsé par <a href=\"{leaflet}\">Leaflet</a> et <a href=\"{django}\">Django</a>, mis en musique par <a href=\"{umap}\">uMap project</a>.",
     "Zoom level for automatic zooms": "Niveau de zoom automatique",
@@ -261,5 +258,8 @@
     "Click to add a marker": "Cliquer pour ajouter le marqueur",
     "Click to continue drawing": "Cliquer pour continuer le tracé",
     "Click to start drawing a line": "Cliquer pour commencer une ligne",
-    "Click to start drawing a polygon": "Cliquer pour commencer un polygone"
+    "Click to start drawing a polygon": "Cliquer pour commencer un polygone",
+    "Import in a new layer": "Importer dans un nouveau calque",
+    "Layer": "Calque",
+    "Please choose a format": "Merci de choisir un format"
 }

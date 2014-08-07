@@ -2,6 +2,7 @@
 
 ## dev
 - add tooltip when drawing
+- import multiple files at a time
 
 ## 0.7.1
 - upgrade Leaflet.Editable to 0.2.0

@@ -168,7 +168,7 @@ L.Storage.Map.include({
             this.isDirty = true;
             this.options.name = L._('Untitled map');
             this.options.allowEdit = true;
-            var datalayer = this._createDataLayer({name: L._('Layer 1')});
+            var datalayer = this.createDataLayer();
             datalayer.connectToMap();
             this.enableEdit();
             var dataUrl = L.Util.queryString('dataUrl', null),
@@ -354,7 +354,7 @@ L.Storage.Map.include({
             if(this.options.datalayers.hasOwnProperty(j)){
                 toload++;
                 seen++;
-                datalayer = this._createDataLayer(this.options.datalayers[j]);
+                datalayer = this.createDataLayer(this.options.datalayers[j]);
                 datalayer.onceLoaded(decrementToLoad);
             }
         }
@@ -493,7 +493,8 @@ L.Storage.Map.include({
         }
     },
 
-    _createDataLayer: function(datalayer) {
+    createDataLayer: function(datalayer) {
+        datalayer = datalayer || {name: L._('Layer') + ' ' + (this.datalayers_index.length + 1)};
         return new L.Storage.DataLayer(this, datalayer);
     },
 
@@ -646,6 +647,7 @@ L.Storage.Map.include({
             types = ['geojson', 'csv', 'gpx', 'kml', 'osm', 'georss'];
         title.innerHTML = L._('Import data');
         fileInput.type = 'file';
+        fileInput.multiple = 'multiple';
         submitInput.type = 'button';
         submitInput.value = L._('Import');
         submitInput.className = 'button';
@@ -667,21 +669,11 @@ L.Storage.Map.include({
                 option.innerHTML = datalayer.options.name;
             }
         });
+        L.DomUtil.element('option', {value: '', innerHTML: L._('Import in a new layer')}, layerInput);
+        L.DomUtil.element('option', {value: '', innerHTML: L._('Choose the data format')}, typeInput);
         for (var i = 0; i < types.length; i++) {
             option = L.DomUtil.create('option', '', typeInput);
             option.value = option.innerHTML = types[i];
-        }
-        if (layerInput.length === 0) {
-            var action = {
-                label: L._('Add a layer now'),
-                callback: function () {
-                    var datalayer = this._createDataLayer({});
-                    datalayer.edit();
-                },
-                callbackContext: this
-            };
-            L.S.fire('ui:alert', {content: L._('Please add at least a layer to import in'), level: 'info', duration: 30000, actions: [action]});
-            return;
         }
         if (this.options.importPresets.length) {
             var noPreset = L.DomUtil.create('option', '', presetSelect);
@@ -698,27 +690,37 @@ L.Storage.Map.include({
         var submit = function () {
             var type = typeInput.value,
                 layerId = layerInput[layerInput.selectedIndex].value,
-                layer = map.datalayers[layerId];
-            if (fileInput.files) {
-                layer.importFromFiles(fileInput.files, type);
-            }
-            if (rawInput.value) {
-                layer.importRaw(rawInput.value, type);
-            }
-            if (urlInput.value) {
-                layer.importFromUrl(urlInput.value, type);
-            }
-            if (presetSelect.selectedIndex > 0) {
-                layer.importFromUrl(presetSelect[presetSelect.selectedIndex].value, type);
+                layer;
+            if (layerId) layer = map.datalayers[layerId];
+            if (fileInput.files.length) {
+                if (layer) {
+                    layer.importFromFiles(fileInput.files, type);
+                } else {
+                    for (var i = 0, f; f = fileInput.files[i]; i++) {
+                        layer = this.createDataLayer({name: f.name});
+                        layer.importFromFile(f, type);
+                    }
+                }
+            } else {
+                if (!layer) layer = this.createDataLayer();
+                if (!type) return L.S.fire('ui:alert', {content: L._('Please choose a format'), level: 'error'});
+                else if (rawInput.value) layer.importRaw(rawInput.value, type);
+                else if (urlInput.value) layer.importFromUrl(urlInput.value, type);
+                else if (presetSelect.selectedIndex > 0) layer.importFromUrl(presetSelect[presetSelect.selectedIndex].value, type);
             }
         };
         L.DomEvent.on(submitInput, 'click', submit, this);
         L.DomEvent.on(fileInput, 'change', function (e) {
-            var f = e.target.files[0],
-                type = L.Util.detectFileType(f);
-            if (type) {
-                typeInput.value = type;
+            var type = '', newType;
+            for (var i = 0; i < e.target.files.length; i++) {
+                newType = L.Util.detectFileType(e.target.files[i]);
+                if (!type && newType) type = newType;
+                if (type && newType !== type) {
+                    type = '';
+                    break;
+                }
             }
+            typeInput.value = type;
         }, this);
         L.S.fire('ui:start', {data: {html: container}});
     },
@@ -973,7 +975,7 @@ L.Storage.Map.include({
             this.addLayer(datalayer.layer);
             return datalayer;
         }
-        return this._createDataLayer({});
+        return this.createDataLayer();
     },
 
     getDataLayerByStorageId: function (storage_id) {

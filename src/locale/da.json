@@ -64,7 +64,6 @@
     "Import data": "Importer geodata",
     "Inherit": "Nedarve",
     "Jump to location": "Hop hen til lokalitet",
-    "Layer 1": "Lag 1",
     "Less": "Mindre",
     "Licence": "Licens",
     "Map background credits": "Baggrundskort kreditering",
@@ -205,8 +204,6 @@
     "Split line": "Spilt linjen op",
     "Clone": "Klone",
     "Clone of {name}": "Klone af {name}",
-    "Add a layer now": "Tilføj et nyt lag nu",
-    "Please add at least a layer to import in": "Tilføj mindst et lag til at importere fra",
     "Side panel": "Sidepanel",
     "Powered by <a href=\"{leaflet}\">Leaflet</a> and <a href=\"{django}\">Django</a>, glued by <a href=\"{umap}\">uMap project</a>.": "Håndteret af <a href='{leaflet}'>Leaflet</a> og <a href='{django}'>Django</a>,  flettet ind i <a href='{umap}'>uMap projektet</a>.",
     "Zoom level for automatic zooms": "Zoomniveau for automatisk zoomniveauer",
@@ -261,5 +258,8 @@
     "Click to add a marker": "Klik for at tilføje en  markør",
     "Click to continue drawing": "Klik for at fortsætte indtegning",
     "Click to start drawing a line": "Klik for at starte med at indtegne en linje",
-    "Click to start drawing a polygon": "Klik for at starte indtegning af polygon"
+    "Click to start drawing a polygon": "Klik for at starte indtegning af polygon",
+    "Import in a new layer": "Import in a new layer",
+    "Layer": "Layer",
+    "Please choose a format": "Please choose a format"
 }

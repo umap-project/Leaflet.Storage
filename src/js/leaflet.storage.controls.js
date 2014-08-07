@@ -210,7 +210,7 @@ L.Storage.DataLayersControl = L.Control.extend({
     },
 
     newDataLayer: function () {
-        var datalayer = this._map._createDataLayer({});
+        var datalayer = this._map.createDataLayer({});
         datalayer.edit();
     }
 

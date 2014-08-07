@@ -621,7 +621,7 @@ L.Storage.DataLayer = L.Class.extend({
         options.name = L._('Clone of {name}', {name: this.options.name});
         delete options.id;
         var geojson = L.Util.CopyJSON(this._geojson),
-            datalayer = this.map._createDataLayer(options);
+            datalayer = this.map.createDataLayer(options);
         datalayer.fromGeoJSON(geojson);
         return datalayer;
     },

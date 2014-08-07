@@ -64,7 +64,6 @@
     "Import data": "导入数据",
     "Inherit": "继承",
     "Jump to location": "转到定位",
-    "Layer 1": "图层1",
     "Less": "Less",
     "Licence": "Licence",
     "Map background credits": "Map background credits",
@@ -205,8 +204,6 @@
     "Split line": "打断线",
     "Clone": "复制",
     "Clone of {name}": "Clone of {name}",
-    "Add a layer now": "增加图层",
-    "Please add at least a layer to import in": "Please add at least a layer to import in",
     "Side panel": "Side panel",
     "Powered by <a href=\"{leaflet}\">Leaflet</a> and <a href=\"{django}\">Django</a>, glued by <a href=\"{umap}\">uMap project</a>.": "Powered by <a href=\"{leaflet}\">Leaflet</a> and <a href=\"{django}\">Django</a>, glued by <a href=\"{umap}\">uMap project</a>.",
     "Zoom level for automatic zooms": "Zoom level for automatic zooms",
@@ -261,5 +258,8 @@
     "Click to add a marker": "Click to add a marker",
     "Click to continue drawing": "Click to continue drawing",
     "Click to start drawing a line": "Click to start drawing a line",
-    "Click to start drawing a polygon": "Click to start drawing a polygon"
+    "Click to start drawing a polygon": "Click to start drawing a polygon",
+    "Import in a new layer": "Import in a new layer",
+    "Layer": "Layer",
+    "Please choose a format": "Please choose a format"
 }
