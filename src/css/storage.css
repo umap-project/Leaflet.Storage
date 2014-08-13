@@ -805,6 +805,7 @@ a.storage-control-text {
 }
 .storage-tilelayer-switcher-container li img {
     display: block;
+    max-width: 100%;
 }
 
 /* ********************************* */

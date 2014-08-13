@@ -179,8 +179,9 @@ fieldset.toggle.on .more_style_options {
     -webkit-box-sizing:border-box;
     box-sizing: border-box;
 }
-#storage-ui-container img {
-    max-width: 99%;
+#storage-ui-container .storage-popup-content img {
+    /* See https://github.com/Leaflet/Leaflet/commit/61d746818b99d362108545c151a27f09d60960ee#commitcomment-6061847 */
+    max-width: 99% !important;
 }
 #storage-ui-container .storage-popup-content {
     max-height: inherit;
