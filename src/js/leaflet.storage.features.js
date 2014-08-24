@@ -720,7 +720,7 @@ L.Storage.Polyline = L.Polyline.extend({
 
     getEditContextMenuItems: function (e) {
         var items = L.Storage.FeatureMixin.getEditContextMenuItems.call(this),
-            vertexClicked = e.vertex;
+            vertexClicked = e.vertex, index;
         items.push({
             text: L._('Transform to polygon'),
             callback: this.toPolygon,
@@ -737,21 +737,22 @@ L.Storage.Polyline = L.Polyline.extend({
             });
         }
         if (vertexClicked) {
-            if (e.position !== 0 && e.position !== this._latlngs.length-1) {
+            index = e.vertex.getIndex();
+            if (index !== 0 && index !== this._latlngs.length-1) {
                 items.push({
                     text: L._('Split line'),
                     callback: function () {
-                        this.splitAt(e.position);
+                        this.splitAt(index);
                     },
                     context: this
                 });
-            } else if (e.position === 0) {
+            } else if (index === 0) {
                 items.push({
                     text: L._('Continue line (Ctrl-click)'),
                     callback: this.editor.continueBackward,
                     context: this.editor
                 });
-            } else if (e.position === e.vertex.getLastIndex()) {
+            } else if (index === e.vertex.getLastIndex()) {
                 items.push({
                     text: L._('Continue line (Ctrl-click)'),
                     callback: this.editor.continueForward,

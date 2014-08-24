@@ -11,7 +11,7 @@
 ## 0.7.0
 - introduce panel popup mode
 - upgraded leaflet.loading to 0.1.10
-- make the cluster text dynamic
+- make the cluster text color dynamic
 - fix missing icons for transorm to polygon/polyline actions
 - add a slideshow mode
 - make possible to set cluster color by hand
