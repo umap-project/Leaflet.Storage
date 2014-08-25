@@ -687,8 +687,25 @@ L.S.Editable = L.Editable.extend({
 
     initialize: function (map, options) {
         L.Editable.prototype.initialize.call(this, map, options);
-        this.map.on('editable:drawing:start editable:drawing:click', this.drawingTooltip, this);
-        this.map.on('editable:drawing:end', this.closeTooltip, this);
+        this.on('editable:drawing:start editable:drawing:click', this.drawingTooltip);
+        this.on('editable:drawing:end', this.closeTooltip);
+        // Layer for items added by users
+        this.on('editable:drawing:cancel', function (e) {
+            if (e.layer._latlngs && e.layer._latlngs.length < e.layer.editor.MIN_VERTEX) e.layer.del();
+            if (e.layer instanceof L.S.Marker) e.layer.del();
+        });
+        this.on('editable:drawing:commit', function (e) {
+            e.layer.isDirty = true;
+            if (this.map.editedFeature !== e.layer) e.layer.edit(e);
+        });
+        this.on('editable:editing', function (e) {
+            e.layer.isDirty = true;
+        });
+        this.on('editable:vertex:ctrlclick', function (e) {
+            var index = e.vertex.getIndex();
+            if (index === 0) e.layer.editor.continueBackward();
+            else if (index === e.vertex.getLastIndex()) e.layer.editor.continueForward();
+        });
     },
 
     createPolyline: function (latlngs) {
@@ -702,6 +719,14 @@ L.S.Editable = L.Editable.extend({
 
     createMarker: function (latlng) {
         return new L.Storage.Marker(this.map, latlng);
+    },
+
+    connectCreatedToMap: function (layer) {
+        // Overrided from Leaflet.Editable
+        var datalayer = this.map.defaultDataLayer();
+        datalayer.addLayer(layer);
+        layer.isDirty = true;
+        return layer;
     },
 
     drawingTooltip: function (e) {

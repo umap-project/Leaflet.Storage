@@ -169,14 +169,6 @@ L.Storage.FeatureMixin = {
         this.map.removeLayer(this);
     },
 
-    connectCreatedToMap: function (map) {
-        // Overrided from Leaflet.Editable
-        var datalayer = map.defaultDataLayer();
-        datalayer.addLayer(this);
-        this.isDirty = true;
-        return this;
-    },
-
     connectToDataLayer: function (datalayer) {
         this.datalayer = datalayer;
     },
