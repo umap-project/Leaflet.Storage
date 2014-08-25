@@ -1,8 +1,10 @@
 # Leaflet.Storage changelog
 
-## dev
+## 0.7.3
 - add tooltip when drawing
 - import multiple files at a time
+- added Chinese (Taiwan) locale
+- fixed right-click on path vertex not working propertly when editing
 
 ## 0.7.1
 - upgrade Leaflet.Editable to 0.2.0
