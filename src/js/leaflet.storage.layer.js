@@ -483,7 +483,12 @@ L.Storage.DataLayer = L.Class.extend({
 
         switch (geometry.type) {
             case 'Point':
-                latlng = L.GeoJSON.coordsToLatLng(coords);
+                try {
+                    latlng = L.GeoJSON.coordsToLatLng(coords);
+                } catch (e) {
+                    console.error('Invalid latlng object from', coords);
+                    break;
+                }
                 layer = this._pointToLayer(geojson, latlng);
                 break;
             case 'LineString':
