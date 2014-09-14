@@ -174,6 +174,9 @@ L.Storage.Map.include({
             var dataUrl = L.Util.queryString('dataUrl', null),
                 dataFormat = L.Util.queryString('dataFormat', 'geojson');
             if (dataUrl) {
+                dataUrl = decodeURIComponent(dataUrl);
+                dataUrl = this.localizeUrl(dataUrl);
+                dataUrl = this.proxyUrl(dataUrl);
                 datalayer.importFromUrl(dataUrl, dataFormat);
             }
         }
@@ -1469,6 +1472,13 @@ L.Storage.Map.include({
         replace.right = replace.east;
         replace.top = replace.north;
         return L.Util.template(url, replace);
+    },
+
+    proxyUrl: function (url) {
+        if (this.options.urls.ajax_proxy) {
+            url = L.Util.template(this.options.urls.ajax_proxy, {url: encodeURIComponent(url)});
+        }
+        return url;
     }
 
 });

@@ -302,8 +302,8 @@ L.Storage.DataLayer = L.Class.extend({
         }
         var self = this,
             url = this.map.localizeUrl(this.options.remoteData.url);
-        if (this.options.remoteData.proxy && this.map.options.urls.ajax_proxy) {
-            url = L.Util.template(this.map.options.urls.ajax_proxy, {url: encodeURIComponent(url)});
+        if (this.options.remoteData.proxy) {
+            url = this.map.proxyUrl(url);
         }
         this.map.ajax({
             uri: url,

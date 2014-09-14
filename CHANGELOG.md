@@ -1,5 +1,9 @@
 # Leaflet.Storage changelog
 
+## dev
+- upgrade osmtogeojson to 2.1.0
+- localize and proxy dataUrl parameter
+
 ## 0.7.3
 - add tooltip when drawing
 - import multiple files at a time
