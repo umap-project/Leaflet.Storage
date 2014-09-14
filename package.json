@@ -46,7 +46,7 @@
     "leaflet.markercluster": "^0.4.0",
     "leaflet-draw": "^0.2.3",
     "minimap": "git+https://github.com/Norkart/Leaflet-MiniMap.git#v1.0.0",
-    "osmtogeojson": "^2.0.5",
+    "osmtogeojson": "^2.1.0",
     "togeojson": "^0.7.0",
     "togpx": "^0.3.1",
     "leaflet-editable": "^0.5.0"
