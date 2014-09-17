@@ -10,7 +10,7 @@ L.Storage.Icon = L.DivIcon.extend({
         L.Icon.prototype.initialize.call(this, options);
         this.feature = this.options.feature;
         if (this.feature && this.feature.isReadOnly()) {
-            this.options.className += " readonly";
+            this.options.className += ' readonly';
         }
     },
 
@@ -28,7 +28,7 @@ L.Storage.Icon = L.DivIcon.extend({
     _getColor: function () {
         var color;
         if(this.feature) {
-            color = this.feature.getOption("color");
+            color = this.feature.getOption('color');
         }
         else if (this.options.color) {
             color = this.options.color;
@@ -50,7 +50,7 @@ L.Storage.Icon.Default = L.Storage.Icon.extend({
         iconAnchor: new L.Point(16, 40),
         popupAnchor: new L.Point(0, -40),
         labelAnchor: new L.Point(12, -20),
-        className: "storage-div-icon"
+        className: 'storage-div-icon'
     },
 
     initialize: function(map, options) {
@@ -87,7 +87,7 @@ L.Storage.Icon.Circle = L.Storage.Icon.extend({
             iconAnchor: new L.Point(6, 6),
             popupAnchor: new L.Point(0, -6),
             labelAnchor: new L.Point(0, 2),
-            className: "storage-circle-icon"
+            className: 'storage-circle-icon'
         };
         options = L.Util.extend({}, default_options, options);
         L.Storage.Icon.prototype.initialize.call(this, map, options);
@@ -100,7 +100,7 @@ L.Storage.Icon.Circle = L.Storage.Icon.extend({
     createIcon: function() {
         this.elements = {};
         this.elements.main = L.DomUtil.create('div');
-        this.elements.main.innerHTML = "&nbsp;";
+        this.elements.main.innerHTML = '&nbsp;';
         this._setColor();
         this._setIconStyles(this.elements.main, 'icon');
         return this.elements.main;
@@ -113,7 +113,7 @@ L.Storage.Icon.Drop = L.Storage.Icon.Default.extend({
             iconAnchor: new L.Point(16, 42),
             popupAnchor: new L.Point(0, -42),
             labelAnchor: new L.Point(12, -20),
-            className: "storage-drop-icon"
+            className: 'storage-drop-icon'
     }
 });
 
@@ -122,7 +122,7 @@ L.Storage.Icon.Ball = L.Storage.Icon.Default.extend({
             iconAnchor: new L.Point(8, 30),
             popupAnchor: new L.Point(0, -28),
             labelAnchor: new L.Point(4, -20),
-            className: "storage-ball-icon"
+            className: 'storage-ball-icon'
     },
 
     createIcon: function() {
@@ -136,16 +136,16 @@ L.Storage.Icon.Ball = L.Storage.Icon.Default.extend({
     },
 
     _setColor: function() {
-        var color = this._getColor("color"),
+        var color = this._getColor('color'),
             background;
         if (L.Browser.ielt9) {
             background = color;
         }
         else if (L.Browser.webkit) {
-            background ="-webkit-gradient( radial, 6 38%, 0, 6 38%, 8, from(white), to(" + color + ") )";
+            background = '-webkit-gradient( radial, 6 38%, 0, 6 38%, 8, from(white), to(' + color + ') )';
         }
         else {
-            background = "radial-gradient(circle at 6px 38% , white -4px, " + color + " 8px) repeat scroll 0 0 transparent";
+            background = 'radial-gradient(circle at 6px 38% , white -4px, ' + color + ' 8px) repeat scroll 0 0 transparent';
         }
         this.elements.container.style.background = background;
     }
@@ -175,7 +175,7 @@ L.Storage.Icon.Cluster = L.DivIcon.extend({
             color = this.datalayer.options.cluster.textColor;
         }
         if (!color) {
-            if (typeof _CACHE_COLOR[backgroundColor] === "undefined") {
+            if (typeof _CACHE_COLOR[backgroundColor] === 'undefined') {
                 color = L.DomUtil.TextColorFromBackgroundColor(div);
                 _CACHE_COLOR[backgroundColor] = color;
             } else {
