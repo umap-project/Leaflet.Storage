@@ -947,19 +947,23 @@ L.Storage.Map.include({
     },
 
     defaultDataLayer: function () {
-        var datalayer;
+        var datalayer, fallback;
         for (var i in this.datalayers) {
             if (this.datalayers.hasOwnProperty(i)) {
                 datalayer = this.datalayers[i];
-                if (datalayer.isVisible() && !datalayer.isRemoteLayer()) {
-                    return datalayer;
+                if (!datalayer.isRemoteLayer() && datalayer.isBrowsable()) {
+                    if (datalayer.isVisible()) {
+                        return datalayer;
+                    } else {
+                        fallback = datalayer;
+                    }
                 }
             }
         }
-        if (datalayer && !datalayer.isRemoteLayer()) {
+        if (fallback) {
             // No datalayer visible, let's force one
-            this.addLayer(datalayer.layer);
-            return datalayer;
+            this.addLayer(fallback.layer);
+            return fallback;
         }
         return this.createDataLayer();
     },
