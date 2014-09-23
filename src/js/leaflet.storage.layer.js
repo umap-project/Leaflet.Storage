@@ -493,6 +493,7 @@ L.Storage.DataLayer = L.Class.extend({
                 break;
             case 'LineString':
                 latlngs = L.GeoJSON.coordsToLatLngs(coords);
+                if (!latlngs.length) break;
                 layer = this._lineToLayer(geojson, latlngs);
                 break;
             case 'Polygon':
