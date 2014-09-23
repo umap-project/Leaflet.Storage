@@ -96,6 +96,34 @@ describe('L.Util', function () {
 
     });
 
+    describe('#greedyTemplate', function () {
+
+        it('should replace simple props', function () {
+            assert.equal(L.Util.greedyTemplate('A phrase with a {variable}.', {variable: 'thing'}), 'A phrase with a thing.');
+        });
+
+        it('should not fail when missing key', function () {
+            assert.equal(L.Util.greedyTemplate('A phrase with a {missing}', {}), 'A phrase with a ');
+        });
+
+        it('should process brakets in brakets', function () {
+            assert.equal(L.Util.greedyTemplate('A phrase with a {{{variable}}}.', {variable: 'value'}), 'A phrase with a {{value}}.');
+        });
+
+        it('should not process http links', function () {
+            assert.equal(L.Util.greedyTemplate('A phrase with a {{{http://iframeurl.com}}}.', {'http://iframeurl.com': 'value'}), 'A phrase with a {{{http://iframeurl.com}}}.');
+        });
+
+        it('should not accept dash', function () {
+            assert.equal(L.Util.greedyTemplate('A phrase with a {var-iable}.', {'var-iable': 'value'}), 'A phrase with a {var-iable}.');
+        });
+
+        it('should accept colon', function () {
+            assert.equal(L.Util.greedyTemplate('A phrase with a {variable:fr}.', {'variable:fr': 'value'}), 'A phrase with a value.');
+        });
+
+    });
+
     describe('#TextColorFromBackgroundColor', function () {
 
         it('should output white for black', function () {

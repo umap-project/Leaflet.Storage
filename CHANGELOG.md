@@ -1,6 +1,9 @@
 # Leaflet.Storage changelog
 
 ## dev
+- allow colon in properties to be consumed in popupTemplate
+
+## 0.7.5
 - upgrade osmtogeojson to 2.1.0
 - localize and proxy dataUrl parameter
 

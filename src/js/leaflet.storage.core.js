@@ -131,7 +131,7 @@ L.Util.usableOption = function (options, option) {
 
 L.Util.greedyTemplate = function (str, data, fallback) {
     // Don't throw error if some key is missing
-    return str.replace(/\{ *([\w_]+) *\}/g, function (str, key) {
+    return str.replace(/\{ *([\w_\:]+) *\}/g, function (str, key) {
         var value = data[key];
         if (value === undefined) {
             value = fallback || '';
@@ -211,7 +211,7 @@ L.DomUtil.element = function (what, attrs, parent) {
     for (var attr in attrs) {
         el[attr] = attrs[attr];
     }
-    if (typeof parent !== "undefined") {
+    if (typeof parent !== 'undefined') {
         parent.appendChild(el);
     }
     return el;
