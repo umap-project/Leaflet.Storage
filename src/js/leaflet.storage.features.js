@@ -166,7 +166,6 @@ L.Storage.FeatureMixin = {
             this.datalayer.removeLayer(this);
             this.disconnectFromDataLayer(this.datalayer);
         }
-        this.map.removeLayer(this);
     },
 
     connectToDataLayer: function (datalayer) {
