@@ -776,8 +776,12 @@ L.Storage.Map.include({
                 umap: 'http://wiki.openstreetmap.org/wiki/UMap'
             };
         umapCredit.innerHTML = L._('Powered by <a href="{leaflet}">Leaflet</a> and <a href="{django}">Django</a>, glued by <a href="{umap}">uMap project</a>.', urls);
-
-        L.S.fire('ui:start', {data: {html: container}});
+        var browser = L.DomUtil.create('li', '');
+        L.DomUtil.create('i', 'storage-icon-16 storage-list', browser);
+        var label = L.DomUtil.create('span', '', browser);
+        label.innerHTML = label.title = L._('Browse data');
+        L.DomEvent.on(browser, 'click', this.openBrowser, this);
+        L.S.fire('ui:start', {data: {html: container}, actions: [browser]});
     },
 
     eachDataLayer: function (method, context) {

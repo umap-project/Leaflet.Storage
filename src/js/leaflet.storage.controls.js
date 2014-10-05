@@ -351,7 +351,12 @@ L.Storage.Map.include({
         };
         L.bind(appendAll, this)();
         L.DomEvent.on(filter, 'input', appendAll, this);
-        L.Storage.fire('ui:start', {data: {html: browserContainer}});
+        var link = L.DomUtil.create('li', '');
+        L.DomUtil.create('i', 'storage-icon-16 storage-caption', link);
+        var label = L.DomUtil.create('span', '', link);
+        label.innerHTML = label.title = L._('About');
+        L.DomEvent.on(link, 'click', this.displayCaption, this);
+        L.Storage.fire('ui:start', {data: {html: browserContainer}, actions: [link]});
     }
 
 });

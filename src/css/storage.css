@@ -765,6 +765,9 @@ a.storage-control-text {
 .storage-list-white {
     background-position: -92px -168px;
 }
+.storage-caption {
+    background-position: -170px -49px;
+}
 
 /* ********************************* */
 /*      Tilelayer switcher           */
