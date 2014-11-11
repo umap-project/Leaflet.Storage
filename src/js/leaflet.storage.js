@@ -1479,7 +1479,7 @@ L.Storage.Map.include({
         replace.bottom = replace.south;
         replace.right = replace.east;
         replace.top = replace.north;
-        return L.Util.template(url, replace);
+        return L.Util.greedyTemplate(url, replace, true);
     },
 
     proxyUrl: function (url) {

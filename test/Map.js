@@ -188,7 +188,19 @@ describe('L.Storage.Map', function(){
             assert.equal(this.datalayer._index.length, 14);
         });
 
+    });
+
+    describe('#localizeUrl()', function () {
+
+        it('should replace known variables', function () {
+            assert.equal(this.map.localizeUrl('http://example.org/{zoom}'), 'http://example.org/' + this.map.getZoom());
+        });
+
+        it('should keep unknown variables', function () {
+            assert.equal(this.map.localizeUrl('http://example.org/{unkown}'), 'http://example.org/{unkown}');
+        });
 
     });
+
 
 });

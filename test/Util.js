@@ -122,6 +122,14 @@ describe('L.Util', function () {
             assert.equal(L.Util.greedyTemplate('A phrase with a {variable:fr}.', {'variable:fr': 'value'}), 'A phrase with a value.');
         });
 
+        it('should replace even with ignore if key is found', function () {
+            assert.equal(L.Util.greedyTemplate('A phrase with a {variable:fr}.', {'variable:fr': 'value'}, true), 'A phrase with a value.');
+        });
+
+        it('should keep string when using ignore if key is not found', function () {
+            assert.equal(L.Util.greedyTemplate('A phrase with a {variable:fr}.', {}, true), 'A phrase with a {variable:fr}.');
+        });
+
     });
 
     describe('#TextColorFromBackgroundColor', function () {

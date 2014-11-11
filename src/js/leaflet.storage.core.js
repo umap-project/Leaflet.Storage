@@ -129,12 +129,13 @@ L.Util.usableOption = function (options, option) {
     return typeof options[option] !== 'undefined' && options[option] !== '' && options[option] !== null;
 };
 
-L.Util.greedyTemplate = function (str, data, fallback) {
+L.Util.greedyTemplate = function (str, data, ignore) {
     // Don't throw error if some key is missing
     return str.replace(/\{ *([\w_\:]+) *\}/g, function (str, key) {
         var value = data[key];
         if (value === undefined) {
-            value = fallback || '';
+            if (ignore) value = str;
+            else value = '';
         }
         return value;
     });
