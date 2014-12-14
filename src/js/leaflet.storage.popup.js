@@ -43,7 +43,7 @@ L.S.Popup = L.Popup.extend({
         for (var i = 0; i < els.length; i++) {
             this.onElementLoaded(els[i]);
         }
-        if (container.textContent.replace('\n', '') === '') {
+        if (!els.length && container.textContent.replace('\n', '') === '') {
             container.innerHTML = '';
             L.DomUtil.add('h3', '', container, this.feature.getDisplayName());
         }
