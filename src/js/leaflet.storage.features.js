@@ -70,7 +70,7 @@ L.Storage.FeatureMixin = {
 
     edit: function(e) {
         if(!this.map.editEnabled || this.isReadOnly()) return;
-        var container = L.DomUtil.create('div'), form;
+        var container = L.DomUtil.create('div');
 
         var builder = new L.S.FormBuilder(this, ['datalayer'], {
             callback: function () {this.edit(e);}  // removeLayer step will close the edit panel, let's reopen it
@@ -92,8 +92,7 @@ L.Storage.FeatureMixin = {
                 callback: this.resetLabel
             }
         );
-        form = builder.build();
-        container.appendChild(form);
+        container.appendChild(builder.build());
         this.appendEditFieldsets(container);
         var advancedActions = L.DomUtil.createFieldset(container, L._('Advanced actions'));
         this.getAdvancedEditActions(advancedActions);
@@ -123,6 +122,14 @@ L.Storage.FeatureMixin = {
         });
         var advancedProperties = L.DomUtil.createFieldset(container, L._('Advanced properties'));
         advancedProperties.appendChild(builder.build());
+
+        var popupFields = [
+            'options.popupTemplate'
+        ];
+        builder = new L.S.FormBuilder(this, popupFields);
+        var popupFieldset = L.DomUtil.createFieldset(container, L._('Popup options'));
+        popupFieldset.appendChild(builder.build());
+
     },
 
     endEdit: function () {},
@@ -485,7 +492,6 @@ L.Storage.Marker = L.Marker.extend({
             'properties._storage_options.color',
             'properties._storage_options.iconClass',
             'properties._storage_options.iconUrl',
-            'properties._storage_options.popupTemplate',
             'properties._storage_options.zoomTo',
             'properties._storage_options.showLabel'
         ];
@@ -588,7 +594,6 @@ L.Storage.PathMixin = {
             'properties._storage_options.weight',
             'properties._storage_options.smoothFactor',
             'properties._storage_options.dashArray',
-            'properties._storage_options.popupTemplate',
             'properties._storage_options.zoomTo'
         ];
     },

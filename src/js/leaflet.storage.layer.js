@@ -673,13 +673,13 @@ L.Storage.DataLayer = L.Class.extend({
     edit: function () {
         if(!this.map.editEnabled || !this.isLoaded()) {return;}
         var container = L.DomUtil.create('div'),
-            metadata_fields = [
+            metadataFields = [
                 'options.name',
                 'options.description',
                 ['options.type', {handler: 'LayerTypeChooser', label: L._('Type of layer')}],
                 ['options.displayOnLoad', {label: L._('Display on load'), handler: 'CheckBox'}]
             ];
-        var builder = new L.S.FormBuilder(this, metadata_fields, {
+        var builder = new L.S.FormBuilder(this, metadataFields, {
             callback: function (field) {
                 this.map.updateDatalayersControl();
                 if (field === 'options.type') {
@@ -689,8 +689,7 @@ L.Storage.DataLayer = L.Class.extend({
             },
             callbackContext: this
         });
-        form = builder.build();
-        container.appendChild(form);
+        container.appendChild(builder.build());
         var optionsFields = [
             'options.color',
             'options.iconClass',
@@ -703,10 +702,8 @@ L.Storage.DataLayer = L.Class.extend({
             'options.fillColor',
             'options.fillOpacity',
             'options.dashArray',
-            'options.popupTemplate',
             'options.zoomTo',
-            'options.showLabel',
-            'options.popupContentTemplate'
+            'options.showLabel'
         ];
 
         optionsFields = optionsFields.concat(this.layer.getEditableOptions());
@@ -720,8 +717,15 @@ L.Storage.DataLayer = L.Class.extend({
             }
         });
         var advancedProperties = L.DomUtil.createFieldset(container, L._('Advanced properties'));
-        form = builder.build();
-        advancedProperties.appendChild(form);
+        advancedProperties.appendChild(builder.build());
+
+        var popupFields = [
+            'options.popupTemplate',
+            'options.popupContentTemplate'
+        ];
+        builder = new L.S.FormBuilder(this, popupFields);
+        var popupFieldset = L.DomUtil.createFieldset(container, L._('Layer popup options'));
+        popupFieldset.appendChild(builder.build());
 
         if (!L.Util.isObject(this.options.remoteData)) {
             this.options.remoteData = {};
@@ -763,7 +767,7 @@ L.Storage.DataLayer = L.Class.extend({
         cloneLink.href = '#';
         L.DomEvent.on(cloneLink, 'click', L.DomEvent.stop)
                   .on(cloneLink, 'click', function () {
-                    datalayer = this.clone();
+                    var datalayer = this.clone();
                     datalayer.edit();
                 }, this);
         L.S.fire('ui:start', {data: {html: container}});

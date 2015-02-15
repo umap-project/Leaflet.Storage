@@ -1028,8 +1028,6 @@ L.Storage.Map.include({
             'options.fillColor',
             'options.fillOpacity',
             'options.dashArray',
-            'options.popupTemplate',
-            'options.popupContentTemplate',
             'options.zoomTo',
             'options.showLabel',
             ['options.sortKey', {handler: 'BlurInput', helpText: L._('Property to use for sorting features'), placeholder: L._('Default: name')}],
@@ -1038,16 +1036,22 @@ L.Storage.Map.include({
 
         builder = new L.S.FormBuilder(this, optionsFields, {
             callback: function (field) {
-                if (field !== 'options.popupTemplate' && field !== 'options.popupContentTemplate') {
-                    this.eachDataLayer(function (datalayer) {
-                        if (field === 'options.sortKey') datalayer.reindex();
-                        datalayer.redraw();
-                    });
-                }
+                this.eachDataLayer(function (datalayer) {
+                    if (field === 'options.sortKey') datalayer.reindex();
+                    datalayer.redraw();
+                });
             }
         });
         var defaultProperties = L.DomUtil.createFieldset(container, L._('Default properties'));
         defaultProperties.appendChild(builder.build());
+
+        var popupFields = [
+            'options.popupTemplate',
+            'options.popupContentTemplate'
+        ];
+        builder = new L.S.FormBuilder(this, popupFields);
+        var popupFieldset = L.DomUtil.createFieldset(container, L._('Default popup options'));
+        popupFieldset.appendChild(builder.build());
 
         if (!L.Util.isObject(this.options.tilelayer)) {
             this.options.tilelayer = {};
