@@ -21,20 +21,20 @@ L.S.Popup = L.Popup.extend({
     renderBody: function () {
         var template = this.feature.getOption('popupContentTemplate'),
             container = L.DomUtil.create('div', ''),
-            content, properties, center = this.feature.getCenter();
+            content, properties, center;
         if (this.options.parseTemplate) {
             // Include context properties
-            properties = {
-                lat: center.lat,
-                lon: center.lng,
-                lng: center.lng
-            };
+            properties = this.feature.map.getGeoContext();
+            center = this.feature.getCenter();
+            properties.lat = center.lat;
+            properties.lon = center.lng;
+            properties.lng = center.lng;
             if (typeof this.feature.getMeasure !== 'undefined') {
                 properties.measure = this.feature.getMeasure();
             }
             properties = L.extend(properties, this.feature.properties);
             // Resolve properties inside description
-            properties.description = L.Util.greedyTemplate(this.feature.properties.description || '', properties);
+            properties.description = L.Util.greedyTemplate(this.feature.properties.description || '', properties);
             content = L.Util.greedyTemplate(template, properties);
         }
         content = L.Util.toHTML(content);

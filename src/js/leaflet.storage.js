@@ -1464,8 +1464,8 @@ L.Storage.Map.include({
         return this;
     },
 
-    localizeUrl: function (url) {
-        var replace = {
+    getGeoContext: function () {
+        var context = {
                 bbox: this.getBounds().toBBoxString(),
                 north: this.getBounds().getNorthEast().lat,
                 east: this.getBounds().getNorthEast().lng,
@@ -1475,11 +1475,15 @@ L.Storage.Map.include({
                 lng: this.getCenter().lng,
                 zoom: this.getZoom()
             };
-        replace.left = replace.west;
-        replace.bottom = replace.south;
-        replace.right = replace.east;
-        replace.top = replace.north;
-        return L.Util.greedyTemplate(url, replace, true);
+        context.left = context.west;
+        context.bottom = context.south;
+        context.right = context.east;
+        context.top = context.north;
+        return context;
+    },
+
+    localizeUrl: function (url) {
+        return L.Util.greedyTemplate(url, this.getGeoContext(), true);
     },
 
     proxyUrl: function (url) {
