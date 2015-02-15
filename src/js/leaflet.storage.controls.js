@@ -638,7 +638,7 @@ L.S.IframeExporter = L.Class.extend({
         keepCurrentDatalayers: false
     },
 
-    queryString : {
+    queryString: {
         scaleControl: false,
         miniMap: false,
         scrollWheelZoom: false,
@@ -646,7 +646,8 @@ L.S.IframeExporter = L.Class.extend({
         allowEdit: false,
         moreControl: true,
         datalayersControl: true,
-        onLoadPanel: 'none'
+        onLoadPanel: 'none',
+        captionBar: false
     },
 
     dimensions: {

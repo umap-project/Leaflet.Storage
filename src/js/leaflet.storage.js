@@ -74,6 +74,7 @@ L.Storage.Map.include({
         this.overrideBooleanOptionFromQueryString('datalayersControl');
         this.overrideBooleanOptionFromQueryString('displayDataBrowserOnLoad');
         this.overrideBooleanOptionFromQueryString('displayCaptionOnLoad');
+        this.overrideBooleanOptionFromQueryString('captionBar');
         this.datalayersOnLoad = L.Util.queryString('datalayers');
         if (this.datalayersOnLoad) this.datalayersOnLoad = this.datalayersOnLoad.toString().split(',');
         if (L.Browser.ielt9) {
@@ -530,7 +531,8 @@ L.Storage.Map.include({
             'queryString.scrollWheelZoom',
             'queryString.miniMap',
             'queryString.scaleControl',
-            'queryString.onLoadPanel'
+            'queryString.onLoadPanel',
+            'queryString.captionBar'
         ];
         var iframeExporter = new L.S.IframeExporter(this);
         var buildIframeCode = function () {
