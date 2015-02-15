@@ -724,7 +724,7 @@ L.Storage.DataLayer = L.Class.extend({
             'options.popupContentTemplate'
         ];
         builder = new L.S.FormBuilder(this, popupFields);
-        var popupFieldset = L.DomUtil.createFieldset(container, L._('Layer popup options'));
+        var popupFieldset = L.DomUtil.createFieldset(container, L._('Popup options'));
         popupFieldset.appendChild(builder.build());
 
         if (!L.Util.isObject(this.options.remoteData)) {
