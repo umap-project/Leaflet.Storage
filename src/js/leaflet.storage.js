@@ -30,7 +30,7 @@ L.Map.mergeOptions({
     name: '',
     description: '',
     displayPopupFooter: false,
-    demoTileInfos: {s:'a', z:9, x:265, y:181},
+    demoTileInfos: {s: 'a', z: 9, x: 265, y: 181},
     tilelayersControl: true,
     licences: [],
     licence: '',
@@ -90,7 +90,7 @@ L.Storage.Map.include({
                     return editedFeature;
                 },
                 set: function (feature) {
-                    if (editedFeature && editedFeature != feature) {
+                    if (editedFeature && editedFeature !== feature) {
                         editedFeature.endEdit();
                     }
                     editedFeature = feature;
@@ -112,8 +112,8 @@ L.Storage.Map.include({
 
         // Global storage for retrieving datalayers
         this.datalayers = {};
-        this.datalayers_index = Array();
-        this.dirty_datalayers = Array();
+        this.datalayers_index = [];
+        this.dirty_datalayers = [];
         // create datalayers
         this.initDatalayers();
         if (this.options.displayCaptionOnLoad) {
@@ -195,45 +195,45 @@ L.Storage.Map.include({
             this.initEditBar();
             var editShortcuts = function (e) {
                 var key = e.keyCode;
-                if (key == L.S.Keys.E && e.ctrlKey && !this.editEnabled) {
+                if (key === L.S.Keys.E && e.ctrlKey && !this.editEnabled) {
                     L.DomEvent.stop(e);
                     this.enableEdit();
-                } else if (key == L.S.Keys.E && e.ctrlKey && this.editEnabled && !this.isDirty) {
+                } else if (key === L.S.Keys.E && e.ctrlKey && this.editEnabled && !this.isDirty) {
                     L.DomEvent.stop(e);
                     this.disableEdit();
                     L.S.fire('ui:end');
                 }
-                if (key == L.S.Keys.S && e.ctrlKey) {
+                if (key === L.S.Keys.S && e.ctrlKey) {
                     L.DomEvent.stop(e);
                     if (this.isDirty) {
                         this.save();
                     }
                 }
-                if (key == L.S.Keys.Z && e.ctrlKey && this.isDirty) {
+                if (key === L.S.Keys.Z && e.ctrlKey && this.isDirty) {
                     L.DomEvent.stop(e);
                     this.askForReset();
                 }
-                if (key == L.S.Keys.M && e.ctrlKey && this.editEnabled) {
+                if (key === L.S.Keys.M && e.ctrlKey && this.editEnabled) {
                     L.DomEvent.stop(e);
                     this.editTools.startMarker();
                 }
-                if (key == L.S.Keys.P && e.ctrlKey && this.editEnabled) {
+                if (key === L.S.Keys.P && e.ctrlKey && this.editEnabled) {
                     L.DomEvent.stop(e);
                     this.editTools.startPolygon();
                 }
-                if (key == L.S.Keys.L && e.ctrlKey && this.editEnabled) {
+                if (key === L.S.Keys.L && e.ctrlKey && this.editEnabled) {
                     L.DomEvent.stop(e);
                     this.editTools.startPolyline();
                 }
-                if (key == L.S.Keys.I && e.ctrlKey && this.editEnabled) {
+                if (key === L.S.Keys.I && e.ctrlKey && this.editEnabled) {
                     L.DomEvent.stop(e);
                     this.importPanel();
                 }
-                if (key == L.S.Keys.H && e.ctrlKey && this.editEnabled) {
+                if (key === L.S.Keys.H && e.ctrlKey && this.editEnabled) {
                     L.DomEvent.stop(e);
                     this.help.show('edit');
                 }
-                if (e.keyCode == L.S.Keys.ESC && this.editEnabled) {
+                if (e.keyCode === L.S.Keys.ESC && this.editEnabled) {
                     this.editTools.stopDrawing();
                 }
             };
@@ -260,7 +260,7 @@ L.Storage.Map.include({
             delete this._controls[i];
         }
 
-        L.DomUtil.classIf(document.body, 'storage-caption-bar-enabled', this.options.captionBar || (this.options.slideshow && (this.options.slideshow.delay || this.options.slideshow.autoplay)));
+        L.DomUtil.classIf(document.body, 'storage-caption-bar-enabled', this.options.captionBar || (this.options.slideshow && (this.options.slideshow.delay || this.options.slideshow.autoplay)));
         L.DomUtil.classIf(document.body, 'storage-slideshow-enabled', this.options.slideshow && (this.options.slideshow.delay || this.options.slideshow.autoplay));
         if (this.options.zoomControl) {
             this._controls.zoomControl = (new L.Control.Zoom({zoomInTitle: L._('Zoom in'), zoomOutTitle: L._('Zoom out')})).addTo(this);
@@ -328,15 +328,15 @@ L.Storage.Map.include({
 
     initDatalayers: function () {
         var toload = 0, datalayer, seen = 0, self = this;
+        var loaded = function () {
+            self.fire('datalayersloaded');
+            self.datalayersLoaded = true;
+        };
         var decrementToLoad = function () {
             toload--;
             if (toload === 0) {
                 loaded();
             }
-        };
-        var loaded = function () {
-            self.fire('datalayersloaded');
-            self.datalayersLoaded = true;
         };
         for(var j in this.options.datalayers) {
             if(this.options.datalayers.hasOwnProperty(j)){
@@ -378,7 +378,7 @@ L.Storage.Map.include({
     },
 
     initTileLayers: function () {
-        this.tilelayers = Array();
+        this.tilelayers = [];
         for(var i in this.options.tilelayers) {
             if(this.options.tilelayers.hasOwnProperty(i)) {
                 this.tilelayers.push(this.createTileLayer(this.options.tilelayers[i]));
@@ -456,7 +456,7 @@ L.Storage.Map.include({
         // manage geojson case and call original method
         if (!(a instanceof L.LatLng) && a.coordinates) {
             // Guess it's a geojson
-            a = Array(a.coordinates[1], a.coordinates[0]);
+            a = [a.coordinates[1], a.coordinates[0]];
         }
         return L.latLng(a, b, c);
     },
@@ -519,7 +519,8 @@ L.Storage.Map.include({
     renderShareBox: function () {
         var container = L.DomUtil.create('div', 'storage-share'),
             embedTitle = L.DomUtil.add('h4', '', container, L._('Embed the map')),
-            iframe = L.DomUtil.create('textarea', 'storage-share-iframe', container);
+            iframe = L.DomUtil.create('textarea', 'storage-share-iframe', container),
+            option;
         var UIFields = [
             ['dimensions.width', {handler: 'Input', label: L._('width')}],
             ['dimensions.height', {handler: 'Input', label: L._('height')}],
@@ -592,7 +593,7 @@ L.Storage.Map.include({
             var blob = new Blob([content], {type: type.filetype});
             download.href = window.URL.createObjectURL(blob);
         }, this);
-        L.S.fire('ui:start', {data:{html:container}});
+        L.S.fire('ui:start', {data: {html: container}});
     },
 
     toGeoJSON: function () {
@@ -753,8 +754,8 @@ L.Storage.Map.include({
         var creditsContainer = L.DomUtil.create('div', 'credits-container', container),
             credits = L.DomUtil.createFieldset(creditsContainer, L._('Credits'));
         title = L.DomUtil.add('h5', '', credits, L._('User content credits'));
-        if (this.options.shortCredit || this.options.longCredit) {
-            L.DomUtil.add('p', '', credits, L.Util.toHTML(this.options.longCredit || this.options.shortCredit));
+        if (this.options.shortCredit || this.options.longCredit) {
+            L.DomUtil.add('p', '', credits, L.Util.toHTML(this.options.longCredit || this.options.shortCredit));
         }
         if (this.options.licence) {
             var licence = L.DomUtil.add('p', '', credits, L._('Map user content has been published under licence') + ' '),
@@ -804,7 +805,7 @@ L.Storage.Map.include({
             }
             datalayer.reset();
         });
-        this.dirty_datalayers = Array();
+        this.dirty_datalayers = [];
         this.updateDatalayersControl();
         this.initTileLayers();
         this.isDirty = false;
@@ -884,7 +885,7 @@ L.Storage.Map.include({
             'showLabel',
             'shortCredit',
             'longCredit'
-        ], properties = {};
+        ], properties = {}, msg;
         for (var i = editableOptions.length - 1; i >= 0; i--) {
             if (typeof this.options[editableOptions[i]] !== 'undefined') {
                 properties[editableOptions[i]] = this.options[editableOptions[i]];
@@ -1079,7 +1080,7 @@ L.Storage.Map.include({
             ['options.limitBounds.south', {handler: 'BlurFloatInput', placeholder: L._('max South')}],
             ['options.limitBounds.west', {handler: 'BlurFloatInput', placeholder: L._('max West')}],
             ['options.limitBounds.north', {handler: 'BlurFloatInput', placeholder: L._('max North')}],
-            ['options.limitBounds.east', {handler: 'BlurFloatInput', placeholder: L._('max East')}],
+            ['options.limitBounds.east', {handler: 'BlurFloatInput', placeholder: L._('max East')}]
         ];
         var boundsBuilder = new L.S.FormBuilder(this, boundsFields, {
             callback: this.handleLimitBounds,
