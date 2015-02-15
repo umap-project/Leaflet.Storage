@@ -58,7 +58,7 @@ L.Storage.FeatureMixin = {
             this.map.slideshow.current = this;
         }
         this.attachPopup();
-        this.openPopup(latlng || this.getCenter());
+        this.openPopup(latlng || this.getCenter());
     },
 
     openPopup: function () {
@@ -70,7 +70,7 @@ L.Storage.FeatureMixin = {
 
     edit: function(e) {
         if(!this.map.editEnabled || this.isReadOnly()) return;
-        var container = L.DomUtil.create('div'), form ;
+        var container = L.DomUtil.create('div'), form;
 
         var builder = new L.S.FormBuilder(this, ['datalayer'], {
             callback: function () {this.edit(e);}  // removeLayer step will close the edit panel, let's reopen it
@@ -115,21 +115,20 @@ L.Storage.FeatureMixin = {
     },
 
     appendEditFieldsets: function (container) {
-        var options_fields = this.getAdvancedOptions();
-        builder = new L.S.FormBuilder(this, options_fields, {
+        var optionsFields = this.getAdvancedOptions();
+        var builder = new L.S.FormBuilder(this, optionsFields, {
             id: 'storage-feature-advanced-properties',
             callback: this._redraw,
             callbackContext: this
         });
         var advancedProperties = L.DomUtil.createFieldset(container, L._('Advanced properties'));
-        form = builder.build();
-        advancedProperties.appendChild(form);
+        advancedProperties.appendChild(builder.build());
     },
 
     endEdit: function () {},
 
     getDisplayName: function () {
-        return this.properties.name || this.properties.title || this.datalayer.options.name;
+        return this.properties.name || this.properties.title || this.datalayer.options.name;
     },
 
     hasPopupFooter: function () {
@@ -498,7 +497,7 @@ L.Storage.Marker = L.Marker.extend({
             ['_latlng.lat', {handler: 'FloatInput', label: L._('Latitude')}],
             ['_latlng.lng', {handler: 'FloatInput', label: L._('Longitude')}]
         ];
-        builder = new L.S.FormBuilder(this, coordinatesOptions, {
+        var builder = new L.S.FormBuilder(this, coordinatesOptions, {
             callback: function () {
                 this._redraw();
                 this.bringToCenter();
@@ -729,7 +728,7 @@ L.Storage.Polyline = L.Polyline.extend({
         }
         if (vertexClicked) {
             index = e.vertex.getIndex();
-            if (index !== 0 && index !== this._latlngs.length-1) {
+            if (index !== 0 && index !== this._latlngs.length - 1) {
                 items.push({
                     text: L._('Split line'),
                     callback: function () {
@@ -775,10 +774,10 @@ L.Storage.Polyline = L.Polyline.extend({
         if (!other instanceof L.Storage.Polyline) return;
         var otherLatlngs = other.getLatLngs(),
             otherLeft = otherLatlngs[0],
-            otherRight = otherLatlngs[otherLatlngs.length-1],
+            otherRight = otherLatlngs[otherLatlngs.length - 1],
             thisLatlngs = this.getLatLngs(),
             thisLeft = thisLatlngs[0],
-            thisRight = thisLatlngs[thisLatlngs.length-1],
+            thisRight = thisLatlngs[thisLatlngs.length - 1],
             l2ldistance = otherLeft.distanceTo(thisLeft),
             l2rdistance = otherLeft.distanceTo(thisRight),
             r2ldistance = otherRight.distanceTo(thisLeft),
@@ -797,7 +796,7 @@ L.Storage.Polyline = L.Polyline.extend({
         }
         var a = toMerge[0],
             b = toMerge[1],
-            p1 = this.map.latLngToContainerPoint(a[a.length-1]),
+            p1 = this.map.latLngToContainerPoint(a[a.length - 1]),
             p2 = this.map.latLngToContainerPoint(b[0]),
             tolerance = 5; // px on screen
         if (Math.abs(p1.x - p2.x) <= tolerance && Math.abs(p1.y - p2.y) <= tolerance) {
@@ -808,9 +807,9 @@ L.Storage.Polyline = L.Polyline.extend({
     },
 
     splitAt: function (index) {
-        if (index === 0 || index === this._latlngs.length-1) return;
+        if (index === 0 || index === this._latlngs.length - 1) return;
         var latlngs = this.getLatLngs(),
-            thisLatlngs = latlngs.slice(0, index+1),
+            thisLatlngs = latlngs.slice(0, index + 1),
             otherLatlngs = latlngs.slice(index);
         var geojson = {
             type: 'Feature',
@@ -879,9 +878,9 @@ L.Storage.Polygon = L.Polygon.extend({
     getCenter: function () {
         var latlngs = this._latlngs,
             len = latlngs.length,
-            i, j, p1, p2, f, center;
+            p1, p2, f, center;
 
-        for (i = 0, j = len - 1, area = 0, lat = 0, lng = 0; i < len; j = i++) {
+        for (var i = 0, j = len - 1, area = 0, lat = 0, lng = 0; i < len; j = i++) {
             p1 = latlngs[i];
             p2 = latlngs[j];
             f = p1.lat * p2.lng - p2.lat * p1.lng;
