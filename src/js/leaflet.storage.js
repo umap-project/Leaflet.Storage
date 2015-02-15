@@ -144,7 +144,7 @@ L.Storage.Map.include({
         try {
             Object.defineProperty(this, 'isDirty', {
                 get: function () {
-                    return isDirty || this.dirty_datalayers.length;
+                    return isDirty || this.dirty_datalayers.length;
                 },
                 set: function (status) {
                     if (!isDirty && status) {
@@ -996,7 +996,7 @@ L.Storage.Map.include({
             title = L.DomUtil.create('h4', '', container);
         title.innerHTML = L._('Edit map properties');
         var builder = new L.S.FormBuilder(this, metadataFields);
-        form = builder.build();
+        var form = builder.build();
         container.appendChild(form);
         var UIFields = [
             'options.moreControl',
