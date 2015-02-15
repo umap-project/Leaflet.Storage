@@ -76,6 +76,7 @@ L.Storage.Map.include({
         this.overrideBooleanOptionFromQueryString('displayCaptionOnLoad');
         this.overrideBooleanOptionFromQueryString('captionBar');
         this.datalayersOnLoad = L.Util.queryString('datalayers');
+        this.options.onLoadPanel = L.Util.queryString('onLoadPanel', this.options.onLoadPanel);
         if (this.datalayersOnLoad) this.datalayersOnLoad = this.datalayersOnLoad.toString().split(',');
         if (L.Browser.ielt9) {
             // TODO include ie9
