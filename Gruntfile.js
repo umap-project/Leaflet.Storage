@@ -1,7 +1,8 @@
+/*eslint-env node */
 module.exports = function(grunt) {
 
-  // Project configuration.
-  grunt.initConfig({
+    // Project configuration.
+    grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
 
 
@@ -26,16 +27,16 @@ module.exports = function(grunt) {
           {expand: true, cwd: 'node_modules/osmtogeojson/', src: ['osmtogeojson.js'], dest: 'reqs/osmtogeojson/'},
           {expand: true, cwd: 'node_modules/georsstogeojson/', src: ['GeoRSSToGeoJSON.js'], dest: 'reqs/georsstogeojson/'},
           {expand: true, cwd: 'node_modules/togpx/', src: ['togpx.js'], dest: 'reqs/togpx/'},
-          {expand: true, cwd: 'node_modules/tokml/', src: ['tokml.js'], dest: 'reqs/tokml/'},
+          {expand: true, cwd: 'node_modules/tokml/', src: ['tokml.js'], dest: 'reqs/tokml/'}
         ]
       }
     }
 
-  });
+});
 
-  grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-copy');
 
-  // Default task(s).
-  grunt.registerTask('default', ['copy']);
+    // Default task(s).
+    grunt.registerTask('default', ['copy']);
 
 };
