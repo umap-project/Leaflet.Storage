@@ -261,5 +261,7 @@
     "Click to start drawing a polygon": "Click to start drawing a polygon",
     "Import in a new layer": "Import in a new layer",
     "Layer": "Layer",
-    "Please choose a format": "Please choose a format"
+    "Please choose a format": "Please choose a format",
+    "Default popup options": "Default popup options",
+    "Popup options": "Popup options"
 }
