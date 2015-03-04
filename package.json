@@ -51,10 +51,10 @@
     "leaflet.markercluster": "^0.4.0",
     "osmtogeojson": "^2.1.0",
     "togeojson": "^0.7.0",
-    "togpx": "^0.3.1"
+    "togpx": "^0.3.1",
+    "tokml": "git://github.com/mapbox/tokml"
   },
   "napa": {
-    "leaflet-measure": "makinacorpus/Leaflet.MeasureControl",
-    "tokml": "mapbox/tokml"
+    "leaflet-measure": "makinacorpus/Leaflet.MeasureControl"
   }
 }
