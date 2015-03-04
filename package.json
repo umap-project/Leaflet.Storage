@@ -38,6 +38,7 @@
     "csv2geojson": "^4.0.0",
     "georsstogeojson": "^0.0.2",
     "leaflet": "^0.7.3",
+    "leaflet-contextmenu": "^1.0.0",
     "leaflet-draw": "^0.2.3",
     "leaflet-editable": "^0.5.0",
     "leaflet-editinosm": "0.1.0",
@@ -52,7 +53,6 @@
     "togpx": "^0.3.1"
   },
   "napa": {
-    "leaflet-contextmenu": "aratcliffe/Leaflet.contextmenu",
     "leaflet-loading": "ebrelsford/Leaflet.loading#v0.1.11",
     "leaflet-measure": "makinacorpus/Leaflet.MeasureControl",
     "tokml": "mapbox/tokml"
