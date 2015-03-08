@@ -16,7 +16,7 @@ describe('L.Storage.Poly', function () {
         var submitButton;
 
         it('should have datalayer features created', function () {
-            assert.equal(document.querySelectorAll('#map path.leaflet-clickable').length, 2);
+            assert.equal(document.querySelectorAll('#map > .leaflet-map-pane > .leaflet-overlay-pane path.leaflet-interactive').length, 2);
             assert.ok(qs('path[fill="none"]')); // Polyline
             assert.ok(qs('path[fill="DarkBlue"]')); // Polygon
         });
@@ -116,9 +116,9 @@ describe('L.Storage.Poly', function () {
         it('should generate a valid geojson', function () {
             setFeatures(this.datalayer);
             assert.ok(poly);
-            assert.deepEqual(poly.geometry(), {"type":"Polygon","coordinates":[[[11.25,53.585983654559804],[10.1513671875,52.9751081817353],[12.689208984375,52.16719363541221],[14.084472656249998,53.199451902831555],[12.63427734375,53.61857936489517],[11.25,53.585983654559804],[11.25,53.585983654559804]]]});
+            assert.deepEqual(poly.toGeoJSON().geometry, {"type":"Polygon","coordinates":[[[11.25,53.585983654559804],[10.1513671875,52.9751081817353],[12.689208984375,52.16719363541221],[14.084472656249998,53.199451902831555],[12.63427734375,53.61857936489517],[11.25,53.585983654559804],[11.25,53.585983654559804]]]});
             // Ensure original latlngs has not been modified
-            assert.equal(poly.getLatLngs().length, 6);
+            assert.equal(poly.getLatLngs()[0].length, 6);
         });
 
         it('should remove empty _storage_options from exported geojson', function () {

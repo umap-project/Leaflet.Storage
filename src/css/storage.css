@@ -362,6 +362,7 @@ a.storage-control-text {
     cursor: auto;
     border-bottom: 1px solid #ddd;
     opacity: 0.93;
+    z-index: 1000;
 }
 .storage-edit-enabled .storage-caption-bar {
     display: none;
@@ -388,6 +389,7 @@ a.storage-control-text {
     cursor: auto;
     border-top: 1px solid #ddd;
     opacity: 0.93;
+    z-index: 1000;
 }
 .storage-caption-bar-enabled .leaflet-bottom {
     bottom: 46px;

@@ -96,16 +96,6 @@ L.Util.toHTML = function (r) {
 L.Util.isObject = function (what) {
     return typeof what === 'object' && what !== null;
 };
-L.Util.latLngsForGeoJSON = function (latlngs) {
-    coords = [];
-    for(var i = 0, len = latlngs.length; i < len; i++) {
-        coords.push([
-            latlngs[i].lng,
-            latlngs[i].lat
-        ]);
-    }
-    return coords;
-};
 L.Util.CopyJSON = function (geojson) {
     return JSON.parse(JSON.stringify(geojson));
 };

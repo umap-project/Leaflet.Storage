@@ -28,6 +28,19 @@ var changeInputValue = function (input, value) {
     input.value = value;
     happen.once(input, {type: 'input'});
 };
+var changeSelectValue = function (path_or_select, value) {
+    if (typeof path_or_select === 'string') path_or_select = qs(path_or_select);
+    var found = false;
+    for (var i = 0; i < path_or_select.length; i++) {
+        if (path_or_select.options[i].value === value) {
+            path_or_select.options[i].selected = true;
+            found = true;
+        }
+    }
+    happen.once(path_or_select, {type: 'change'});
+    if (!found) throw new Error('Value ' + value + 'not found in select ' + path_or_select);
+    return path_or_select;
+}
 var cleanAlert = function () {
     L.DomUtil.removeClass(document.body, 'storage-alert');
     L.DomUtil.get('storage-alert-container').innerHTML = '';

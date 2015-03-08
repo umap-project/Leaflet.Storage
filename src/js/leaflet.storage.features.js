@@ -1,6 +1,5 @@
 L.Storage.FeatureMixin = {
 
-    form_id: 'feature_form',
     staticOptions: {},
 
     initialize: function (map, latlng, options) {
@@ -9,7 +8,7 @@ L.Storage.FeatureMixin = {
             options = {};
         }
         // DataLayer the marker belongs to
-        this.datalayer = options.datalayer || null;
+        this.datalayer = options.datalayer || null;
         this.properties = {_storage_options: {}};
         if (options.geojson) {
             this.populate(options.geojson);
@@ -124,7 +123,7 @@ L.Storage.FeatureMixin = {
         advancedProperties.appendChild(builder.build());
 
         var popupFields = [
-            'options.popupTemplate'
+            'properties._storage_options.popupTemplate'
         ];
         builder = new L.S.FormBuilder(this, popupFields);
         var popupFieldset = L.DomUtil.createFieldset(container, L._('Popup options'));
@@ -235,7 +234,16 @@ L.Storage.FeatureMixin = {
     },
 
     zoomTo: function () {
-        this.bringToCenter({zoomTo: this.getOption('zoomTo')});
+        if (this.map.options.easing) this.flyTo();
+        else this.bringToCenter({zoomTo: this.getBestZoom()});
+    },
+
+    getBestZoom: function () {
+        return this.getOption('zoomTo');
+    },
+
+    flyTo: function () {
+        this.map.flyTo(this.getCenter(), this.getBestZoom());
     },
 
     getNext: function () {
@@ -266,11 +274,9 @@ L.Storage.FeatureMixin = {
     },
 
     toGeoJSON: function () {
-        return {
-            type: 'Feature',
-            geometry: this.geometry(),
-            properties: this.cloneProperties()
-        };
+        var geojson = this.parentClass.prototype.toGeoJSON.call(this);
+        geojson.properties = this.cloneProperties();
+        return geojson;
     },
 
     addInteractions: function () {
@@ -396,7 +402,7 @@ L.Storage.Marker = L.Marker.extend({
         this._popupHandlersAdded = true; // prevent Leaflet from binding event on bindPopup
     },
 
-    _onClick: function(e){
+    _onClick: function (e) {
         if(this.map.editEnabled) {
             this.edit(e);
         }
@@ -449,18 +455,6 @@ L.Storage.Marker = L.Marker.extend({
     disconnectFromDataLayer: function (datalayer) {
         this.options.icon.datalayer = null;
         L.Storage.FeatureMixin.disconnectFromDataLayer.call(this, datalayer);
-    },
-
-    geometry: function() {
-        /* Return a GeoJSON geometry Object */
-        var latlng = this.getLatLng();
-        return {
-            type: 'Point',
-            coordinates: [
-                latlng.lng,
-                latlng.lat
-            ]
-        };
     },
 
     _getIconUrl: function (name) {
@@ -529,6 +523,7 @@ L.Storage.Marker = L.Marker.extend({
 L.Storage.PathMixin = {
 
     options: {
+        interactive: true,
         clickable: true,
         magnetize: true,
         magnetPoint: null
@@ -579,14 +574,6 @@ L.Storage.PathMixin = {
         'clickable'
     ],
 
-    _setStyleOptions: function () {
-        var option;
-        for (var idx in this.styleOptions) {
-            option = this.styleOptions[idx];
-            this.options[option] = this.getOption(option);
-        }
-    },
-
     getAdvancedOptions: function () {
         return [
             'properties._storage_options.color',
@@ -598,23 +585,28 @@ L.Storage.PathMixin = {
         ];
     },
 
-    _updateStyle: function () {
-        this._setStyleOptions();
-        L.Polyline.prototype._updateStyle.call(this);
-        if (!this.options.clickable) {
-            this._path.setAttribute('pointer-events', 'stroke');
-        } else {
-            this._path.removeAttribute('pointer-events');
+    setStyle: function (options) {
+        options = options || {};
+        var option;
+        for (var idx in this.styleOptions) {
+            option = this.styleOptions[idx];
+            options[option] = this.getOption(option);
         }
+        this.parentClass.prototype.setStyle.call(this, options);
+        // if (!this.options.clickable && !this.options.interactive) {
+        //     this._path.setAttribute('pointer-events', 'stroke');
+        // } else {
+        //     this._path.removeAttribute('pointer-events');
+        // }
     },
 
     _redraw: function () {
-        this._updateStyle();
+        this.setStyle();
     },
 
     onAdd: function (map) {
         this._container = null;
-        this._setStyleOptions();
+        this.setStyle();
         if (this.map._controls.measureControl) {
             this.map._controls.measureControl.handler.on('enabled', this.showMeasureTooltip, this);
             this.map._controls.measureControl.handler.on('disabled', function () {
@@ -638,14 +630,15 @@ L.Storage.PathMixin = {
     },
 
     getCenter: function () {
-        return this._latlng || this._latlngs[Math.floor(this._latlngs.length / 2)];
+        return this._latlng || this.defaultShape()[Math.floor(this.defaultShape().length / 2)];
     },
 
-    zoomTo: function () {
+    getBestZoom: function () {
         if (this.options.zoomTo) {
-            L.S.FeatureMixin.zoomTo.call(this);
+            return this.options.zoomTo;
         } else {
-            this.map.fitBounds(this.getBounds());
+            var bounds = this.getBounds();
+            return this.map.getBoundsZoom(bounds, true);
         }
     },
 
@@ -687,14 +680,6 @@ L.Storage.Polyline = L.Polyline.extend({
     staticOptions: {
         stroke: true,
         fill: false
-    },
-
-    geometry: function() {
-        /* Return a GeoJSON geometry Object */
-        return {
-            type: 'LineString',
-            coordinates: L.Util.latLngsForGeoJSON(this.getLatLngs())
-        };
     },
 
     getClassName: function () {
@@ -820,7 +805,7 @@ L.Storage.Polyline = L.Polyline.extend({
             type: 'Feature',
             geometry: {
                 type: 'LineString',
-                coordinates: L.Util.latLngsForGeoJSON(otherLatlngs)
+                coordinates: L.GeoJSON.latLngsToCoords(otherLatlngs)
             },
             properties: this.cloneProperties()
         };
@@ -831,6 +816,10 @@ L.Storage.Polyline = L.Polyline.extend({
         }
         var other = this.datalayer.geojsonToFeatures(geojson);
         return other;
+    },
+
+    defaultShape: function () {
+        return this._flat(this._latlngs) ? this._latlngs : this._latlngs[0];
     }
 
 });
@@ -838,26 +827,6 @@ L.Storage.Polyline = L.Polyline.extend({
 L.Storage.Polygon = L.Polygon.extend({
     parentClass: L.Polygon,
     includes: [L.Storage.FeatureMixin, L.Storage.PathMixin, L.Mixin.Events],
-
-    geometry: function() {
-        // TODO: add test!
-        /* Return a GeoJSON geometry Object */
-        /* see: https://github.com/CloudMade/Leaflet/issues/1135 */
-        /* and: https://github.com/CloudMade/Leaflet/issues/712 */
-        var latlngs = this.getLatLngs().slice(0), closingPoint = latlngs[0];
-        latlngs.push(closingPoint);  // Artificially create a LinearRing
-        var coords = L.Util.latLngsForGeoJSON(latlngs),
-            coordinates = [coords];
-        if (this._holes) {
-            for (var i = 0; i < this._holes.length; i++) {
-                coordinates.push(L.Util.latLngsForGeoJSON(this._holes[i]));
-            }
-        }
-        return {
-            type: 'Polygon',
-            coordinates: coordinates
-        };
-    },
 
     getClassName: function () {
         return 'polygon';
@@ -881,7 +850,7 @@ L.Storage.Polygon = L.Polygon.extend({
     },
 
     getCenter: function () {
-        var latlngs = this._latlngs,
+        var latlngs = this.defaultShape(),
             len = latlngs.length,
             p1, p2, f, center;
 
@@ -937,5 +906,10 @@ L.Storage.Polygon = L.Polygon.extend({
         toPolyline.href = '#';
         toPolyline.innerHTML = L._('Transform to lines');
         L.DomEvent.on(toPolyline, 'click', this.toPolyline, this);
+    },
+
+    defaultShape: function () {
+        return this._flat(this._latlngs[0]) ? this._latlngs[0] : this._latlngs[0][0];
     }
+
 });

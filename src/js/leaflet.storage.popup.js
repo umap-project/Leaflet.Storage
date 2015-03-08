@@ -53,29 +53,29 @@ L.S.Popup = L.Popup.extend({
     renderFooter: function () {
         if (this.hasFooter()) {
             var footer = L.DomUtil.create('ul', 'storage-popup-footer', this.container),
-                previous_li = L.DomUtil.create('li', 'previous', footer),
-                zoom_li = L.DomUtil.create('li', 'zoom', footer),
-                next_li = L.DomUtil.create('li', 'next', footer),
+                previousLi = L.DomUtil.create('li', 'previous', footer),
+                zoomLi = L.DomUtil.create('li', 'zoom', footer),
+                nextLi = L.DomUtil.create('li', 'next', footer),
                 next = this.feature.getNext(),
                 prev = this.feature.getPrevious();
             if (next) {
-                next_li.title = L._('Go to «{feature}»', {feature: next.properties.name});
+                nextLi.title = L._('Go to «{feature}»', {feature: next.properties.name || L._('next')});
             }
             if (prev) {
-                previous_li.title = L._('Go to «{feature}»', {feature: prev.properties.name});
+                previousLi.title = L._('Go to «{feature}»', {feature: prev.properties.name || L._('previous')});
             }
-            zoom_li.title = L._('Zoom to this feature');
-            L.DomEvent.on(next_li, 'click', function () {
+            zoomLi.title = L._('Zoom to this feature');
+            L.DomEvent.on(nextLi, 'click', function () {
                 if (next) {
                     next.bringToCenter({zoomTo: next.getOption('zoomTo')}, function () {next.view(next.getCenter());});
                 }
             });
-            L.DomEvent.on(previous_li, 'click', function () {
+            L.DomEvent.on(previousLi, 'click', function () {
                 if (prev) {
                     prev.bringToCenter({zoomTo: prev.getOption('zoomTo')}, function () {prev.view(prev.getCenter());});
                 }
             });
-            L.DomEvent.on(zoom_li, 'click', function () {
+            L.DomEvent.on(zoomLi, 'click', function () {
                 this.bringToCenter({zoomTo: this.getOption('zoomTo')});
             }, this.feature);
         }
@@ -142,7 +142,7 @@ L.S.Popup.Table = L.S.Popup.BaseWithTitle.extend({
         var table = L.DomUtil.create('table');
 
         for (var key in this.feature.properties) {
-            if (typeof this.feature.properties[key] === 'object' || key === 'name') {
+            if (typeof this.feature.properties[key] === 'object' || key === 'name') {
                 continue;
             }
             // TODO, manage links (url, mailto, wikipedia...)
@@ -198,6 +198,10 @@ L.S.Popup.GeoRSSLink = L.S.Popup.extend({
 });
 
 L.S.Popup.SimplePanel = L.S.Popup.extend({
+
+    options: {
+        zoomAnimation: false
+    },
 
     allButton: function () {
         var button = L.DomUtil.create('li', '');
