@@ -23,6 +23,7 @@ module.exports = function(grunt) {
           {expand: true, cwd: 'node_modules/leaflet.label/dist/', src: ['**'], dest: 'reqs/label/'},
           {expand: true, cwd: 'node_modules/leaflet.heat/dist/', src: ['**'], dest: 'reqs/heat/'},
           {expand: true, cwd: 'node_modules/leaflet-toolbar/dist/', src: ['**'], dest: 'reqs/toolbar/'},
+          {expand: true, cwd: 'node_modules/leaflet-formbuilder/', src: ['*.js'], dest: 'reqs/formbuilder/'},
           {expand: true, cwd: 'node_modules/csv2geojson/', src: ['*.js'], dest: 'reqs/csv2geojson/'},
           {expand: true, cwd: 'node_modules/togeojson/', src: ['*.js'], dest: 'reqs/togeojson/'},
           {expand: true, cwd: 'node_modules/osmtogeojson/', src: ['osmtogeojson.js'], dest: 'reqs/osmtogeojson/'},

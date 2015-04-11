@@ -54,13 +54,13 @@ L.S.Layer.Cluster = L.MarkerClusterGroup.extend({
 
     },
 
-    postUpdate: function (field) {
-        if (field === 'options.cluster.radius') {
+    postUpdate: function (e) {
+        if (e.helper.field === 'options.cluster.radius') {
             // No way to reset radius of an already instanciated MarkerClusterGroup...
             this.datalayer.resetLayer(true);
             return;
         }
-        if (field === 'options.color') {
+        if (e.helper.field === 'options.color') {
             this.options.polygonOptions.color = this.datalayer.getColor();
         }
     }
@@ -106,17 +106,17 @@ L.S.Layer.Heat = L.HeatLayer.extend({
         }
         return [
             ['options.heat.radius', {handler: 'BlurIntInput', placeholder: L._('Heatmap radius'), helpText: L._('Override heatmap radius (default 25)')}],
-            ['options.heat.intensityProperty', {handler: 'BlurInput', placeholder: L._('Heatmap intensity property'), helpText: L._('Optional intensity property for heatmap')}],
+            ['options.heat.intensityProperty', {handler: 'BlurInput', placeholder: L._('Heatmap intensity property'), helpText: L._('Optional intensity property for heatmap')}]
         ];
 
     },
 
-    postUpdate: function (field) {
-        if (field === 'options.heat.intensityProperty') {
+    postUpdate: function (e) {
+        if (e.helper.field === 'options.heat.intensityProperty') {
             this.datalayer.resetLayer(true);  // We need to repopulate the latlngs
             return;
         }
-        if (field === 'options.heat.radius') {
+        if (e.helper.field === 'options.heat.radius') {
             this.options.radius = this.datalayer.options.heat.radius;
         }
         this._updateOptions();
@@ -681,9 +681,9 @@ L.Storage.DataLayer = L.Class.extend({
                 ['options.displayOnLoad', {label: L._('Display on load'), handler: 'CheckBox'}]
             ];
         var builder = new L.S.FormBuilder(this, metadataFields, {
-            callback: function (field) {
+            callback: function (e) {
                 this.map.updateDatalayersControl();
-                if (field === 'options.type') {
+                if (e.helper.field === 'options.type') {
                     this.resetLayer();
                     this.edit();
                 }

@@ -1055,9 +1055,9 @@ L.Storage.Map.include({
         ];
 
         builder = new L.S.FormBuilder(this, optionsFields, {
-            callback: function (field) {
+            callback: function (e) {
                 this.eachDataLayer(function (datalayer) {
-                    if (field === 'options.sortKey') datalayer.reindex();
+                    if (e.helper.field === 'options.sortKey') datalayer.reindex();
                     datalayer.redraw();
                 });
             }
@@ -1213,7 +1213,7 @@ L.Storage.Map.include({
             name.innerHTML = this.getDisplayName();
         };
         L.bind(setName, this)();
-        this.on('synced', L.bind(setName, this));
+        this.on('postsync', L.bind(setName, this));
         this.onceDatalayersLoaded(function () {
             this.slideshow.renderToolbox(container);
         });
@@ -1228,7 +1228,7 @@ L.Storage.Map.include({
             };
         L.bind(setName, this)();
         L.DomEvent.on(name, 'click', this.edit, this);
-        this.on('synced', L.bind(setName, this));
+        this.on('postsync', L.bind(setName, this));
         this.help.button(title, 'edit');
         var save = L.DomUtil.create('a', 'leaflet-control-edit-save button', container);
         save.href = '#';

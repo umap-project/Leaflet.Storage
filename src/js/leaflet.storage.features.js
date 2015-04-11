@@ -284,6 +284,7 @@ L.Storage.FeatureMixin = {
     },
 
     _showContextMenu: function (e) {
+        L.DomEvent.stop(e);
         var pt = this.map.mouseEventToContainerPoint(e.originalEvent);
         e.relatedTarget = this;
         this.map.contextmenu.showAt(pt, e);
@@ -554,7 +555,7 @@ L.Storage.PathMixin = {
             }
         }
         // FIXME: disable when disabling global edit
-        L.DomEvent.stop(e.originalEvent);
+        L.DomEvent.stop(e);
     },
 
     closePopup: function() {

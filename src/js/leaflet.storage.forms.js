@@ -1,209 +1,5 @@
-L.Storage.ElementHelper = L.Class.extend({
-    includes: [L.Mixin.Events],
 
-    initialize: function (formBuilder, field, options) {
-        this.formBuilder = formBuilder;
-        this.obj = this.formBuilder.obj;
-        this.map = this.obj.getMap();
-        this.form = this.formBuilder.form;
-        this.field = field;
-        this.options = options;
-        this.fieldEls = this.field.split('.');
-        this.name = this.formBuilder.getName(field);
-        this.buildLabel();
-        this.build();
-        this.buildHelpText();
-    },
-
-    get: function () {
-        return this.formBuilder.getter(this.field);
-    },
-
-    toHTML: function () {
-        return this.get();
-    },
-
-    toJS: function () {
-        return this.value();
-    },
-
-    sync: function () {
-        this.set();
-        this.fire('synced');
-    },
-
-    set: function () {
-        this.formBuilder.setter(this.field, this.toJS());
-    },
-
-    buildLabel: function () {
-        if (this.options.label) {
-            this.label = L.DomUtil.add('label', '', this.formBuilder.form, this.options.label);
-            if (this.options.helpEntries) {
-                this.map.help.button(this.label, this.options.helpEntries);
-            }
-        }
-    },
-
-    buildHelpText: function () {
-        if (this.options.helpText) {
-            var container = L.DomUtil.create('small', 'help-text', this.form);
-            container.innerHTML = this.options.helpText;
-        }
-    },
-
-    fetch: function () {}
-
-});
-
-L.S.ElementHelper.Textarea = L.S.ElementHelper.extend({
-
-    build: function () {
-        this.input = L.DomUtil.create('textarea', '', this.form);
-        if (this.options.placeholder) {
-            this.input.placeholder = this.options.placeholder;
-        }
-        this.fetch();
-        L.DomEvent.on(this.input, 'input', this.sync, this);
-        L.DomEvent.on(this.input, 'keypress', this.onKeyPress, this);
-    },
-
-    fetch: function () {
-        var value = this.backup = this.toHTML();
-        if (value) {
-            this.input.value = value;
-        }
-    },
-
-    value: function () {
-        return this.input.value;
-    },
-
-    onKeyPress: function (e) {
-        var key = e.keyCode,
-            ENTER = 13;
-        if (key == ENTER && (e.shiftKey || e.ctrlKey)) {
-            L.DomEvent.stop(e);
-            L.S.fire('ui:end');
-        }
-    }
-
-});
-
-L.Storage.ElementHelper.Input = L.S.ElementHelper.extend({
-
-    build: function () {
-        if (this.options.wrapper) {
-            this.wrapper = L.DomUtil.create(this.options.wrapper, this.options.wrapperClass || '', this.form);
-        }
-        this.input = L.DomUtil.create('input', '', this.wrapper || this.form);
-        this.input.type = this.type();
-        this.input.name = this.name;
-        this.input._helper = this;
-        this.fetch();
-        if (this.options.placeholder) {
-            this.input.placeholder = this.options.placeholder;
-        }
-        L.DomEvent.on(this.input, this.getSyncEvent(), this.sync, this);
-        L.DomEvent.on(this.input, 'keydown', this.onKeyDown, this);
-    },
-
-    fetch: function () {
-        this.input.value = this.backup = (typeof this.toHTML() !== 'undefined' ? this.toHTML() : null);
-    },
-
-    getSyncEvent: function () {
-        return 'input';
-    },
-
-    type: function () {
-        return 'text';
-    },
-
-    value: function () {
-        return this.input.value || undefined;
-    },
-
-    finish: function () {
-        L.S.fire('ui:end');
-    },
-
-    onKeyDown: function (e) {
-        var key = e.keyCode;
-        if (key == L.S.Keys.ENTER) {
-            L.DomEvent.stop(e);
-            this.finish();
-        }
-        if (key == L.S.Keys.S && e.ctrlKey) {
-            this.finish();
-        }
-    }
-
-});
-
-L.S.ElementHelper.BlurInput = L.S.ElementHelper.Input.extend({
-
-    getSyncEvent: function () {
-        return 'blur';
-    },
-
-    finish: function () {
-        this.sync();
-        L.S.ElementHelper.Input.prototype.finish.call(this);
-    },
-
-    sync: function () {
-        if (this.backup !== this.value()) {
-            L.S.ElementHelper.Input.prototype.sync.call(this);
-        }
-    }
-
-});
-
-L.S.ElementHelper.IntegerMixin = {
-
-    value: function () {
-        return !isNaN(this.input.value) && this.input.value !== '' ? parseInt(this.input.value, 10): undefined;
-    },
-
-    type: function () {
-        return 'number';
-    }
-
-};
-
-L.S.ElementHelper.IntInput = L.S.ElementHelper.Input.extend({
-    includes: [L.S.ElementHelper.IntegerMixin]
-});
-
-
-L.S.ElementHelper.BlurIntInput = L.S.ElementHelper.BlurInput.extend({
-    includes: [L.S.ElementHelper.IntegerMixin]
-});
-
-
-L.S.ElementHelper.FloatMixin = {
-
-    value: function () {
-        return !isNaN(this.input.value) && this.input.value !== '' ? parseFloat(this.input.value): undefined;
-    },
-
-    type: function () {
-        return 'number';
-    }
-
-};
-
-L.S.ElementHelper.FloatInput = L.S.ElementHelper.Input.extend({
-    includes: [L.S.ElementHelper.FloatMixin]
-});
-
-L.S.ElementHelper.BlurFloatInput = L.S.ElementHelper.BlurInput.extend({
-    includes: [L.S.ElementHelper.FloatMixin]
-});
-
-
-L.S.ElementHelper.ColorPicker = L.S.ElementHelper.Input.extend({
+L.FormBuilder.ColorPicker = L.FormBuilder.Input.extend({
     colors: [
         'Black', 'Navy', 'DarkBlue', 'MediumBlue', 'Blue', 'DarkGreen',
         'Green', 'Teal', 'DarkCyan', 'DeepSkyBlue', 'DarkTurquoise',
@@ -239,7 +35,7 @@ L.S.ElementHelper.ColorPicker = L.S.ElementHelper.Input.extend({
     ],
 
     build: function () {
-        L.S.ElementHelper.Input.prototype.build.call(this);
+        L.FormBuilder.Input.prototype.build.call(this);
         this.input.placeholder = this.options.placeholder || L._('Inherit');
         this.container = L.DomUtil.create('div', 'storage-color-picker');
         this.container.style.display = 'none';
@@ -295,7 +91,7 @@ L.S.ElementHelper.ColorPicker = L.S.ElementHelper.Input.extend({
 
 });
 
-L.S.ElementHelper.TextColorPicker = L.S.ElementHelper.ColorPicker.extend({
+L.FormBuilder.TextColorPicker = L.FormBuilder.ColorPicker.extend({
     colors: [
         'Black', 'DarkSlateGrey', 'DimGrey', 'SlateGrey', 'LightSlateGrey',
         'Grey', 'DarkGrey', 'LightGrey', 'White'
@@ -303,94 +99,7 @@ L.S.ElementHelper.TextColorPicker = L.S.ElementHelper.ColorPicker.extend({
 
 });
 
-L.S.ElementHelper.CheckBox = L.S.ElementHelper.extend({
-
-    build: function () {
-        var container = L.DomUtil.create('div', 'formbox', this.form);
-        this.input = L.DomUtil.create('input', '', container);
-        this.input.type = 'checkbox';
-        this.input.name = this.name;
-        this.input._helper = this;
-        this.fetch();
-        L.DomEvent.on(this.input, 'change', this.sync, this);
-    },
-
-    fetch: function () {
-        this.backup = this.toHTML();
-        this.input.checked = this.backup === true;
-    },
-
-    value: function () {
-        return this.input.checked;
-    },
-
-    toHTML: function () {
-        return [1, true].indexOf(this.get()) !== -1;
-    }
-
-});
-
-L.S.ElementHelper.SelectAbstract = L.S.ElementHelper.extend({
-
-    selectOptions: [
-        ['value', 'label']
-    ],
-
-    build: function () {
-        this.select = L.DomUtil.create('select', '', this.form);
-        this.select.name = this.name;
-        this.validValues = [];
-        this.buildOptions();
-        L.DomEvent.on(this.select, 'change', this.sync, this);
-    },
-
-    getOptions: function () {
-        return this.selectOptions;
-    },
-
-    fetch: function () {
-        this.buildOptions();
-    },
-
-    buildOptions: function () {
-        this.select.innerHTML = '';
-        var options = this.getOptions();
-        for (var i=0, l=options.length; i<l; i++) {
-            this.buildOption(options[i][0], options[i][1]);
-        }
-    },
-
-    buildOption: function (value, label) {
-        this.validValues.push(value);
-        var option = L.DomUtil.create('option', '', this.select);
-        option.value = value;
-        option.innerHTML = label;
-        if (this.toHTML() === value) {
-            option.selected = 'selected';
-        }
-    },
-
-    value: function () {
-        return this.select[this.select.selectedIndex].value;
-    },
-
-    getDefault: function () {
-        return this.getOptions()[0][0];
-    },
-
-    toJS: function () {
-        var value = this.value();
-        if (this.validValues.indexOf(value) !== -1) {
-            return value;
-        } else {
-            return this.getDefault();
-        }
-    }
-
-
-});
-
-L.S.ElementHelper.IconClassSwitcher = L.S.ElementHelper.SelectAbstract.extend({
+L.FormBuilder.IconClassSwitcher = L.FormBuilder.Select.extend({
 
     selectOptions: [
         [undefined, L._('inherit')],
@@ -402,7 +111,7 @@ L.S.ElementHelper.IconClassSwitcher = L.S.ElementHelper.SelectAbstract.extend({
 
 });
 
-L.S.ElementHelper.PopupTemplate = L.S.ElementHelper.SelectAbstract.extend({
+L.FormBuilder.PopupTemplate = L.FormBuilder.Select.extend({
 
     selectOptions: [
         [undefined, L._('inherit')],
@@ -415,28 +124,28 @@ L.S.ElementHelper.PopupTemplate = L.S.ElementHelper.SelectAbstract.extend({
     ],
 
     toJS: function () {
-        var value = L.S.ElementHelper.SelectAbstract.prototype.toJS.apply(this);
+        var value = L.FormBuilder.Select.prototype.toJS.apply(this);
         if (value === 'table') { value = 'Table'; }
         return value;
     }
 
 });
 
-L.S.ElementHelper.LayerTypeChooser = L.S.ElementHelper.SelectAbstract.extend({
+L.FormBuilder.LayerTypeChooser = L.FormBuilder.Select.extend({
 
     selectOptions: [
         ['Default', L._('Default')],
         ['Cluster', L._('Clustered')],
-        ['Heat', L._('Heatmap')],
+        ['Heat', L._('Heatmap')]
     ]
 
 });
 
-L.S.ElementHelper.DataLayerSwitcher = L.S.ElementHelper.SelectAbstract.extend({
+L.FormBuilder.DataLayerSwitcher = L.FormBuilder.Select.extend({
 
     getOptions: function () {
         var options = [];
-        this.map.eachDataLayer(function (datalayer) {
+        this.builder.map.eachDataLayer(function (datalayer) {
             if(datalayer.isLoaded() && !datalayer.isRemoteLayer() && datalayer.isBrowsable()) {
                 options.push([L.stamp(datalayer), datalayer.getName()]);
             }
@@ -449,7 +158,7 @@ L.S.ElementHelper.DataLayerSwitcher = L.S.ElementHelper.SelectAbstract.extend({
     },
 
     toJS: function () {
-        return this.map.datalayers[this.value()];
+        return this.builder.map.datalayers[this.value()];
     },
 
     set: function () {
@@ -458,7 +167,7 @@ L.S.ElementHelper.DataLayerSwitcher = L.S.ElementHelper.SelectAbstract.extend({
 
 });
 
-L.S.ElementHelper.onLoadPanel = L.S.ElementHelper.SelectAbstract.extend({
+L.FormBuilder.onLoadPanel = L.FormBuilder.Select.extend({
 
     selectOptions: [
         ['none', L._('None')],
@@ -468,7 +177,7 @@ L.S.ElementHelper.onLoadPanel = L.S.ElementHelper.SelectAbstract.extend({
 
 });
 
-L.S.ElementHelper.DataFormat = L.S.ElementHelper.SelectAbstract.extend({
+L.FormBuilder.DataFormat = L.FormBuilder.Select.extend({
 
     selectOptions: [
         [undefined, L._('Choose the data format')],
@@ -482,11 +191,11 @@ L.S.ElementHelper.DataFormat = L.S.ElementHelper.SelectAbstract.extend({
 
 });
 
-L.S.ElementHelper.LicenceChooser = L.S.ElementHelper.SelectAbstract.extend({
+L.FormBuilder.LicenceChooser = L.FormBuilder.Select.extend({
 
     getOptions: function () {
         var licences = [],
-            licencesList = this.formBuilder.obj.options.licences,
+            licencesList = this.builder.obj.options.licences,
             licence;
         for (var i in licencesList) {
             licence = licencesList[i];
@@ -500,12 +209,12 @@ L.S.ElementHelper.LicenceChooser = L.S.ElementHelper.SelectAbstract.extend({
     },
 
     toJS: function () {
-        return this.formBuilder.obj.options.licences[this.value()];
+        return this.builder.obj.options.licences[this.value()];
     }
 
 });
 
-L.S.ElementHelper.NullableBoolean = L.S.ElementHelper.SelectAbstract.extend({
+L.FormBuilder.NullableBoolean = L.FormBuilder.Select.extend({
     selectOptions: [
         [undefined, L._('inherit')],
         [true, L._('yes')],
@@ -531,14 +240,14 @@ L.S.ElementHelper.NullableBoolean = L.S.ElementHelper.SelectAbstract.extend({
 
 });
 
-L.S.ElementHelper.IconUrl = L.S.ElementHelper.Input.extend({
+L.FormBuilder.IconUrl = L.FormBuilder.Input.extend({
 
     type: function () {
         return 'hidden';
     },
 
     build: function () {
-        L.S.ElementHelper.Input.prototype.build.call(this);
+        L.FormBuilder.Input.prototype.build.call(this);
         this.parentContainer = L.DomUtil.create('div', 'storage-form-iconfield', this.form);
         this.buttonsContainer = L.DomUtil.create('div', '', this.parentContainer);
         this.pictogramsContainer = L.DomUtil.create('div', 'storage-pictogram-list', this.parentContainer);
@@ -590,7 +299,7 @@ L.S.ElementHelper.IconUrl = L.S.ElementHelper.Input.extend({
     },
 
     fetchIconList: function (e) {
-        this.map.get(this.map.options.urls.pictogram_list_json, {
+        this.builder.map.get(this.builder.map.options.urls.pictogram_list_json, {
             callback: function (data) {
                 this.pictogramsContainer.innerHTML = '';
                 this.buttonsContainer.innerHTML = '';
@@ -623,7 +332,7 @@ L.S.ElementHelper.IconUrl = L.S.ElementHelper.Input.extend({
                 customButton.href = '#';
                 customButton.style.display = 'block';
                 customButton.style.clear = 'both';
-                this.map.help.button(customButton, 'formatIconURL');
+                this.builder.map.help.button(customButton, 'formatIconURL');
                 L.DomEvent
                     .on(customButton, 'click', L.DomEvent.stop)
                     .on(customButton, 'click', function (e) {
@@ -646,7 +355,7 @@ L.S.ElementHelper.IconUrl = L.S.ElementHelper.Input.extend({
 
 });
 
-L.S.ElementHelper.Url = L.S.ElementHelper.Input.extend({
+L.FormBuilder.Url = L.FormBuilder.Input.extend({
 
     type: function () {
         return 'url';
@@ -654,117 +363,10 @@ L.S.ElementHelper.Url = L.S.ElementHelper.Input.extend({
 
 });
 
-L.Storage.FormBuilder = L.Class.extend({
+L.Storage.FormBuilder = L.FormBuilder.extend({
 
-    initialize: function (obj, fields, options) {
-        this.obj = obj;
-        this.fields = fields;
-        this.form = L.DomUtil.create('form', 'storage-form');
-        this.helpers = {};
-        this.options = options || {};
-        if (this.options.id) {
-            this.form.id = this.options.id;
-        }
-        if (this.options.className) {
-            L.DomUtil.addClass(this.form, this.options.className);
-        }
-    },
-
-    build: function () {
-        this.form.innerHTML = '';
-        for (var idx in this.fields) {
-            this.buildField(this.fields[idx]);
-        }
-        return this.form;
-    },
-
-    buildField: function (field) {
-        var type, helper, options;
-        if (field instanceof Array) {
-            options = field[1] || {};
-            helpText = field[2] || null;
-            field = field[0];
-        } else {
-            options = this.defaultOptions[this.getName(field)] || {};
-        }
-        type = options.handler || 'Input';
-        if (L.S.ElementHelper[type]) {
-            helper = new L.S.ElementHelper[type](this, field, options);
-        } else {
-            console.error('No element helper for ' + type);
-            return;
-        }
-        this.helpers[field] = helper;
-        helper.on('synced', function () {
-            if (this.options.callback) {
-                this.options.callback.call(this.options.callbackContext || this.obj, field);
-            }
-            this.obj.fire('synced', {field: field});
-        }, this);
-        // L.DomEvent.on(input, 'keydown', function (e) {
-        //     var key = e.keyCode,
-        //         ESC = 27;
-        //     if (key === ESC) {
-        //         this.resetField(field);
-        //         L.DomEvent.stop(e);
-        //     }
-        // }, this);
-    },
-
-    getter: function (field) {
-        var path = field.split('.'),
-            value = this.obj;
-        for (var i=0, l=path.length; i<l; i++) {
-            value = value[path[i]];
-        }
-        return value;
-    },
-
-    setter: function (field, value) {
-        var path = field.split('.'),
-            obj = this.obj,
-                what;
-        for (var i=0, l=path.length; i<l; i++) {
-            what = path[i];
-            if (what === path[l-1]) {
-                if (typeof value === 'undefined') {
-                    delete obj[what];
-                } else {
-                    obj[what] = value;
-                }
-            } else {
-                obj = obj[what];
-            }
-        }
-        this.obj.isDirty = true;
-    },
-
-    resetField: function (field) {
-        var backup = this.backup[field],
-            input = this.inputs[field];
-        input.value = backup;
-        this.setter(field, backup);
-    },
-
-    getName: function (field) {
-        var fieldEls = field.split('.');
-        return fieldEls[fieldEls.length-1];
-    },
-
-    fetchAll: function () {
-        for (var key in this.helpers) {
-            if (this.helpers.hasOwnProperty(key)) {
-                this.helpers[key].fetch();
-            }
-        }
-    },
-
-    syncAll: function () {
-        for (var key in this.helpers) {
-            if (this.helpers.hasOwnProperty(key)) {
-                this.helpers[key].sync();
-            }
-        }
+    options: {
+        className: 'storage-form'
     },
 
     defaultOptions: {
@@ -795,6 +397,29 @@ L.Storage.FormBuilder = L.Class.extend({
         captionBar: {handler: 'CheckBox', helpText: L._('Do you want to display a caption bar?')},
         zoomTo: {handler: 'IntInput', placeholder: L._('Inherit'), helpText: L._('Zoom level for automatic zooms')},
         showLabel: {handler: 'NullableBoolean', helpText: L._('Add a permanent label')}
+    },
+
+    initialize: function (obj, fields, options) {
+        this.map = obj.getMap();
+        L.FormBuilder.prototype.initialize.call(this, obj, fields, options);
+    },
+
+    setter: function (field, value) {
+        L.FormBuilder.prototype.setter.call(this, field, value);
+        this.obj.isDirty = true;
+    },
+
+    finish: function () {
+        L.FormBuilder.prototype.finish.call(this);
+        L.S.fire('ui:end');
+    },
+
+    buildField: function (field) {
+        var helper = L.FormBuilder.prototype.buildField.call(this, field);
+        if (helper.options.helpEntries) {
+            this.map.help.button(helper.label, helper.options.helpEntries);
+        }
+        return helper;
     }
 
 });
