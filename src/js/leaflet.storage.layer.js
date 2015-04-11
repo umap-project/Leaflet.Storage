@@ -467,7 +467,7 @@ L.Storage.DataLayer = L.Class.extend({
     geojsonToFeatures: function (geojson) {
         if (!geojson) return;
         var features = geojson instanceof Array ? geojson : geojson.features,
-            i, len;
+            i, len, latlng, latlngs;
 
         if (features) {
             L.Util.sortFeatures(features, this.map.getOption('sortKey'));
@@ -492,35 +492,23 @@ L.Storage.DataLayer = L.Class.extend({
                 }
                 layer = this._pointToLayer(geojson, latlng);
                 break;
+
+            case 'MultiLineString':
             case 'LineString':
-                latlngs = L.GeoJSON.coordsToLatLngs(coords);
+                latlngs = L.GeoJSON.coordsToLatLngs(coords, geometry.type === 'LineString' ? 0 : 1);
                 if (!latlngs.length) break;
                 layer = this._lineToLayer(geojson, latlngs);
                 break;
+
+            case 'MultiPolygon':
             case 'Polygon':
-                latlngs = L.GeoJSON.coordsToLatLngs(coords, 1);
+                latlngs = L.GeoJSON.coordsToLatLngs(coords, geometry.type === 'Polygon' ? 1 : 2);
                 layer = this._polygonToLayer(geojson, latlngs);
                 break;
-            case 'MultiLineString':
-                // Merge instead of failing for now
-                if (coords.length >= 1) {
-                    tmp = [];
-                    for (var j=0, l=coords.length; j<l; j++) {
-                        tmp = tmp.concat(coords[j]);
-                    }
-                    latlngs = L.GeoJSON.coordsToLatLngs(tmp);
-                    layer = this._lineToLayer(geojson, latlngs);
-                    break;
-                }
-            case 'MultiPolygon':
-                // Hack: we handle only MultiPolygon with one polygon
-                if (coords.length === 1) {
-                    latlngs = L.GeoJSON.coordsToLatLngs(coords[0], 1);
-                    layer = this._polygonToLayer(geojson, latlngs);
-                    break;
-                }
+
             case 'GeometryCollection':
                 return this.geojsonToFeatures(geojson.geometries);
+
             default:
                 L.S.fire('ui:alert', {content: L._('Skipping unkown geometry.type: {type}', {type: geometry.type}), level: 'error'});
         }
@@ -531,9 +519,6 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     _pointToLayer: function(geojson, latlng) {
-        if(this.options.pointToLayer) {
-            return options.pointToLayer(geojson, latlng);
-        }
         return new L.Storage.Marker(
             this.map,
             latlng,
