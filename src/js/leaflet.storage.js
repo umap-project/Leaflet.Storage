@@ -272,10 +272,27 @@ L.Storage.Map.include({
         if (this.options.allowEdit) {
             this._controls.toggleEdit = new L.Storage.EditControl(this);
             this.addControl(this._controls.toggleEdit);
-            this._controls.drawToolbar = new L.S.DrawToolbar(this);
-            this.addControl(this._controls.drawToolbar);
-            this._controls.settingsToolbar = new L.S.SettingsToolbar(this);
-            this.addControl(this._controls.settingsToolbar);
+
+            var drawActions = [];
+            if (this.options.enableMarkerDraw) {
+                drawActions.push(L.S.DrawMarkerAction);
+            }
+            if (this.options.enablePolylineDraw) {
+                drawActions.push(L.S.DrawPolylineAction);
+            }
+            if (this.options.enablePolygonDraw) {
+                drawActions.push(L.S.DrawPolygonAction);
+            }
+            new L.S.DrawToolbar({actions: drawActions}).addTo(this);
+
+            var editActions = [
+                L.S.ImportAction,
+                L.S.EditPropertiesAction,
+                L.S.ChangeTileLayerAction,
+                L.S.UpdateExtentAction
+            ];
+            if (this.options.urls.map_update_permissions) editActions.push(L.Storage.UpdatePermsAction);
+            new L.S.SettingsToolbar({actions: editActions}).addTo(this);
         }
         if (this.options.moreControl) {
             this._controls.moreControl = (new L.Storage.MoreControls()).addTo(this);

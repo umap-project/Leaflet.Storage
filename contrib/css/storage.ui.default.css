@@ -188,7 +188,7 @@ fieldset.toggle.on .more_style_options {
 }
 #storage-ui-container .body {
     clear: both;
-    height: calc(100% - 46px); /* Minus size of toolbox */;
+    height: calc(100% - 46px); /* Minus size of toolbox */
 }
 #storage-ui-container .toolbox li {
     color: #464646;

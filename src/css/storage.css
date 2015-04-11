@@ -119,6 +119,7 @@ a.storage-control-text {
 .leaflet-editable-drawing {
     cursor: crosshair;
 }
+.leaflet-control-toolbar > li > .leaflet-toolbar-icon,
 .storage-toolbar a,
 .storage-toolbar a:hover {
     height: 40px;
@@ -167,6 +168,7 @@ a.storage-control-text {
 .storage-toolbar .storage-draw-polygon {
     background-position: -80px -40px;
 }
+.storage-edit-enabled .leaflet-control-toolbar > li > .leaflet-toolbar-icon,
 .storage-edit-enabled .storage-toolbar a {
     display: block;
 }
@@ -1270,6 +1272,7 @@ a.storage-control-text {
 .leaflet-popup-content h3 {
     margin-bottom: 0;
 }
+.leaflet-toolbar-0,
 .leaflet-bar {
     border: 1px solid #bbb;
     box-shadow: none;

@@ -465,6 +465,7 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     geojsonToFeatures: function (geojson) {
+        if (!geojson) return;
         var features = geojson instanceof Array ? geojson : geojson.features,
             i, len;
 

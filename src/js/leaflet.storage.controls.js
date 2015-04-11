@@ -1,53 +1,136 @@
-L.Storage.Toolbar = L.Control.extend({
+L.Storage.BaseAction = L.ToolbarAction.extend({
 
-    _createButton: function (options) {
-        var link = L.DomUtil.create('a', options.className || '', options.container);
-        link.href = '#';
+    initialize: function (map) {
+        this.map = map;
+        L.ToolbarAction.prototype.initialize.call(this);
+    }
 
-        L.DomEvent
-            .on(link, 'click', L.DomEvent.stop)
-            .on(link, 'mousedown', L.DomEvent.stop)
-            .on(link, 'dblclick', L.DomEvent.stop)
-            .on(link, 'click', options.callback, options.context)
-            .on(link, 'mouseover', function () {
-                L.Storage.fire('ui:tooltip', {content: options.title, attachTo: link});
-            });
+});
 
-        return link;
+L.Storage.ImportAction = L.Storage.BaseAction.extend({
+
+    options: {
+        toolbarIcon: {
+            className: 'upload-data',
+            tooltip: L._('Import data') + ' (Ctrl+I)'
+        }
     },
 
-    onAdd: function (map) {
-        var container = L.DomUtil.create('div', 'storage-toolbar');
-        this._toolbarContainer = L.DomUtil.create('div', 'leaflet-bar');
-        var actions = this.getActions(map), action;
-        for (var i = 0; i < actions.length; i++) {
-            action = actions[i];
-            action.container = this._toolbarContainer;
-            this._createButton(action);
+    addHooks: function () {
+        this.map.importPanel();
+    }
+
+});
+
+L.Storage.EditPropertiesAction = L.Storage.BaseAction.extend({
+
+    options: {
+        toolbarIcon: {
+            className: 'update-map-settings',
+            tooltip: L._('Edit map settings')
         }
+    },
 
-        container.appendChild(this._toolbarContainer);
-        return container;
-    }
-
-
-});
-
-L.Storage.SettingsToolbar = L.S.Toolbar.extend({
-
-    getActions: function (map) {
-        return map.getEditActions();
+    addHooks: function () {
+        this.map.edit();
     }
 
 });
 
-L.Storage.DrawToolbar = L.S.Toolbar.extend({
+L.Storage.ChangeTileLayerAction = L.Storage.BaseAction.extend({
 
-    getActions: function (map) {
-        return map.getDrawActions();
+    options: {
+        toolbarIcon: {
+            className: 'update-map-tilelayers',
+            tooltip: L._('Change tilelayers')
+        }
+    },
+
+    addHooks: function () {
+        this.map.updateTileLayers();
     }
 
 });
+
+L.Storage.UpdateExtentAction = L.Storage.BaseAction.extend({
+
+    options: {
+        toolbarIcon: {
+            className: 'update-map-extent',
+            tooltip: L._('Save this center and zoom')
+        }
+    },
+
+    addHooks: function () {
+        this.map.updateExtent();
+    }
+
+});
+
+L.Storage.UpdatePermsAction = L.Storage.BaseAction.extend({
+
+    options: {
+        toolbarIcon: {
+            className: 'update-map-permissions',
+            tooltip: L._('Update permissions and editors')
+        }
+    },
+
+    addHooks: function () {
+        this.map.updatePermissions();
+    }
+
+});
+
+L.Storage.DrawMarkerAction = L.Storage.BaseAction.extend({
+
+    options: {
+        toolbarIcon: {
+            className: 'storage-draw-marker',
+            tooltip: L._('Draw a marker')
+        }
+    },
+
+    addHooks: function () {
+        this.map.startMarker();
+    }
+
+});
+
+L.Storage.DrawPolylineAction = L.Storage.BaseAction.extend({
+
+    options: {
+        toolbarIcon: {
+            className: 'storage-draw-polyline',
+            tooltip: L._('Draw a polyline')
+        }
+    },
+
+    addHooks: function () {
+        this.map.startPolyline();
+    }
+
+});
+
+L.Storage.DrawPolygonAction = L.Storage.BaseAction.extend({
+
+    options: {
+        toolbarIcon: {
+            className: 'storage-draw-polygon',
+            tooltip: L._('Draw a polygon')
+        }
+    },
+
+    addHooks: function () {
+        this.map.startPolygon();
+    }
+
+});
+
+// Leaflet.Toolbar doesn't allow twice same toolbar class…
+L.Storage.SettingsToolbar = L.Toolbar.Control.extend({});
+L.Storage.DrawToolbar = L.Toolbar.Control.extend({});
+
 
 L.Storage.EditControl = L.Control.extend({
 

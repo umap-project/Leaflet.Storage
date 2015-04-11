@@ -364,13 +364,13 @@ L.Storage.Help = L.Class.extend({
 
     importFormats: function () {
         var container = L.DomUtil.create('div');
-        L.DomUtil.add('h3', '', container,'GeojSON');
+        L.DomUtil.add('h3', '', container, 'GeojSON');
         L.DomUtil.add('p', '', container, L._('All properties are imported.'));
-        L.DomUtil.add('h3', '', container,'GPX');
+        L.DomUtil.add('h3', '', container, 'GPX');
         L.DomUtil.add('p', '', container, L._('Properties imported:') + 'name, desc');
-        L.DomUtil.add('h3', '', container,'KML');
+        L.DomUtil.add('h3', '', container, 'KML');
         L.DomUtil.add('p', '', container, L._('Properties imported:') + 'name, description');
-        L.DomUtil.add('h3', '', container,'CSV');
+        L.DomUtil.add('h3', '', container, 'CSV');
         L.DomUtil.add('p', '', container, L._('Comma, tab or semi-colon separated values. SRS WGS84 is implied. Only Point geometries are imported. The import will look at the column headers for any mention of «lat» and «lon» at the begining of the header, case insensitive. All other column are imported as properties.'));
         return container;
     },
