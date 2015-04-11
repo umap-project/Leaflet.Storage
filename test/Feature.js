@@ -1,4 +1,4 @@
-describe('L.Storage.Poly', function () {
+describe('L.Storage.FeatureMixin', function () {
 
     before(function () {
         this.server = sinon.fakeServer.create();

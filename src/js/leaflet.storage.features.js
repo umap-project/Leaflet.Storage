@@ -670,6 +670,21 @@ L.Storage.PathMixin = {
         }
         this.on('mouseover', this._onMouseOver);
         this.on('edit', this.makeDirty);
+    },
+
+    getEditContextMenuItems: function (e) {
+        var items = L.S.FeatureMixin.getEditContextMenuItems.call(this, e);
+        if (this.isMulti()) {
+            items.push({
+                text: L._('Remove shape from the multi'),
+                callback: function () {
+                    this.enableEdit();
+                    this.editor.deleteShapeAt(e.latlng);
+                },
+                context: this
+            });
+        }
+        return items;
     }
 
 };
@@ -700,7 +715,7 @@ L.Storage.Polyline = L.Polyline.extend({
     },
 
     getEditContextMenuItems: function (e) {
-        var items = L.Storage.FeatureMixin.getEditContextMenuItems.call(this),
+        var items = L.S.PathMixin.getEditContextMenuItems.call(this, e),
             vertexClicked = e.vertex, index;
         items.push({
             text: L._('Transform to polygon'),
@@ -821,6 +836,10 @@ L.Storage.Polyline = L.Polyline.extend({
 
     defaultShape: function () {
         return this._flat(this._latlngs) ? this._latlngs : this._latlngs[0];
+    },
+
+    isMulti: function () {
+        return !this._flat(this._latlngs) && this._latlngs.length > 1;
     }
 
 });
@@ -870,8 +889,8 @@ L.Storage.Polygon = L.Polygon.extend({
         return center;
     },
 
-    getEditContextMenuItems: function () {
-        var items = L.Storage.FeatureMixin.getEditContextMenuItems.call(this);
+    getEditContextMenuItems: function (e) {
+        var items = L.S.PathMixin.getEditContextMenuItems.call(this, e);
         if (!this._holes || !this._holes.length) {
             items.push({
                 text: L._('Transform to lines'),
@@ -911,6 +930,11 @@ L.Storage.Polygon = L.Polygon.extend({
 
     defaultShape: function () {
         return this._flat(this._latlngs[0]) ? this._latlngs[0] : this._latlngs[0][0];
+    },
+
+    isMulti: function () {
+        // Change me when Leaflet#3279 is merged.
+        return !this._flat(this._latlngs) && !this._flat(this._latlngs[0]) && this._latlngs.length > 1;
     }
 
 });
