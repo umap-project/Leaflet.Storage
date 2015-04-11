@@ -402,6 +402,7 @@ L.Storage.FormBuilder = L.FormBuilder.extend({
     initialize: function (obj, fields, options) {
         this.map = obj.getMap();
         L.FormBuilder.prototype.initialize.call(this, obj, fields, options);
+        this.on('finish', this.finish);
     },
 
     setter: function (field, value) {
@@ -410,7 +411,6 @@ L.Storage.FormBuilder = L.FormBuilder.extend({
     },
 
     finish: function () {
-        L.FormBuilder.prototype.finish.call(this);
         L.S.fire('ui:end');
     },
 
