@@ -307,13 +307,18 @@ L.Storage.FeatureMixin = {
     },
 
     getEditContextMenuItems: function () {
-        return ['-',
-            {
-                text: L._('Edit this feature'),
-                callback: this.edit,
-                context: this,
-                iconCls: 'storage-edit'
-            },
+        var items = ['-'];
+        if (this.map.editedFeature !== this) {
+            items.push(
+                {
+                    text: L._('Edit this feature'),
+                    callback: this.edit,
+                    context: this,
+                    iconCls: 'storage-edit'
+                }
+            );
+        }
+        items = items.concat(
             {
                 text: L._('Edit feature\'s layer'),
                 callback: this.datalayer.edit,
@@ -326,7 +331,8 @@ L.Storage.FeatureMixin = {
                 context: this,
                 iconCls: 'storage-delete'
             }
-        ];
+        );
+        return items;
     },
 
     showTooltip: function (content) {
@@ -929,7 +935,8 @@ L.Storage.Polygon = L.Polygon.extend({
     },
 
     defaultShape: function () {
-        return this._flat(this._latlngs[0]) ? this._latlngs[0] : this._latlngs[0][0];
+        // Change me when Leaflet#3279 is merged.
+        return this._flat(this._latlngs) ? this._latlngs : this._flat(this._latlngs[0]) ? this._latlngs[0] : this._latlngs[0][0];
     },
 
     isMulti: function () {

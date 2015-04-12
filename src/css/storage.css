@@ -164,9 +164,17 @@ a.storage-control-text {
 .storage-toolbar .storage-draw-polyline {
     background-position: -120px -40px;
 }
+.storage-draw-polyline-multi,
+.storage-toolbar .storage-draw-polyline-multi {
+    background-position: -42px -162px;
+}
 .storage-draw-polygon,
 .storage-toolbar .storage-draw-polygon {
     background-position: -80px -40px;
+}
+.storage-draw-polygon-multi,
+.storage-toolbar .storage-draw-polygon-multi {
+    background-position: -2px -162px;
 }
 .storage-edit-enabled .leaflet-control-toolbar > li > .leaflet-toolbar-icon,
 .storage-edit-enabled .storage-toolbar a {

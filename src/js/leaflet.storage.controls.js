@@ -127,9 +127,69 @@ L.Storage.DrawPolygonAction = L.Storage.BaseAction.extend({
 
 });
 
+L.Storage.AddPolylineShapeAction = L.Storage.BaseAction.extend({
+
+    options: {
+        toolbarIcon: {
+            className: 'storage-draw-polyline-multi',
+            tooltip: L._('Add a line to the current multi')
+        }
+    },
+
+    addHooks: function () {
+        this.map.editedFeature.editor.newShape();
+    }
+
+});
+
+L.Storage.AddPolygonShapeAction = L.S.AddPolylineShapeAction.extend({
+
+    options: {
+        toolbarIcon: {
+            className: 'storage-draw-polygon-multi',
+            tooltip: L._('Add a polygon to the current multi')
+        }
+    }
+
+});
+
 // Leaflet.Toolbar doesn't allow twice same toolbar class…
 L.Storage.SettingsToolbar = L.Toolbar.Control.extend({});
-L.Storage.DrawToolbar = L.Toolbar.Control.extend({});
+L.Storage.DrawToolbar = L.Toolbar.Control.extend({
+
+    initialize: function (options) {
+        L.Toolbar.Control.prototype.initialize.call(this, options);
+        this.map = this.options.map;
+        this.map.on('seteditedfeature', this.redraw, this);
+    },
+
+    appendToContainer: function (container) {
+        this.options.actions = [];
+        if (this.map.options.enableMarkerDraw) {
+            this.options.actions.push(L.S.DrawMarkerAction);
+        }
+        if (this.map.options.enablePolylineDraw) {
+            this.options.actions.push(L.S.DrawPolylineAction);
+            if (this.map.editedFeature && this.map.editedFeature instanceof L.S.Polyline) {
+                this.options.actions.push(L.S.AddPolylineShapeAction);
+            }
+        }
+        if (this.map.options.enablePolygonDraw) {
+            this.options.actions.push(L.S.DrawPolygonAction);
+            if (this.map.editedFeature && this.map.editedFeature instanceof L.S.Polygon) {
+                this.options.actions.push(L.S.AddPolygonShapeAction);
+            }
+        }
+        L.Toolbar.Control.prototype.appendToContainer.call(this, container);
+    },
+
+    redraw: function () {
+        var container = this._control.getContainer();
+        container.innerHTML = '';
+        this.appendToContainer(container);
+    }
+
+});
 
 
 L.Storage.EditControl = L.Control.extend({

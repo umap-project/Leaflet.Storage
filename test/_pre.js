@@ -2,7 +2,6 @@ var qs = function (selector) {return document.querySelector(selector);};
 var qsa = function (selector) {return document.querySelectorAll(selector);};
 var qst = function (text, parent) {
     // find element by its text content
-    console.log(text)
     var r = document.evaluate("descendant::*[contains(text(),'" + text + "')]", parent || qs('#map'), null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null), count = 0;
     while(r.iterateNext()) console.log(++count);
     return count;

@@ -84,7 +84,8 @@ L.Storage.Map.include({
             this.options.allowEdit = false;
         }
 
-        var editedFeature = null;
+        var editedFeature = null,
+            self = this;
         try {
             Object.defineProperty(this, 'editedFeature', {
                 get: function () {
@@ -95,6 +96,7 @@ L.Storage.Map.include({
                         editedFeature.endEdit();
                     }
                     editedFeature = feature;
+                    self.fire('seteditedfeature');
                 }
             });
         }
@@ -141,8 +143,7 @@ L.Storage.Map.include({
             this.invalidateSize({pan: false});
         }, this);
 
-        var isDirty = false, // global status
-            self = this;
+        var isDirty = false; // global status
         try {
             Object.defineProperty(this, 'isDirty', {
                 get: function () {
@@ -273,17 +274,7 @@ L.Storage.Map.include({
             this._controls.toggleEdit = new L.Storage.EditControl(this);
             this.addControl(this._controls.toggleEdit);
 
-            var drawActions = [];
-            if (this.options.enableMarkerDraw) {
-                drawActions.push(L.S.DrawMarkerAction);
-            }
-            if (this.options.enablePolylineDraw) {
-                drawActions.push(L.S.DrawPolylineAction);
-            }
-            if (this.options.enablePolygonDraw) {
-                drawActions.push(L.S.DrawPolygonAction);
-            }
-            new L.S.DrawToolbar({actions: drawActions}).addTo(this);
+            new L.S.DrawToolbar({map: this}).addTo(this);
 
             var editActions = [
                 L.S.ImportAction,

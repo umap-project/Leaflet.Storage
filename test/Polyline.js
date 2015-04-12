@@ -74,4 +74,32 @@ describe('L.Storage.Polyline', function () {
 
     });
 
+    describe('#addShape', function () {
+
+        it('"add shape" control should not be visible by default', function () {
+            assert.notOk(qs('.storage-draw-polyline-multi'));
+        });
+
+        it('"add shape" control should be visible when editing a Polyline', function () {
+            var layer = new L.S.Polyline(this.map, [p2ll(100, 100), p2ll(100, 200)], {datalayer: this.datalayer}).addTo(this.datalayer);
+            layer.edit();
+            assert.ok(qs('.storage-draw-polyline-multi'));
+        });
+
+        it('"add shape" control should extend the same multi', function () {
+            var layer = new L.S.Polyline(this.map, [p2ll(100, 100), p2ll(100, 200)], {datalayer: this.datalayer}).addTo(this.datalayer);
+            layer.edit();
+            assert.notOk(layer.isMulti());
+            happen.click(qs('.storage-draw-polyline-multi'));
+            happen.at('mousemove', 300, 300);
+            happen.at('click', 300, 300);
+            happen.at('mousemove', 350, 300);
+            happen.at('click', 350, 300);
+            happen.at('click', 350, 300);
+            assert.ok(layer.isMulti());
+            assert.equal(this.datalayer._index.length, 1);
+        });
+
+    });
+
 });
