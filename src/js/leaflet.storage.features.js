@@ -218,19 +218,11 @@ L.Storage.FeatureMixin = {
 
     bringToCenter: function (e, callback) {
         var latlng;
-        if (e && e.zoomTo) {
-            this.map._zoom = e.zoomTo;
-        }
-        if (e && e.latlng) {
-            latlng = e.latlng;
-        }
-        else {
-            latlng = this.getCenter();
-        }
+        if (e && e.zoomTo) this.map._zoom = e.zoomTo;
+        if (e && e.latlng) latlng = e.latlng;
+        else latlng = this.getCenter();
         this.map.panTo(latlng);
-        if (callback) {
-            callback();
-        }
+        if (callback) callback();
     },
 
     zoomTo: function () {
@@ -636,10 +628,6 @@ L.Storage.PathMixin = {
         L.S.FeatureMixin.onRemove.call(this, map);
     },
 
-    getCenter: function () {
-        return this._latlng || this.defaultShape()[Math.floor(this.defaultShape().length / 2)];
-    },
-
     getBestZoom: function () {
         if (this.options.zoomTo) {
             return this.options.zoomTo;
@@ -873,26 +861,6 @@ L.Storage.Polygon = L.Polygon.extend({
     getMeasure: function () {
         var area = L.GeometryUtil.geodesicArea(this.getLatLngs());
         return L.GeometryUtil.readableArea(area, true);
-    },
-
-    getCenter: function () {
-        var latlngs = this.defaultShape(),
-            len = latlngs.length,
-            p1, p2, f, center;
-
-        for (var i = 0, j = len - 1, area = 0, lat = 0, lng = 0; i < len; j = i++) {
-            p1 = latlngs[i];
-            p2 = latlngs[j];
-            f = p1.lat * p2.lng - p2.lat * p1.lng;
-            lat += (p1.lat + p2.lat) * f;
-            lng += (p1.lng + p2.lng) * f;
-            area += f / 2;
-        }
-
-        center = area ? new L.LatLng(lat / (6 * area), lng / (6 * area)) : latlngs[0];
-        center.area = area;
-
-        return center;
     },
 
     getEditContextMenuItems: function (e) {
