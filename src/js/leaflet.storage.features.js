@@ -864,8 +864,10 @@ L.Storage.Polygon = L.Polygon.extend({
     },
 
     getEditContextMenuItems: function (e) {
-        var items = L.S.PathMixin.getEditContextMenuItems.call(this, e);
-        if (!this._holes || !this._holes.length) {
+        var items = L.S.PathMixin.getEditContextMenuItems.call(this, e),
+            shape = this.shapeFromLatLng(e.latlng);
+        // No multi and no holes.
+        if (shape && !this.isMulti() && (this._flat(shape) || shape.length === 1)) {
             items.push({
                 text: L._('Transform to lines'),
                 callback: this.toPolyline,
@@ -888,7 +890,7 @@ L.Storage.Polygon = L.Polygon.extend({
     toPolyline: function () {
         var geojson = this.toGeoJSON();
         geojson.geometry.type = 'LineString';
-        geojson.geometry.coordinates = geojson.geometry.coordinates[0];
+        geojson.geometry.coordinates = L.Util.flattenCoordinates(geojson.geometry.coordinates);
         var polyline = this.datalayer.geojsonToFeatures(geojson);
         polyline.edit();
         this.del();

@@ -66,6 +66,11 @@ describe('L.Storage.Polygon', function () {
 
     describe('#contextmenu', function () {
 
+        afterEach(function () {
+            // Make sure contextmenu is hidden
+            happen.once(document, {type: 'keydown', keyCode: 27});
+        });
+
         describe('#in edit mode', function () {
 
             it('should allow to remove shape when multi', function () {
@@ -74,7 +79,7 @@ describe('L.Storage.Polygon', function () {
                         [[p2ll(300, 350), p2ll(350, 400), p2ll(400, 300)]]
                     ],
                     layer = new L.S.Polygon(this.map, latlngs, {datalayer: this.datalayer}).addTo(this.datalayer);
-                happen.once(layer._path, {type: 'contextmenu'})
+                happen.once(layer._path, {type: 'contextmenu'});
                 assert.equal(qst('Remove shape from the multi'), 1);
             });
 
@@ -83,8 +88,27 @@ describe('L.Storage.Polygon', function () {
                         [[p2ll(100, 150), p2ll(150, 200), p2ll(200, 100)]]
                     ],
                     layer = new L.S.Polygon(this.map, latlngs, {datalayer: this.datalayer}).addTo(this.datalayer);
-                happen.once(layer._path, {type: 'contextmenu'})
+                happen.once(layer._path, {type: 'contextmenu'});
                 assert.notOk(qst('Remove shape from the multi'));
+            });
+
+            it('should not allow to transform to lines when multi', function () {
+                var latlngs = [
+                        [[p2ll(100, 150), p2ll(150, 200), p2ll(200, 100)]],
+                        [[p2ll(300, 350), p2ll(350, 400), p2ll(400, 300)]]
+                    ],
+                    layer = new L.S.Polygon(this.map, latlngs, {datalayer: this.datalayer}).addTo(this.datalayer);
+                happen.once(layer._path, {type: 'contextmenu'});
+                assert.notOk(qst('Transform to lines'));
+            });
+
+            it('should allow to transform to lines when not multi', function () {
+                var latlngs = [
+                        [[p2ll(100, 150), p2ll(150, 200), p2ll(200, 100)]]
+                    ],
+                    layer = new L.S.Polygon(this.map, latlngs, {datalayer: this.datalayer}).addTo(this.datalayer);
+                happen.at('contextmenu', 150, 150);
+                assert.equal(qst('Transform to lines'), 1);
             });
 
         });

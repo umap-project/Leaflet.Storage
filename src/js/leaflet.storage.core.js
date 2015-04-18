@@ -132,25 +132,25 @@ L.Util.greedyTemplate = function (str, data, ignore) {
 };
 
 L.Util.sortFeatures = function (features, sortKey) {
-    var sortKeys = (sortKey || 'name').split(',');
+    var sortKeys = (sortKey || 'name').split(',');
 
     var sort = function (a, b, i) {
-            var sortKey = sortKeys[i], score,
-                valA = a.properties[sortKey] || '',
-                valB = b.properties[sortKey] || '';
-            if (!valA) {
-                score = -1;
-            } else if (!valB) {
-                score = 1;
-            } else {
-                score = valA.toString().toLowerCase().localeCompare(valB.toString().toLowerCase());
-            }
-            if (score === 0 && sortKeys[i + 1]) return sort(a, b, i + 1);
-            return score;
+        var sortKey = sortKeys[i], score,
+            valA = a.properties[sortKey] || '',
+            valB = b.properties[sortKey] || '';
+        if (!valA) {
+            score = -1;
+        } else if (!valB) {
+            score = 1;
+        } else {
+            score = valA.toString().toLowerCase().localeCompare(valB.toString().toLowerCase());
+        }
+        if (score === 0 && sortKeys[i + 1]) return sort(a, b, i + 1);
+        return score;
     };
 
     features.sort(function (a, b) {
-        if (!a.properties || !b.properties) {
+        if (!a.properties || !b.properties) {
             return 0;
         }
         return sort(a, b, 0);
@@ -160,7 +160,10 @@ L.Util.sortFeatures = function (features, sortKey) {
     return features;
 };
 
-
+L.Util.flattenCoordinates = function (coords) {
+    while (coords[0] && typeof coords[0][0] !== "number") coords = coords[0];
+    return coords;
+};
 
 L.DomUtil.add = function (tagName, className, container, content) {
     var el = L.DomUtil.create(tagName, className, container);
