@@ -293,12 +293,12 @@ L.Storage.FeatureMixin = {
     getContextMenuItems: function (e) {
         var items = [];
         if (this.map.editEnabled && !this.isReadOnly()) {
-            items = items.concat(this.getEditContextMenuItems(e));
+            items = items.concat(this.getContextMenuEditItems(e));
         }
         return items;
     },
 
-    getEditContextMenuItems: function () {
+    getContextMenuEditItems: function () {
         var items = ['-'];
         if (this.map.editedFeature !== this) {
             items.push(
@@ -666,8 +666,8 @@ L.Storage.PathMixin = {
         this.on('edit', this.makeDirty);
     },
 
-    getEditContextMenuItems: function (e) {
-        var items = L.S.FeatureMixin.getEditContextMenuItems.call(this, e);
+    getContextMenuEditItems: function (e) {
+        var items = L.S.FeatureMixin.getContextMenuEditItems.call(this, e);
         if (this.isMulti()) {
             items.push({
                 text: L._('Remove shape from the multi'),
@@ -708,14 +708,16 @@ L.Storage.Polyline = L.Polyline.extend({
         return L.GeometryUtil.readableDistance(distance, true);
     },
 
-    getEditContextMenuItems: function (e) {
-        var items = L.S.PathMixin.getEditContextMenuItems.call(this, e),
+    getContextMenuEditItems: function (e) {
+        var items = L.S.PathMixin.getContextMenuEditItems.call(this, e),
             vertexClicked = e.vertex, index;
-        items.push({
-            text: L._('Transform to polygon'),
-            callback: this.toPolygon,
-            context: this
-        });
+        if (!this.isMulti()) {
+            items.push({
+                text: L._('Transform to polygon'),
+                callback: this.toPolygon,
+                context: this
+            });
+        }
         if (this.map.editedFeature && this.map.editedFeature instanceof L.Storage.Polyline && this.map.editedFeature !== this) {
             items.push({
                 text: L._('Merge geometry with edited feature'),
@@ -756,7 +758,7 @@ L.Storage.Polyline = L.Polyline.extend({
     toPolygon: function () {
         var geojson = this.toGeoJSON();
         geojson.geometry.type = 'Polygon';
-        geojson.geometry.coordinates = [geojson.geometry.coordinates];
+        geojson.geometry.coordinates = [L.Util.flattenCoordinates(geojson.geometry.coordinates)];
         var polygon = this.datalayer.geojsonToFeatures(geojson);
         polygon.edit();
         this.del();
@@ -863,8 +865,8 @@ L.Storage.Polygon = L.Polygon.extend({
         return L.GeometryUtil.readableArea(area, true);
     },
 
-    getEditContextMenuItems: function (e) {
-        var items = L.S.PathMixin.getEditContextMenuItems.call(this, e),
+    getContextMenuEditItems: function (e) {
+        var items = L.S.PathMixin.getContextMenuEditItems.call(this, e),
             shape = this.shapeFromLatLng(e.latlng);
         // No multi and no holes.
         if (shape && !this.isMulti() && (this._flat(shape) || shape.length === 1)) {

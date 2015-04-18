@@ -102,6 +102,18 @@ describe('L.Storage.Polygon', function () {
                 assert.notOk(qst('Transform to lines'));
             });
 
+            it('should not allow to transform to lines when hole', function () {
+                var latlngs = [
+                        [
+                            [p2ll(100, 150), p2ll(150, 200), p2ll(200, 100)],
+                            [p2ll(120, 150), p2ll(150, 180), p2ll(180, 120)]
+                        ]
+                    ],
+                    layer = new L.S.Polygon(this.map, latlngs, {datalayer: this.datalayer}).addTo(this.datalayer);
+                happen.once(layer._path, {type: 'contextmenu'});
+                assert.notOk(qst('Transform to lines'));
+            });
+
             it('should allow to transform to lines when not multi', function () {
                 var latlngs = [
                         [[p2ll(100, 150), p2ll(150, 200), p2ll(200, 100)]]
