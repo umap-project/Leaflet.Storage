@@ -91,6 +91,29 @@ describe('L.Storage.Polyline', function () {
                 happen.once(layer._path, {type: 'contextmenu'});
                 assert.equal(qst('Transform to polygon'), 1);
             });
+
+            it('should not allow to transfer shape when not editedFeature', function () {
+                var layer = new L.S.Polyline(this.map, [p2ll(100, 150), p2ll(100, 200)], {datalayer: this.datalayer}).addTo(this.datalayer);
+                happen.once(layer._path, {type: 'contextmenu'});
+                assert.notOk(qst('Transfer shape to edited feature'));
+            });
+
+            it('should not allow to transfer shape when editedFeature is not a line', function () {
+                var layer = new L.S.Polyline(this.map, [p2ll(100, 150), p2ll(100, 200)], {datalayer: this.datalayer}).addTo(this.datalayer),
+                    other = new L.S.Polygon(this.map, [p2ll(200, 300), p2ll(300, 200), p2ll(200, 100)], {datalayer: this.datalayer}).addTo(this.datalayer);
+                other.edit();
+                happen.once(layer._path, {type: 'contextmenu'});
+                assert.notOk(qst('Transfer shape to edited feature'));
+            });
+
+            it('should allow to transfer shape when another line is edited', function () {
+                var layer = new L.S.Polyline(this.map, [p2ll(100, 150), p2ll(100, 200), p2ll(200, 100)], {datalayer: this.datalayer}).addTo(this.datalayer),
+                    other = new L.S.Polyline(this.map, [p2ll(200, 300), p2ll(300, 200)], {datalayer: this.datalayer}).addTo(this.datalayer);
+                other.edit();
+                happen.once(layer._path, {type: 'contextmenu'});
+                assert.equal(qst('Transfer shape to edited feature'), 1);
+            });
+
         });
 
     });
@@ -119,6 +142,36 @@ describe('L.Storage.Polyline', function () {
             happen.at('click', 350, 300);
             assert.ok(layer.isMulti());
             assert.equal(this.datalayer._index.length, 1);
+        });
+
+    });
+
+    describe('#transferShape', function () {
+
+        it('should transfer simple line shape to another line', function () {
+            var latlngs = [p2ll(100, 150), p2ll(100, 200), p2ll(200, 100)],
+                layer = new L.S.Polyline(this.map, latlngs, {datalayer: this.datalayer}).addTo(this.datalayer),
+                other = new L.S.Polyline(this.map, [p2ll(200, 300), p2ll(300, 200)], {datalayer: this.datalayer}).addTo(this.datalayer);
+            assert.ok(this.map.hasLayer(layer));
+            layer.transferShape(p2ll(150, 150), other);
+            assert.equal(other._latlngs.length, 2);
+            assert.deepEqual(other._latlngs[1], latlngs);
+            assert.notOk(this.map.hasLayer(layer));
+        });
+
+        it('should transfer multi line shape to another line', function () {
+            var latlngs = [
+                    [p2ll(100, 150), p2ll(100, 200), p2ll(200, 100)],
+                    [p2ll(200, 300), p2ll(300, 200)]
+                ],
+                layer = new L.S.Polyline(this.map, latlngs, {datalayer: this.datalayer}).addTo(this.datalayer),
+                other = new L.S.Polyline(this.map, [p2ll(250, 300), p2ll(350, 200)], {datalayer: this.datalayer}).addTo(this.datalayer);
+            assert.ok(this.map.hasLayer(layer));
+            layer.transferShape(p2ll(150, 150), other);
+            assert.equal(other._latlngs.length, 2);
+            assert.deepEqual(other._latlngs[1], latlngs[0]);
+            assert.ok(this.map.hasLayer(layer));
+            assert.equal(layer._latlngs.length, 1);
         });
 
     });

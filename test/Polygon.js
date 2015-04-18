@@ -5,7 +5,7 @@ describe('L.Storage.Polygon', function () {
         this.map = map = initMap({storage_id: 99});
         enableEdit();
         p2ll = function (x, y) {
-            return map.layerPointToLatLng([x, y]);
+            return map.containerPointToLatLng([x, y]);
         };
         this.datalayer = this.map.createDataLayer();
         this.datalayer.connectToMap();;
@@ -123,6 +123,33 @@ describe('L.Storage.Polygon', function () {
                 assert.equal(qst('Transform to lines'), 1);
             });
 
+            it('should not allow to transfer shape when not editedFeature', function () {
+                var layer = new L.S.Polygon(this.map, [p2ll(100, 150), p2ll(100, 200), p2ll(200, 150)], {datalayer: this.datalayer}).addTo(this.datalayer);
+                happen.at('contextmenu', 110, 160);
+                assert.equal(qst('Delete this feature'), 1);  // Make sure we have right clicked on the polygon.
+                assert.notOk(qst('Transfer shape to edited feature'));
+            });
+
+            it('should not allow to transfer shape when editedFeature is not a polygon', function () {
+                var layer = new L.S.Polygon(this.map, [p2ll(100, 150), p2ll(100, 200), p2ll(200, 150)], {datalayer: this.datalayer}).addTo(this.datalayer),
+                    other = new L.S.Polyline(this.map, [p2ll(200, 250), p2ll(200, 300)], {datalayer: this.datalayer}).addTo(this.datalayer);
+                other.edit();
+                happen.at('contextmenu', 110, 160);
+                assert.equal(qst('Delete this feature'), 1);  // Make sure we have right clicked on the polygon.
+                assert.notOk(qst('Transfer shape to edited feature'));
+            });
+
+            it('should allow to transfer shape when another polygon is edited', function (done) {
+                var other = new L.S.Polygon(this.map, [p2ll(200, 300), p2ll(300, 200), p2ll(200, 100)], {datalayer: this.datalayer}).addTo(this.datalayer);
+                other.edit();  // This moves the map to put "other" at the center.
+                this.map.once('moveend', function () {
+                    var layer = new L.S.Polygon(this.map, [p2ll(100, 150), p2ll(100, 200), p2ll(200, 150)], {datalayer: this.datalayer}).addTo(this.datalayer);
+                    happen.at('contextmenu', 110, 160);
+                    assert.equal(qst('Transfer shape to edited feature'), 1);
+                    done();
+                }, this);
+            });
+
         });
 
     });
@@ -151,6 +178,39 @@ describe('L.Storage.Polygon', function () {
             happen.at('click', 350, 300);
             assert.ok(layer.isMulti());
             assert.equal(this.datalayer._index.length, 1);
+        });
+
+    });
+
+    describe('#transferShape', function () {
+
+        it('should transfer simple polygon shape to another polygon', function () {
+            var latlngs = [p2ll(100, 150), p2ll(100, 200), p2ll(200, 100)],
+                layer = new L.S.Polygon(this.map, latlngs, {datalayer: this.datalayer}).addTo(this.datalayer),
+                other = new L.S.Polygon(this.map, [p2ll(200, 350), p2ll(200, 300), p2ll(300, 200)], {datalayer: this.datalayer}).addTo(this.datalayer);
+            assert.ok(this.map.hasLayer(layer));
+            layer.transferShape(p2ll(150, 150), other);
+            assert.equal(other._latlngs.length, 2);
+            assert.deepEqual(other._latlngs[1][0], latlngs);
+            assert.notOk(this.map.hasLayer(layer));
+        });
+
+        it('should transfer multipolygon shape to another polygon', function () {
+            var latlngs = [
+                    [
+                        [p2ll(100, 150), p2ll(100, 200), p2ll(200, 100)],
+                        [p2ll(120, 150), p2ll(150, 180), p2ll(180, 120)]
+                    ],
+                    [[p2ll(200, 300), p2ll(300, 200)]]
+                ],
+                layer = new L.S.Polygon(this.map, latlngs, {datalayer: this.datalayer}).addTo(this.datalayer),
+                other = new L.S.Polygon(this.map, [p2ll(200, 350), p2ll(200, 300), p2ll(300, 200)], {datalayer: this.datalayer}).addTo(this.datalayer);
+            assert.ok(this.map.hasLayer(layer));
+            layer.transferShape(p2ll(150, 150), other);
+            assert.equal(other._latlngs.length, 2);
+            assert.deepEqual(other._latlngs[1][0], latlngs[0][0]);
+            assert.ok(this.map.hasLayer(layer));
+            assert.equal(layer._latlngs.length, 1);
         });
 
     });

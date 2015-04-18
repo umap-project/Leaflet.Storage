@@ -14,7 +14,7 @@ happen.at = function (what, x, y, props) {
         screenX: x,
         screenY: y,
         which: 1,
-        button: 1
+        button: 0
     }, props || {}));
 };
 var resetMap = function () {

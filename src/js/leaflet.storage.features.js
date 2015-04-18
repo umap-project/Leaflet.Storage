@@ -666,14 +666,30 @@ L.Storage.PathMixin = {
         this.on('edit', this.makeDirty);
     },
 
+    transferShape: function (at, to) {
+        var shape = this.enableEdit().deleteShapeAt(at);
+        this.disableEdit();
+        if (!shape) return;
+        to.enableEdit().appendShape(shape);
+        if (!this._latlngs.length) this.del();
+    },
+
     getContextMenuEditItems: function (e) {
         var items = L.S.FeatureMixin.getContextMenuEditItems.call(this, e);
         if (this.isMulti()) {
             items.push({
                 text: L._('Remove shape from the multi'),
                 callback: function () {
-                    this.enableEdit();
-                    this.editor.deleteShapeAt(e.latlng);
+                    this.enableEdit().deleteShapeAt(e.latlng);
+                },
+                context: this
+            });
+        }
+        if (this.map.editedFeature && this.isSameClass(this.map.editedFeature) && this.map.editedFeature !== this) {
+            items.push({
+                text: L._('Transfer shape to edited feature'),
+                callback: function () {
+                    this.transferShape(e.latlng, this.map.editedFeature);
                 },
                 context: this
             });
@@ -690,6 +706,10 @@ L.Storage.Polyline = L.Polyline.extend({
     staticOptions: {
         stroke: true,
         fill: false
+    },
+
+    isSameClass: function (other) {
+        return other instanceof L.S.Polyline;
     },
 
     getClassName: function () {
@@ -718,7 +738,7 @@ L.Storage.Polyline = L.Polyline.extend({
                 context: this
             });
         }
-        if (this.map.editedFeature && this.map.editedFeature instanceof L.Storage.Polyline && this.map.editedFeature !== this) {
+        if (this.map.editedFeature && this.isSameClass(this.map.editedFeature) && this.map.editedFeature !== this) {
             items.push({
                 text: L._('Merge geometry with edited feature'),
                 callback: function () {
@@ -773,7 +793,7 @@ L.Storage.Polyline = L.Polyline.extend({
     },
 
     mergeInto: function (other) {
-        if (!other instanceof L.Storage.Polyline) return;
+        if (!this.isSameClass(other)) return;
         var otherLatlngs = other.getLatLngs(),
             otherLeft = otherLatlngs[0],
             otherRight = otherLatlngs[otherLatlngs.length - 1],
@@ -844,6 +864,10 @@ L.Storage.Polygon = L.Polygon.extend({
     parentClass: L.Polygon,
     includes: [L.Storage.FeatureMixin, L.Storage.PathMixin, L.Mixin.Events],
 
+    isSameClass: function (other) {
+        return other instanceof L.S.Polygon;
+    },
+
     getClassName: function () {
         return 'polygon';
     },
@@ -867,7 +891,7 @@ L.Storage.Polygon = L.Polygon.extend({
 
     getContextMenuEditItems: function (e) {
         var items = L.S.PathMixin.getContextMenuEditItems.call(this, e),
-            shape = this.shapeFromLatLng(e.latlng);
+            shape = this.shapeAt(e.latlng);
         // No multi and no holes.
         if (shape && !this.isMulti() && (this._flat(shape) || shape.length === 1)) {
             items.push({
@@ -885,8 +909,7 @@ L.Storage.Polygon = L.Polygon.extend({
     },
 
     startHole: function (e) {
-        this.enableEdit();
-        this.editor.newHole(e.latlng);
+        this.enableEdit().newHole(e.latlng);
     },
 
     toPolyline: function () {
