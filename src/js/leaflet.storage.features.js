@@ -684,6 +684,17 @@ L.Storage.PathMixin = {
                 },
                 context: this
             });
+            var shape = this.shapeAt(e.latlng);
+            if (this._latlngs.indexOf(shape) > 0) {
+                items.push({
+                    text: L._('Make main shape'),
+                    callback: function () {
+                        this.enableEdit().deleteShape(shape);
+                        this.editor.prependShape(shape);
+                    },
+                    context: this
+                });
+            }
         }
         if (this.map.editedFeature && this.isSameClass(this.map.editedFeature) && this.map.editedFeature !== this) {
             items.push({
