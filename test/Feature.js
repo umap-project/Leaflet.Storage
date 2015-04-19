@@ -162,24 +162,6 @@ describe('L.Storage.FeatureMixin', function () {
 
     });
 
-    describe('#mergeInto()', function () {
-
-        it('should remove duplicated join point when merging', function () {
-            var line1 = this.datalayer._lineToLayer({}, [[0, 0], [0, 1]]),
-                line2 = this.datalayer._lineToLayer({}, [[0, 1], [0, 2]]);
-            line2.mergeInto(line1);
-            assert.deepEqual(line1.getLatLngs(), [L.latLng([0, 0]), L.latLng([0, 1]), L.latLng([0, 2])]);
-        });
-
-        it('should revert candidate if first point is closer', function () {
-            var line1 = this.datalayer._lineToLayer({}, [[0, 0], [0, 1]]),
-                line2 = this.datalayer._lineToLayer({}, [[0, 2], [0, 1]]);
-            line2.mergeInto(line1);
-            assert.deepEqual(line1.getLatLngs(), [L.latLng([0, 0]), L.latLng([0, 1]), L.latLng([0, 2])]);
-        });
-
-    });
-
     describe('#splitAt()', function () {
 
         it('should conserve split point on both lines', function () {

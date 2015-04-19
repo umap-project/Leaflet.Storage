@@ -114,6 +114,24 @@ describe('L.Storage.Polyline', function () {
                 assert.equal(qst('Transfer shape to edited feature'), 1);
             });
 
+            it('should allow to merge lines when multi', function () {
+                var latlngs = [
+                        [p2ll(100, 100), p2ll(100, 200)],
+                        [p2ll(300, 350), p2ll(350, 400), p2ll(400, 300)]
+                    ],
+                    layer = new L.S.Polyline(this.map, latlngs, {datalayer: this.datalayer}).addTo(this.datalayer);
+                happen.once(layer._path, {type: 'contextmenu'})
+                assert.equal(qst('Merge lines'), 1);
+            });
+
+            it('should not allow to merge lines when not multi', function () {
+                var latlngs = [
+                        [p2ll(100, 100), p2ll(100, 200)]
+                    ],
+                    layer = new L.S.Polyline(this.map, latlngs, {datalayer: this.datalayer}).addTo(this.datalayer);
+                happen.once(layer._path, {type: 'contextmenu'})
+                assert.notOk(qst('Merge lines'));
+            });
         });
 
     });
@@ -176,4 +194,29 @@ describe('L.Storage.Polyline', function () {
 
     });
 
+    describe('#mergeShapes', function () {
+
+        it('should remove duplicated join point when merging', function () {
+            var latlngs = [
+                    [[0, 0], [0, 1]],
+                    [[0, 1], [0, 2]],
+                ],
+                layer = new L.S.Polyline(this.map, latlngs, {datalayer: this.datalayer}).addTo(this.datalayer);
+            layer.mergeShapes();
+            layer.disableEdit();  // Remove vertex from latlngs to compare them.
+            assert.deepEqual(layer.getLatLngs(), [L.latLng([0, 0]), L.latLng([0, 1]), L.latLng([0, 2])]);
+        });
+
+        it('should revert candidate if first point is closer', function () {
+            var latlngs = [
+                    [[0, 0], [0, 1]],
+                    [[0, 2], [0, 1]],
+                ],
+                layer = new L.S.Polyline(this.map, latlngs, {datalayer: this.datalayer}).addTo(this.datalayer);
+            layer.mergeShapes();
+            layer.disableEdit();
+            assert.deepEqual(layer.getLatLngs(), [L.latLng([0, 0]), L.latLng([0, 1]), L.latLng([0, 2])]);
+        });
+
+    });
 });

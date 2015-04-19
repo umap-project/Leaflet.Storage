@@ -737,14 +737,10 @@ L.Storage.Polyline = L.Polyline.extend({
                 callback: this.toPolygon,
                 context: this
             });
-        }
-        if (this.map.editedFeature && this.isSameClass(this.map.editedFeature) && this.map.editedFeature !== this) {
+        } else {
             items.push({
-                text: L._('Merge geometry with edited feature'),
-                callback: function () {
-                    this.mergeInto(this.map.editedFeature);
-                    this.map.editedFeature.editor.reset();
-                },
+                text: L._('Merge lines'),
+                callback: this.mergeShapes,
                 context: this
             });
         }
@@ -792,29 +788,26 @@ L.Storage.Polyline = L.Polyline.extend({
         L.DomEvent.on(toPolygon, 'click', this.toPolygon, this);
     },
 
-    mergeInto: function (other) {
-        if (!this.isSameClass(other)) return;
-        var otherLatlngs = other.getLatLngs(),
-            otherLeft = otherLatlngs[0],
-            otherRight = otherLatlngs[otherLatlngs.length - 1],
-            thisLatlngs = this.getLatLngs(),
-            thisLeft = thisLatlngs[0],
-            thisRight = thisLatlngs[thisLatlngs.length - 1],
-            l2ldistance = otherLeft.distanceTo(thisLeft),
-            l2rdistance = otherLeft.distanceTo(thisRight),
-            r2ldistance = otherRight.distanceTo(thisLeft),
-            r2rdistance = otherRight.distanceTo(thisRight),
+    _mergeShapes: function (from, to) {
+        var toLeft = to[0],
+            toRight = to[to.length - 1],
+            fromLeft = from[0],
+            fromRight = from[from.length - 1],
+            l2ldistance = toLeft.distanceTo(fromLeft),
+            l2rdistance = toLeft.distanceTo(fromRight),
+            r2ldistance = toRight.distanceTo(fromLeft),
+            r2rdistance = toRight.distanceTo(fromRight),
             toMerge;
         if (l2rdistance < Math.min(l2ldistance, r2ldistance, r2rdistance)) {
-            toMerge = [thisLatlngs, otherLatlngs];
+            toMerge = [from, to];
         } else if (r2ldistance < Math.min(l2ldistance, l2rdistance, r2rdistance)) {
-            toMerge = [otherLatlngs, thisLatlngs];
+            toMerge = [to, from];
         } else if (r2rdistance < Math.min(l2ldistance, l2rdistance, r2ldistance)) {
-            thisLatlngs.reverse();
-            toMerge = [otherLatlngs, thisLatlngs];
+            from.reverse();
+            toMerge = [to, from];
         } else {
-            thisLatlngs.reverse();
-            toMerge = [thisLatlngs, otherLatlngs];
+            from.reverse();
+            toMerge = [from, to];
         }
         var a = toMerge[0],
             b = toMerge[1],
@@ -824,8 +817,19 @@ L.Storage.Polyline = L.Polyline.extend({
         if (Math.abs(p1.x - p2.x) <= tolerance && Math.abs(p1.y - p2.y) <= tolerance) {
             a.pop();
         }
-        other.setLatLngs(a.concat(b));
-        this.del();
+        return a.concat(b);
+    },
+
+    mergeShapes: function () {
+        if (!this.isMulti()) return;
+        var latlngs = this.getLatLngs();
+        if (!latlngs.length) return;
+        while (latlngs.length > 1) {
+            latlngs.splice(0, 2, this._mergeShapes(latlngs[1], latlngs[0]));
+        }
+        this.setLatLngs(latlngs[0]);
+        this.edit();
+        this.editor.reset();
     },
 
     splitAt: function (index) {
