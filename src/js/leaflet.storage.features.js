@@ -746,13 +746,11 @@ L.Storage.Polyline = L.Polyline.extend({
         }
         if (vertexClicked) {
             index = e.vertex.getIndex();
-            if (index !== 0 && index !== this._latlngs.length - 1) {
+            if (index !== 0 && index !== e.vertex.getLastIndex()) {
                 items.push({
                     text: L._('Split line'),
-                    callback: function () {
-                        this.splitAt(index);
-                    },
-                    context: this
+                    callback: e.vertex.split,
+                    context: e.vertex
                 });
             } else if (index === 0) {
                 items.push({
@@ -828,30 +826,9 @@ L.Storage.Polyline = L.Polyline.extend({
             latlngs.splice(0, 2, this._mergeShapes(latlngs[1], latlngs[0]));
         }
         this.setLatLngs(latlngs[0]);
-        this.edit();
+        if (!this.editEnabled()) this.edit();
         this.editor.reset();
-    },
-
-    splitAt: function (index) {
-        if (index === 0 || index === this._latlngs.length - 1) return;
-        var latlngs = this.getLatLngs(),
-            thisLatlngs = latlngs.slice(0, index + 1),
-            otherLatlngs = latlngs.slice(index);
-        var geojson = {
-            type: 'Feature',
-            geometry: {
-                type: 'LineString',
-                coordinates: L.GeoJSON.latLngsToCoords(otherLatlngs)
-            },
-            properties: this.cloneProperties()
-        };
-        this.setLatLngs(thisLatlngs);
         this.isDirty = true;
-        if (this.editEnabled()) {
-            this.editor.reset();
-        }
-        var other = this.datalayer.geojsonToFeatures(geojson);
-        return other;
     },
 
     defaultShape: function () {

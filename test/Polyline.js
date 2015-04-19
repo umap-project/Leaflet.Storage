@@ -5,7 +5,7 @@ describe('L.Storage.Polyline', function () {
         this.map = map = initMap({storage_id: 99});
         enableEdit();
         p2ll = function (x, y) {
-            return map.layerPointToLatLng([x, y]);
+            return map.containerPointToLatLng([x, y]);
         };
         this.datalayer = this.map.createDataLayer();
         this.datalayer.connectToMap();;
@@ -50,7 +50,7 @@ describe('L.Storage.Polyline', function () {
     describe('#contextmenu', function () {
 
         afterEach(function () {
-            // Make sure contextmenu is hidden
+            // Make sure contextmenu is hidden.
             happen.once(document, {type: 'keydown', keyCode: 27});
         });
 
@@ -132,6 +132,39 @@ describe('L.Storage.Polyline', function () {
                 happen.once(layer._path, {type: 'contextmenu'})
                 assert.notOk(qst('Merge lines'));
             });
+
+            it('should allow to split lines when clicking on vertex', function () {
+                var latlngs = [
+                        [p2ll(300, 350), p2ll(350, 400), p2ll(400, 300)]
+                    ],
+                    layer = new L.S.Polyline(this.map, latlngs, {datalayer: this.datalayer}).addTo(this.datalayer);
+                layer.enableEdit();
+                happen.at('contextmenu', 350, 400);
+                assert.equal(qst('Split line'), 1);
+            });
+
+            it('should not allow to split lines when clicking on first vertex', function () {
+                var latlngs = [
+                        [p2ll(300, 350), p2ll(350, 400), p2ll(400, 300)]
+                    ],
+                    layer = new L.S.Polyline(this.map, latlngs, {datalayer: this.datalayer}).addTo(this.datalayer);
+                layer.enableEdit();
+                happen.at('contextmenu', 300, 350);
+                assert.equal(qst('Delete this feature'), 1);  // Make sure we have clicked on the vertex.
+                assert.notOk(qst('Split line'));
+            });
+
+            it('should not allow to split lines when clicking on last vertex', function () {
+                var latlngs = [
+                        [p2ll(300, 350), p2ll(350, 400), p2ll(400, 300)]
+                    ],
+                    layer = new L.S.Polyline(this.map, latlngs, {datalayer: this.datalayer}).addTo(this.datalayer);
+                layer.enableEdit();
+                happen.at('contextmenu', 400, 300);
+                assert.equal(qst('Delete this feature'), 1);  // Make sure we have clicked on the vertex.
+                assert.notOk(qst('Split line'));
+            });
+
         });
 
     });
@@ -205,6 +238,7 @@ describe('L.Storage.Polyline', function () {
             layer.mergeShapes();
             layer.disableEdit();  // Remove vertex from latlngs to compare them.
             assert.deepEqual(layer.getLatLngs(), [L.latLng([0, 0]), L.latLng([0, 1]), L.latLng([0, 2])]);
+            assert(this.map.isDirty);
         });
 
         it('should revert candidate if first point is closer', function () {
