@@ -847,17 +847,21 @@ L.Storage.DataLayer = L.Class.extend({
         return this.layer && this.layer.isBrowsable;
     },
 
+    umapGeoJSON: function () {
+        return {
+            type: 'FeatureCollection',
+            features: this.isRemoteLayer() ? [] : this.featuresToGeoJSON(),
+            _storage: this.options
+        };
+    },
+
     save: function () {
         if (this.isDeleted) {
             this.saveDelete();
             return;
         }
         if (!this.isLoaded()) {return;}
-        var geojson = {
-            type: 'FeatureCollection',
-            features: this.isRemoteLayer() ? [] : this.featuresToGeoJSON(),
-            _storage: this.options
-        };
+        var geojson = this.umapGeoJSON();
         this.backupOptions();
         var formData = new FormData();
         formData.append('name', this.options.name);
