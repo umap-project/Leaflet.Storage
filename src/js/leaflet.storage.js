@@ -554,38 +554,48 @@ L.Storage.Map.include({
             shortUrl.value = this.options.shortUrl;
         }
         L.DomUtil.create('hr', '', container);
-        L.DomUtil.add('h4', '', container, L._('Download raw data'));
+        L.DomUtil.add('h4', '', container, L._('Download data'));
         var typeInput = L.DomUtil.create('select', '', container);
         typeInput.name = 'format';
-        L.DomUtil.add('small', 'help-text', container, L._('Only visible features will be downloaded.'));
+        var exportCaveat = L.DomUtil.add('small', 'help-text', container, L._('Only visible features will be downloaded.'));
+        exportCaveat.id = "export_caveat_text";
         var types = {
             geojson: {
-                formatter: function (gj) {return JSON.stringify(gj, null, 2);},
+                formatter: function (map) {return JSON.stringify(map.toGeoJSON(), null, 2);},
                 ext: '.geojson',
                 filetype: 'application/json'
             },
             gpx: {
-                formatter: togpx,
+                formatter: function (gpx) {return togpx(map.toGeoJSON());},
                 ext: '.gpx',
                 filetype: 'application/xml'
             },
             kml: {
-                formatter: tokml,
+                formatter: function (map) {return tokml(map.toGeoJSON());},
                 ext: '.kml',
                 filetype: 'application/vnd.google-earth.kml+xml'
+            },
+            umap: {
+                name: 'Raw uMap data',
+                formatter: function (map) {return map.serialize();},
+                ext: '.umap',
+                filetype: 'application/json'
             }
         };
         for (var key in types) {
             if (types.hasOwnProperty(key)) {
                 option = L.DomUtil.create('option', '', typeInput);
                 option.value = option.innerHTML = key;
+                if (types[key].name) {
+                    option.innerHTML = types[key].name;
+                }
             }
         }
         var download = L.DomUtil.create('a', 'button', container);
         download.innerHTML = L._('Download data');
         L.DomEvent.on(download, 'click', function () {
             var type = types[typeInput.value],
-                content = type.formatter(this.toGeoJSON()),
+                content = type.formatter(this),
                 name = this.options.name || 'data';
             name = name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
             download.download = name + type.ext;
@@ -844,11 +854,8 @@ L.Storage.Map.include({
         }
     },
 
-    save: function () {
-        if (!this.isDirty) {
-            return;
-        }
-        // save options to DB
+    exportOptions: function () {
+        // save these options
         var editableOptions = [
             'zoom',
             'datalayersControl',
@@ -885,16 +892,40 @@ L.Storage.Map.include({
             'showLabel',
             'shortCredit',
             'longCredit'
-        ], properties = {}, msg;
+        ];
+
+        var properties = {};
         for (var i = editableOptions.length - 1; i >= 0; i--) {
             if (typeof this.options[editableOptions[i]] !== 'undefined') {
                 properties[editableOptions[i]] = this.options[editableOptions[i]];
             }
         }
+
+        return properties;
+    },
+
+    serialize: function () {
+        var umapfile = {
+            umapfile_version: "0.1.0",
+            options: this.exportOptions(),
+            layers: {}
+        };
+
+        this.eachDataLayer(function (datalayer){
+            umapfile.layers[datalayer.options.name] = datalayer.umapGeoJSON();
+        });
+
+        return JSON.stringify(umapfile);
+    },
+
+    save: function () {
+        if (!this.isDirty) {
+            return;
+        }
         var geojson = {
             type: 'Feature',
             geometry: this.geometry(),
-            properties: properties
+            properties: this.exportOptions()
         };
         this.backupOptions();
         var formData = new FormData();
