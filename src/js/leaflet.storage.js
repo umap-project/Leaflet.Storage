@@ -59,9 +59,7 @@ L.Storage.Map.include({
         L.Util.setBooleanFromQueryString(geojson.properties, 'scrollWheelZoom');
         L.Map.prototype.initialize.call(this, el, geojson.properties);
         this.initLoader();
-        this.name = this.options.name;
-        this.description = this.options.description;
-        this.demoTileInfos = this.options.demoTileInfos;
+        this.loadOptions();
         if (geojson.geometry) {
             this.options.center = geojson.geometry;
         }
@@ -377,6 +375,13 @@ L.Storage.Map.include({
         this.options.tilelayer = L.extend({}, this._backupOptions.tilelayer);
     },
 
+    loadOptions: function () {
+        this.name = this.options.name;
+        this.description = this.options.description;
+        this.demoTileInfos = this.options.demoTileInfos;
+        
+    },
+
     initTileLayers: function () {
         this.tilelayers = [];
         for(var i in this.options.tilelayers) {
@@ -644,7 +649,7 @@ L.Storage.Map.include({
             layerLabel = L.DomUtil.create('label', '', container),
             submitInput = L.DomUtil.create('input', '', container),
             map = this, option,
-            types = ['geojson', 'csv', 'gpx', 'kml', 'osm', 'georss'];
+            types = ['geojson', 'csv', 'gpx', 'kml', 'osm', 'georss', 'umap'];
         title.innerHTML = L._('Import data');
         fileInput.type = 'file';
         fileInput.multiple = 'multiple';
@@ -693,12 +698,16 @@ L.Storage.Map.include({
                 layer;
             if (layerId) layer = map.datalayers[layerId];
             if (fileInput.files.length) {
-                if (layer) {
-                    layer.importFromFiles(fileInput.files, type);
-                } else {
-                    for (var i = 0, f; f = fileInput.files[i]; i++) {
-                        layer = this.createDataLayer({name: f.name});
-                        layer.importFromFile(f, type);
+                for (var i = 0, f; f = fileInput.files[i]; i++) {
+                    var file = fileInput.files[i];
+                    if (L.Util.detectFileType(file) == 'umap' || type == 'umap') {
+                        this.importFromFile(file, 'umap')
+                    } else {
+                        var importLayer = layer;
+                        if (!layer){
+                            importLayer = this.createDataLayer({name: f.name});
+                        }
+                        importLayer.importFromFile(f, type);
                     }
                 }
             } else {
@@ -723,6 +732,34 @@ L.Storage.Map.include({
             typeInput.value = type;
         }, this);
         L.S.fire('ui:start', {data: {html: container}});
+    },
+
+    importFromFile: function (file, type) {
+        if (type == 'umap') {
+            var reader = new FileReader();
+            reader.readAsText(file);
+            var self = this;
+            reader.onload = function (event) {
+                rawData = event.target.result;
+                importedData = JSON.parse(rawData);
+
+                for (option in importedData.properties){
+                    self.options[option] = importedData.properties[option];
+                }
+
+                self.loadOptions();
+
+                importedData.layers.forEach( function (geojson) {
+                    var dataLayer = self.createDataLayer();
+                    dataLayer.fromUmapGeoJSON(geojson);
+                });
+
+                self.save();
+                L.Storage.on('saved', function () {
+                    document.location.reload();
+                });
+            };
+        }
     },
 
     openBrowser: function () {
@@ -848,6 +885,7 @@ L.Storage.Map.include({
             this.dirty_datalayers[0].save();
         } else {
             if (this._post_save_alert) {
+                L.S.fire('saved');
                 L.S.fire('ui:alert', this._post_save_alert);
                 delete this._post_save_alert;
             }
@@ -906,16 +944,16 @@ L.Storage.Map.include({
 
     serialize: function () {
         var umapfile = {
-            umapfile_version: "0.1.0",
-            options: this.exportOptions(),
-            layers: {}
+            type: "umap",
+            properties: this.exportOptions(),
+            layers: []
         };
 
         this.eachDataLayer(function (datalayer){
-            umapfile.layers[datalayer.options.name] = datalayer.umapGeoJSON();
+            umapfile.layers.push(datalayer.umapGeoJSON());
         });
 
-        return JSON.stringify(umapfile);
+        return JSON.stringify(umapfile, null, 2);
     },
 
     save: function () {
