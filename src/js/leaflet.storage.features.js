@@ -533,6 +533,7 @@ L.Storage.PathMixin = {
         if(!this.map.editEnabled) {
             this.view(e.latlng);
         }
+        L.DomEvent.stop(e);
     },
 
     edit: function (e) {
@@ -674,28 +675,38 @@ L.Storage.PathMixin = {
         if (!this._latlngs.length) this.del();
     },
 
-    getContextMenuEditItems: function (e) {
-        var items = L.S.FeatureMixin.getContextMenuEditItems.call(this, e);
-        if (this.isMulti()) {
+    getContextMenuItems: function (e) {
+        var items = L.S.FeatureMixin.getContextMenuItems.call(this, e);
+        if (this.map.editEnabled && !this.isReadOnly() && this.isMulti()) {
+            items = items.concat(this.getContextMenuMultiItems(e));
+        }
+        return items;
+    },
+
+    getContextMenuMultiItems: function (e) {
+        var items = ['-', {
+            text: L._('Remove shape from the multi'),
+            callback: function () {
+                this.enableEdit().deleteShapeAt(e.latlng);
+            },
+            context: this
+        }];
+        var shape = this.shapeAt(e.latlng);
+        if (this._latlngs.indexOf(shape) > 0) {
             items.push({
-                text: L._('Remove shape from the multi'),
+                text: L._('Make main shape'),
                 callback: function () {
-                    this.enableEdit().deleteShapeAt(e.latlng);
+                    this.enableEdit().deleteShape(shape);
+                    this.editor.prependShape(shape);
                 },
                 context: this
             });
-            var shape = this.shapeAt(e.latlng);
-            if (this._latlngs.indexOf(shape) > 0) {
-                items.push({
-                    text: L._('Make main shape'),
-                    callback: function () {
-                        this.enableEdit().deleteShape(shape);
-                        this.editor.prependShape(shape);
-                    },
-                    context: this
-                });
-            }
         }
+        return items;
+    },
+
+    getContextMenuEditItems: function (e) {
+        var items = L.S.FeatureMixin.getContextMenuEditItems.call(this, e);
         if (this.map.editedFeature && this.isSameClass(this.map.editedFeature) && this.map.editedFeature !== this) {
             items.push({
                 text: L._('Transfer shape to edited feature'),
@@ -748,12 +759,6 @@ L.Storage.Polyline = L.Polyline.extend({
                 callback: this.toPolygon,
                 context: this
             });
-        } else {
-            items.push({
-                text: L._('Merge lines'),
-                callback: this.mergeShapes,
-                context: this
-            });
         }
         if (vertexClicked) {
             index = e.vertex.getIndex();
@@ -777,6 +782,16 @@ L.Storage.Polyline = L.Polyline.extend({
                 });
             }
         }
+        return items;
+    },
+
+    getContextMenuMultiItems: function (e) {
+        var items = L.S.PathMixin.getContextMenuMultiItems.call(this, e);
+        items.push({
+            text: L._('Merge lines'),
+            callback: this.mergeShapes,
+            context: this
+        });
         return items;
     },
 
