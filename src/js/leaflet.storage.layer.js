@@ -512,9 +512,8 @@ L.Storage.DataLayer = L.Class.extend({
                 }
                 break;
             case 'MultiPolygon':
-                // Hack: we handle only MultiPolygon with one polygon
-                if (coords.length === 1) {
-                    latlngs = L.GeoJSON.coordsToLatLngs(coords[0], 1);
+                for (var i=0, l=coords.length; i<l; i++) {
+                    latlngs = L.GeoJSON.coordsToLatLngs(coords[i], 1);
                     layer = this._polygonToLayer(geojson, latlngs);
                 }
                 break;
