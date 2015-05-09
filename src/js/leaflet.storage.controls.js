@@ -153,6 +153,87 @@ L.Storage.AddPolygonShapeAction = L.S.AddPolylineShapeAction.extend({
 
 });
 
+L.Storage.BaseFeatureAction = L.ToolbarAction.extend({
+
+    initialize: function (map, feature, latlng) {
+        this.map = map;
+        this.feature = feature;
+        this.latlng = latlng;
+        L.ToolbarAction.prototype.initialize.call(this);
+    },
+
+      hideToolbar: function () {
+        this.map.removeLayer(this.toolbar);
+      },
+
+      addHooks: function () {
+        this.onClick({latlng: this.latlng});
+        this.hideToolbar();
+      }
+
+});
+
+L.Storage.CreateHoleAction = L.S.BaseFeatureAction.extend({
+
+    options: {
+        toolbarIcon: {
+            className: 'storage-new-hole',
+            tooltip: L._('Start a hole here')
+        }
+    },
+
+    onClick: function (e) {
+        this.feature.startHole(e);
+    }
+
+});
+
+L.Storage.ToggleEditAction = L.S.BaseFeatureAction.extend({
+
+    options: {
+        toolbarIcon: {
+            className: 'storage-toggle-edit',
+            tooltip: L._('Toggle edit mode')
+        }
+    },
+
+    onClick: function (e) {
+        if (this.feature._toggleEditing) this.feature._toggleEditing(e);  // Path
+        else this.feature.edit(e);  // Marker
+    }
+
+});
+
+L.Storage.DeleteFeatureAction = L.S.BaseFeatureAction.extend({
+
+    options: {
+        toolbarIcon: {
+            className: 'storage-delete-feature',
+            tooltip: L._('Delete this feature')
+        }
+    },
+
+    onClick: function (e) {
+        this.feature.confirmDelete(e);
+    }
+
+});
+
+L.Storage.DeleteShapeAction = L.S.BaseFeatureAction.extend({
+
+    options: {
+        toolbarIcon: {
+            className: 'storage-delete-shape',
+            tooltip: L._('Delete this shape')
+        }
+    },
+
+    onClick: function (e) {
+        this.feature.enableEdit().deleteShapeAt(e.latlng);
+    }
+
+});
+
 // Leaflet.Toolbar doesn't allow twice same toolbar class…
 L.Storage.SettingsToolbar = L.Toolbar.Control.extend({});
 L.Storage.DrawToolbar = L.Toolbar.Control.extend({

@@ -249,6 +249,7 @@ L.Storage.Map.include({
         };
         this.backupOptions();
         this.initContextMenu();
+        this.on('click contextmenu.show', this.closeInplaceToolbar);
     },
 
     overrideBooleanOptionFromQueryString: function (name) {
@@ -1509,6 +1510,11 @@ L.Storage.Map.include({
             url = L.Util.template(this.options.urls.ajax_proxy, {url: encodeURIComponent(url)});
         }
         return url;
+    },
+
+    closeInplaceToolbar: function () {
+      var toolbar = this._toolbars[L.Toolbar.Popup._toolbar_class_id];
+      if (toolbar) toolbar.remove();
     }
 
 });

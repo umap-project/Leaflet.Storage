@@ -273,6 +273,24 @@ L.Storage.FeatureMixin = {
 
     addInteractions: function () {
         this.on('contextmenu editable:vertex:contextmenu', this._showContextMenu, this);
+        this.on('click', this._onClick);
+    },
+
+    _onClick: function (e) {
+        this._popupHandlersAdded = true;  // Prevent leaflet from managing event
+        if(!this.map.editEnabled) {
+            this.view(e.latlng);
+        } else if (!this.isReadOnly()) {
+            new L.Toolbar.Popup(e.latlng, {
+                className: 'leaflet-inplace-toolbar',
+                actions: this.getInplaceToolbarActions(e)
+            }).addTo(this.map, this, e.latlng);
+        }
+        L.DomEvent.stop(e);
+    },
+
+    getInplaceToolbarActions: function (e) {
+        return [L.S.ToggleEditAction, L.S.DeleteFeatureAction];
     },
 
     _showContextMenu: function (e) {
@@ -393,21 +411,11 @@ L.Storage.Marker = L.Marker.extend({
             this.isDirty = true;
             this.edit(e);
         }, this);
-        this.on('click', this._onClick);
         if (!this.isReadOnly()) {
             this.on('mouseover', this._enableDragging);
         }
         this.on('mouseout', this._onMouseOut);
         this._popupHandlersAdded = true; // prevent Leaflet from binding event on bindPopup
-    },
-
-    _onClick: function (e) {
-        if(this.map.editEnabled) {
-            this.edit(e);
-        }
-        else {
-            this.view(e.latlng);
-        }
     },
 
     _onMouseOut: function () {
@@ -527,14 +535,6 @@ L.Storage.PathMixin = {
         magnetize: true,
         magnetPoint: null
     },  // reset path options
-
-    _onClick: function(e){
-        this._popupHandlersAdded = true;  // Prevent leaflet from managing event
-        if(!this.map.editEnabled) {
-            this.view(e.latlng);
-        }
-        L.DomEvent.stop(e);
-    },
 
     edit: function (e) {
         if(this.map.editEnabled) {
@@ -659,10 +659,6 @@ L.Storage.PathMixin = {
     addInteractions: function () {
         L.Storage.FeatureMixin.addInteractions.call(this);
         this.on('dragend', this.edit);
-        this.on('click', this._onClick);
-        if (!this.isReadOnly()) {
-            this.on('dblclick', this._toggleEditing);
-        }
         this.on('mouseover', this._onMouseOver);
         this.on('edit', this.makeDirty);
     },
@@ -716,6 +712,12 @@ L.Storage.PathMixin = {
                 context: this
             });
         }
+        return items;
+    },
+
+    getInplaceToolbarActions: function (e) {
+        var items = L.S.FeatureMixin.getInplaceToolbarActions.call(this, e);
+        if (this.isMulti()) items.push(L.S.DeleteShapeAction);
         return items;
     }
 
@@ -944,6 +946,12 @@ L.Storage.Polygon = L.Polygon.extend({
     isMulti: function () {
         // Change me when Leaflet#3279 is merged.
         return !this._flat(this._latlngs) && !this._flat(this._latlngs[0]) && this._latlngs.length > 1;
+    },
+
+    getInplaceToolbarActions: function (e) {
+        var items = L.S.PathMixin.getInplaceToolbarActions.call(this, e);
+        items.push(L.S.CreateHoleAction);
+        return items;
     }
 
 });

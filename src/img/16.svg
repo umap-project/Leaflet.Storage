@@ -13,7 +13,7 @@
    height="200"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
+   inkscape:version="0.91 r13725"
    sodipodi:docname="16.svg"
    inkscape:export-filename="/home/ybon/Code/js/Leaflet.Storage/src/img/16.png"
    inkscape:export-xdpi="89.996864"
@@ -27,9 +27,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="82.485537"
-     inkscape:cy="117.22788"
+     inkscape:zoom="31.678384"
+     inkscape:cx="176.81366"
+     inkscape:cy="21.851521"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -39,7 +39,9 @@
      inkscape:window-y="24"
      inkscape:window-maximized="1"
      showguides="true"
-     inkscape:guide-bbox="true">
+     inkscape:guide-bbox="true"
+     inkscape:snap-grids="true"
+     inkscape:snap-to-guides="true">
     <inkscape:grid
        type="xygrid"
        id="grid3004"
@@ -88,7 +90,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -113,7 +115,7 @@
        transform="translate(-15.255701,-71.386508)">
       <path
          transform="matrix(1.0714286,0,0,1.0714286,26.684272,934.10579)"
-         d="m 15,9 c 0,3.865993 -3.134007,7 -7,7 C 4.1340068,16 1,12.865993 1,9 1,5.1340068 4.1340068,2 8,2 c 3.865993,0 7,3.1340068 7,7 z"
+         d="M 15,9 A 7,7 0 0 1 8,16 7,7 0 0 1 1,9 7,7 0 0 1 8,2 7,7 0 0 1 15,9 Z"
          sodipodi:ry="7"
          sodipodi:rx="7"
          sodipodi:cy="9"
@@ -308,7 +310,7 @@
        sodipodi:cy="11.798995"
        sodipodi:rx="9.748744"
        sodipodi:ry="9.748744"
-       d="m 24.040201,11.798995 a 9.748744,9.748744 0 1 1 -19.4974878,0 9.748744,9.748744 0 1 1 19.4974878,0 z"
+       d="m 24.040201,11.798995 a 9.748744,9.748744 0 0 1 -9.748744,9.748744 9.748744,9.748744 0 0 1 -9.7487438,-9.748744 9.748744,9.748744 0 0 1 9.7487438,-9.748744 9.748744,9.748744 0 0 1 9.748744,9.748744 z"
        transform="matrix(0.82061853,0,0,0.82061853,168.27217,902.67971)" />
     <path
        sodipodi:type="arc"
@@ -318,7 +320,7 @@
        sodipodi:cy="6.874372"
        sodipodi:rx="1.8090452"
        sodipodi:ry="2.0904522"
-       d="m 13.829146,6.874372 a 1.8090452,2.0904522 0 1 1 -3.618091,0 1.8090452,2.0904522 0 1 1 3.618091,0 z"
+       d="M 13.829146,6.874372 A 1.8090452,2.0904522 0 0 1 12.020101,8.9648242 1.8090452,2.0904522 0 0 1 10.211055,6.874372 1.8090452,2.0904522 0 0 1 12.020101,4.7839198 1.8090452,2.0904522 0 0 1 13.829146,6.874372 Z"
        transform="matrix(0.82916668,0,0,0.71754808,170.03333,903.42949)" />
     <path
        style="fill:#ffffff;fill-opacity:1;stroke:none"
@@ -326,5 +328,28 @@
        id="rect4274"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccccc" />
+    <g
+       id="g4717"
+       transform="translate(1.210815,-2.477)">
+      <path
+         sodipodi:nodetypes="cccccc"
+         inkscape:connector-curvature="0"
+         id="path3862"
+         d="m 140.0582,1028.2632 4.21686,4.2783 -4.14879,7.8737 -5.87101,-3.1269 -0.95195,-6.3455 z"
+         style="fill:#4d4d4d;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      <path
+         sodipodi:nodetypes="ccccc"
+         inkscape:connector-curvature="0"
+         id="path3864"
+         d="m 135.91434,1032.4783 1.7373,3.8107 3.35847,-1.5041 0.59077,-2.4329 -2.98985,-1.6008"
+         style="fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    </g>
+    <path
+       style="fill:#4d4d4d;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       d="m 177,1025.3622 0,1 c -1.42857,0 -3.28571,0.5999 -4,2 l 0,1 10,0 0,-1 c -0.71429,-1.4001 -2.57143,-2 -4,-2 l 0,-1 z m -4,5 2,9 6,0 2,-9 z"
+       id="delete-30"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccccccccc"
+       inkscape:label="delete-30" />
   </g>
 </svg>

@@ -512,6 +512,7 @@ a.storage-control-text {
     max-height: 10em;
     overflow-y: auto;
 }
+.leaflet-inplace-toolbar a,
 .storage-browse-features i,
 .storage-caption i,
 .leaflet-control-browse .storage-browse-datalayers i {
@@ -546,6 +547,9 @@ a.storage-control-text {
 .layer-edit {
     background-position: -90px -89px;
 }
+.storage-toggle-edit {
+    background-position: -85px -85px;
+}
 .off .layer-table-edit {
     background-position: -130px -129px;
 }
@@ -554,6 +558,15 @@ a.storage-control-text {
 }
 .off .layer-zoom_to {
     background-position: -50px -91px;
+}
+.storage-new-hole {
+    background-position: -125px -165px;
+}
+.storage-delete-feature {
+    background-position: -165px -165px;
+}
+.storage-delete-shape {
+    background-position: -45px -5px;
 }
 .storage-browse-features .feature-title,
 .leaflet-control-browse .storage-browse-actions .layer-title {
@@ -1280,7 +1293,7 @@ a.storage-control-text {
 .leaflet-popup-content h3 {
     margin-bottom: 0;
 }
-.leaflet-toolbar-0,
+.leaflet-control-toolbar,
 .leaflet-bar {
     border: 1px solid #bbb;
     box-shadow: none;
@@ -1313,6 +1326,9 @@ a.storage-control-text {
 }
 .storage-georss-link .popup-title {
     text-align: center;
+}
+.leaflet-inplace-toolbar {
+  z-index: 10000!important;
 }
 
 /* ****** */
