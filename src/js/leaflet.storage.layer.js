@@ -509,15 +509,15 @@ L.Storage.DataLayer = L.Class.extend({
                     }
                     latlngs = L.GeoJSON.coordsToLatLngs(tmp);
                     layer = this._lineToLayer(geojson, latlngs);
-                    break;
                 }
+                break;
             case 'MultiPolygon':
                 // Hack: we handle only MultiPolygon with one polygon
                 if (coords.length === 1) {
                     latlngs = L.GeoJSON.coordsToLatLngs(coords[0], 1);
                     layer = this._polygonToLayer(geojson, latlngs);
-                    break;
                 }
+                break;
             case 'GeometryCollection':
                 return this.geojsonToFeatures(geojson.geometries);
             default:
