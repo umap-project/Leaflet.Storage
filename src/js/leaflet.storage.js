@@ -574,6 +574,13 @@ L.Storage.Map.include({
         typeInput.name = 'format';
         var exportCaveat = L.DomUtil.add('small', 'help-text', container, L._('Only visible features will be downloaded.'));
         exportCaveat.id = "export_caveat_text";
+        L.DomEvent.on(typeInput, 'change', function () {
+            if (typeInput.value == "umap") {
+                exportCaveat.style.visibility = "hidden";
+            } else {
+                exportCaveat.style.visibility = "visible";
+            }
+        }, this);
         var types = {
             geojson: {
                 formatter: function (map) {return JSON.stringify(map.toGeoJSON(), null, 2);},
@@ -714,7 +721,7 @@ L.Storage.Map.include({
                         this.importFromFile(file, 'umap')
                     } else {
                         var importLayer = layer;
-                        if (!layer){
+                        if (!layer) {
                             importLayer = this.createDataLayer({name: f.name});
                         }
                         importLayer.importFromFile(f, type);
@@ -753,7 +760,7 @@ L.Storage.Map.include({
                 rawData = event.target.result;
                 importedData = JSON.parse(rawData);
 
-                for (option in importedData.properties){
+                for (option in importedData.properties) {
                     self.options[option] = importedData.properties[option];
                 }
 
@@ -959,7 +966,7 @@ L.Storage.Map.include({
             layers: []
         };
 
-        this.eachDataLayer(function (datalayer){
+        this.eachDataLayer(function (datalayer) {
             umapfile.layers.push(datalayer.umapGeoJSON());
         });
 
