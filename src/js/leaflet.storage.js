@@ -718,8 +718,9 @@ L.Storage.Map.include({
                     }
                 }
             } else {
-                if (!layer) layer = this.createDataLayer();
                 if (!type) return L.S.fire('ui:alert', {content: L._('Please choose a format'), level: 'error'});
+                if (!layer) layer = this.createDataLayer();
+                else if (rawInput.value && type == 'umap') this.importRaw(rawInput.value, type);
                 else if (rawInput.value) layer.importRaw(rawInput.value, type);
                 else if (urlInput.value) layer.importFromUrl(urlInput.value, type);
                 else if (presetSelect.selectedIndex > 0) layer.importFromUrl(presetSelect[presetSelect.selectedIndex].value, type);
@@ -741,6 +742,27 @@ L.Storage.Map.include({
         L.S.fire('ui:start', {data: {html: container}});
     },
 
+    importRaw: function(rawData, type){
+        importedData = JSON.parse(rawData);
+
+        for (option in importedData.properties) {
+            this.options[option] = importedData.properties[option];
+        }
+
+        this.loadOptions();
+
+        var self = this;
+        importedData.layers.forEach( function (geojson) {
+            var dataLayer = self.createDataLayer();
+            dataLayer.fromUmapGeoJSON(geojson);
+        });
+
+        this.save();
+        L.Storage.on('saved', function () {
+            document.location.reload();
+        });
+    },
+
     importFromFile: function (file, type) {
         if (type == 'umap') {
             var reader = new FileReader();
@@ -748,23 +770,7 @@ L.Storage.Map.include({
             var self = this;
             reader.onload = function (event) {
                 rawData = event.target.result;
-                importedData = JSON.parse(rawData);
-
-                for (option in importedData.properties) {
-                    self.options[option] = importedData.properties[option];
-                }
-
-                self.loadOptions();
-
-                importedData.layers.forEach( function (geojson) {
-                    var dataLayer = self.createDataLayer();
-                    dataLayer.fromUmapGeoJSON(geojson);
-                });
-
-                self.save();
-                L.Storage.on('saved', function () {
-                    document.location.reload();
-                });
+                self.importRaw(rawData, type);
             };
         }
     },
