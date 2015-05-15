@@ -38,7 +38,9 @@ L.Storage.Xhr = {
             }
         }
 
-        var loaded = function () {if (settings.listener) settings.listener.fire('dataload', {id: id});};
+        var loaded = function () {
+            if (settings.listener) settings.listener.fire('dataload', {id: id});
+        };
 
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
@@ -66,9 +68,10 @@ L.Storage.Xhr = {
                     L.Storage.fire('ui:alert', {content: msg, level: 'error', duration: 100000, actions: actions});
                 }
                 else {
-                    if (xhr.status !== 0) {  // 0 === request cut by user
-                        L.Storage.fire('ui:alert', {'content': L._('Problem in the response'), 'level': 'error'});
-                    }
+                    var errorMessage = L._('HTTP error {errorcode}', {errorcode: xhr.status});
+                    if (xhr.statusText.length > 1)
+                        errorMessage += ": " + xhr.statusText;
+                    L.Storage.fire('ui:alert', {'content': errorMessage, 'level': 'error'});
                 }
                 loaded();
             }

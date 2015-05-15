@@ -262,4 +262,5 @@
     "Import in a new layer": "In eine neue Ebene importieren",
     "Layer": "Ebene",
     "Please choose a format": "Bitte wähle ein Format"
+    "HTTP error {errorcode}": "HTTP Fehler {errorcode}"
 }

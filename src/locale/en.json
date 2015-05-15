@@ -77,7 +77,6 @@
     "Paste here your data": "Paste here your data",
     "Path weight in pixels. From 0 to 10.": "Path weight in pixels. From 0 to 10.",
     "Please be sure the licence is compliant with your use.": "Please be sure the licence is compliant with your use.",
-    "Problem in the response": "Problem in the response",
     "Problem in the response format": "Problem in the response format",
     "Provide an URL here": "Provide an URL here",
     "Remote data": "Remote data",
@@ -263,5 +262,7 @@
     "Layer": "Layer",
     "Please choose a format": "Please choose a format",
     "Default popup options": "Default popup options",
-    "Popup options": "Popup options"
+    "Popup options": "Popup options",
+    "Use advanced transition mode?": "Use advanced transition mode?",
+    "HTTP error {errorcode}": "HTTP error {errorcode}"
 }
