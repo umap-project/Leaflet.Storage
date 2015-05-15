@@ -262,4 +262,5 @@
     "Import in a new layer": "Importer dans un nouveau calque",
     "Layer": "Calque",
     "Please choose a format": "Merci de choisir un format"
+    "HTTP error {errorcode}": "Erreur HTTP {errorcode}"
 }
