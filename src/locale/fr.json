@@ -261,5 +261,12 @@
     "Click to start drawing a polygon": "Cliquer pour commencer un polygone",
     "Import in a new layer": "Importer dans un nouveau calque",
     "Layer": "Calque",
-    "Please choose a format": "Merci de choisir un format"
+    "Please choose a format": "Merci de choisir un format",
+    "Default popup options": "Default popup options",
+    "Imports all umap data, including layers and settings.": "Imports all umap data, including layers and settings.",
+    "Invalid umap data": "Invalid umap data",
+    "Invalid umap data in {filename}": "Invalid umap data in {filename}",
+    "Popup options": "Popup options",
+    "Raw uMap data": "Raw uMap data",
+    "Use advanced transition mode?": "Use advanced transition mode?"
 }
