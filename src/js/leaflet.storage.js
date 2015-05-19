@@ -59,7 +59,9 @@ L.Storage.Map.include({
         L.Util.setBooleanFromQueryString(geojson.properties, 'scrollWheelZoom');
         L.Map.prototype.initialize.call(this, el, geojson.properties);
         this.initLoader();
-        this.loadOptions();
+        this.name = this.options.name;
+        this.description = this.options.description;
+        this.demoTileInfos = this.options.demoTileInfos;
         if (geojson.geometry) {
             this.options.center = geojson.geometry;
         }
@@ -375,13 +377,6 @@ L.Storage.Map.include({
         this.options.tilelayer = L.extend({}, this._backupOptions.tilelayer);
     },
 
-    loadOptions: function () {
-        this.name = this.options.name;
-        this.description = this.options.description;
-        this.demoTileInfos = this.options.demoTileInfos;
-        
-    },
-
     initTileLayers: function () {
         this.tilelayers = [];
         for(var i in this.options.tilelayers) {
@@ -565,10 +560,10 @@ L.Storage.Map.include({
         var exportCaveat = L.DomUtil.add('small', 'help-text', container, L._('Only visible features will be downloaded.'));
         exportCaveat.id = "export_caveat_text";
         L.DomEvent.on(typeInput, 'change', function () {
-            if (typeInput.value == "umap") {
-                exportCaveat.style.visibility = "hidden";
+            if (typeInput.value === "umap") {
+                exportCaveat.style.display = "none";
             } else {
-                exportCaveat.style.visibility = "visible";
+                exportCaveat.style.display = "inherit";
             }
         }, this);
         var types = {
@@ -588,7 +583,7 @@ L.Storage.Map.include({
                 filetype: 'application/vnd.google-earth.kml+xml'
             },
             umap: {
-                name: 'Raw uMap data',
+                name: L._('Raw uMap data'),
                 formatter: function (map) {return map.serialize();},
                 ext: '.umap',
                 filetype: 'application/json'
@@ -705,10 +700,11 @@ L.Storage.Map.include({
                 layer;
             if (layerId) layer = map.datalayers[layerId];
             if (fileInput.files.length) {
+                var file;
                 for (var i = 0, f; f = fileInput.files[i]; i++) {
-                    var file = fileInput.files[i];
-                    if (L.Util.detectFileType(file) == 'umap' || type == 'umap') {
-                        this.importFromFile(file, 'umap')
+                    file = fileInput.files[i];
+                    if (L.Util.detectFileType(file) === 'umap' || type === 'umap') {
+                        this.importFromFile(file, 'umap');
                     } else {
                         var importLayer = layer;
                         if (!layer) {
@@ -719,11 +715,18 @@ L.Storage.Map.include({
                 }
             } else {
                 if (!type) return L.S.fire('ui:alert', {content: L._('Please choose a format'), level: 'error'});
-                if (!layer) layer = this.createDataLayer();
-                else if (rawInput.value && type == 'umap') this.importRaw(rawInput.value, type);
-                else if (rawInput.value) layer.importRaw(rawInput.value, type);
-                else if (urlInput.value) layer.importFromUrl(urlInput.value, type);
-                else if (presetSelect.selectedIndex > 0) layer.importFromUrl(presetSelect[presetSelect.selectedIndex].value, type);
+                if (rawInput.value && type === 'umap') {
+                    try {
+                        this.importRaw(rawInput.value, type);
+                    } catch (e) {
+                        L.S.fire('ui:alert', {content: L._('Invalid umap data'), level: 'error'});
+                    }
+                } else {
+                    if (!layer) layer = this.createDataLayer();
+                    if (rawInput.value) layer.importRaw(rawInput.value, type);
+                    else if (urlInput.value) layer.importFromUrl(urlInput.value, type);
+                    else if (presetSelect.selectedIndex > 0) layer.importFromUrl(presetSelect[presetSelect.selectedIndex].value, type);
+                }
             }
         };
         L.DomEvent.on(submitInput, 'click', submit, this);
@@ -743,13 +746,11 @@ L.Storage.Map.include({
     },
 
     importRaw: function(rawData, type){
-        importedData = JSON.parse(rawData);
+        var importedData = JSON.parse(rawData);
 
-        for (option in importedData.properties) {
+        for (var option in importedData.properties) {
             this.options[option] = importedData.properties[option];
         }
-
-        this.loadOptions();
 
         var self = this;
         importedData.layers.forEach( function (geojson) {
@@ -757,20 +758,24 @@ L.Storage.Map.include({
             dataLayer.fromUmapGeoJSON(geojson);
         });
 
-        this.save();
-        L.Storage.on('saved', function () {
+        L.Storage.once('saved', function () {
             document.location.reload();
         });
+        this.save();
     },
 
     importFromFile: function (file, type) {
-        if (type == 'umap') {
+        if (type === 'umap') {
             var reader = new FileReader();
             reader.readAsText(file);
             var self = this;
             reader.onload = function (event) {
-                rawData = event.target.result;
-                self.importRaw(rawData, type);
+                var rawData = event.target.result;
+                try {
+                    self.importRaw(rawData, type);
+                } catch (e) {
+                    L.S.fire('ui:alert', {content: L._('Invalid umap data in {filename}', {filename: file.name}), level: 'error'});
+                }
             };
         }
     },

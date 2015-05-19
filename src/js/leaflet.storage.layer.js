@@ -261,7 +261,7 @@ L.Storage.DataLayer = L.Class.extend({
         this.fire('dataloaded');
         this.fire('datachanged');
     },
-    
+
     fromUmapGeoJSON: function (geojson) {
         if (geojson._storage) {
             this.setOptions(geojson._storage);
