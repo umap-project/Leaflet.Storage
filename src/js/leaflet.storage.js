@@ -554,38 +554,53 @@ L.Storage.Map.include({
             shortUrl.value = this.options.shortUrl;
         }
         L.DomUtil.create('hr', '', container);
-        L.DomUtil.add('h4', '', container, L._('Download raw data'));
+        L.DomUtil.add('h4', '', container, L._('Download data'));
         var typeInput = L.DomUtil.create('select', '', container);
         typeInput.name = 'format';
-        L.DomUtil.add('small', 'help-text', container, L._('Only visible features will be downloaded.'));
+        var exportCaveat = L.DomUtil.add('small', 'help-text', container, L._('Only visible features will be downloaded.'));
+        exportCaveat.id = "export_caveat_text";
+        L.DomEvent.on(typeInput, 'change', function () {
+            if (typeInput.value === "umap") {
+                exportCaveat.style.display = "none";
+            } else {
+                exportCaveat.style.display = "inherit";
+            }
+        }, this);
         var types = {
             geojson: {
-                formatter: function (gj) {return JSON.stringify(gj, null, 2);},
+                formatter: function (map) {return JSON.stringify(map.toGeoJSON(), null, 2);},
                 ext: '.geojson',
                 filetype: 'application/json'
             },
             gpx: {
-                formatter: togpx,
+                formatter: function (gpx) {return togpx(map.toGeoJSON());},
                 ext: '.gpx',
                 filetype: 'application/xml'
             },
             kml: {
-                formatter: tokml,
+                formatter: function (map) {return tokml(map.toGeoJSON());},
                 ext: '.kml',
                 filetype: 'application/vnd.google-earth.kml+xml'
+            },
+            umap: {
+                name: L._('Raw uMap data'),
+                formatter: function (map) {return map.serialize();},
+                ext: '.umap',
+                filetype: 'application/json'
             }
         };
         for (var key in types) {
             if (types.hasOwnProperty(key)) {
                 option = L.DomUtil.create('option', '', typeInput);
-                option.value = option.innerHTML = key;
+                option.value = key;
+                option.innerHTML = types[key].name || key;
             }
         }
         var download = L.DomUtil.create('a', 'button', container);
         download.innerHTML = L._('Download data');
         L.DomEvent.on(download, 'click', function () {
             var type = types[typeInput.value],
-                content = type.formatter(this.toGeoJSON()),
+                content = type.formatter(this),
                 name = this.options.name || 'data';
             name = name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
             download.download = name + type.ext;
@@ -634,7 +649,7 @@ L.Storage.Map.include({
             layerLabel = L.DomUtil.create('label', '', container),
             submitInput = L.DomUtil.create('input', '', container),
             map = this, option,
-            types = ['geojson', 'csv', 'gpx', 'kml', 'osm', 'georss'];
+            types = ['geojson', 'csv', 'gpx', 'kml', 'osm', 'georss', 'umap'];
         title.innerHTML = L._('Import data');
         fileInput.type = 'file';
         fileInput.multiple = 'multiple';
@@ -683,20 +698,34 @@ L.Storage.Map.include({
                 layer;
             if (layerId) layer = map.datalayers[layerId];
             if (fileInput.files.length) {
-                if (layer) {
-                    layer.importFromFiles(fileInput.files, type);
-                } else {
-                    for (var i = 0, f; f = fileInput.files[i]; i++) {
-                        layer = this.createDataLayer({name: f.name});
-                        layer.importFromFile(f, type);
+                var file;
+                for (var i = 0, f; f = fileInput.files[i]; i++) {
+                    file = fileInput.files[i];
+                    if (L.Util.detectFileType(file) === 'umap' || type === 'umap') {
+                        this.importFromFile(file, 'umap');
+                    } else {
+                        var importLayer = layer;
+                        if (!layer) {
+                            importLayer = this.createDataLayer({name: f.name});
+                        }
+                        importLayer.importFromFile(f, type);
                     }
                 }
             } else {
-                if (!layer) layer = this.createDataLayer();
                 if (!type) return L.S.fire('ui:alert', {content: L._('Please choose a format'), level: 'error'});
-                else if (rawInput.value) layer.importRaw(rawInput.value, type);
-                else if (urlInput.value) layer.importFromUrl(urlInput.value, type);
-                else if (presetSelect.selectedIndex > 0) layer.importFromUrl(presetSelect[presetSelect.selectedIndex].value, type);
+                if (rawInput.value && type === 'umap') {
+                    try {
+                        this.importRaw(rawInput.value, type);
+                    } catch (e) {
+                        L.S.fire('ui:alert', {content: L._('Invalid umap data'), level: 'error'});
+                    }
+
+                } else {
+                    if (!layer) layer = this.createDataLayer();
+                    if (rawInput.value) layer.importRaw(rawInput.value, type);
+                    else if (urlInput.value) layer.importFromUrl(urlInput.value, type);
+                    else if (presetSelect.selectedIndex > 0) layer.importFromUrl(presetSelect[presetSelect.selectedIndex].value, type);
+                }
             }
         };
         L.DomEvent.on(submitInput, 'click', submit, this);
@@ -713,6 +742,52 @@ L.Storage.Map.include({
             typeInput.value = type;
         }, this);
         L.S.fire('ui:start', {data: {html: container}});
+    },
+
+    importRaw: function(rawData){
+        var importedData = JSON.parse(rawData);
+
+        var mustReindex = false;
+
+        for (var i = 0; i < this.editableOptions.length; i++) {
+            var option = this.editableOptions[i];
+            if (typeof importedData.properties[option] !== 'undefined') {
+                this.options[option] = importedData.properties[option];
+                if (option === "sortKey")
+                    mustReindex = true;
+            }
+        }
+
+        var self = this;
+        importedData.layers.forEach( function (geojson) {
+            var dataLayer = self.createDataLayer();
+            dataLayer.fromUmapGeoJSON(geojson);
+        });
+
+        this.initTileLayers();
+        this.initControls();
+        this.handleLimitBounds();
+        this.eachDataLayer(function (datalayer) {
+            if (mustReindex)
+                datalayer.reindex();
+            datalayer.redraw();
+        });
+        this.fire('synced');
+        this.isDirty = true;
+    },
+
+    importFromFile: function (file) {
+        var reader = new FileReader();
+        reader.readAsText(file);
+        var self = this;
+        reader.onload = function (e) {
+            var rawData = e.target.result;
+            try {
+                self.importRaw(rawData);
+            } catch (e) {
+                L.S.fire('ui:alert', {content: L._('Invalid umap data in {filename}', {filename: file.name}), level: 'error'});
+            }
+        };
     },
 
     openBrowser: function () {
@@ -838,63 +913,84 @@ L.Storage.Map.include({
             this.dirty_datalayers[0].save();
         } else {
             if (this._post_save_alert) {
+                L.S.fire('saved');
                 L.S.fire('ui:alert', this._post_save_alert);
                 delete this._post_save_alert;
             }
         }
     },
 
+    editableOptions: [
+        'zoom',
+        'datalayersControl',
+        'scrollWheelZoom',
+        'zoomControl',
+        'scaleControl',
+        'moreControl',
+        'miniMap',
+        'displayPopupFooter',
+        'onLoadPanel',
+        'tilelayersControl',
+        'name',
+        'description',
+        'licence',
+        'tilelayer',
+        'limitBounds',
+        'color',
+        'iconClass',
+        'iconUrl',
+        'smoothFactor',
+        'opacity',
+        'weight',
+        'fill',
+        'fillColor',
+        'fillOpacity',
+        'dashArray',
+        'popupTemplate',
+        'popupContentTemplate',
+        'zoomTo',
+        'captionBar',
+        'slideshow',
+        'sortKey',
+        'filterKey',
+        'showLabel',
+        'shortCredit',
+        'longCredit'
+    ],
+
+    exportOptions: function () {
+        var properties = {};
+        for (var i = this.editableOptions.length - 1; i >= 0; i--) {
+            if (typeof this.options[this.editableOptions[i]] !== 'undefined') {
+                properties[this.editableOptions[i]] = this.options[this.editableOptions[i]];
+            }
+        }
+
+        return properties;
+    },
+
+    serialize: function () {
+        var umapfile = {
+            type: "umap",
+            properties: this.exportOptions(),
+            layers: []
+        };
+
+        this.eachDataLayer(function (datalayer) {
+            umapfile.layers.push(datalayer.umapGeoJSON());
+        });
+
+        return JSON.stringify(umapfile, null, 2);
+    },
+
     save: function () {
         if (!this.isDirty) {
             return;
         }
-        // save options to DB
-        var editableOptions = [
-            'zoom',
-            'datalayersControl',
-            'scrollWheelZoom',
-            'zoomControl',
-            'scaleControl',
-            'moreControl',
-            'miniMap',
-            'displayPopupFooter',
-            'onLoadPanel',
-            'tilelayersControl',
-            'name',
-            'description',
-            'licence',
-            'tilelayer',
-            'limitBounds',
-            'color',
-            'iconClass',
-            'iconUrl',
-            'smoothFactor',
-            'opacity',
-            'weight',
-            'fill',
-            'fillColor',
-            'fillOpacity',
-            'dashArray',
-            'popupTemplate',
-            'popupContentTemplate',
-            'zoomTo',
-            'captionBar',
-            'slideshow',
-            'sortKey',
-            'filterKey',
-            'showLabel',
-            'shortCredit',
-            'longCredit'
-        ], properties = {}, msg;
-        for (var i = editableOptions.length - 1; i >= 0; i--) {
-            if (typeof this.options[editableOptions[i]] !== 'undefined') {
-                properties[editableOptions[i]] = this.options[editableOptions[i]];
-            }
-        }
         var geojson = {
             type: 'Feature',
             geometry: this.geometry(),
-            properties: properties
+            properties: this.exportOptions()
         };
         this.backupOptions();
         var formData = new FormData();
