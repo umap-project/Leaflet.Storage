@@ -222,12 +222,12 @@ describe('L.Storage.Map', function(){
             var initialLayerCount = Object.keys(this.map.datalayers).length;
             formatSelect = qs('.storage-upload select[name="format"]');
             textarea = qs('.storage-upload textarea');
-            textarea.value = '{"type":"umap","properties":{"longCredit":"the illustrious mapmaker","shortCredit":"the mapmaker","slideshow":{},"captionBar":true,"dashArray":"5,5","fillOpacity":"0.5","fillColor":"Crimson","fill":true,"weight":"2","opacity":"0.9","smoothFactor":"1","iconClass":"Drop","color":"Red","limitBounds":{},"tilelayer":{"maxZoom":18,"url_template":"http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg","minZoom":0,"attribution":"Map tiles by [[http://stamen.com|Stamen Design]], under [[http://creativecommons.org/licenses/by/3.0|CC BY 3.0]]. Data by [[http://openstreetmap.org|OpenStreetMap]], under [[http://creativecommons.org/licenses/by-sa/3.0|CC BY SA]].","name":"Watercolor"},"licence":{"url":"","name":"No licence set"},"description":"Map description","name":"Test map","tilelayersControl":true,"onLoadPanel":"caption","displayPopupFooter":true,"miniMap":true,"moreControl":true,"scaleControl":true,"zoomControl":true,"scrollWheelZoom":true,"datalayersControl":true,"zoom":6},"layers":[{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[4.2939,50.8893],[4.2441,50.8196],[4.3869,50.7642],[4.4813,50.7929],[4.413,50.9119],[4.2939,50.8893]]]},"properties":{"name":"Bruxelles","description":"polygon"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[3.0528,50.6269]},"properties":{"_storage_options":{"color":"Orange"},"name":"Lille","description":"une ville"}}],"_storage":{"displayOnLoad":true,"name":"Cities","id":108,"remoteData":{},"description":"A layer with some cities","color":"Navy","iconClass":"Drop","smoothFactor":"1","dashArray":"5,1","fillOpacity":"0.5","fillColor":"Blue","fill":true}},{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"LineString","coordinates":[[1.7715,50.9255],[1.6589,50.9696],[1.4941,51.0128],[1.4199,51.0638],[1.2881,51.1104]]},"properties":{"_storage_options":{"weight":"4"},"name":"tunnel sous la Manche"}}],"_storage":{"displayOnLoad":true,"name":"Tunnels","id":109,"remoteData":{}}}]}';
+            textarea.value = '{"type":"umap","properties":{"storage_id":666,"longCredit":"the illustrious mapmaker","shortCredit":"the mapmaker","slideshow":{},"captionBar":true,"dashArray":"5,5","fillOpacity":"0.5","fillColor":"Crimson","fill":true,"weight":"2","opacity":"0.9","smoothFactor":"1","iconClass":"Drop","color":"Red","limitBounds":{},"tilelayer":{"maxZoom":18,"url_template":"http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg","minZoom":0,"attribution":"Map tiles by [[http://stamen.com|Stamen Design]], under [[http://creativecommons.org/licenses/by/3.0|CC BY 3.0]]. Data by [[http://openstreetmap.org|OpenStreetMap]], under [[http://creativecommons.org/licenses/by-sa/3.0|CC BY SA]].","name":"Watercolor"},"licence":{"url":"","name":"No licence set"},"description":"Map description","name":"Imported map","tilelayersControl":true,"onLoadPanel":"caption","displayPopupFooter":true,"miniMap":true,"moreControl":true,"scaleControl":true,"zoomControl":true,"scrollWheelZoom":true,"datalayersControl":true,"zoom":6},"layers":[{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[4.2939,50.8893],[4.2441,50.8196],[4.3869,50.7642],[4.4813,50.7929],[4.413,50.9119],[4.2939,50.8893]]]},"properties":{"name":"Bruxelles","description":"polygon"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[3.0528,50.6269]},"properties":{"_storage_options":{"color":"Orange"},"name":"Lille","description":"une ville"}}],"_storage":{"displayOnLoad":true,"name":"Cities","id":108,"remoteData":{},"description":"A layer with some cities","color":"Navy","iconClass":"Drop","smoothFactor":"1","dashArray":"5,1","fillOpacity":"0.5","fillColor":"Blue","fill":true}},{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"LineString","coordinates":[[1.7715,50.9255],[1.6589,50.9696],[1.4941,51.0128],[1.4199,51.0638],[1.2881,51.1104]]},"properties":{"_storage_options":{"weight":"4"},"name":"tunnel sous la Manche"}}],"_storage":{"displayOnLoad":true,"name":"Tunnels","id":109,"remoteData":{}}}]}';
             formatSelect.value = 'umap';
             submit = qs('.storage-upload input[type="button"]');
             happen.click(submit);
             assert.equal(Object.keys(this.map.datalayers).length, initialLayerCount + 2);
-            assert.equal(this.map.options.name, "Test map");
+            assert.equal(this.map.options.name, "Imported map");
             var foundFirstLayer = false;
             var foundSecondLayer = false;
             for (var idx in this.map.datalayers) {
@@ -243,9 +243,31 @@ describe('L.Storage.Map', function(){
             }
             assert.equal(foundFirstLayer, true);
             assert.equal(foundSecondLayer, true);
-            this.map.save = disabledSaveFunction;
-            //stop the import function's one-time listener from firing next time save is called
-            L.Storage.removeEventListener('saved');
+
+        });
+
+        it('should only import options on the whitelist (umap format import)', function () {
+            assert.equal(this.map.options.storage_id, 99);
+        });
+
+        it('should update title bar (umap format import)', function () {
+            var title = qs("#map div.storage-main-edit-toolbox h3 a.storage-click-to-edit");
+            assert.equal(title.innerHTML, "Imported map");
+        });
+
+        it('should reinitialize controls (umap format import)', function () {
+            var minimap = qs("#map div.leaflet-control-container div.leaflet-control-minimap");
+            assert.ok(minimap);
+        });
+
+        it('should update the tilelayer switcher control (umap format import)', function () {
+            //The tilelayer in the imported data isn't in the tilelayer list (set in _pre.js), there should be no selection on the tilelayer switcher
+            var selectedLayer = qs(".storage-tilelayer-switcher-container li.selected");
+            assert.equal(selectedLayer, null);
+        });
+
+        it('should set the tilelayer (umap format import)', function () {
+            assert.equal(this.map.selected_tilelayer._url, "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg");
         });
 
     });
