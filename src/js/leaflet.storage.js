@@ -592,10 +592,8 @@ L.Storage.Map.include({
         for (var key in types) {
             if (types.hasOwnProperty(key)) {
                 option = L.DomUtil.create('option', '', typeInput);
-                option.value = option.innerHTML = key;
-                if (types[key].name) {
-                    option.innerHTML = types[key].name;
-                }
+                option.value = key;
+                option.innerHTML = types[key].name || key;
             }
         }
         var download = L.DomUtil.create('a', 'button', container);
@@ -721,6 +719,7 @@ L.Storage.Map.include({
                     } catch (e) {
                         L.S.fire('ui:alert', {content: L._('Invalid umap data'), level: 'error'});
                     }
+
                 } else {
                     if (!layer) layer = this.createDataLayer();
                     if (rawInput.value) layer.importRaw(rawInput.value, type);
@@ -745,11 +744,18 @@ L.Storage.Map.include({
         L.S.fire('ui:start', {data: {html: container}});
     },
 
-    importRaw: function(rawData, type){
+    importRaw: function(rawData){
         var importedData = JSON.parse(rawData);
 
-        for (var option in importedData.properties) {
-            this.options[option] = importedData.properties[option];
+        var mustReindex = false;
+
+        for (var i = 0; i < this.editableOptions.length; i++) {
+            var option = this.editableOptions[i];
+            if (typeof importedData.properties[option] !== 'undefined') {
+                this.options[option] = importedData.properties[option];
+                if (option === "sortKey")
+                    mustReindex = true;
+            }
         }
 
         var self = this;
@@ -758,26 +764,30 @@ L.Storage.Map.include({
             dataLayer.fromUmapGeoJSON(geojson);
         });
 
-        L.Storage.once('saved', function () {
-            document.location.reload();
+        this.initTileLayers();
+        this.initControls();
+        this.handleLimitBounds();
+        this.eachDataLayer(function (datalayer) {
+            if (mustReindex)
+                datalayer.reindex();
+            datalayer.redraw();
         });
-        this.save();
+        this.fire('synced');
+        this.isDirty = true;
     },
 
-    importFromFile: function (file, type) {
-        if (type === 'umap') {
-            var reader = new FileReader();
-            reader.readAsText(file);
-            var self = this;
-            reader.onload = function (event) {
-                var rawData = event.target.result;
-                try {
-                    self.importRaw(rawData, type);
-                } catch (e) {
-                    L.S.fire('ui:alert', {content: L._('Invalid umap data in {filename}', {filename: file.name}), level: 'error'});
-                }
-            };
-        }
+    importFromFile: function (file) {
+        var reader = new FileReader();
+        reader.readAsText(file);
+        var self = this;
+        reader.onload = function (e) {
+            var rawData = e.target.result;
+            try {
+                self.importRaw(rawData);
+            } catch (e) {
+                L.S.fire('ui:alert', {content: L._('Invalid umap data in {filename}', {filename: file.name}), level: 'error'});
+            }
+        };
     },
 
     openBrowser: function () {
@@ -910,50 +920,49 @@ L.Storage.Map.include({
         }
     },
 
-    exportOptions: function () {
-        // save these options
-        var editableOptions = [
-            'zoom',
-            'datalayersControl',
-            'scrollWheelZoom',
-            'zoomControl',
-            'scaleControl',
-            'moreControl',
-            'miniMap',
-            'displayPopupFooter',
-            'onLoadPanel',
-            'tilelayersControl',
-            'name',
-            'description',
-            'licence',
-            'tilelayer',
-            'limitBounds',
-            'color',
-            'iconClass',
-            'iconUrl',
-            'smoothFactor',
-            'opacity',
-            'weight',
-            'fill',
-            'fillColor',
-            'fillOpacity',
-            'dashArray',
-            'popupTemplate',
-            'popupContentTemplate',
-            'zoomTo',
-            'captionBar',
-            'slideshow',
-            'sortKey',
-            'filterKey',
-            'showLabel',
-            'shortCredit',
-            'longCredit'
-        ];
+    editableOptions: [
+        'zoom',
+        'datalayersControl',
+        'scrollWheelZoom',
+        'zoomControl',
+        'scaleControl',
+        'moreControl',
+        'miniMap',
+        'displayPopupFooter',
+        'onLoadPanel',
+        'tilelayersControl',
+        'name',
+        'description',
+        'licence',
+        'tilelayer',
+        'limitBounds',
+        'color',
+        'iconClass',
+        'iconUrl',
+        'smoothFactor',
+        'opacity',
+        'weight',
+        'fill',
+        'fillColor',
+        'fillOpacity',
+        'dashArray',
+        'popupTemplate',
+        'popupContentTemplate',
+        'zoomTo',
+        'captionBar',
+        'slideshow',
+        'sortKey',
+        'filterKey',
+        'showLabel',
+        'shortCredit',
+        'longCredit'
+    ],
 
+    exportOptions: function () {
         var properties = {};
-        for (var i = editableOptions.length - 1; i >= 0; i--) {
-            if (typeof this.options[editableOptions[i]] !== 'undefined') {
-                properties[editableOptions[i]] = this.options[editableOptions[i]];
+        for (var i = this.editableOptions.length - 1; i >= 0; i--) {
+            if (typeof this.options[this.editableOptions[i]] !== 'undefined') {
+                properties[this.editableOptions[i]] = this.options[this.editableOptions[i]];
             }
         }
 
