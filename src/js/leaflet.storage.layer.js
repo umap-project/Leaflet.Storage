@@ -247,16 +247,8 @@ L.Storage.DataLayer = L.Class.extend({
         }
         this.map.get(this._dataUrl(), {
             callback: function (geojson, response) {
-                if (geojson._storage) {
-                    this.setOptions(geojson._storage);
-                }
                 this._etag = response.getResponseHeader('ETag');
-                if (this.isRemoteLayer()) {
-                    this.fetchRemoteData();
-                } else {
-                    this.fromGeoJSON(geojson);
-                }
-                this._loaded = true;
+                this.fromUmapGeoJSON(geojson);
                 this.fire('loaded');
             },
             context: this
@@ -268,6 +260,18 @@ L.Storage.DataLayer = L.Class.extend({
         this._geojson = geojson;
         this.fire('dataloaded');
         this.fire('datachanged');
+    },
+
+    fromUmapGeoJSON: function (geojson) {
+        if (geojson._storage) {
+            this.setOptions(geojson._storage);
+        }
+        if (this.isRemoteLayer()) {
+            this.fetchRemoteData();
+        } else {
+            this.fromGeoJSON(geojson);
+        }
+        this._loaded = true;
     },
 
     clear: function () {
@@ -847,17 +851,21 @@ L.Storage.DataLayer = L.Class.extend({
         return this.layer && this.layer.isBrowsable;
     },
 
+    umapGeoJSON: function () {
+        return {
+            type: 'FeatureCollection',
+            features: this.isRemoteLayer() ? [] : this.featuresToGeoJSON(),
+            _storage: this.options
+        };
+    },
+
     save: function () {
         if (this.isDeleted) {
             this.saveDelete();
             return;
         }
         if (!this.isLoaded()) {return;}
-        var geojson = {
-            type: 'FeatureCollection',
-            features: this.isRemoteLayer() ? [] : this.featuresToGeoJSON(),
-            _storage: this.options
-        };
+        var geojson = this.umapGeoJSON();
         this.backupOptions();
         var formData = new FormData();
         formData.append('name', this.options.name);

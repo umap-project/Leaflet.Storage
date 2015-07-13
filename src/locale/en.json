@@ -263,5 +263,10 @@
     "Layer": "Layer",
     "Please choose a format": "Please choose a format",
     "Default popup options": "Default popup options",
-    "Popup options": "Popup options"
+    "Popup options": "Popup options",
+    "Imports all umap data, including layers and settings.": "Imports all umap data, including layers and settings.",
+    "Invalid umap data": "Invalid umap data",
+    "Invalid umap data in {filename}": "Invalid umap data in {filename}",
+    "Raw uMap data": "Raw uMap data",
+    "Use advanced transition mode?": "Use advanced transition mode?"
 }

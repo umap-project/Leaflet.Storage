@@ -113,6 +113,7 @@ L.Util.detectFileType = function (f) {
         return 'csv';
     }
     if (ext('.xml') || ext('.osm')) return 'osm';
+    if (ext('.umap')) return 'umap';
 };
 
 L.Util.usableOption = function (options, option) {
@@ -375,6 +376,8 @@ L.Storage.Help = L.Class.extend({
         L.DomUtil.add('p', '', container, L._('Properties imported:') + 'name, description');
         L.DomUtil.add('h3', '', container, 'CSV');
         L.DomUtil.add('p', '', container, L._('Comma, tab or semi-colon separated values. SRS WGS84 is implied. Only Point geometries are imported. The import will look at the column headers for any mention of «lat» and «lon» at the begining of the header, case insensitive. All other column are imported as properties.'));
+        L.DomUtil.add('h3', '', container,'uMap');
+        L.DomUtil.add('p', '', container, L._('Imports all umap data, including layers and settings.'));
         return container;
     },
 

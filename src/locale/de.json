@@ -261,5 +261,12 @@
     "Click to start drawing a polygon": "Klicke, um eine Fläche zu zeichnen",
     "Import in a new layer": "In eine neue Ebene importieren",
     "Layer": "Ebene",
-    "Please choose a format": "Bitte wähle ein Format"
+    "Please choose a format": "Bitte wähle ein Format",
+    "Default popup options": "Default popup options",
+    "Imports all umap data, including layers and settings.": "Imports all umap data, including layers and settings.",
+    "Invalid umap data": "Invalid umap data",
+    "Invalid umap data in {filename}": "Invalid umap data in {filename}",
+    "Popup options": "Popup options",
+    "Raw uMap data": "Raw uMap data",
+    "Use advanced transition mode?": "Use advanced transition mode?"
 }
