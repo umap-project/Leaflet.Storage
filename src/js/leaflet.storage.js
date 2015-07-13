@@ -782,7 +782,7 @@ L.Storage.Map.include({
                 datalayer.reindex();
             datalayer.redraw();
         });
-        this.fire('synced');
+        this.fire('postsync');
         this.isDirty = true;
     },
 
