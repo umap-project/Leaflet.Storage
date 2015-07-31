@@ -393,6 +393,17 @@ L.Storage.FeatureMixin = {
             if ((this.properties[keys[i]] || '').toLowerCase().indexOf(filter) !== -1) return true;
         }
         return false;
+    },
+
+    onVertexRawClick: function (e) {
+        new L.Toolbar.Popup(e.latlng, {
+            className: 'leaflet-inplace-toolbar',
+            actions: this.getVertexActions(e)
+        }).addTo(this.map, this, e.latlng, e.vertex);
+    },
+
+    getVertexActions: function () {
+        return [L.S.DeleteVertexAction];
     }
 
 };
@@ -668,7 +679,7 @@ L.Storage.PathMixin = {
         this.disableEdit();
         if (!shape) return;
         to.enableEdit().appendShape(shape);
-        if (!this._latlngs.length) this.del();
+        if (!this._latlngs.length || !this._latlngs[0].length) this.del();
     },
 
     getContextMenuItems: function (e) {
@@ -859,12 +870,15 @@ L.Storage.Polyline = L.Polyline.extend({
         this.isDirty = true;
     },
 
-    defaultShape: function () {
-        return this._flat(this._latlngs) ? this._latlngs : this._latlngs[0];
+    isMulti: function () {
+        return !L.Polyline._flat(this._latlngs) && this._latlngs.length > 1;
     },
 
-    isMulti: function () {
-        return !this._flat(this._latlngs) && this._latlngs.length > 1;
+    getVertexActions: function (e) {
+        var actions = L.S.FeatureMixin.getVertexActions.call(this, e),
+            index = e.vertex.getIndex();
+        if (index === 0 || index === e.vertex.getLastIndex()) actions.push(L.S.ContinueLineAction);
+        return actions;
     }
 
 });
@@ -902,7 +916,7 @@ L.Storage.Polygon = L.Polygon.extend({
         var items = L.S.PathMixin.getContextMenuEditItems.call(this, e),
             shape = this.shapeAt(e.latlng);
         // No multi and no holes.
-        if (shape && !this.isMulti() && (this._flat(shape) || shape.length === 1)) {
+        if (shape && !this.isMulti() && (L.Polyline._flat(shape) || shape.length === 1)) {
             items.push({
                 text: L._('Transform to lines'),
                 callback: this.toPolyline,
@@ -938,14 +952,9 @@ L.Storage.Polygon = L.Polygon.extend({
         L.DomEvent.on(toPolyline, 'click', this.toPolyline, this);
     },
 
-    defaultShape: function () {
-        // Change me when Leaflet#3279 is merged.
-        return this._flat(this._latlngs) ? this._latlngs : this._flat(this._latlngs[0]) ? this._latlngs[0] : this._latlngs[0][0];
-    },
-
     isMulti: function () {
         // Change me when Leaflet#3279 is merged.
-        return !this._flat(this._latlngs) && !this._flat(this._latlngs[0]) && this._latlngs.length > 1;
+        return !L.Polyline._flat(this._latlngs) && !L.Polyline._flat(this._latlngs[0]) && this._latlngs.length > 1;
     },
 
     getInplaceToolbarActions: function (e) {

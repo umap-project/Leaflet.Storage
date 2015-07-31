@@ -13,7 +13,7 @@ describe('L.Storage.FeatureMixin', function () {
     });
 
     describe('#edit()', function () {
-        var submitButton;
+        var link;
 
         it('should have datalayer features created', function () {
             assert.equal(document.querySelectorAll('#map > .leaflet-map-pane > .leaflet-overlay-pane path.leaflet-interactive').length, 2);
@@ -25,15 +25,23 @@ describe('L.Storage.FeatureMixin', function () {
             enableEdit();
             happen.click(qs('#browse_data_toggle_62 .layer-edit'));
             var colorInput = qs('form#datalayer-advanced-properties input[name=color]');
-            changeInputValue(colorInput, "DarkRed");
+            changeInputValue(colorInput, 'DarkRed');
             assert.ok(qs('path[fill="none"]')); // Polyline fill is unchanged
             assert.notOk(qs('path[fill="DarkBlue"]'));
             assert.ok(qs('path[fill="DarkRed"]'));
         });
 
-        it('should open a form on feature double click', function () {
+        it('should open a popup toolbar on feature click', function () {
             enableEdit();
-            happen.dblclick(qs('path[fill="DarkRed"]'));
+            happen.click(qs('path[fill="DarkRed"]'));
+            var toolbar = qs('ul.leaflet-inplace-toolbar');
+            assert.ok(toolbar);
+            link = qs('a.storage-toggle-edit', toolbar);
+            assert.ok(link);
+        });
+
+        it('should open a form on popup toolbar toggle edit click', function () {
+            happen.click(link);
             var form = qs('form#storage-feature-properties');
             var input = qs('form#storage-feature-properties input[name="name"]');
             assert.ok(form);
@@ -47,7 +55,7 @@ describe('L.Storage.FeatureMixin', function () {
         it('should give precedence to feature style over datalayer styles', function () {
             var input = qs('form#storage-feature-advanced-properties input[name="color"]');
             assert.ok(input);
-            changeInputValue(input, "DarkGreen");
+            changeInputValue(input, 'DarkGreen');
             assert.notOk(qs('path[fill="DarkRed"]'));
             assert.notOk(qs('path[fill="DarkBlue"]'));
             assert.ok(qs('path[fill="DarkGreen"]'));
@@ -66,7 +74,7 @@ describe('L.Storage.FeatureMixin', function () {
 
         it('should not override already set style on features', function () {
             happen.click(qs('#browse_data_toggle_62 .layer-edit'));
-            changeInputValue(qs('form#datalayer-advanced-properties input[name=color]'), "Chocolate");
+            changeInputValue(qs('form#datalayer-advanced-properties input[name=color]'), 'Chocolate');
             assert.notOk(qs('path[fill="DarkBlue"]'));
             assert.notOk(qs('path[fill="DarkRed"]'));
             assert.notOk(qs('path[fill="Chocolate"]'));
@@ -84,7 +92,8 @@ describe('L.Storage.FeatureMixin', function () {
         it('should set map.editedFeature on edit', function () {
             enableEdit();
             assert.notOk(this.map.editedFeature);
-            happen.dblclick(qs('path[fill="DarkBlue"]'));
+            happen.click(qs('path[fill="DarkBlue"]'));
+            happen.click(qs('ul.leaflet-inplace-toolbar a.storage-toggle-edit'));
             assert.ok(this.map.editedFeature);
             disableEdit();
         });
@@ -92,7 +101,8 @@ describe('L.Storage.FeatureMixin', function () {
         it('should reset map.editedFeature on panel open', function () {
             enableEdit();
             assert.notOk(this.map.editedFeature);
-            happen.dblclick(qs('path[fill="DarkBlue"]'));
+            happen.click(qs('path[fill="DarkBlue"]'));
+            happen.click(qs('ul.leaflet-inplace-toolbar a.storage-toggle-edit'));
             assert.ok(this.map.editedFeature);
             this.map.displayCaption();
             assert.notOk(this.map.editedFeature);
@@ -116,7 +126,7 @@ describe('L.Storage.FeatureMixin', function () {
         it('should generate a valid geojson', function () {
             setFeatures(this.datalayer);
             assert.ok(poly);
-            assert.deepEqual(poly.toGeoJSON().geometry, {"type":"Polygon","coordinates":[[[11.25,53.585983654559804],[10.1513671875,52.9751081817353],[12.689208984375,52.16719363541221],[14.084472656249998,53.199451902831555],[12.63427734375,53.61857936489517],[11.25,53.585983654559804],[11.25,53.585983654559804]]]});
+            assert.deepEqual(poly.toGeoJSON().geometry, {'type': 'Polygon', 'coordinates': [[[11.25, 53.585983654559804], [10.1513671875, 52.9751081817353], [12.689208984375, 52.16719363541221], [14.084472656249998, 53.199451902831555], [12.63427734375, 53.61857936489517], [11.25, 53.585983654559804], [11.25, 53.585983654559804]]]});
             // Ensure original latlngs has not been modified
             assert.equal(poly.getLatLngs()[0].length, 6);
         });
@@ -124,9 +134,9 @@ describe('L.Storage.FeatureMixin', function () {
         it('should remove empty _storage_options from exported geojson', function () {
             setFeatures(this.datalayer);
             assert.ok(poly);
-            assert.deepEqual(poly.toGeoJSON().properties, {name: "name poly"});
+            assert.deepEqual(poly.toGeoJSON().properties, {name: 'name poly'});
             assert.ok(marker);
-            assert.deepEqual(marker.toGeoJSON().properties, {_storage_options: {color: "OliveDrab"}, name: "test"});
+            assert.deepEqual(marker.toGeoJSON().properties, {_storage_options: {color: 'OliveDrab'}, name: 'test'});
         });
 
     });
@@ -136,9 +146,10 @@ describe('L.Storage.FeatureMixin', function () {
         it('should change style on datalayer select change', function () {
             enableEdit();
             happen.click(qs('.leaflet-control-browse .add-datalayer'));
-            changeInputValue(qs('form.storage-form input[name="name"]'), "New layer");
-            changeInputValue(qs('form#datalayer-advanced-properties input[name=color]'), "MediumAquaMarine");
-            happen.dblclick(qs('path[fill="DarkBlue"]'));
+            changeInputValue(qs('form.storage-form input[name="name"]'), 'New layer');
+            changeInputValue(qs('form#datalayer-advanced-properties input[name=color]'), 'MediumAquaMarine');
+            happen.click(qs('path[fill="DarkBlue"]'));
+            happen.click(qs('ul.leaflet-inplace-toolbar a.storage-toggle-edit'));
             var select = document.querySelector('select[name=datalayer]');
             select.selectedIndex = 1;
             happen.once(select, {type: 'change'});

@@ -562,11 +562,20 @@ a.storage-control-text {
 .storage-new-hole {
     background-position: -125px -165px;
 }
-.storage-delete-feature {
+.storage-delete-all {
+    background-position: -165px -85px;
+}
+.storage-delete-one-of-multi {
+    background-position: -165px -125px;
+}
+.storage-delete-one-of-one {
     background-position: -165px -165px;
 }
-.storage-delete-shape {
-    background-position: -45px -5px;
+.storage-delete-vertex {
+    background-position: -205px -165px;
+}
+.storage-continue-line {
+    background-position: -165px -5px;
 }
 .storage-browse-features .feature-title,
 .leaflet-control-browse .storage-browse-actions .layer-title {

@@ -1,11 +1,11 @@
-var qs = function (selector) {return document.querySelector(selector);};
+var qs = function (selector, element) {return (element || document).querySelector(selector);};
 var qsa = function (selector) {return document.querySelectorAll(selector);};
 var qst = function (text, parent) {
     // find element by its text content
     var r = document.evaluate("descendant::*[contains(text(),'" + text + "')]", parent || qs('#map'), null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null), count = 0;
     while(r.iterateNext()) console.log(++count);
     return count;
-}
+};
 happen.at = function (what, x, y, props) {
     this.once(document.elementFromPoint(x, y), L.Util.extend({
         type: what,

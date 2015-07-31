@@ -1609,8 +1609,8 @@ L.Storage.Map.include({
     },
 
     closeInplaceToolbar: function () {
-      var toolbar = this._toolbars[L.Toolbar.Popup._toolbar_class_id];
-      if (toolbar) toolbar.remove();
+        var toolbar = this._toolbars[L.Toolbar.Popup._toolbar_class_id];
+        if (toolbar) toolbar.remove();
     }
 
 });
