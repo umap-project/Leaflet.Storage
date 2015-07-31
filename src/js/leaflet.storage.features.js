@@ -752,11 +752,11 @@ L.Storage.Polyline = L.Polyline.extend({
     },
 
     getMeasure: function () {
-        var distance = 0, latlng, latlngs = this.getLatLngs(), previous;
+        var distance = 0, latlng, latlngs = this._defaultShape(), previous;
         for (var i = 0; i < latlngs.length; i++) {
             latlng = latlngs[i];
             if (previous) {
-                distance += latlng.distanceTo(previous);
+                distance += this.map.distance(latlng, previous);
             }
             previous = latlng;
         }
