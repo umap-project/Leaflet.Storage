@@ -334,34 +334,15 @@ L.Storage.Help = L.Class.extend({
             title = L.DomUtil.create('h3', '', container),
             actionsContainer = L.DomUtil.create('ul', 'storage-edit-actions', container);
         var addAction = function (action) {
-            var actionContainer = L.DomUtil.add('li', action.className, actionsContainer, action.title);
-            L.DomEvent.on(actionContainer, 'click', action.callback, action.context);
+            var actionContainer = L.DomUtil.add('li', '', actionsContainer);
+            L.DomUtil.add('i', action.options.className, actionContainer),
+            L.DomUtil.add('span', '', actionContainer, action.options.tooltip);
+            L.DomEvent.on(actionContainer, 'click', action.addHooks, action);
             L.DomEvent.on(actionContainer, 'click', self.hide, self);
         };
         title.innerHTML = L._('Where do we go from here?');
-        var actions = this.map.getEditActions();
-        actions.unshift(
-            {
-                title: L._('Draw a polyline') + ' (Ctrl+L)',
-                className: 'storage-draw-polyline',
-                callback: function () {this.hide(); this.map.startPolyline();},
-                context: this
-            },
-            {
-                title: L._('Draw a polygon') + ' (Ctrl+P)',
-                className: 'storage-draw-polygon',
-                callback: function () {this.hide(); this.map.startPolygon();},
-                context: this
-            },
-            {
-                title: L._('Draw a marker') + ' (Ctrl+M)',
-                className: 'storage-draw-marker',
-                callback: function () {this.hide(); this.map.startMarker();},
-                context: this
-            }
-        );
-        for (var i = 0; i < actions.length; i++) {
-            addAction(actions[i]);
+        for (var id in this.map.helpMenuActions) {
+            addAction(this.map.helpMenuActions[id]);
         }
         return container;
     },

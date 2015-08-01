@@ -259,6 +259,7 @@ L.Storage.Map.include({
     },
 
     initControls: function () {
+        this.helpMenuActions = {};
         this._controls = this._controls || {};
         for (var i in this._controls) {
             this.removeControl(this._controls[i]);
@@ -1356,47 +1357,6 @@ L.Storage.Map.include({
         L.S.fire('ui:end');
     },
 
-    getEditActions: function () {
-
-        var actions = [
-            {
-                title: L._('Import data') + ' (Ctrl+I)',
-                className: 'upload-data',
-                callback: this.importPanel,
-                context: this
-            },
-            {
-                title: L._('Edit map settings'),
-                className: 'update-map-settings',
-                callback: this.edit,
-                context: this
-            },
-            {
-                title: L._('Change tilelayers'),
-                className: 'update-map-tilelayers',
-                callback: this.updateTileLayers,
-                context: this
-            },
-            {
-                title: L._('Save this center and zoom'),
-                className: 'update-map-extent',
-                callback: this.updateExtent,
-                context: this
-            }
-        ];
-        if (this.options.urls.map_update_permissions) {
-            actions = actions.concat([
-                {
-                    title: L._('Update permissions and editors'),
-                    className: 'update-map-permissions',
-                    callback: this.updatePermissions,
-                    context: this
-                }
-            ]);
-        }
-        return actions;
-    },
-
     startMarker: function () {
         return this.editTools.startMarker();
     },
@@ -1407,35 +1367,6 @@ L.Storage.Map.include({
 
     startPolygon: function () {
         return this.editTools.startPolygon();
-    },
-
-    getDrawActions: function () {
-        var actions = [];
-        if (this.options.enableMarkerDraw) {
-            actions.push({
-                title: L._('Draw a marker'),
-                className: 'storage-draw-marker',
-                callback: this.startMarker,
-                context: this
-            });
-        }
-        if (this.options.enablePolylineDraw) {
-            actions.push({
-                title: L._('Draw a polyline'),
-                className: 'storage-draw-polyline',
-                callback: this.startPolyline,
-                context: this
-            });
-        }
-        if (this.options.enablePolygonDraw) {
-            actions.push({
-                title: L._('Draw a polygon'),
-                className: 'storage-draw-polygon',
-                callback: this.startPolygon,
-                context: this
-            });
-        }
-        return actions;
     },
 
     del: function () {

@@ -1025,15 +1025,23 @@ a.storage-control-text {
     background-position: -160px -126px;
 }
 .storage-edit-actions li {
-    background-repeat: no-repeat;
-    background-position: 5px center;
     height: 36px;
-    padding-left: 36px;
     line-height: 36px;
     cursor: pointer;
     margin-bottom: 5px;
     border-radius: 2px;
     border: 1px solid #ddd;
+}
+.storage-edit-actions li i {
+    background-image: url("../img/24.png");
+    background-repeat: no-repeat;
+    display: table-cell;
+    width: 36px;
+    height: 36px;
+}
+.storage-edit-actions li span {
+    display: table-cell;
+    vertical-align: middle;
 }
 .storage-edit-actions li:hover {
     box-shadow: 0 0 3px 0 #ccc;

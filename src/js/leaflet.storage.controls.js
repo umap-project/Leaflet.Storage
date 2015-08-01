@@ -2,7 +2,12 @@ L.Storage.BaseAction = L.ToolbarAction.extend({
 
     initialize: function (map) {
         this.map = map;
+        this.options.toolbarIcon = {
+            className: this.options.className,
+            tooltip: this.options.tooltip
+        };
         L.ToolbarAction.prototype.initialize.call(this);
+        if (this.options.helpMenu && !this.map.helpMenuActions[this.options.className]) this.map.helpMenuActions[this.options.className] = this;
     }
 
 });
@@ -10,10 +15,9 @@ L.Storage.BaseAction = L.ToolbarAction.extend({
 L.Storage.ImportAction = L.Storage.BaseAction.extend({
 
     options: {
-        toolbarIcon: {
-            className: 'upload-data',
-            tooltip: L._('Import data') + ' (Ctrl+I)'
-        }
+        helpMenu: true,
+        className: 'upload-data',
+        tooltip: L._('Import data') + ' (Ctrl+I)'
     },
 
     addHooks: function () {
@@ -25,10 +29,9 @@ L.Storage.ImportAction = L.Storage.BaseAction.extend({
 L.Storage.EditPropertiesAction = L.Storage.BaseAction.extend({
 
     options: {
-        toolbarIcon: {
-            className: 'update-map-settings',
-            tooltip: L._('Edit map settings')
-        }
+        helpMenu: true,
+        className: 'update-map-settings',
+        tooltip: L._('Edit map settings')
     },
 
     addHooks: function () {
@@ -40,10 +43,9 @@ L.Storage.EditPropertiesAction = L.Storage.BaseAction.extend({
 L.Storage.ChangeTileLayerAction = L.Storage.BaseAction.extend({
 
     options: {
-        toolbarIcon: {
-            className: 'update-map-tilelayers',
-            tooltip: L._('Change tilelayers')
-        }
+        helpMenu: true,
+        className: 'update-map-tilelayers',
+        tooltip: L._('Change tilelayers')
     },
 
     addHooks: function () {
@@ -55,10 +57,8 @@ L.Storage.ChangeTileLayerAction = L.Storage.BaseAction.extend({
 L.Storage.UpdateExtentAction = L.Storage.BaseAction.extend({
 
     options: {
-        toolbarIcon: {
-            className: 'update-map-extent',
-            tooltip: L._('Save this center and zoom')
-        }
+        className: 'update-map-extent',
+        tooltip: L._('Save this center and zoom')
     },
 
     addHooks: function () {
@@ -70,10 +70,8 @@ L.Storage.UpdateExtentAction = L.Storage.BaseAction.extend({
 L.Storage.UpdatePermsAction = L.Storage.BaseAction.extend({
 
     options: {
-        toolbarIcon: {
-            className: 'update-map-permissions',
-            tooltip: L._('Update permissions and editors')
-        }
+        className: 'update-map-permissions',
+        tooltip: L._('Update permissions and editors')
     },
 
     addHooks: function () {
@@ -85,10 +83,9 @@ L.Storage.UpdatePermsAction = L.Storage.BaseAction.extend({
 L.Storage.DrawMarkerAction = L.Storage.BaseAction.extend({
 
     options: {
-        toolbarIcon: {
-            className: 'storage-draw-marker',
-            tooltip: L._('Draw a marker')
-        }
+        helpMenu: true,
+        className: 'storage-draw-marker',
+        tooltip: L._('Draw a marker')
     },
 
     addHooks: function () {
@@ -100,10 +97,9 @@ L.Storage.DrawMarkerAction = L.Storage.BaseAction.extend({
 L.Storage.DrawPolylineAction = L.Storage.BaseAction.extend({
 
     options: {
-        toolbarIcon: {
-            className: 'storage-draw-polyline',
-            tooltip: L._('Draw a polyline')
-        }
+        helpMenu: true,
+        className: 'storage-draw-polyline',
+        tooltip: L._('Draw a polyline')
     },
 
     addHooks: function () {
@@ -115,10 +111,9 @@ L.Storage.DrawPolylineAction = L.Storage.BaseAction.extend({
 L.Storage.DrawPolygonAction = L.Storage.BaseAction.extend({
 
     options: {
-        toolbarIcon: {
-            className: 'storage-draw-polygon',
-            tooltip: L._('Draw a polygon')
-        }
+        helpMenu: true,
+        className: 'storage-draw-polygon',
+        tooltip: L._('Draw a polygon')
     },
 
     addHooks: function () {
@@ -130,10 +125,8 @@ L.Storage.DrawPolygonAction = L.Storage.BaseAction.extend({
 L.Storage.AddPolylineShapeAction = L.Storage.BaseAction.extend({
 
     options: {
-        toolbarIcon: {
-            className: 'storage-draw-polyline-multi',
-            tooltip: L._('Add a line to the current multi')
-        }
+        className: 'storage-draw-polyline-multi',
+        tooltip: L._('Add a line to the current multi')
     },
 
     addHooks: function () {
@@ -145,10 +138,8 @@ L.Storage.AddPolylineShapeAction = L.Storage.BaseAction.extend({
 L.Storage.AddPolygonShapeAction = L.S.AddPolylineShapeAction.extend({
 
     options: {
-        toolbarIcon: {
-            className: 'storage-draw-polygon-multi',
-            tooltip: L._('Add a polygon to the current multi')
-        }
+        className: 'storage-draw-polygon-multi',
+        tooltip: L._('Add a polygon to the current multi')
     }
 
 });
