@@ -12,14 +12,12 @@
     "grunt-contrib-copy": "^0.5.0",
     "happen": "~0.1.3",
     "mocha": "~1.12.0",
-    "napa": "^0.4.1",
     "optimist": "~0.4.0",
     "sinon": "^1.10.3",
     "uglify-js": "~2.2.3"
   },
   "scripts": {
-    "test": "firefox test/index.html",
-    "install": "napa"
+    "test": "firefox test/index.html"
   },
   "repository": {
     "type": "git",
@@ -39,7 +37,6 @@
     "georsstogeojson": "^0.0.2",
     "leaflet": "git://github.com/Leaflet/Leaflet",
     "leaflet-contextmenu": "^1.0.0",
-    "leaflet-draw": "^0.2.3",
     "leaflet-editable": "git://github.com/yohanboniface/Leaflet.Editable#gh-pages",
     "leaflet-editinosm": "0.1.0",
     "leaflet-formbuilder": "^0.1.0",
@@ -55,8 +52,5 @@
     "togeojson": "^0.7.0",
     "togpx": "^0.3.1",
     "tokml": "^0.3.0"
-  },
-  "napa": {
-    "leaflet-measure": "makinacorpus/Leaflet.MeasureControl"
   }
 }

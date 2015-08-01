@@ -231,7 +231,7 @@ L.DomUtil.TextColorFromBackgroundColor = function (el) {
     if (!window.getComputedStyle) {return out;}
     var rgb = window.getComputedStyle(el).getPropertyValue('background-color');
     rgb = L.DomUtil.RGBRegex.exec(rgb);
-    if (!rgb || rgb.length != 4) {return out;}
+    if (!rgb || rgb.length !== 4) {return out;}
     rgb = parseInt(rgb[1], 10) + parseInt(rgb[2], 10) + parseInt(rgb[3], 10);
     if (rgb < (255 * 3 / 2)) {
         out = '#ffffff';
@@ -265,7 +265,7 @@ L.S.Keys = {
     Z: 90
 };
 L.S._onKeyDown = function (e) {
-    if (e.keyCode == L.S.Keys.ESC) {
+    if (e.keyCode === L.S.Keys.ESC) {
         L.S.fire('ui:end');
     }
 };
@@ -292,7 +292,7 @@ L.Storage.Help = L.Class.extend({
     onKeyDown: function (e) {
         var key = e.keyCode,
             ESC = 27;
-        if (key == ESC) {
+        if (key === ESC) {
             this.hide();
         }
     },
@@ -321,7 +321,7 @@ L.Storage.Help = L.Class.extend({
             L.DomEvent
                 .on(helpButton, 'click', L.DomEvent.stop)
                 .on(helpButton, 'click', function (e) {
-                    var args = typeof entries === 'string'? [entries] : entries;
+                    var args = typeof entries === 'string' ? [entries] : entries;
                     this.show.apply(this, args);
                 }, this);
         }
@@ -376,7 +376,7 @@ L.Storage.Help = L.Class.extend({
         L.DomUtil.add('p', '', container, L._('Properties imported:') + 'name, description');
         L.DomUtil.add('h3', '', container, 'CSV');
         L.DomUtil.add('p', '', container, L._('Comma, tab or semi-colon separated values. SRS WGS84 is implied. Only Point geometries are imported. The import will look at the column headers for any mention of «lat» and «lon» at the begining of the header, case insensitive. All other column are imported as properties.'));
-        L.DomUtil.add('h3', '', container,'uMap');
+        L.DomUtil.add('h3', '', container, 'uMap');
         L.DomUtil.add('p', '', container, L._('Imports all umap data, including layers and settings.'));
         return container;
     },

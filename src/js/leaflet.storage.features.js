@@ -277,6 +277,7 @@ L.Storage.FeatureMixin = {
     },
 
     _onClick: function (e) {
+        if (this.map.measuring()) return;
         this._popupHandlersAdded = true;  // Prevent leaflet from managing event
         if(!this.map.editEnabled) {
             this.view(e.latlng);
@@ -345,34 +346,11 @@ L.Storage.FeatureMixin = {
         return items;
     },
 
-    showTooltip: function (content) {
-        this.tooltip = new L.Tooltip(this.map);
-        this.tooltip.updateContent(content);
-        this.updateTooltipPosition();
-        // zoomanim?
-        this.map.on('zoomend', this.updateTooltipPosition, this);
-    },
-
-    removeTooltip: function () {
-        this.map.off('zoomend', this.updateTooltipPosition, this);
-        if (this.tooltip) {
-            this.tooltip.dispose();
-        }
-    },
-
-    updateTooltipPosition: function () {
-        if (!this.tooltip) {return;}
-        this.tooltip.updatePosition(this.getCenter());
-    },
-
     onRemove: function (map) {
         this.parentClass.prototype.onRemove.call(this, map);
         if (this.map.editedFeature === this) {
             this.endEdit();
             L.Storage.fire('ui:end');
-        }
-        if (this.tooltip) {
-            this.tooltip.dispose();
         }
     },
 
@@ -618,12 +596,10 @@ L.Storage.PathMixin = {
     onAdd: function (map) {
         this._container = null;
         this.setStyle();
-        if (this.map._controls.measureControl) {
-            this.map._controls.measureControl.handler.on('enabled', this.showMeasureTooltip, this);
-            this.map._controls.measureControl.handler.on('disabled', function () {
-                this.removeTooltip();
-            }, this);
-        }
+        // Show tooltip again when Leaflet.label allow static label on path.
+        // cf https://github.com/Leaflet/Leaflet.label/pull/97/files
+        // this.map.on('showmeasure', this.showMeasureTooltip, this);
+        // this.map.on('hidemeasure', this.removeTooltip, this);
         this.parentClass.prototype.onAdd.call(this, map);
         if (this.editing && this.editing.enabled()) {
             this.editing.addHooks();
@@ -631,9 +607,8 @@ L.Storage.PathMixin = {
     },
 
     onRemove: function (map) {
-        if (this.map._controls.measureControl) {
-            this.map._controls.measureControl.handler.off('enabled', this.showMeasureTooltip, this);
-        }
+        // this.map.off('showmeasure', this.showMeasureTooltip, this);
+        // this.map.off('hidemeasure', this.removeTooltip, this);
         if (this.editing && this.editing.enabled()) {
             this.editing.removeHooks();
         }
@@ -655,15 +630,12 @@ L.Storage.PathMixin = {
     },
 
     _onMouseOver: function () {
-        if (this.map.editEnabled && !this.map.editedFeature) {
+        if (this.map.measuring()) {
+            L.Storage.fire('ui:tooltip', {content: this.getMeasure()});
+            this.once('mouseout', function () { L.Storage.fire('ui:tooltip:abort');});
+        } else if (this.map.editEnabled && !this.map.editedFeature) {
             L.Storage.fire('ui:tooltip', {content: L._('Double-click to edit')});
             this.once('mouseout', function () { L.Storage.fire('ui:tooltip:abort');});
-        }
-    },
-
-    showMeasureTooltip: function () {
-        if (this.datalayer.isVisible()) {
-            this.showTooltip({text: this.getMeasure()});
         }
     },
 
@@ -752,15 +724,8 @@ L.Storage.Polyline = L.Polyline.extend({
     },
 
     getMeasure: function () {
-        var distance = 0, latlng, latlngs = this._defaultShape(), previous;
-        for (var i = 0; i < latlngs.length; i++) {
-            latlng = latlngs[i];
-            if (previous) {
-                distance += this.map.distance(latlng, previous);
-            }
-            previous = latlng;
-        }
-        return L.GeometryUtil.readableDistance(distance, true);
+        var length = L.GeoUtil.lineLength(this.map, this._defaultShape());
+        return L.GeoUtil.readableDistance(length);
     },
 
     getContextMenuEditItems: function (e) {
@@ -908,8 +873,8 @@ L.Storage.Polygon = L.Polygon.extend({
     },
 
     getMeasure: function () {
-        var area = L.GeometryUtil.geodesicArea(this.getLatLngs());
-        return L.GeometryUtil.readableArea(area, true);
+        var area = L.GeoUtil.geodesicArea(this._defaultShape());
+        return L.GeoUtil.readableArea(area);
     },
 
     getContextMenuEditItems: function (e) {

@@ -199,7 +199,7 @@ a.storage-control-text {
     border-radius: 4px;
     box-shadow: none;
 }
-.storage-measure-control.enabled {
+.measure-enabled .storage-measure-control {
     box-shadow: 0 0 2px 0 black inset;
 }
 .storage-measure-control a {

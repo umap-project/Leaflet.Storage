@@ -14,6 +14,9 @@
         "resetMap": true,
         "initMap": true,
         "clickCancel": true,
-        "map": true
+        "map": true,
+        "qs": true,
+        "qsa": true,
+        "qst": true
     }
 }

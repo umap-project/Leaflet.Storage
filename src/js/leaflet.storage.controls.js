@@ -885,21 +885,6 @@ L.S.ContextMenu = L.Map.ContextMenu.extend({
 
 });
 
-L.Control.MeasureControl.TITLE = L._('Measure distances');
-L.S.MeasureControl = L.Control.MeasureControl.extend({
-
-    onAdd: function (map) {
-        L.Control.MeasureControl.prototype.onAdd.call(this, map);
-        L.DomUtil.removeClass(this._container, 'leaflet-bar');
-        L.DomUtil.addClass(this._container, 'storage-measure-control storage-control');
-        if (map.editTools) {
-            map.on('editable:enable', this.handler.disable, this.handler);
-        }
-        return this._container;
-    }
-
-});
-
 L.S.IframeExporter = L.Class.extend({
     includes: [L.Mixin.Events],
 
@@ -951,7 +936,7 @@ L.S.IframeExporter = L.Class.extend({
         }
         var currentView = this.options.currentView ? window.location.hash : '',
             iframeUrl = this.baseUrl + '?' + L.S.Xhr.buildQueryString(this.queryString) + currentView,
-            code = '<iframe width="' + this.dimensions.width + '" height="' + this.dimensions.height + '" frameBorder="0" src="' + iframeUrl +'"></iframe>';
+            code = '<iframe width="' + this.dimensions.width + '" height="' + this.dimensions.height + '" frameBorder="0" src="' + iframeUrl + '"></iframe>';
         if (this.options.includeFullScreenLink) {
             code += '<p><a href="' + this.baseUrl + '">' + L._('See full screen') + '</a></p>';
         }
@@ -1030,6 +1015,162 @@ L.S.Editable = L.Editable.extend({
         e.layer.onVertexRawClick(e);
         L.DomEvent.stop(e);
         e.cancel();
+    }
+
+});
+
+
+L.GeoUtil = L.extend(L.GeoUtil || {}, {
+    // Ported from the OpenLayers implementation. See https://github.com/openlayers/openlayers/blob/master/lib/OpenLayers/Geometry/LinearRing.js#L270
+    geodesicArea: function (latLngs) {
+        var pointsCount = latLngs.length,
+            area = 0.0,
+            d2r = Math.PI / 180,
+            p1, p2;
+
+        if (pointsCount > 2) {
+            for (var i = 0; i < pointsCount; i++) {
+                p1 = latLngs[i];
+                p2 = latLngs[(i + 1) % pointsCount];
+                area += ((p2.lng - p1.lng) * d2r) *
+                        (2 + Math.sin(p1.lat * d2r) + Math.sin(p2.lat * d2r));
+            }
+            area = area * L.Projection.SphericalMercator.R * L.Projection.SphericalMercator.R / 2.0;
+        }
+
+        return Math.abs(area);
+    },
+
+    readableArea: function (area) {
+        var areaStr;
+
+        if (area >= 10000) areaStr = L._('{area} ha', {area: (area * 0.0001).toFixed(2)});
+        else areaStr = L._('{area} m&sup2;', {area: area.toFixed(2)});
+
+        return areaStr;
+    },
+
+    readableDistance: function (distance) {
+        var distanceStr;
+
+        if (distance > 10000) distanceStr = L._('{distance} km', {distance: Math.ceil(distance / 1000)});
+        else if (distance > 1000) distanceStr = L._('{distance} km', {distance: (distance / 1000).toFixed(2)});
+        else distanceStr = L._('{distance} m', {distance: Math.ceil(distance)});
+
+        return distanceStr;
+    },
+
+    lineLength: function (map, latlngs) {
+        var distance = 0, latlng, previous;
+        for (var i = 0; i < latlngs.length; i++) {
+            latlng = latlngs[i];
+            if (previous) {
+                distance += map.distance(latlng, previous);
+            }
+            previous = latlng;
+        }
+        return distance;
+    }
+
+});
+
+L.S.MeasureLine = L.Polyline.extend({
+    options: {
+        color: '#222',
+        weight: 1
+    }
+});
+
+L.S.MeasureVertex = L.Editable.VertexMarker.extend({
+    options: {
+        className: 'leaflet-div-icon leaflet-editing-icon storage-measure-edge'
+    }
+});
+
+L.S.Measure = L.Editable.extend({
+
+    options: {
+        vertexMarkerClass: L.S.MeasureVertex,
+        polylineClass: L.S.MeasureLine,
+        lineGuideOptions: {
+            color: '#222'
+        },
+        skipMiddleMarkers: true
+    },
+
+    initialize: function (map, options) {
+        L.Editable.prototype.initialize.call(this, map, options);
+        map.measureTools = this;
+        this.on('editable:editing', function (e) {
+            var latlng, latlngs = e.layer._defaultShape();
+            for (var i = 0; i < latlngs.length; i++) {
+                latlng = latlngs[i];
+                latlng.__vertex.hideLabel();
+            }
+            if (latlng && latlng.__vertex) {
+                var length = L.GeoUtil.lineLength(map, e.layer._defaultShape());
+                latlng.__vertex.bindLabel(L.GeoUtil.readableDistance(length), {noHide: true}).showLabel();
+            }
+        });
+        this.on('editable:drawing:end', function () {
+            if (map.measuring()) this.startPolyline();
+        });
+        this.on('editable:shape:deleted', function (e) {
+            if (!e.layer._defaultShape().length) e.layer.remove();
+        });
+    }
+
+});
+
+L.S.MeasureControl = L.Control.MeasureControl.extend({
+
+    options: {
+        position: 'topleft'
+    },
+
+    onAdd: function(map) {
+        this.map = map;
+
+        this._container = L.DomUtil.create('div', 'storage-measure-control storage-control');
+
+        new L.S.Measure(map);
+
+        var link = L.DomUtil.create('a', 'storage-measure-link', this._container);
+        link.href = '#';
+        link.title = L._('Measure distances');
+
+        L.DomEvent
+            .addListener(link, 'click', L.DomEvent.stop)
+            .addListener(link, 'click', this.map.toggleMeasuring, this.map);
+
+        return this._container;
+    }
+
+});
+
+L.S.Map.include({
+
+    toggleMeasuring: function() {
+        if (this.measuring()) this.stopMeasuring();
+        else this.startMeasuring();
+    },
+
+    startMeasuring: function () {
+        this.editTools.on('editable:drawing:start', this.stopMeasuring, this);
+        L.DomUtil.addClass(this._container, 'measure-enabled');
+        this.fire('showmeasure');
+        this.measureTools.startPolyline();
+    },
+
+    stopMeasuring: function () {
+        this.editTools.off('editable:drawing:start', this.stopMeasuring, this);
+        L.DomUtil.removeClass(this._container, 'measure-enabled');
+        this.measureTools.featuresLayer.clearLayers();
+        this.fire('hidemeasure');
+    },
+
+    measuring: function () {
+        return L.DomUtil.hasClass(this._container, 'measure-enabled');
     }
 
 });

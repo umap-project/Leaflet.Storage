@@ -235,8 +235,9 @@ L.Storage.Map.include({
                     L.DomEvent.stop(e);
                     this.help.show('edit');
                 }
-                if (e.keyCode === L.S.Keys.ESC && this.editEnabled) {
-                    this.editTools.stopDrawing();
+                if (e.keyCode === L.S.Keys.ESC) {
+                    if (this.editEnabled) this.editTools.stopDrawing();
+                    if (this.measuring()) this.measureTools.stopDrawing();
                 }
             };
             L.DomEvent.addListener(document, 'keydown', editShortcuts, this);

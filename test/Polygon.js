@@ -117,14 +117,14 @@ describe('L.Storage.Polygon', function () {
             it('should allow to transform to lines when not multi', function () {
                 var latlngs = [
                         [[p2ll(100, 150), p2ll(150, 200), p2ll(200, 100)]]
-                    ],
-                    layer = new L.S.Polygon(this.map, latlngs, {datalayer: this.datalayer}).addTo(this.datalayer);
+                    ];
+                new L.S.Polygon(this.map, latlngs, {datalayer: this.datalayer}).addTo(this.datalayer);
                 happen.at('contextmenu', 150, 150);
                 assert.equal(qst('Transform to lines'), 1);
             });
 
             it('should not allow to transfer shape when not editedFeature', function () {
-                var layer = new L.S.Polygon(this.map, [p2ll(100, 150), p2ll(100, 200), p2ll(200, 150)], {datalayer: this.datalayer}).addTo(this.datalayer);
+                new L.S.Polygon(this.map, [p2ll(100, 150), p2ll(100, 200), p2ll(200, 150)], {datalayer: this.datalayer}).addTo(this.datalayer);
                 happen.at('contextmenu', 110, 160);
                 assert.equal(qst('Delete this feature'), 1);  // Make sure we have right clicked on the polygon.
                 assert.notOk(qst('Transfer shape to edited feature'));
@@ -134,7 +134,7 @@ describe('L.Storage.Polygon', function () {
                 var layer = new L.S.Polygon(this.map, [p2ll(100, 150), p2ll(100, 200), p2ll(200, 150)], {datalayer: this.datalayer}).addTo(this.datalayer),
                     other = new L.S.Polyline(this.map, [p2ll(200, 250), p2ll(200, 300)], {datalayer: this.datalayer}).addTo(this.datalayer);
                 other.edit();
-                happen.at('contextmenu', 110, 160);
+                happen.once(layer._path, {type: 'contextmenu'});
                 assert.equal(qst('Delete this feature'), 1);  // Make sure we have right clicked on the polygon.
                 assert.notOk(qst('Transfer shape to edited feature'));
             });
@@ -143,7 +143,7 @@ describe('L.Storage.Polygon', function () {
                 var other = new L.S.Polygon(this.map, [p2ll(200, 300), p2ll(300, 200), p2ll(200, 100)], {datalayer: this.datalayer}).addTo(this.datalayer);
                 other.edit();  // This moves the map to put "other" at the center.
                 this.map.once('moveend', function () {
-                    var layer = new L.S.Polygon(this.map, [p2ll(100, 150), p2ll(100, 200), p2ll(200, 150)], {datalayer: this.datalayer}).addTo(this.datalayer);
+                    new L.S.Polygon(this.map, [p2ll(100, 150), p2ll(100, 200), p2ll(200, 150)], {datalayer: this.datalayer}).addTo(this.datalayer);
                     happen.at('contextmenu', 110, 160);
                     assert.equal(qst('Transfer shape to edited feature'), 1);
                     done();
@@ -171,10 +171,10 @@ describe('L.Storage.Polygon', function () {
             layer.edit();
             assert.notOk(layer.isMulti());
             happen.click(qs('.storage-draw-polygon-multi'));
-            happen.at('mousemove', 300, 300);
-            happen.at('click', 300, 300);
-            happen.at('mousemove', 350, 300);
-            happen.at('click', 350, 300);
+            happen.at('mousedown', 300, 300);
+            happen.at('mouseup', 300, 300);
+            happen.at('mousedown', 350, 300);
+            happen.at('mouseup', 350, 300);
             happen.at('click', 350, 300);
             assert.ok(layer.isMulti());
             assert.equal(this.datalayer._index.length, 1);
