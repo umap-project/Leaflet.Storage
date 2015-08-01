@@ -187,6 +187,11 @@ L.Storage.FeatureMixin = {
         this.properties = L.extend({}, feature.properties);
         this.options.title = feature.properties && feature.properties.name;
         this.properties._storage_options = L.extend({}, this.properties._storage_options);
+        // Retrocompat
+        if (this.properties._storage_options.clickable === false) {
+            this.properties._storage_options.interactive = false;
+            delete this.properties._storage_options.clickable;
+        }
     },
 
     changeDataLayer: function(datalayer) {
@@ -518,13 +523,6 @@ L.Storage.Marker = L.Marker.extend({
 
 L.Storage.PathMixin = {
 
-    options: {
-        interactive: true,
-        clickable: true,
-        magnetize: true,
-        magnetPoint: null
-    },  // reset path options
-
     edit: function (e) {
         if(this.map.editEnabled) {
             if (!this.editEnabled()) this.enableEdit();
@@ -560,7 +558,7 @@ L.Storage.PathMixin = {
         'fillColor',
         'fillOpacity',
         'dashArray',
-        'clickable'
+        'interactive'
     ],
 
     getAdvancedOptions: function () {
@@ -581,12 +579,9 @@ L.Storage.PathMixin = {
             option = this.styleOptions[idx];
             options[option] = this.getOption(option);
         }
+        if (options.interactive) this.options.pointerEvents = 'visiblePainted';
+        else this.options.pointerEvents = 'stroke';
         this.parentClass.prototype.setStyle.call(this, options);
-        // if (!this.options.clickable && !this.options.interactive) {
-        //     this._path.setAttribute('pointer-events', 'stroke');
-        // } else {
-        //     this._path.removeAttribute('pointer-events');
-        // }
     },
 
     _redraw: function () {
@@ -634,7 +629,7 @@ L.Storage.PathMixin = {
             L.Storage.fire('ui:tooltip', {content: this.getMeasure()});
             this.once('mouseout', function () { L.Storage.fire('ui:tooltip:abort');});
         } else if (this.map.editEnabled && !this.map.editedFeature) {
-            L.Storage.fire('ui:tooltip', {content: L._('Double-click to edit')});
+            L.Storage.fire('ui:tooltip', {content: L._('Click to edit')});
             this.once('mouseout', function () { L.Storage.fire('ui:tooltip:abort');});
         }
     },
@@ -868,7 +863,7 @@ L.Storage.Polygon = L.Polygon.extend({
             'properties._storage_options.fillOpacity'
         );
         options.push(['properties._storage_options.outlink', {label: L._('outlink'), helpText: L._('Define output link to open a new window on polygon click.'), placeholder: 'http://...'}]);
-        options.push(['properties._storage_options.clickable', {handler: 'NullableBoolean', label: L._('Mouse interactions'), helpText: L._('If false, the polygon will act as a part of the underlying map.')}]);
+        options.push(['properties._storage_options.interactive', {handler: 'NullableBoolean', label: L._('Mouse interactions'), helpText: L._('If false, the polygon will act as a part of the underlying map.')}]);
         return options;
     },
 

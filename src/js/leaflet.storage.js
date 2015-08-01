@@ -17,6 +17,7 @@ L.Map.mergeOptions({
     default_iconClass: 'Default',
     default_zoomTo: 16,
     default_popupContentTemplate: '# {name}\n{description}',
+    default_interactive: true,
     attributionControl: false,
     allowEdit: true,
     homeControl: true,
