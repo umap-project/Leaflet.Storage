@@ -180,9 +180,6 @@ a.storage-control-text {
 .storage-edit-enabled .storage-toolbar a {
     display: block;
 }
-.leaflet-draw-section {
-    margin-bottom: 24px;
-}
 
 
 /* ********************************* */
@@ -259,34 +256,6 @@ a.storage-control-text {
     background-repeat: no-repeat;
     background-image: url("../img/16.png");
     vertical-align: middle;
-}
-
-/* ********************************* */
-/*   Edit Help Panel                 */
-/* ********************************* */
-
-.leaflet-draw-actions {
-    right: 50px!important;
-}
-.leaflet-draw-actions a {
-    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.5);
-    height: 28px;
-    position: relative;
-    top: 8px;
-    border-radius: 0!important;
-    width: auto;
-}
-.leaflet-draw-actions a:hover {
-    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.6);
-}
-.leaflet-draw-actions li:first-child a:before {
-    border-left: 8px solid rgba(0, 0, 0, 0.5);
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-    content: "";
-    right: -8px;
-    position: absolute;
-    top: 8px;
 }
 
 

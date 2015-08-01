@@ -1113,7 +1113,7 @@ L.S.Measure = L.Editable.extend({
 
 });
 
-L.S.MeasureControl = L.Control.MeasureControl.extend({
+L.S.MeasureControl = L.Control.extend({
 
     options: {
         position: 'topleft'
