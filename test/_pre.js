@@ -1,5 +1,22 @@
-var qs = function (selector) {return document.querySelector(selector);};
+var qs = function (selector, element) {return (element || document).querySelector(selector);};
 var qsa = function (selector) {return document.querySelectorAll(selector);};
+var qst = function (text, parent) {
+    // find element by its text content
+    var r = document.evaluate("descendant::*[contains(text(),'" + text + "')]", parent || qs('#map'), null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null), count = 0;
+    while(r.iterateNext()) console.log(++count);
+    return count;
+};
+happen.at = function (what, x, y, props) {
+    this.once(document.elementFromPoint(x, y), L.Util.extend({
+        type: what,
+        clientX: x,
+        clientY: y,
+        screenX: x,
+        screenY: y,
+        which: 1,
+        button: 0
+    }, props || {}));
+};
 var resetMap = function () {
     var mapElement = qs('#map');
     mapElement.innerHTML = 'Done';
@@ -28,6 +45,19 @@ var changeInputValue = function (input, value) {
     input.value = value;
     happen.once(input, {type: 'input'});
 };
+var changeSelectValue = function (path_or_select, value) {
+    if (typeof path_or_select === 'string') path_or_select = qs(path_or_select);
+    var found = false;
+    for (var i = 0; i < path_or_select.length; i++) {
+        if (path_or_select.options[i].value === value) {
+            path_or_select.options[i].selected = true;
+            found = true;
+        }
+    }
+    happen.once(path_or_select, {type: 'change'});
+    if (!found) throw new Error('Value ' + value + 'not found in select ' + path_or_select);
+    return path_or_select;
+}
 var cleanAlert = function () {
     L.DomUtil.removeClass(document.body, 'storage-alert');
     L.DomUtil.get('storage-alert-container').innerHTML = '';

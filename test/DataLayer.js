@@ -190,33 +190,14 @@ describe('L.DataLayer', function () {
 
     });
 
-    xdescribe('#iconClassChange()', function () {
+    describe('#iconClassChange()', function () {
 
-        it('should change icon class', function (done) {
-            var response = {
-                'crs': null,
-                'type': 'FeatureCollection',
-                'features': [{
-                    'geometry': {
-                        'type': 'Point',
-                        'coordinates': [-0.274658203125, 52.57634993749885]
-                    },
-                    'type': 'Feature',
-                    'id': 1807,
-                    'properties': {'options': {}, 'datalayer_id': 62, 'name': 'test', 'icon': {'url': null, 'class': 'Circle'}}
-                }]
-            };
-            this.server.flush();
-            this.server.respondWith('GET', '/datalayer/62/', JSON.stringify(response));
-            this.server.respondWith('GET', path, JSON.stringify(RESPONSES.map_datalayer_update_GET));
-            this.server.respondWith('POST', path, JSON.stringify({datalayer: defaultDatalayerData()}));
-            happen.click(qs('span#edit_datalayer_62'));
-            this.server.respond();
-            happen.click(qs('form#datalayer_edit input[type="submit"]'));
-            this.server.respond();
+        it('should change icon class', function () {
+            happen.click(qs('.layer-edit'));
+            changeSelectValue(qs('form#datalayer-advanced-properties select[name=iconClass]'), "Circle");
             assert.notOk(qs('div.storage-div-icon'));
             assert.ok(qs('div.storage-circle-icon'));
-            done();
+            clickCancel();
         });
 
     });
@@ -244,6 +225,7 @@ describe('L.DataLayer', function () {
     describe('#clone()', function () {
 
         it('should clone everything but the id and the name', function () {
+            enableEdit();
             var clone = this.datalayer.clone();
             assert.notOk(clone.storage_id);
             assert.notEqual(clone.options.name, this.datalayer.name);

@@ -152,7 +152,7 @@ L.Storage.Icon.Ball = L.Storage.Icon.Default.extend({
 
 });
 
-_CACHE_COLOR = {};
+var _CACHE_COLOR = {};
 L.Storage.Icon.Cluster = L.DivIcon.extend({
     options: {
         iconSize: [40, 40]

@@ -6,7 +6,8 @@ L.S.Slideshow = L.Class.extend({
 
     options: {
         delay: 5000,
-        autoplay: false
+        autoplay: false,
+        easing: true
     },
 
     initialize: function (map, options) {
@@ -47,7 +48,7 @@ L.S.Slideshow = L.Class.extend({
         catch (e) {
             // Certainly IE8, which has a limited version of defineProperty
         }
-        if  (this.options.autoplay) {
+        if (this.options.autoplay) {
             this.map.onceDatalayersLoaded(function () {
                 this.play();
             }, this);
@@ -144,7 +145,8 @@ L.S.Slideshow = L.Class.extend({
             this.stop();
             return;
         }
-        this.current.zoomTo();
+        if (this.options.easing) this.current.flyTo();
+        else this.current.zoomTo();
         this.current.view();
     },
 

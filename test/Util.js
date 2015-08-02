@@ -165,4 +165,26 @@ describe('L.Util', function () {
 
     });
 
+
+    describe('#flattenCoordinates()', function () {
+
+        it('should not alter already flat coords', function () {
+            var coords = [[1, 2], [3, 4]];
+            assert.deepEqual(L.Util.flattenCoordinates(coords), coords);
+        })
+
+        it('should flatten nested coords', function () {
+            var coords = [[[1, 2], [3, 4]]];
+            assert.deepEqual(L.Util.flattenCoordinates(coords), coords[0]);
+            coords = [[[[1, 2], [3, 4]]]];
+            assert.deepEqual(L.Util.flattenCoordinates(coords), coords[0][0]);
+        })
+
+        it('should not fail on empty coords', function () {
+            var coords = [];
+            assert.deepEqual(L.Util.flattenCoordinates(coords), coords);
+        })
+
+    });
+
 });

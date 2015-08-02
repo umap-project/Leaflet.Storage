@@ -54,13 +54,13 @@ L.S.Layer.Cluster = L.MarkerClusterGroup.extend({
 
     },
 
-    postUpdate: function (field) {
-        if (field === 'options.cluster.radius') {
+    postUpdate: function (e) {
+        if (e.helper.field === 'options.cluster.radius') {
             // No way to reset radius of an already instanciated MarkerClusterGroup...
             this.datalayer.resetLayer(true);
             return;
         }
-        if (field === 'options.color') {
+        if (e.helper.field === 'options.color') {
             this.options.polygonOptions.color = this.datalayer.getColor();
         }
     }
@@ -106,17 +106,17 @@ L.S.Layer.Heat = L.HeatLayer.extend({
         }
         return [
             ['options.heat.radius', {handler: 'BlurIntInput', placeholder: L._('Heatmap radius'), helpText: L._('Override heatmap radius (default 25)')}],
-            ['options.heat.intensityProperty', {handler: 'BlurInput', placeholder: L._('Heatmap intensity property'), helpText: L._('Optional intensity property for heatmap')}],
+            ['options.heat.intensityProperty', {handler: 'BlurInput', placeholder: L._('Heatmap intensity property'), helpText: L._('Optional intensity property for heatmap')}]
         ];
 
     },
 
-    postUpdate: function (field) {
-        if (field === 'options.heat.intensityProperty') {
+    postUpdate: function (e) {
+        if (e.helper.field === 'options.heat.intensityProperty') {
             this.datalayer.resetLayer(true);  // We need to repopulate the latlngs
             return;
         }
-        if (field === 'options.heat.radius') {
+        if (e.helper.field === 'options.heat.radius') {
             this.options.radius = this.datalayer.options.heat.radius;
         }
         this._updateOptions();
@@ -247,16 +247,8 @@ L.Storage.DataLayer = L.Class.extend({
         }
         this.map.get(this._dataUrl(), {
             callback: function (geojson, response) {
-                if (geojson._storage) {
-                    this.setOptions(geojson._storage);
-                }
                 this._etag = response.getResponseHeader('ETag');
-                if (this.isRemoteLayer()) {
-                    this.fetchRemoteData();
-                } else {
-                    this.fromGeoJSON(geojson);
-                }
-                this._loaded = true;
+                this.fromUmapGeoJSON(geojson);
                 this.fire('loaded');
             },
             context: this
@@ -268,6 +260,18 @@ L.Storage.DataLayer = L.Class.extend({
         this._geojson = geojson;
         this.fire('dataloaded');
         this.fire('datachanged');
+    },
+
+    fromUmapGeoJSON: function (geojson) {
+        if (geojson._storage) {
+            this.setOptions(geojson._storage);
+        }
+        if (this.isRemoteLayer()) {
+            this.fetchRemoteData();
+        } else {
+            this.fromGeoJSON(geojson);
+        }
+        this._loaded = true;
     },
 
     clear: function () {
@@ -465,8 +469,9 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     geojsonToFeatures: function (geojson) {
+        if (!geojson) return;
         var features = geojson instanceof Array ? geojson : geojson.features,
-            i, len;
+            i, len, latlng, latlngs;
 
         if (features) {
             L.Util.sortFeatures(features, this.map.getOption('sortKey'));
@@ -491,34 +496,22 @@ L.Storage.DataLayer = L.Class.extend({
                 }
                 layer = this._pointToLayer(geojson, latlng);
                 break;
+
+            case 'MultiLineString':
             case 'LineString':
-                latlngs = L.GeoJSON.coordsToLatLngs(coords);
+                latlngs = L.GeoJSON.coordsToLatLngs(coords, geometry.type === 'LineString' ? 0 : 1);
                 if (!latlngs.length) break;
                 layer = this._lineToLayer(geojson, latlngs);
                 break;
-            case 'Polygon':
-                latlngs = L.GeoJSON.coordsToLatLngs(coords, 1);
-                layer = this._polygonToLayer(geojson, latlngs);
-                break;
-            case 'MultiLineString':
-                // Merge instead of failing for now
-                if (coords.length >= 1) {
-                    tmp = [];
-                    for (var j=0, l=coords.length; j<l; j++) {
-                        tmp = tmp.concat(coords[j]);
-                    }
-                    latlngs = L.GeoJSON.coordsToLatLngs(tmp);
-                    layer = this._lineToLayer(geojson, latlngs);
-                }
-                break;
+
             case 'MultiPolygon':
-                for (var i=0, l=coords.length; i<l; i++) {
-                    latlngs = L.GeoJSON.coordsToLatLngs(coords[i], 1);
-                    layer = this._polygonToLayer(geojson, latlngs);
-                }
+            case 'Polygon':
+                latlngs = L.GeoJSON.coordsToLatLngs(coords, geometry.type === 'Polygon' ? 1 : 2);
+                layer = this._polygonToLayer(geojson, latlngs);
                 break;
             case 'GeometryCollection':
                 return this.geojsonToFeatures(geojson.geometries);
+
             default:
                 L.S.fire('ui:alert', {content: L._('Skipping unkown geometry.type: {type}', {type: geometry.type}), level: 'error'});
         }
@@ -529,9 +522,6 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     _pointToLayer: function(geojson, latlng) {
-        if(this.options.pointToLayer) {
-            return options.pointToLayer(geojson, latlng);
-        }
         return new L.Storage.Marker(
             this.map,
             latlng,
@@ -679,9 +669,9 @@ L.Storage.DataLayer = L.Class.extend({
                 ['options.displayOnLoad', {label: L._('Display on load'), handler: 'CheckBox'}]
             ];
         var builder = new L.S.FormBuilder(this, metadataFields, {
-            callback: function (field) {
+            callback: function (e) {
                 this.map.updateDatalayersControl();
-                if (field === 'options.type') {
+                if (e.helper.field === 'options.type') {
                     this.resetLayer();
                     this.edit();
                 }
@@ -860,17 +850,21 @@ L.Storage.DataLayer = L.Class.extend({
         return this.layer && this.layer.isBrowsable;
     },
 
+    umapGeoJSON: function () {
+        return {
+            type: 'FeatureCollection',
+            features: this.isRemoteLayer() ? [] : this.featuresToGeoJSON(),
+            _storage: this.options
+        };
+    },
+
     save: function () {
         if (this.isDeleted) {
             this.saveDelete();
             return;
         }
         if (!this.isLoaded()) {return;}
-        var geojson = {
-            type: 'FeatureCollection',
-            features: this.isRemoteLayer() ? [] : this.featuresToGeoJSON(),
-            _storage: this.options
-        };
+        var geojson = this.umapGeoJSON();
         this.backupOptions();
         var formData = new FormData();
         formData.append('name', this.options.name);

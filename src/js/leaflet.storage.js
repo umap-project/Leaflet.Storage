@@ -17,6 +17,7 @@ L.Map.mergeOptions({
     default_iconClass: 'Default',
     default_zoomTo: 16,
     default_popupContentTemplate: '# {name}\n{description}',
+    default_interactive: true,
     attributionControl: false,
     allowEdit: true,
     homeControl: true,
@@ -44,7 +45,8 @@ L.Map.mergeOptions({
     moreControl: true,
     captionBar: false,
     slideshow: {},
-    clickable: true
+    clickable: true,
+    easing: true
 });
 
 L.Storage.Map.include({
@@ -83,7 +85,8 @@ L.Storage.Map.include({
             this.options.allowEdit = false;
         }
 
-        var editedFeature = null;
+        var editedFeature = null,
+            self = this;
         try {
             Object.defineProperty(this, 'editedFeature', {
                 get: function () {
@@ -94,6 +97,7 @@ L.Storage.Map.include({
                         editedFeature.endEdit();
                     }
                     editedFeature = feature;
+                    self.fire('seteditedfeature');
                 }
             });
         }
@@ -140,8 +144,7 @@ L.Storage.Map.include({
             this.invalidateSize({pan: false});
         }, this);
 
-        var isDirty = false, // global status
-            self = this;
+        var isDirty = false; // global status
         try {
             Object.defineProperty(this, 'isDirty', {
                 get: function () {
@@ -233,8 +236,9 @@ L.Storage.Map.include({
                     L.DomEvent.stop(e);
                     this.help.show('edit');
                 }
-                if (e.keyCode === L.S.Keys.ESC && this.editEnabled) {
-                    this.editTools.stopDrawing();
+                if (e.keyCode === L.S.Keys.ESC) {
+                    if (this.editEnabled) this.editTools.stopDrawing();
+                    if (this.measuring()) this.measureTools.stopDrawing();
                 }
             };
             L.DomEvent.addListener(document, 'keydown', editShortcuts, this);
@@ -247,6 +251,7 @@ L.Storage.Map.include({
         };
         this.backupOptions();
         this.initContextMenu();
+        this.on('click contextmenu.show', this.closeInplaceToolbar);
     },
 
     overrideBooleanOptionFromQueryString: function (name) {
@@ -254,6 +259,7 @@ L.Storage.Map.include({
     },
 
     initControls: function () {
+        this.helpMenuActions = {};
         this._controls = this._controls || {};
         for (var i in this._controls) {
             this.removeControl(this._controls[i]);
@@ -271,10 +277,17 @@ L.Storage.Map.include({
         if (this.options.allowEdit) {
             this._controls.toggleEdit = new L.Storage.EditControl(this);
             this.addControl(this._controls.toggleEdit);
-            this._controls.drawToolbar = new L.S.DrawToolbar(this);
-            this.addControl(this._controls.drawToolbar);
-            this._controls.settingsToolbar = new L.S.SettingsToolbar(this);
-            this.addControl(this._controls.settingsToolbar);
+
+            new L.S.DrawToolbar({map: this}).addTo(this);
+
+            var editActions = [
+                L.S.ImportAction,
+                L.S.EditPropertiesAction,
+                L.S.ChangeTileLayerAction,
+                L.S.UpdateExtentAction
+            ];
+            if (this.options.urls.map_update_permissions) editActions.push(L.Storage.UpdatePermsAction);
+            new L.S.SettingsToolbar({actions: editActions}).addTo(this);
         }
         if (this.options.moreControl) {
             this._controls.moreControl = (new L.Storage.MoreControls()).addTo(this);
@@ -554,38 +567,53 @@ L.Storage.Map.include({
             shortUrl.value = this.options.shortUrl;
         }
         L.DomUtil.create('hr', '', container);
-        L.DomUtil.add('h4', '', container, L._('Download raw data'));
+        L.DomUtil.add('h4', '', container, L._('Download data'));
         var typeInput = L.DomUtil.create('select', '', container);
         typeInput.name = 'format';
-        L.DomUtil.add('small', 'help-text', container, L._('Only visible features will be downloaded.'));
+        var exportCaveat = L.DomUtil.add('small', 'help-text', container, L._('Only visible features will be downloaded.'));
+        exportCaveat.id = "export_caveat_text";
+        L.DomEvent.on(typeInput, 'change', function () {
+            if (typeInput.value === "umap") {
+                exportCaveat.style.display = "none";
+            } else {
+                exportCaveat.style.display = "inherit";
+            }
+        }, this);
         var types = {
             geojson: {
-                formatter: function (gj) {return JSON.stringify(gj, null, 2);},
+                formatter: function (map) {return JSON.stringify(map.toGeoJSON(), null, 2);},
                 ext: '.geojson',
                 filetype: 'application/json'
             },
             gpx: {
-                formatter: togpx,
+                formatter: function (gpx) {return togpx(map.toGeoJSON());},
                 ext: '.gpx',
                 filetype: 'application/xml'
             },
             kml: {
-                formatter: tokml,
+                formatter: function (map) {return tokml(map.toGeoJSON());},
                 ext: '.kml',
                 filetype: 'application/vnd.google-earth.kml+xml'
+            },
+            umap: {
+                name: L._('Raw uMap data'),
+                formatter: function (map) {return map.serialize();},
+                ext: '.umap',
+                filetype: 'application/json'
             }
         };
         for (var key in types) {
             if (types.hasOwnProperty(key)) {
                 option = L.DomUtil.create('option', '', typeInput);
-                option.value = option.innerHTML = key;
+                option.value = key;
+                option.innerHTML = types[key].name || key;
             }
         }
         var download = L.DomUtil.create('a', 'button', container);
         download.innerHTML = L._('Download data');
         L.DomEvent.on(download, 'click', function () {
             var type = types[typeInput.value],
-                content = type.formatter(this.toGeoJSON()),
+                content = type.formatter(this),
                 name = this.options.name || 'data';
             name = name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
             download.download = name + type.ext;
@@ -634,7 +662,7 @@ L.Storage.Map.include({
             layerLabel = L.DomUtil.create('label', '', container),
             submitInput = L.DomUtil.create('input', '', container),
             map = this, option,
-            types = ['geojson', 'csv', 'gpx', 'kml', 'osm', 'georss'];
+            types = ['geojson', 'csv', 'gpx', 'kml', 'osm', 'georss', 'umap'];
         title.innerHTML = L._('Import data');
         fileInput.type = 'file';
         fileInput.multiple = 'multiple';
@@ -683,20 +711,34 @@ L.Storage.Map.include({
                 layer;
             if (layerId) layer = map.datalayers[layerId];
             if (fileInput.files.length) {
-                if (layer) {
-                    layer.importFromFiles(fileInput.files, type);
-                } else {
-                    for (var i = 0, f; f = fileInput.files[i]; i++) {
-                        layer = this.createDataLayer({name: f.name});
-                        layer.importFromFile(f, type);
+                var file;
+                for (var i = 0, f; f = fileInput.files[i]; i++) {
+                    file = fileInput.files[i];
+                    if (L.Util.detectFileType(file) === 'umap' || type === 'umap') {
+                        this.importFromFile(file, 'umap');
+                    } else {
+                        var importLayer = layer;
+                        if (!layer) {
+                            importLayer = this.createDataLayer({name: f.name});
+                        }
+                        importLayer.importFromFile(f, type);
                     }
                 }
             } else {
-                if (!layer) layer = this.createDataLayer();
                 if (!type) return L.S.fire('ui:alert', {content: L._('Please choose a format'), level: 'error'});
-                else if (rawInput.value) layer.importRaw(rawInput.value, type);
-                else if (urlInput.value) layer.importFromUrl(urlInput.value, type);
-                else if (presetSelect.selectedIndex > 0) layer.importFromUrl(presetSelect[presetSelect.selectedIndex].value, type);
+                if (rawInput.value && type === 'umap') {
+                    try {
+                        this.importRaw(rawInput.value, type);
+                    } catch (e) {
+                        L.S.fire('ui:alert', {content: L._('Invalid umap data'), level: 'error'});
+                    }
+
+                } else {
+                    if (!layer) layer = this.createDataLayer();
+                    if (rawInput.value) layer.importRaw(rawInput.value, type);
+                    else if (urlInput.value) layer.importFromUrl(urlInput.value, type);
+                    else if (presetSelect.selectedIndex > 0) layer.importFromUrl(presetSelect[presetSelect.selectedIndex].value, type);
+                }
             }
         };
         L.DomEvent.on(submitInput, 'click', submit, this);
@@ -713,6 +755,52 @@ L.Storage.Map.include({
             typeInput.value = type;
         }, this);
         L.S.fire('ui:start', {data: {html: container}});
+    },
+
+    importRaw: function(rawData){
+        var importedData = JSON.parse(rawData);
+
+        var mustReindex = false;
+
+        for (var i = 0; i < this.editableOptions.length; i++) {
+            var option = this.editableOptions[i];
+            if (typeof importedData.properties[option] !== 'undefined') {
+                this.options[option] = importedData.properties[option];
+                if (option === "sortKey")
+                    mustReindex = true;
+            }
+        }
+
+        var self = this;
+        importedData.layers.forEach( function (geojson) {
+            var dataLayer = self.createDataLayer();
+            dataLayer.fromUmapGeoJSON(geojson);
+        });
+
+        this.initTileLayers();
+        this.initControls();
+        this.handleLimitBounds();
+        this.eachDataLayer(function (datalayer) {
+            if (mustReindex)
+                datalayer.reindex();
+            datalayer.redraw();
+        });
+        this.fire('postsync');
+        this.isDirty = true;
+    },
+
+    importFromFile: function (file) {
+        var reader = new FileReader();
+        reader.readAsText(file);
+        var self = this;
+        reader.onload = function (e) {
+            var rawData = e.target.result;
+            try {
+                self.importRaw(rawData);
+            } catch (e) {
+                L.S.fire('ui:alert', {content: L._('Invalid umap data in {filename}', {filename: file.name}), level: 'error'});
+            }
+        };
     },
 
     openBrowser: function () {
@@ -838,63 +926,84 @@ L.Storage.Map.include({
             this.dirty_datalayers[0].save();
         } else {
             if (this._post_save_alert) {
+                L.S.fire('saved');
                 L.S.fire('ui:alert', this._post_save_alert);
                 delete this._post_save_alert;
             }
         }
     },
 
+    editableOptions: [
+        'zoom',
+        'datalayersControl',
+        'scrollWheelZoom',
+        'zoomControl',
+        'scaleControl',
+        'moreControl',
+        'miniMap',
+        'displayPopupFooter',
+        'onLoadPanel',
+        'tilelayersControl',
+        'name',
+        'description',
+        'licence',
+        'tilelayer',
+        'limitBounds',
+        'color',
+        'iconClass',
+        'iconUrl',
+        'smoothFactor',
+        'opacity',
+        'weight',
+        'fill',
+        'fillColor',
+        'fillOpacity',
+        'dashArray',
+        'popupTemplate',
+        'popupContentTemplate',
+        'zoomTo',
+        'captionBar',
+        'slideshow',
+        'sortKey',
+        'filterKey',
+        'showLabel',
+        'shortCredit',
+        'longCredit'
+    ],
+
+    exportOptions: function () {
+        var properties = {};
+        for (var i = this.editableOptions.length - 1; i >= 0; i--) {
+            if (typeof this.options[this.editableOptions[i]] !== 'undefined') {
+                properties[this.editableOptions[i]] = this.options[this.editableOptions[i]];
+            }
+        }
+
+        return properties;
+    },
+
+    serialize: function () {
+        var umapfile = {
+            type: "umap",
+            properties: this.exportOptions(),
+            layers: []
+        };
+
+        this.eachDataLayer(function (datalayer) {
+            umapfile.layers.push(datalayer.umapGeoJSON());
+        });
+
+        return JSON.stringify(umapfile, null, 2);
+    },
+
     save: function () {
         if (!this.isDirty) {
             return;
         }
-        // save options to DB
-        var editableOptions = [
-            'zoom',
-            'datalayersControl',
-            'scrollWheelZoom',
-            'zoomControl',
-            'scaleControl',
-            'moreControl',
-            'miniMap',
-            'displayPopupFooter',
-            'onLoadPanel',
-            'tilelayersControl',
-            'name',
-            'description',
-            'licence',
-            'tilelayer',
-            'limitBounds',
-            'color',
-            'iconClass',
-            'iconUrl',
-            'smoothFactor',
-            'opacity',
-            'weight',
-            'fill',
-            'fillColor',
-            'fillOpacity',
-            'dashArray',
-            'popupTemplate',
-            'popupContentTemplate',
-            'zoomTo',
-            'captionBar',
-            'slideshow',
-            'sortKey',
-            'filterKey',
-            'showLabel',
-            'shortCredit',
-            'longCredit'
-        ], properties = {}, msg;
-        for (var i = editableOptions.length - 1; i >= 0; i--) {
-            if (typeof this.options[editableOptions[i]] !== 'undefined') {
-                properties[editableOptions[i]] = this.options[editableOptions[i]];
-            }
-        }
         var geojson = {
             type: 'Feature',
             geometry: this.geometry(),
-            properties: properties
+            properties: this.exportOptions()
         };
         this.backupOptions();
         var formData = new FormData();
@@ -1030,15 +1139,16 @@ L.Storage.Map.include({
             'options.fillOpacity',
             'options.dashArray',
             'options.zoomTo',
+            ['options.easing', {handler: 'CheckBox', helpText: L._('Use advanced transition mode?')}],
             'options.showLabel',
             ['options.sortKey', {handler: 'BlurInput', helpText: L._('Property to use for sorting features'), placeholder: L._('Default: name')}],
             ['options.filterKey', {handler: 'Input', helpText: L._('Comma separated list of properties to use when filtering features'), placeholder: L._('Default: name')}]
         ];
 
         builder = new L.S.FormBuilder(this, optionsFields, {
-            callback: function (field) {
+            callback: function (e) {
                 this.eachDataLayer(function (datalayer) {
-                    if (field === 'options.sortKey') datalayer.reindex();
+                    if (e.helper.field === 'options.sortKey') datalayer.reindex();
                     datalayer.redraw();
                 });
             }
@@ -1194,7 +1304,7 @@ L.Storage.Map.include({
             name.innerHTML = this.getDisplayName();
         };
         L.bind(setName, this)();
-        this.on('synced', L.bind(setName, this));
+        this.on('postsync', L.bind(setName, this));
         this.onceDatalayersLoaded(function () {
             this.slideshow.renderToolbox(container);
         });
@@ -1209,7 +1319,7 @@ L.Storage.Map.include({
             };
         L.bind(setName, this)();
         L.DomEvent.on(name, 'click', this.edit, this);
-        this.on('synced', L.bind(setName, this));
+        this.on('postsync', L.bind(setName, this));
         this.help.button(title, 'edit');
         var save = L.DomUtil.create('a', 'leaflet-control-edit-save button', container);
         save.href = '#';
@@ -1247,47 +1357,6 @@ L.Storage.Map.include({
         L.S.fire('ui:end');
     },
 
-    getEditActions: function () {
-
-        var actions = [
-            {
-                title: L._('Import data') + ' (Ctrl+I)',
-                className: 'upload-data',
-                callback: this.importPanel,
-                context: this
-            },
-            {
-                title: L._('Edit map settings'),
-                className: 'update-map-settings',
-                callback: this.edit,
-                context: this
-            },
-            {
-                title: L._('Change tilelayers'),
-                className: 'update-map-tilelayers',
-                callback: this.updateTileLayers,
-                context: this
-            },
-            {
-                title: L._('Save this center and zoom'),
-                className: 'update-map-extent',
-                callback: this.updateExtent,
-                context: this
-            }
-        ];
-        if (this.options.urls.map_update_permissions) {
-            actions = actions.concat([
-                {
-                    title: L._('Update permissions and editors'),
-                    className: 'update-map-permissions',
-                    callback: this.updatePermissions,
-                    context: this
-                }
-            ]);
-        }
-        return actions;
-    },
-
     startMarker: function () {
         return this.editTools.startMarker();
     },
@@ -1298,35 +1367,6 @@ L.Storage.Map.include({
 
     startPolygon: function () {
         return this.editTools.startPolygon();
-    },
-
-    getDrawActions: function () {
-        var actions = [];
-        if (this.options.enableMarkerDraw) {
-            actions.push({
-                title: L._('Draw a marker'),
-                className: 'storage-draw-marker',
-                callback: this.startMarker,
-                context: this
-            });
-        }
-        if (this.options.enablePolylineDraw) {
-            actions.push({
-                title: L._('Draw a polyline'),
-                className: 'storage-draw-polyline',
-                callback: this.startPolyline,
-                context: this
-            });
-        }
-        if (this.options.enablePolygonDraw) {
-            actions.push({
-                title: L._('Draw a polygon'),
-                className: 'storage-draw-polygon',
-                callback: this.startPolygon,
-                context: this
-            });
-        }
-        return actions;
     },
 
     del: function () {
@@ -1499,6 +1539,11 @@ L.Storage.Map.include({
             url = L.Util.template(this.options.urls.ajax_proxy, {url: encodeURIComponent(url)});
         }
         return url;
+    },
+
+    closeInplaceToolbar: function () {
+        var toolbar = this._toolbars[L.Toolbar.Popup._toolbar_class_id];
+        if (toolbar) toolbar.remove();
     }
 
 });

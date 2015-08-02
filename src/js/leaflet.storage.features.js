@@ -1,6 +1,5 @@
 L.Storage.FeatureMixin = {
 
-    form_id: 'feature_form',
     staticOptions: {},
 
     initialize: function (map, latlng, options) {
@@ -9,7 +8,7 @@ L.Storage.FeatureMixin = {
             options = {};
         }
         // DataLayer the marker belongs to
-        this.datalayer = options.datalayer || null;
+        this.datalayer = options.datalayer || null;
         this.properties = {_storage_options: {}};
         if (options.geojson) {
             this.populate(options.geojson);
@@ -124,7 +123,7 @@ L.Storage.FeatureMixin = {
         advancedProperties.appendChild(builder.build());
 
         var popupFields = [
-            'options.popupTemplate'
+            'properties._storage_options.popupTemplate'
         ];
         builder = new L.S.FormBuilder(this, popupFields);
         var popupFieldset = L.DomUtil.createFieldset(container, L._('Popup options'));
@@ -188,6 +187,11 @@ L.Storage.FeatureMixin = {
         this.properties = L.extend({}, feature.properties);
         this.options.title = feature.properties && feature.properties.name;
         this.properties._storage_options = L.extend({}, this.properties._storage_options);
+        // Retrocompat
+        if (this.properties._storage_options.clickable === false) {
+            this.properties._storage_options.interactive = false;
+            delete this.properties._storage_options.clickable;
+        }
     },
 
     changeDataLayer: function(datalayer) {
@@ -219,23 +223,24 @@ L.Storage.FeatureMixin = {
 
     bringToCenter: function (e, callback) {
         var latlng;
-        if (e && e.zoomTo) {
-            this.map._zoom = e.zoomTo;
-        }
-        if (e && e.latlng) {
-            latlng = e.latlng;
-        }
-        else {
-            latlng = this.getCenter();
-        }
+        if (e && e.zoomTo) this.map._zoom = e.zoomTo;
+        if (e && e.latlng) latlng = e.latlng;
+        else latlng = this.getCenter();
         this.map.panTo(latlng);
-        if (callback) {
-            callback();
-        }
+        if (callback) callback();
     },
 
     zoomTo: function () {
-        this.bringToCenter({zoomTo: this.getOption('zoomTo')});
+        if (this.map.options.easing) this.flyTo();
+        else this.bringToCenter({zoomTo: this.getBestZoom()});
+    },
+
+    getBestZoom: function () {
+        return this.getOption('zoomTo');
+    },
+
+    flyTo: function () {
+        this.map.flyTo(this.getCenter(), this.getBestZoom());
     },
 
     getNext: function () {
@@ -266,18 +271,36 @@ L.Storage.FeatureMixin = {
     },
 
     toGeoJSON: function () {
-        return {
-            type: 'Feature',
-            geometry: this.geometry(),
-            properties: this.cloneProperties()
-        };
+        var geojson = this.parentClass.prototype.toGeoJSON.call(this);
+        geojson.properties = this.cloneProperties();
+        return geojson;
     },
 
     addInteractions: function () {
         this.on('contextmenu editable:vertex:contextmenu', this._showContextMenu, this);
+        this.on('click', this._onClick);
+    },
+
+    _onClick: function (e) {
+        if (this.map.measuring()) return;
+        this._popupHandlersAdded = true;  // Prevent leaflet from managing event
+        if(!this.map.editEnabled) {
+            this.view(e.latlng);
+        } else if (!this.isReadOnly()) {
+            new L.Toolbar.Popup(e.latlng, {
+                className: 'leaflet-inplace-toolbar',
+                actions: this.getInplaceToolbarActions(e)
+            }).addTo(this.map, this, e.latlng);
+        }
+        L.DomEvent.stop(e);
+    },
+
+    getInplaceToolbarActions: function (e) {
+        return [L.S.ToggleEditAction, L.S.DeleteFeatureAction];
     },
 
     _showContextMenu: function (e) {
+        L.DomEvent.stop(e);
         var pt = this.map.mouseEventToContainerPoint(e.originalEvent);
         e.relatedTarget = this;
         this.map.contextmenu.showAt(pt, e);
@@ -294,19 +317,24 @@ L.Storage.FeatureMixin = {
     getContextMenuItems: function (e) {
         var items = [];
         if (this.map.editEnabled && !this.isReadOnly()) {
-            items = items.concat(this.getEditContextMenuItems(e));
+            items = items.concat(this.getContextMenuEditItems(e));
         }
         return items;
     },
 
-    getEditContextMenuItems: function () {
-        return ['-',
-            {
-                text: L._('Edit this feature'),
-                callback: this.edit,
-                context: this,
-                iconCls: 'storage-edit'
-            },
+    getContextMenuEditItems: function () {
+        var items = ['-'];
+        if (this.map.editedFeature !== this) {
+            items.push(
+                {
+                    text: L._('Edit this feature'),
+                    callback: this.edit,
+                    context: this,
+                    iconCls: 'storage-edit'
+                }
+            );
+        }
+        items = items.concat(
             {
                 text: L._('Edit feature\'s layer'),
                 callback: this.datalayer.edit,
@@ -319,27 +347,8 @@ L.Storage.FeatureMixin = {
                 context: this,
                 iconCls: 'storage-delete'
             }
-        ];
-    },
-
-    showTooltip: function (content) {
-        this.tooltip = new L.Tooltip(this.map);
-        this.tooltip.updateContent(content);
-        this.updateTooltipPosition();
-        // zoomanim?
-        this.map.on('zoomend', this.updateTooltipPosition, this);
-    },
-
-    removeTooltip: function () {
-        this.map.off('zoomend', this.updateTooltipPosition, this);
-        if (this.tooltip) {
-            this.tooltip.dispose();
-        }
-    },
-
-    updateTooltipPosition: function () {
-        if (!this.tooltip) {return;}
-        this.tooltip.updatePosition(this.getCenter());
+        );
+        return items;
     },
 
     onRemove: function (map) {
@@ -347,9 +356,6 @@ L.Storage.FeatureMixin = {
         if (this.map.editedFeature === this) {
             this.endEdit();
             L.Storage.fire('ui:end');
-        }
-        if (this.tooltip) {
-            this.tooltip.dispose();
         }
     },
 
@@ -370,6 +376,17 @@ L.Storage.FeatureMixin = {
             if ((this.properties[keys[i]] || '').toLowerCase().indexOf(filter) !== -1) return true;
         }
         return false;
+    },
+
+    onVertexRawClick: function (e) {
+        new L.Toolbar.Popup(e.latlng, {
+            className: 'leaflet-inplace-toolbar',
+            actions: this.getVertexActions(e)
+        }).addTo(this.map, this, e.latlng, e.vertex);
+    },
+
+    getVertexActions: function () {
+        return [L.S.DeleteVertexAction];
     }
 
 };
@@ -388,21 +405,11 @@ L.Storage.Marker = L.Marker.extend({
             this.isDirty = true;
             this.edit(e);
         }, this);
-        this.on('click', this._onClick);
         if (!this.isReadOnly()) {
             this.on('mouseover', this._enableDragging);
         }
         this.on('mouseout', this._onMouseOut);
         this._popupHandlersAdded = true; // prevent Leaflet from binding event on bindPopup
-    },
-
-    _onClick: function(e){
-        if(this.map.editEnabled) {
-            this.edit(e);
-        }
-        else {
-            this.view(e.latlng);
-        }
     },
 
     _onMouseOut: function () {
@@ -449,18 +456,6 @@ L.Storage.Marker = L.Marker.extend({
     disconnectFromDataLayer: function (datalayer) {
         this.options.icon.datalayer = null;
         L.Storage.FeatureMixin.disconnectFromDataLayer.call(this, datalayer);
-    },
-
-    geometry: function() {
-        /* Return a GeoJSON geometry Object */
-        var latlng = this.getLatLng();
-        return {
-            type: 'Point',
-            coordinates: [
-                latlng.lng,
-                latlng.lat
-            ]
-        };
     },
 
     _getIconUrl: function (name) {
@@ -528,19 +523,6 @@ L.Storage.Marker = L.Marker.extend({
 
 L.Storage.PathMixin = {
 
-    options: {
-        clickable: true,
-        magnetize: true,
-        magnetPoint: null
-    },  // reset path options
-
-    _onClick: function(e){
-        this._popupHandlersAdded = true;  // Prevent leaflet from managing event
-        if(!this.map.editEnabled) {
-            this.view(e.latlng);
-        }
-    },
-
     edit: function (e) {
         if(this.map.editEnabled) {
             if (!this.editEnabled()) this.enableEdit();
@@ -559,7 +541,7 @@ L.Storage.PathMixin = {
             }
         }
         // FIXME: disable when disabling global edit
-        L.DomEvent.stop(e.originalEvent);
+        L.DomEvent.stop(e);
     },
 
     closePopup: function() {
@@ -576,16 +558,8 @@ L.Storage.PathMixin = {
         'fillColor',
         'fillOpacity',
         'dashArray',
-        'clickable'
+        'interactive'
     ],
-
-    _setStyleOptions: function () {
-        var option;
-        for (var idx in this.styleOptions) {
-            option = this.styleOptions[idx];
-            this.options[option] = this.getOption(option);
-        }
-    },
 
     getAdvancedOptions: function () {
         return [
@@ -598,29 +572,29 @@ L.Storage.PathMixin = {
         ];
     },
 
-    _updateStyle: function () {
-        this._setStyleOptions();
-        L.Polyline.prototype._updateStyle.call(this);
-        if (!this.options.clickable) {
-            this._path.setAttribute('pointer-events', 'stroke');
-        } else {
-            this._path.removeAttribute('pointer-events');
+    setStyle: function (options) {
+        options = options || {};
+        var option;
+        for (var idx in this.styleOptions) {
+            option = this.styleOptions[idx];
+            options[option] = this.getOption(option);
         }
+        if (options.interactive) this.options.pointerEvents = 'visiblePainted';
+        else this.options.pointerEvents = 'stroke';
+        this.parentClass.prototype.setStyle.call(this, options);
     },
 
     _redraw: function () {
-        this._updateStyle();
+        this.setStyle();
     },
 
     onAdd: function (map) {
         this._container = null;
-        this._setStyleOptions();
-        if (this.map._controls.measureControl) {
-            this.map._controls.measureControl.handler.on('enabled', this.showMeasureTooltip, this);
-            this.map._controls.measureControl.handler.on('disabled', function () {
-                this.removeTooltip();
-            }, this);
-        }
+        this.setStyle();
+        // Show tooltip again when Leaflet.label allow static label on path.
+        // cf https://github.com/Leaflet/Leaflet.label/pull/97/files
+        // this.map.on('showmeasure', this.showMeasureTooltip, this);
+        // this.map.on('hidemeasure', this.removeTooltip, this);
         this.parentClass.prototype.onAdd.call(this, map);
         if (this.editing && this.editing.enabled()) {
             this.editing.addHooks();
@@ -628,24 +602,20 @@ L.Storage.PathMixin = {
     },
 
     onRemove: function (map) {
-        if (this.map._controls.measureControl) {
-            this.map._controls.measureControl.handler.off('enabled', this.showMeasureTooltip, this);
-        }
+        // this.map.off('showmeasure', this.showMeasureTooltip, this);
+        // this.map.off('hidemeasure', this.removeTooltip, this);
         if (this.editing && this.editing.enabled()) {
             this.editing.removeHooks();
         }
         L.S.FeatureMixin.onRemove.call(this, map);
     },
 
-    getCenter: function () {
-        return this._latlng || this._latlngs[Math.floor(this._latlngs.length / 2)];
-    },
-
-    zoomTo: function () {
+    getBestZoom: function () {
         if (this.options.zoomTo) {
-            L.S.FeatureMixin.zoomTo.call(this);
+            return this.options.zoomTo;
         } else {
-            this.map.fitBounds(this.getBounds());
+            var bounds = this.getBounds();
+            return this.map.getBoundsZoom(bounds, true);
         }
     },
 
@@ -655,27 +625,78 @@ L.Storage.PathMixin = {
     },
 
     _onMouseOver: function () {
-        if (this.map.editEnabled && !this.map.editedFeature) {
-            L.Storage.fire('ui:tooltip', {content: L._('Double-click to edit')});
+        if (this.map.measuring()) {
+            L.Storage.fire('ui:tooltip', {content: this.getMeasure()});
             this.once('mouseout', function () { L.Storage.fire('ui:tooltip:abort');});
-        }
-    },
-
-    showMeasureTooltip: function () {
-        if (this.datalayer.isVisible()) {
-            this.showTooltip({text: this.getMeasure()});
+        } else if (this.map.editEnabled && !this.map.editedFeature) {
+            L.Storage.fire('ui:tooltip', {content: L._('Click to edit')});
+            this.once('mouseout', function () { L.Storage.fire('ui:tooltip:abort');});
         }
     },
 
     addInteractions: function () {
         L.Storage.FeatureMixin.addInteractions.call(this);
         this.on('dragend', this.edit);
-        this.on('click', this._onClick);
-        if (!this.isReadOnly()) {
-            this.on('dblclick', this._toggleEditing);
-        }
         this.on('mouseover', this._onMouseOver);
         this.on('edit', this.makeDirty);
+    },
+
+    transferShape: function (at, to) {
+        var shape = this.enableEdit().deleteShapeAt(at);
+        this.disableEdit();
+        if (!shape) return;
+        to.enableEdit().appendShape(shape);
+        if (!this._latlngs.length || !this._latlngs[0].length) this.del();
+    },
+
+    getContextMenuItems: function (e) {
+        var items = L.S.FeatureMixin.getContextMenuItems.call(this, e);
+        if (this.map.editEnabled && !this.isReadOnly() && this.isMulti()) {
+            items = items.concat(this.getContextMenuMultiItems(e));
+        }
+        return items;
+    },
+
+    getContextMenuMultiItems: function (e) {
+        var items = ['-', {
+            text: L._('Remove shape from the multi'),
+            callback: function () {
+                this.enableEdit().deleteShapeAt(e.latlng);
+            },
+            context: this
+        }];
+        var shape = this.shapeAt(e.latlng);
+        if (this._latlngs.indexOf(shape) > 0) {
+            items.push({
+                text: L._('Make main shape'),
+                callback: function () {
+                    this.enableEdit().deleteShape(shape);
+                    this.editor.prependShape(shape);
+                },
+                context: this
+            });
+        }
+        return items;
+    },
+
+    getContextMenuEditItems: function (e) {
+        var items = L.S.FeatureMixin.getContextMenuEditItems.call(this, e);
+        if (this.map.editedFeature && this.isSameClass(this.map.editedFeature) && this.map.editedFeature !== this) {
+            items.push({
+                text: L._('Transfer shape to edited feature'),
+                callback: function () {
+                    this.transferShape(e.latlng, this.map.editedFeature);
+                },
+                context: this
+            });
+        }
+        return items;
+    },
+
+    getInplaceToolbarActions: function (e) {
+        var items = L.S.FeatureMixin.getInplaceToolbarActions.call(this, e);
+        if (this.isMulti()) items.push(L.S.DeleteShapeAction);
+        return items;
     }
 
 };
@@ -689,12 +710,8 @@ L.Storage.Polyline = L.Polyline.extend({
         fill: false
     },
 
-    geometry: function() {
-        /* Return a GeoJSON geometry Object */
-        return {
-            type: 'LineString',
-            coordinates: L.Util.latLngsForGeoJSON(this.getLatLngs())
-        };
+    isSameClass: function (other) {
+        return other instanceof L.S.Polyline;
     },
 
     getClassName: function () {
@@ -702,44 +719,27 @@ L.Storage.Polyline = L.Polyline.extend({
     },
 
     getMeasure: function () {
-        var distance = 0, latlng, latlngs = this.getLatLngs(), previous;
-        for (var i = 0; i < latlngs.length; i++) {
-            latlng = latlngs[i];
-            if (previous) {
-                distance += latlng.distanceTo(previous);
-            }
-            previous = latlng;
-        }
-        return L.GeometryUtil.readableDistance(distance, true);
+        var length = L.GeoUtil.lineLength(this.map, this._defaultShape());
+        return L.GeoUtil.readableDistance(length);
     },
 
-    getEditContextMenuItems: function (e) {
-        var items = L.Storage.FeatureMixin.getEditContextMenuItems.call(this),
+    getContextMenuEditItems: function (e) {
+        var items = L.S.PathMixin.getContextMenuEditItems.call(this, e),
             vertexClicked = e.vertex, index;
-        items.push({
-            text: L._('Transform to polygon'),
-            callback: this.toPolygon,
-            context: this
-        });
-        if (this.map.editedFeature && this.map.editedFeature instanceof L.Storage.Polyline && this.map.editedFeature !== this) {
+        if (!this.isMulti()) {
             items.push({
-                text: L._('Merge geometry with edited feature'),
-                callback: function () {
-                    this.mergeInto(this.map.editedFeature);
-                    this.map.editedFeature.editor.reset();
-                },
+                text: L._('Transform to polygon'),
+                callback: this.toPolygon,
                 context: this
             });
         }
         if (vertexClicked) {
             index = e.vertex.getIndex();
-            if (index !== 0 && index !== this._latlngs.length - 1) {
+            if (index !== 0 && index !== e.vertex.getLastIndex()) {
                 items.push({
                     text: L._('Split line'),
-                    callback: function () {
-                        this.splitAt(index);
-                    },
-                    context: this
+                    callback: e.vertex.split,
+                    context: e.vertex
                 });
             } else if (index === 0) {
                 items.push({
@@ -758,10 +758,20 @@ L.Storage.Polyline = L.Polyline.extend({
         return items;
     },
 
+    getContextMenuMultiItems: function (e) {
+        var items = L.S.PathMixin.getContextMenuMultiItems.call(this, e);
+        items.push({
+            text: L._('Merge lines'),
+            callback: this.mergeShapes,
+            context: this
+        });
+        return items;
+    },
+
     toPolygon: function () {
         var geojson = this.toGeoJSON();
         geojson.geometry.type = 'Polygon';
-        geojson.geometry.coordinates = [geojson.geometry.coordinates];
+        geojson.geometry.coordinates = [L.Util.flattenCoordinates(geojson.geometry.coordinates)];
         var polygon = this.datalayer.geojsonToFeatures(geojson);
         polygon.edit();
         this.del();
@@ -775,29 +785,26 @@ L.Storage.Polyline = L.Polyline.extend({
         L.DomEvent.on(toPolygon, 'click', this.toPolygon, this);
     },
 
-    mergeInto: function (other) {
-        if (!other instanceof L.Storage.Polyline) return;
-        var otherLatlngs = other.getLatLngs(),
-            otherLeft = otherLatlngs[0],
-            otherRight = otherLatlngs[otherLatlngs.length - 1],
-            thisLatlngs = this.getLatLngs(),
-            thisLeft = thisLatlngs[0],
-            thisRight = thisLatlngs[thisLatlngs.length - 1],
-            l2ldistance = otherLeft.distanceTo(thisLeft),
-            l2rdistance = otherLeft.distanceTo(thisRight),
-            r2ldistance = otherRight.distanceTo(thisLeft),
-            r2rdistance = otherRight.distanceTo(thisRight),
+    _mergeShapes: function (from, to) {
+        var toLeft = to[0],
+            toRight = to[to.length - 1],
+            fromLeft = from[0],
+            fromRight = from[from.length - 1],
+            l2ldistance = toLeft.distanceTo(fromLeft),
+            l2rdistance = toLeft.distanceTo(fromRight),
+            r2ldistance = toRight.distanceTo(fromLeft),
+            r2rdistance = toRight.distanceTo(fromRight),
             toMerge;
         if (l2rdistance < Math.min(l2ldistance, r2ldistance, r2rdistance)) {
-            toMerge = [thisLatlngs, otherLatlngs];
+            toMerge = [from, to];
         } else if (r2ldistance < Math.min(l2ldistance, l2rdistance, r2rdistance)) {
-            toMerge = [otherLatlngs, thisLatlngs];
+            toMerge = [to, from];
         } else if (r2rdistance < Math.min(l2ldistance, l2rdistance, r2ldistance)) {
-            thisLatlngs.reverse();
-            toMerge = [otherLatlngs, thisLatlngs];
+            from.reverse();
+            toMerge = [to, from];
         } else {
-            thisLatlngs.reverse();
-            toMerge = [thisLatlngs, otherLatlngs];
+            from.reverse();
+            toMerge = [from, to];
         }
         var a = toMerge[0],
             b = toMerge[1],
@@ -807,30 +814,31 @@ L.Storage.Polyline = L.Polyline.extend({
         if (Math.abs(p1.x - p2.x) <= tolerance && Math.abs(p1.y - p2.y) <= tolerance) {
             a.pop();
         }
-        other.setLatLngs(a.concat(b));
-        this.del();
+        return a.concat(b);
     },
 
-    splitAt: function (index) {
-        if (index === 0 || index === this._latlngs.length - 1) return;
-        var latlngs = this.getLatLngs(),
-            thisLatlngs = latlngs.slice(0, index + 1),
-            otherLatlngs = latlngs.slice(index);
-        var geojson = {
-            type: 'Feature',
-            geometry: {
-                type: 'LineString',
-                coordinates: L.Util.latLngsForGeoJSON(otherLatlngs)
-            },
-            properties: this.cloneProperties()
-        };
-        this.setLatLngs(thisLatlngs);
-        this.isDirty = true;
-        if (this.editEnabled()) {
-            this.editor.reset();
+    mergeShapes: function () {
+        if (!this.isMulti()) return;
+        var latlngs = this.getLatLngs();
+        if (!latlngs.length) return;
+        while (latlngs.length > 1) {
+            latlngs.splice(0, 2, this._mergeShapes(latlngs[1], latlngs[0]));
         }
-        var other = this.datalayer.geojsonToFeatures(geojson);
-        return other;
+        this.setLatLngs(latlngs[0]);
+        if (!this.editEnabled()) this.edit();
+        this.editor.reset();
+        this.isDirty = true;
+    },
+
+    isMulti: function () {
+        return !L.Polyline._flat(this._latlngs) && this._latlngs.length > 1;
+    },
+
+    getVertexActions: function (e) {
+        var actions = L.S.FeatureMixin.getVertexActions.call(this, e),
+            index = e.vertex.getIndex();
+        if (index === 0 || index === e.vertex.getLastIndex()) actions.push(L.S.ContinueLineAction);
+        return actions;
     }
 
 });
@@ -839,24 +847,8 @@ L.Storage.Polygon = L.Polygon.extend({
     parentClass: L.Polygon,
     includes: [L.Storage.FeatureMixin, L.Storage.PathMixin, L.Mixin.Events],
 
-    geometry: function() {
-        // TODO: add test!
-        /* Return a GeoJSON geometry Object */
-        /* see: https://github.com/CloudMade/Leaflet/issues/1135 */
-        /* and: https://github.com/CloudMade/Leaflet/issues/712 */
-        var latlngs = this.getLatLngs().slice(0), closingPoint = latlngs[0];
-        latlngs.push(closingPoint);  // Artificially create a LinearRing
-        var coords = L.Util.latLngsForGeoJSON(latlngs),
-            coordinates = [coords];
-        if (this._holes) {
-            for (var i = 0; i < this._holes.length; i++) {
-                coordinates.push(L.Util.latLngsForGeoJSON(this._holes[i]));
-            }
-        }
-        return {
-            type: 'Polygon',
-            coordinates: coordinates
-        };
+    isSameClass: function (other) {
+        return other instanceof L.S.Polygon;
     },
 
     getClassName: function () {
@@ -871,38 +863,20 @@ L.Storage.Polygon = L.Polygon.extend({
             'properties._storage_options.fillOpacity'
         );
         options.push(['properties._storage_options.outlink', {label: L._('outlink'), helpText: L._('Define output link to open a new window on polygon click.'), placeholder: 'http://...'}]);
-        options.push(['properties._storage_options.clickable', {handler: 'NullableBoolean', label: L._('Mouse interactions'), helpText: L._('If false, the polygon will act as a part of the underlying map.')}]);
+        options.push(['properties._storage_options.interactive', {handler: 'NullableBoolean', label: L._('Mouse interactions'), helpText: L._('If false, the polygon will act as a part of the underlying map.')}]);
         return options;
     },
 
     getMeasure: function () {
-        var area = L.GeometryUtil.geodesicArea(this.getLatLngs());
-        return L.GeometryUtil.readableArea(area, true);
+        var area = L.GeoUtil.geodesicArea(this._defaultShape());
+        return L.GeoUtil.readableArea(area);
     },
 
-    getCenter: function () {
-        var latlngs = this._latlngs,
-            len = latlngs.length,
-            p1, p2, f, center;
-
-        for (var i = 0, j = len - 1, area = 0, lat = 0, lng = 0; i < len; j = i++) {
-            p1 = latlngs[i];
-            p2 = latlngs[j];
-            f = p1.lat * p2.lng - p2.lat * p1.lng;
-            lat += (p1.lat + p2.lat) * f;
-            lng += (p1.lng + p2.lng) * f;
-            area += f / 2;
-        }
-
-        center = area ? new L.LatLng(lat / (6 * area), lng / (6 * area)) : latlngs[0];
-        center.area = area;
-
-        return center;
-    },
-
-    getEditContextMenuItems: function () {
-        var items = L.Storage.FeatureMixin.getEditContextMenuItems.call(this);
-        if (!this._holes || !this._holes.length) {
+    getContextMenuEditItems: function (e) {
+        var items = L.S.PathMixin.getContextMenuEditItems.call(this, e),
+            shape = this.shapeAt(e.latlng);
+        // No multi and no holes.
+        if (shape && !this.isMulti() && (L.Polyline._flat(shape) || shape.length === 1)) {
             items.push({
                 text: L._('Transform to lines'),
                 callback: this.toPolyline,
@@ -918,14 +892,13 @@ L.Storage.Polygon = L.Polygon.extend({
     },
 
     startHole: function (e) {
-        this.enableEdit();
-        this.editor.newHole(e.latlng);
+        this.enableEdit().newHole(e.latlng);
     },
 
     toPolyline: function () {
         var geojson = this.toGeoJSON();
         geojson.geometry.type = 'LineString';
-        geojson.geometry.coordinates = geojson.geometry.coordinates[0];
+        geojson.geometry.coordinates = L.Util.flattenCoordinates(geojson.geometry.coordinates);
         var polyline = this.datalayer.geojsonToFeatures(geojson);
         polyline.edit();
         this.del();
@@ -937,5 +910,17 @@ L.Storage.Polygon = L.Polygon.extend({
         toPolyline.href = '#';
         toPolyline.innerHTML = L._('Transform to lines');
         L.DomEvent.on(toPolyline, 'click', this.toPolyline, this);
+    },
+
+    isMulti: function () {
+        // Change me when Leaflet#3279 is merged.
+        return !L.Polyline._flat(this._latlngs) && !L.Polyline._flat(this._latlngs[0]) && this._latlngs.length > 1;
+    },
+
+    getInplaceToolbarActions: function (e) {
+        var items = L.S.PathMixin.getInplaceToolbarActions.call(this, e);
+        items.push(L.S.CreateHoleAction);
+        return items;
     }
+
 });

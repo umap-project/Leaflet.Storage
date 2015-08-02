@@ -1,53 +1,314 @@
-L.Storage.Toolbar = L.Control.extend({
+L.Storage.BaseAction = L.ToolbarAction.extend({
 
-    _createButton: function (options) {
-        var link = L.DomUtil.create('a', options.className || '', options.container);
-        link.href = '#';
+    initialize: function (map) {
+        this.map = map;
+        this.options.toolbarIcon = {
+            className: this.options.className,
+            tooltip: this.options.tooltip
+        };
+        L.ToolbarAction.prototype.initialize.call(this);
+        if (this.options.helpMenu && !this.map.helpMenuActions[this.options.className]) this.map.helpMenuActions[this.options.className] = this;
+    }
 
-        L.DomEvent
-            .on(link, 'click', L.DomEvent.stop)
-            .on(link, 'mousedown', L.DomEvent.stop)
-            .on(link, 'dblclick', L.DomEvent.stop)
-            .on(link, 'click', options.callback, options.context)
-            .on(link, 'mouseover', function () {
-                L.Storage.fire('ui:tooltip', {content: options.title, attachTo: link});
-            });
+});
 
-        return link;
+L.Storage.ImportAction = L.Storage.BaseAction.extend({
+
+    options: {
+        helpMenu: true,
+        className: 'upload-data',
+        tooltip: L._('Import data') + ' (Ctrl+I)'
     },
 
-    onAdd: function (map) {
-        var container = L.DomUtil.create('div', 'storage-toolbar');
-        this._toolbarContainer = L.DomUtil.create('div', 'leaflet-bar');
-        var actions = this.getActions(map), action;
-        for (var i = 0; i < actions.length; i++) {
-            action = actions[i];
-            action.container = this._toolbarContainer;
-            this._createButton(action);
+    addHooks: function () {
+        this.map.importPanel();
+    }
+
+});
+
+L.Storage.EditPropertiesAction = L.Storage.BaseAction.extend({
+
+    options: {
+        helpMenu: true,
+        className: 'update-map-settings',
+        tooltip: L._('Edit map settings')
+    },
+
+    addHooks: function () {
+        this.map.edit();
+    }
+
+});
+
+L.Storage.ChangeTileLayerAction = L.Storage.BaseAction.extend({
+
+    options: {
+        helpMenu: true,
+        className: 'update-map-tilelayers',
+        tooltip: L._('Change tilelayers')
+    },
+
+    addHooks: function () {
+        this.map.updateTileLayers();
+    }
+
+});
+
+L.Storage.UpdateExtentAction = L.Storage.BaseAction.extend({
+
+    options: {
+        className: 'update-map-extent',
+        tooltip: L._('Save this center and zoom')
+    },
+
+    addHooks: function () {
+        this.map.updateExtent();
+    }
+
+});
+
+L.Storage.UpdatePermsAction = L.Storage.BaseAction.extend({
+
+    options: {
+        className: 'update-map-permissions',
+        tooltip: L._('Update permissions and editors')
+    },
+
+    addHooks: function () {
+        this.map.updatePermissions();
+    }
+
+});
+
+L.Storage.DrawMarkerAction = L.Storage.BaseAction.extend({
+
+    options: {
+        helpMenu: true,
+        className: 'storage-draw-marker',
+        tooltip: L._('Draw a marker')
+    },
+
+    addHooks: function () {
+        this.map.startMarker();
+    }
+
+});
+
+L.Storage.DrawPolylineAction = L.Storage.BaseAction.extend({
+
+    options: {
+        helpMenu: true,
+        className: 'storage-draw-polyline',
+        tooltip: L._('Draw a polyline')
+    },
+
+    addHooks: function () {
+        this.map.startPolyline();
+    }
+
+});
+
+L.Storage.DrawPolygonAction = L.Storage.BaseAction.extend({
+
+    options: {
+        helpMenu: true,
+        className: 'storage-draw-polygon',
+        tooltip: L._('Draw a polygon')
+    },
+
+    addHooks: function () {
+        this.map.startPolygon();
+    }
+
+});
+
+L.Storage.AddPolylineShapeAction = L.Storage.BaseAction.extend({
+
+    options: {
+        className: 'storage-draw-polyline-multi',
+        tooltip: L._('Add a line to the current multi')
+    },
+
+    addHooks: function () {
+        this.map.editedFeature.editor.newShape();
+    }
+
+});
+
+L.Storage.AddPolygonShapeAction = L.S.AddPolylineShapeAction.extend({
+
+    options: {
+        className: 'storage-draw-polygon-multi',
+        tooltip: L._('Add a polygon to the current multi')
+    }
+
+});
+
+L.Storage.BaseFeatureAction = L.ToolbarAction.extend({
+
+    initialize: function (map, feature, latlng) {
+        this.map = map;
+        this.feature = feature;
+        this.latlng = latlng;
+        L.ToolbarAction.prototype.initialize.call(this);
+        this.postInit();
+    },
+
+    postInit: function () {},
+
+    hideToolbar: function () {
+        this.map.removeLayer(this.toolbar);
+    },
+
+    addHooks: function () {
+        this.onClick({latlng: this.latlng});
+        this.hideToolbar();
+    }
+
+});
+
+L.Storage.CreateHoleAction = L.S.BaseFeatureAction.extend({
+
+    options: {
+        toolbarIcon: {
+            className: 'storage-new-hole',
+            tooltip: L._('Start a hole here')
         }
+    },
 
-        container.appendChild(this._toolbarContainer);
-        return container;
-    }
-
-
-});
-
-L.Storage.SettingsToolbar = L.S.Toolbar.extend({
-
-    getActions: function (map) {
-        return map.getEditActions();
+    onClick: function (e) {
+        this.feature.startHole(e);
     }
 
 });
 
-L.Storage.DrawToolbar = L.S.Toolbar.extend({
+L.Storage.ToggleEditAction = L.S.BaseFeatureAction.extend({
 
-    getActions: function (map) {
-        return map.getDrawActions();
+    options: {
+        toolbarIcon: {
+            className: 'storage-toggle-edit',
+            tooltip: L._('Toggle edit mode')
+        }
+    },
+
+    onClick: function (e) {
+        if (this.feature._toggleEditing) this.feature._toggleEditing(e);  // Path
+        else this.feature.edit(e);  // Marker
     }
 
 });
+
+L.Storage.DeleteFeatureAction = L.S.BaseFeatureAction.extend({
+
+    options: {
+        toolbarIcon: {
+            className: 'storage-delete-all',
+            tooltip: L._('Delete this feature')
+        }
+    },
+
+    postInit: function () {
+        if (!this.feature.isMulti()) this.options.toolbarIcon.className = 'storage-delete-one-of-one';
+    },
+
+    onClick: function (e) {
+        this.feature.confirmDelete(e);
+    }
+
+});
+
+L.Storage.DeleteShapeAction = L.S.BaseFeatureAction.extend({
+
+    options: {
+        toolbarIcon: {
+            className: 'storage-delete-one-of-multi',
+            tooltip: L._('Delete this shape')
+        }
+    },
+
+    onClick: function (e) {
+        this.feature.enableEdit().deleteShapeAt(e.latlng);
+    }
+
+});
+
+L.Storage.BaseVertexAction = L.S.BaseFeatureAction.extend({
+
+    initialize: function (map, feature, latlng, vertex) {
+        this.vertex = vertex;
+        L.S.BaseFeatureAction.prototype.initialize.call(this, map, feature, latlng);
+    }
+
+});
+
+L.Storage.DeleteVertexAction = L.S.BaseVertexAction.extend({
+
+    options: {
+        toolbarIcon: {
+            className: 'storage-delete-vertex',
+            tooltip: L._('Delete this vertex')
+        }
+    },
+
+    onClick: function () {
+        this.vertex.delete();
+    }
+
+});
+
+L.Storage.ContinueLineAction = L.S.BaseVertexAction.extend({
+
+    options: {
+        toolbarIcon: {
+            className: 'storage-continue-line',
+            tooltip: L._('Continue line')
+        }
+    },
+
+    onClick: function () {
+        this.vertex.continue();
+    }
+
+});
+
+// Leaflet.Toolbar doesn't allow twice same toolbar class…
+L.Storage.SettingsToolbar = L.Toolbar.Control.extend({});
+L.Storage.DrawToolbar = L.Toolbar.Control.extend({
+
+    initialize: function (options) {
+        L.Toolbar.Control.prototype.initialize.call(this, options);
+        this.map = this.options.map;
+        this.map.on('seteditedfeature', this.redraw, this);
+    },
+
+    appendToContainer: function (container) {
+        this.options.actions = [];
+        if (this.map.options.enableMarkerDraw) {
+            this.options.actions.push(L.S.DrawMarkerAction);
+        }
+        if (this.map.options.enablePolylineDraw) {
+            this.options.actions.push(L.S.DrawPolylineAction);
+            if (this.map.editedFeature && this.map.editedFeature instanceof L.S.Polyline) {
+                this.options.actions.push(L.S.AddPolylineShapeAction);
+            }
+        }
+        if (this.map.options.enablePolygonDraw) {
+            this.options.actions.push(L.S.DrawPolygonAction);
+            if (this.map.editedFeature && this.map.editedFeature instanceof L.S.Polygon) {
+                this.options.actions.push(L.S.AddPolygonShapeAction);
+            }
+        }
+        L.Toolbar.Control.prototype.appendToContainer.call(this, container);
+    },
+
+    redraw: function () {
+        var container = this._control.getContainer();
+        container.innerHTML = '';
+        this.appendToContainer(container);
+    }
+
+});
+
 
 L.Storage.EditControl = L.Control.extend({
 
@@ -99,7 +360,7 @@ L.Storage.MoreControls = L.Control.extend({
         position: 'topleft'
     },
 
-    onAdd: function (map) {
+    onAdd: function () {
         var container = L.DomUtil.create('div', ''),
             more = L.DomUtil.create('a', 'storage-control-more storage-control-text', container),
             less = L.DomUtil.create('a', 'storage-control-less storage-control-text', container);
@@ -199,12 +460,12 @@ L.Storage.DataLayersControl = L.Control.extend({
     },
 
     addDataLayer: function (datalayer) {
-        var datalayer_li = L.DomUtil.create('li', '', this._datalayers_container);
-        datalayer.renderToolbox(datalayer_li);
-        var title = L.DomUtil.add('span', 'layer-title', datalayer_li, datalayer.options.name);
+        var datalayerLi = L.DomUtil.create('li', '', this._datalayers_container);
+        datalayer.renderToolbox(datalayerLi);
+        var title = L.DomUtil.add('span', 'layer-title', datalayerLi, datalayer.options.name);
 
-        datalayer_li.id = 'browse_data_toggle_' + datalayer.storage_id;
-        L.DomUtil.classIf(datalayer_li, 'off', !datalayer.isVisible());
+        datalayerLi.id = 'browse_data_toggle_' + datalayer.storage_id;
+        L.DomUtil.classIf(datalayerLi, 'off', !datalayer.isVisible());
 
         title.innerHTML = datalayer.options.name;
     },
@@ -220,15 +481,15 @@ L.Storage.DataLayer.include({
 
     renderToolbox: function (container) {
         var toggle = L.DomUtil.create('i', 'layer-toggle', container),
-            zoom_to = L.DomUtil.create('i', 'layer-zoom_to', container),
+            zoomTo = L.DomUtil.create('i', 'layer-zoom_to', container),
             edit = L.DomUtil.create('i', 'layer-edit show-on-edit', container),
             table = L.DomUtil.create('i', 'layer-table-edit show-on-edit', container);
-        zoom_to.title = L._('Zoom to layer extent');
+        zoomTo.title = L._('Zoom to layer extent');
         toggle.title = L._('Show/hide layer');
         edit.title = L._('Edit');
         table.title = L._('Edit properties in a table');
         L.DomEvent.on(toggle, 'click', this.toggle, this);
-        L.DomEvent.on(zoom_to, 'click', this.zoomTo, this);
+        L.DomEvent.on(zoomTo, 'click', this.zoomTo, this);
         L.DomEvent.on(edit, 'click', this.edit, this);
         L.DomEvent.on(table, 'click', this.tableEdit, this);
         L.DomUtil.addClass(container, this.getHidableClass());
@@ -239,7 +500,7 @@ L.Storage.DataLayer.include({
         return this.storage_id || 'tmp' + L.Util.stamp(this);
     },
 
-    getHidableElements: function () {
+    getHidableElements: function () {
         return document.querySelectorAll('.' + this.getHidableClass());
     },
 
@@ -368,7 +629,7 @@ L.Storage.TileLayerControl = L.Control.extend({
         position: 'topleft'
     },
 
-    onAdd: function (map) {
+    onAdd: function () {
         var container = L.DomUtil.create('div', 'leaflet-control-tilelayers storage-control');
 
         var link = L.DomUtil.create('a', '', container);
@@ -385,7 +646,6 @@ L.Storage.TileLayerControl = L.Control.extend({
     },
 
     openSwitcher: function (options) {
-        var self = this;
         this._tilelayers_container = L.DomUtil.create('ul', 'storage-tilelayer-switcher-container');
         this.buildList(options);
     },
@@ -398,13 +658,13 @@ L.Storage.TileLayerControl = L.Control.extend({
     },
 
     addTileLayerElement: function (tilelayer, options) {
-        var selectedClass = this._map.hasLayer(tilelayer) ? 'selected': '',
+        var selectedClass = this._map.hasLayer(tilelayer) ? 'selected' : '',
             el = L.DomUtil.create('li', selectedClass, this._tilelayers_container),
             img = L.DomUtil.create('img', '', el),
             name = L.DomUtil.create('div', '', el);
         img.src = L.Util.template(tilelayer.options.url_template, this._map.demoTileInfos);
         name.innerHTML = tilelayer.options.name;
-        L.DomEvent.on(el, 'click', function (e) {
+        L.DomEvent.on(el, 'click', function () {
             this._map.selectTileLayer(tilelayer);
             L.S.fire('ui:end');
             if (options && options.callback) {
@@ -443,7 +703,7 @@ L.Storage.HomeControl = L.Control.extend({
         position: 'topleft'
     },
 
-    onAdd: function (map) {
+    onAdd: function () {
         var container = L.DomUtil.create('div', 'leaflet-control-home storage-control'),
             link = L.DomUtil.create('a', '', container);
 
@@ -466,7 +726,7 @@ L.Storage.LocateControl = L.Control.extend({
             link = L.DomUtil.create('a', '', container);
         link.href = '#';
         link.title = L._('Center map on your location');
-        var fn = function (e) {
+        var fn = function () {
             map.locate({
                 setView: true,
                 enableHighAccuracy: true
@@ -479,7 +739,8 @@ L.Storage.LocateControl = L.Control.extend({
             .on(link, 'click', fn, map)
             .on(link, 'dblclick', L.DomEvent.stopPropagation);
 
-        return container;    }
+        return container;
+    }
 });
 
 
@@ -502,8 +763,8 @@ L.Storage.JumpToLocationControl = L.Control.extend({
         link.title = input.placeholder = L._('Jump to location');
         link.innerHTML = '&nbsp;';
         var fn = function () {
-            var search_terms = input.value;
-            if (!search_terms) {
+            var searchTerms = input.value;
+            if (!searchTerms) {
                 return;
             }
             L.DomUtil.addClass(link, 'loading');
@@ -519,7 +780,7 @@ L.Storage.JumpToLocationControl = L.Control.extend({
             viewbox = viewbox.join(',');
             var params = {
                 format: 'json',
-                q: search_terms,
+                q: searchTerms,
                 viewbox: viewbox, // this is just a preferred area, not a constraint
                 limit: 1
             };
@@ -532,7 +793,7 @@ L.Storage.JumpToLocationControl = L.Control.extend({
                         map.setZoom(map.getOption('zoomTo'));
                     }
                     else {
-                        L.S.fire('ui:alert', {content: L._('Sorry, no location found for {location}', {location: search_terms})});
+                        L.S.fire('ui:alert', {content: L._('Sorry, no location found for {location}', {location: searchTerms})});
                     }
                 }
             });
@@ -548,7 +809,8 @@ L.Storage.JumpToLocationControl = L.Control.extend({
             .on(link, 'click', fn)
             .on(link, 'dblclick', L.DomEvent.stopPropagation);
 
-        return container;    }
+        return container;
+    }
 });
 
 
@@ -614,21 +876,6 @@ L.S.ContextMenu = L.Map.ContextMenu.extend({
 
 });
 
-L.Control.MeasureControl.TITLE = L._('Measure distances');
-L.S.MeasureControl = L.Control.MeasureControl.extend({
-
-    onAdd: function (map) {
-        L.Control.MeasureControl.prototype.onAdd.call(this, map);
-        L.DomUtil.removeClass(this._container, 'leaflet-bar');
-        L.DomUtil.addClass(this._container, 'storage-measure-control storage-control');
-        if (map.editTools) {
-            map.on('editable:enable', this.handler.disable, this.handler);
-        }
-        return this._container;
-    }
-
-});
-
 L.S.IframeExporter = L.Class.extend({
     includes: [L.Mixin.Events],
 
@@ -680,7 +927,7 @@ L.S.IframeExporter = L.Class.extend({
         }
         var currentView = this.options.currentView ? window.location.hash : '',
             iframeUrl = this.baseUrl + '?' + L.S.Xhr.buildQueryString(this.queryString) + currentView,
-            code = '<iframe width="' + this.dimensions.width + '" height="' + this.dimensions.height + '" frameBorder="0" src="' + iframeUrl +'"></iframe>';
+            code = '<iframe width="' + this.dimensions.width + '" height="' + this.dimensions.height + '" frameBorder="0" src="' + iframeUrl + '"></iframe>';
         if (this.options.includeFullScreenLink) {
             code += '<p><a href="' + this.baseUrl + '">' + L._('See full screen') + '</a></p>';
         }
@@ -709,9 +956,9 @@ L.S.Editable = L.Editable.extend({
         });
         this.on('editable:vertex:ctrlclick', function (e) {
             var index = e.vertex.getIndex();
-            if (index === 0) e.layer.editor.continueBackward();
-            else if (index === e.vertex.getLastIndex()) e.layer.editor.continueForward();
+            if (index === 0 || index === e.vertex.getLastIndex() && e.vertex.continue) e.vertex.continue();
         });
+        this.on('editable:vertex:rawclick', this.onVertexRawClick);
     },
 
     createPolyline: function (latlngs) {
@@ -753,6 +1000,168 @@ L.S.Editable = L.Editable.extend({
 
     closeTooltip: function () {
         L.S.fire('ui:tooltip:abort');
+    },
+
+    onVertexRawClick: function (e) {
+        e.layer.onVertexRawClick(e);
+        L.DomEvent.stop(e);
+        e.cancel();
+    }
+
+});
+
+
+L.GeoUtil = L.extend(L.GeoUtil || {}, {
+    // Ported from the OpenLayers implementation. See https://github.com/openlayers/openlayers/blob/master/lib/OpenLayers/Geometry/LinearRing.js#L270
+    geodesicArea: function (latLngs) {
+        var pointsCount = latLngs.length,
+            area = 0.0,
+            d2r = Math.PI / 180,
+            p1, p2;
+
+        if (pointsCount > 2) {
+            for (var i = 0; i < pointsCount; i++) {
+                p1 = latLngs[i];
+                p2 = latLngs[(i + 1) % pointsCount];
+                area += ((p2.lng - p1.lng) * d2r) *
+                        (2 + Math.sin(p1.lat * d2r) + Math.sin(p2.lat * d2r));
+            }
+            area = area * L.Projection.SphericalMercator.R * L.Projection.SphericalMercator.R / 2.0;
+        }
+
+        return Math.abs(area);
+    },
+
+    readableArea: function (area) {
+        var areaStr;
+
+        if (area >= 10000) areaStr = L._('{area} ha', {area: (area * 0.0001).toFixed(2)});
+        else areaStr = L._('{area} m&sup2;', {area: area.toFixed(2)});
+
+        return areaStr;
+    },
+
+    readableDistance: function (distance) {
+        var distanceStr;
+
+        if (distance > 10000) distanceStr = L._('{distance} km', {distance: Math.ceil(distance / 1000)});
+        else if (distance > 1000) distanceStr = L._('{distance} km', {distance: (distance / 1000).toFixed(2)});
+        else distanceStr = L._('{distance} m', {distance: Math.ceil(distance)});
+
+        return distanceStr;
+    },
+
+    lineLength: function (map, latlngs) {
+        var distance = 0, latlng, previous;
+        for (var i = 0; i < latlngs.length; i++) {
+            latlng = latlngs[i];
+            if (previous) {
+                distance += map.distance(latlng, previous);
+            }
+            previous = latlng;
+        }
+        return distance;
+    }
+
+});
+
+L.S.MeasureLine = L.Polyline.extend({
+    options: {
+        color: '#222',
+        weight: 1
+    }
+});
+
+L.S.MeasureVertex = L.Editable.VertexMarker.extend({
+    options: {
+        className: 'leaflet-div-icon leaflet-editing-icon storage-measure-edge'
+    }
+});
+
+L.S.Measure = L.Editable.extend({
+
+    options: {
+        vertexMarkerClass: L.S.MeasureVertex,
+        polylineClass: L.S.MeasureLine,
+        lineGuideOptions: {
+            color: '#222'
+        },
+        skipMiddleMarkers: true
+    },
+
+    initialize: function (map, options) {
+        L.Editable.prototype.initialize.call(this, map, options);
+        map.measureTools = this;
+        this.on('editable:editing', function (e) {
+            var latlng, latlngs = e.layer._defaultShape();
+            for (var i = 0; i < latlngs.length; i++) {
+                latlng = latlngs[i];
+                latlng.__vertex.hideLabel();
+            }
+            if (latlng && latlng.__vertex) {
+                var length = L.GeoUtil.lineLength(map, e.layer._defaultShape());
+                latlng.__vertex.bindLabel(L.GeoUtil.readableDistance(length), {noHide: true}).showLabel();
+            }
+        });
+        this.on('editable:drawing:end', function () {
+            if (map.measuring()) this.startPolyline();
+        });
+        this.on('editable:shape:deleted', function (e) {
+            if (!e.layer._defaultShape().length) e.layer.remove();
+        });
+    }
+
+});
+
+L.S.MeasureControl = L.Control.extend({
+
+    options: {
+        position: 'topleft'
+    },
+
+    onAdd: function(map) {
+        this.map = map;
+
+        this._container = L.DomUtil.create('div', 'storage-measure-control storage-control');
+
+        new L.S.Measure(map);
+
+        var link = L.DomUtil.create('a', 'storage-measure-link', this._container);
+        link.href = '#';
+        link.title = L._('Measure distances');
+
+        L.DomEvent
+            .addListener(link, 'click', L.DomEvent.stop)
+            .addListener(link, 'click', this.map.toggleMeasuring, this.map);
+
+        return this._container;
+    }
+
+});
+
+L.S.Map.include({
+
+    toggleMeasuring: function() {
+        if (this.measuring()) this.stopMeasuring();
+        else this.startMeasuring();
+    },
+
+    startMeasuring: function () {
+        this.editTools.on('editable:drawing:start', this.stopMeasuring, this);
+        L.DomUtil.addClass(this._container, 'measure-enabled');
+        this.fire('showmeasure');
+        this.measureTools.startPolyline();
+    },
+
+    stopMeasuring: function () {
+        this.editTools.off('editable:drawing:start', this.stopMeasuring, this);
+        L.DomUtil.removeClass(this._container, 'measure-enabled');
+        this.measureTools.featuresLayer.clearLayers();
+        this.fire('hidemeasure');
+    },
+
+    measuring: function () {
+        return L.DomUtil.hasClass(this._container, 'measure-enabled');
     }
 
 });

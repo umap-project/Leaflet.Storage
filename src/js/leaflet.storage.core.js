@@ -96,16 +96,6 @@ L.Util.toHTML = function (r) {
 L.Util.isObject = function (what) {
     return typeof what === 'object' && what !== null;
 };
-L.Util.latLngsForGeoJSON = function (latlngs) {
-    coords = [];
-    for(var i = 0, len = latlngs.length; i < len; i++) {
-        coords.push([
-            latlngs[i].lng,
-            latlngs[i].lat
-        ]);
-    }
-    return coords;
-};
 L.Util.CopyJSON = function (geojson) {
     return JSON.parse(JSON.stringify(geojson));
 };
@@ -123,6 +113,7 @@ L.Util.detectFileType = function (f) {
         return 'csv';
     }
     if (ext('.xml') || ext('.osm')) return 'osm';
+    if (ext('.umap')) return 'umap';
 };
 
 L.Util.usableOption = function (options, option) {
@@ -142,25 +133,25 @@ L.Util.greedyTemplate = function (str, data, ignore) {
 };
 
 L.Util.sortFeatures = function (features, sortKey) {
-    var sortKeys = (sortKey || 'name').split(',');
+    var sortKeys = (sortKey || 'name').split(',');
 
     var sort = function (a, b, i) {
-            var sortKey = sortKeys[i], score,
-                valA = a.properties[sortKey] || '',
-                valB = b.properties[sortKey] || '';
-            if (!valA) {
-                score = -1;
-            } else if (!valB) {
-                score = 1;
-            } else {
-                score = valA.toString().toLowerCase().localeCompare(valB.toString().toLowerCase());
-            }
-            if (score === 0 && sortKeys[i + 1]) return sort(a, b, i + 1);
-            return score;
+        var sortKey = sortKeys[i], score,
+            valA = a.properties[sortKey] || '',
+            valB = b.properties[sortKey] || '';
+        if (!valA) {
+            score = -1;
+        } else if (!valB) {
+            score = 1;
+        } else {
+            score = valA.toString().toLowerCase().localeCompare(valB.toString().toLowerCase());
+        }
+        if (score === 0 && sortKeys[i + 1]) return sort(a, b, i + 1);
+        return score;
     };
 
     features.sort(function (a, b) {
-        if (!a.properties || !b.properties) {
+        if (!a.properties || !b.properties) {
             return 0;
         }
         return sort(a, b, 0);
@@ -170,7 +161,10 @@ L.Util.sortFeatures = function (features, sortKey) {
     return features;
 };
 
-
+L.Util.flattenCoordinates = function (coords) {
+    while (coords[0] && typeof coords[0][0] !== "number") coords = coords[0];
+    return coords;
+};
 
 L.DomUtil.add = function (tagName, className, container, content) {
     var el = L.DomUtil.create(tagName, className, container);
@@ -237,7 +231,7 @@ L.DomUtil.TextColorFromBackgroundColor = function (el) {
     if (!window.getComputedStyle) {return out;}
     var rgb = window.getComputedStyle(el).getPropertyValue('background-color');
     rgb = L.DomUtil.RGBRegex.exec(rgb);
-    if (!rgb || rgb.length != 4) {return out;}
+    if (!rgb || rgb.length !== 4) {return out;}
     rgb = parseInt(rgb[1], 10) + parseInt(rgb[2], 10) + parseInt(rgb[3], 10);
     if (rgb < (255 * 3 / 2)) {
         out = '#ffffff';
@@ -271,7 +265,7 @@ L.S.Keys = {
     Z: 90
 };
 L.S._onKeyDown = function (e) {
-    if (e.keyCode == L.S.Keys.ESC) {
+    if (e.keyCode === L.S.Keys.ESC) {
         L.S.fire('ui:end');
     }
 };
@@ -298,7 +292,7 @@ L.Storage.Help = L.Class.extend({
     onKeyDown: function (e) {
         var key = e.keyCode,
             ESC = 27;
-        if (key == ESC) {
+        if (key === ESC) {
             this.hide();
         }
     },
@@ -327,7 +321,7 @@ L.Storage.Help = L.Class.extend({
             L.DomEvent
                 .on(helpButton, 'click', L.DomEvent.stop)
                 .on(helpButton, 'click', function (e) {
-                    var args = typeof entries === 'string'? [entries] : entries;
+                    var args = typeof entries === 'string' ? [entries] : entries;
                     this.show.apply(this, args);
                 }, this);
         }
@@ -340,48 +334,31 @@ L.Storage.Help = L.Class.extend({
             title = L.DomUtil.create('h3', '', container),
             actionsContainer = L.DomUtil.create('ul', 'storage-edit-actions', container);
         var addAction = function (action) {
-            var actionContainer = L.DomUtil.add('li', action.className, actionsContainer, action.title);
-            L.DomEvent.on(actionContainer, 'click', action.callback, action.context);
+            var actionContainer = L.DomUtil.add('li', '', actionsContainer);
+            L.DomUtil.add('i', action.options.className, actionContainer),
+            L.DomUtil.add('span', '', actionContainer, action.options.tooltip);
+            L.DomEvent.on(actionContainer, 'click', action.addHooks, action);
             L.DomEvent.on(actionContainer, 'click', self.hide, self);
         };
         title.innerHTML = L._('Where do we go from here?');
-        var actions = this.map.getEditActions();
-        actions.unshift(
-            {
-                title: L._('Draw a polyline') + ' (Ctrl+L)',
-                className: 'storage-draw-polyline',
-                callback: function () {this.hide(); this.map.startPolyline();},
-                context: this
-            },
-            {
-                title: L._('Draw a polygon') + ' (Ctrl+P)',
-                className: 'storage-draw-polygon',
-                callback: function () {this.hide(); this.map.startPolygon();},
-                context: this
-            },
-            {
-                title: L._('Draw a marker') + ' (Ctrl+M)',
-                className: 'storage-draw-marker',
-                callback: function () {this.hide(); this.map.startMarker();},
-                context: this
-            }
-        );
-        for (var i = 0; i < actions.length; i++) {
-            addAction(actions[i]);
+        for (var id in this.map.helpMenuActions) {
+            addAction(this.map.helpMenuActions[id]);
         }
         return container;
     },
 
     importFormats: function () {
         var container = L.DomUtil.create('div');
-        L.DomUtil.add('h3', '', container,'GeojSON');
+        L.DomUtil.add('h3', '', container, 'GeojSON');
         L.DomUtil.add('p', '', container, L._('All properties are imported.'));
-        L.DomUtil.add('h3', '', container,'GPX');
+        L.DomUtil.add('h3', '', container, 'GPX');
         L.DomUtil.add('p', '', container, L._('Properties imported:') + 'name, desc');
-        L.DomUtil.add('h3', '', container,'KML');
+        L.DomUtil.add('h3', '', container, 'KML');
         L.DomUtil.add('p', '', container, L._('Properties imported:') + 'name, description');
-        L.DomUtil.add('h3', '', container,'CSV');
+        L.DomUtil.add('h3', '', container, 'CSV');
         L.DomUtil.add('p', '', container, L._('Comma, tab or semi-colon separated values. SRS WGS84 is implied. Only Point geometries are imported. The import will look at the column headers for any mention of «lat» and «lon» at the begining of the header, case insensitive. All other column are imported as properties.'));
+        L.DomUtil.add('h3', '', container, 'uMap');
+        L.DomUtil.add('p', '', container, L._('Imports all umap data, including layers and settings.'));
         return container;
     },
 

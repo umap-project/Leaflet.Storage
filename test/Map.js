@@ -12,6 +12,7 @@ describe('L.Storage.Map', function(){
     });
     after(function () {
         this.server.restore();
+        clickCancel();
         resetMap();
     });
 
@@ -135,57 +136,138 @@ describe('L.Storage.Map', function(){
         });
 
         it('should import geojson from textarea', function () {
-            assert.equal(this.datalayer._index.length, 3);
+            this.datalayer.empty()
+            assert.equal(this.datalayer._index.length, 0);
             textarea.value = '{"type": "FeatureCollection", "features": [{"geometry": {"type": "Point", "coordinates": [6.922931671142578, 47.481161607175736]}, "type": "Feature", "properties": {"color": "", "name": "Chez R\u00e9my", "description": ""}}, {"geometry": {"type": "LineString", "coordinates": [[2.4609375, 48.88639177703194], [2.48291015625, 48.76343113791796], [2.164306640625, 48.719961222646276]]}, "type": "Feature", "properties": {"color": "", "name": "P\u00e9rif", "description": ""}}]}';
-            formatSelect.selectedIndex = 1;
+            changeSelectValue(formatSelect, 'geojson');
             happen.click(submit);
-            assert.equal(this.datalayer._index.length, 5);
+            assert.equal(this.datalayer._index.length, 2);
         });
 
         it('should import kml from textarea', function () {
+            this.datalayer.empty()
             happen.click(qs('a.upload-data'));
             textarea = qs('.storage-upload textarea');
             submit = qs('.storage-upload input[type="button"]');
             formatSelect = qs('.storage-upload select[name="format"]');
-            assert.equal(this.datalayer._index.length, 5);
+            assert.equal(this.datalayer._index.length, 0);
             textarea.value = kml_example;
-            formatSelect.selectedIndex = 4;
+            changeSelectValue(formatSelect, 'kml');
             happen.click(submit);
-            assert.equal(this.datalayer._index.length, 8);
+            assert.equal(this.datalayer._index.length, 3);
         });
 
         it('should import gpx from textarea', function () {
+            this.datalayer.empty()
             happen.click(qs('a.upload-data'));
             textarea = qs('.storage-upload textarea');
             submit = qs('.storage-upload input[type="button"]');
             formatSelect = qs('.storage-upload select[name="format"]');
-            assert.equal(this.datalayer._index.length, 8);
+            assert.equal(this.datalayer._index.length, 0);
             textarea.value = gpx_example;
-            formatSelect.selectedIndex = 3;
+            changeSelectValue(formatSelect, 'gpx');
             happen.click(submit);
-            assert.equal(this.datalayer._index.length, 10);
+            assert.equal(this.datalayer._index.length, 2);
         });
 
         it('should import csv from textarea', function () {
+            this.datalayer.empty()
             happen.click(qs('a.upload-data'));
             textarea = qs('.storage-upload textarea');
             submit = qs('.storage-upload input[type="button"]');
             formatSelect = qs('.storage-upload select[name="format"]');
-            assert.equal(this.datalayer._index.length, 10);
+            assert.equal(this.datalayer._index.length, 0);
             textarea.value = csv_example;
-            formatSelect.selectedIndex = 2;
+            changeSelectValue(formatSelect, 'csv');
             happen.click(submit);
-            assert.equal(this.datalayer._index.length, 11);
+            assert.equal(this.datalayer._index.length, 1);
         });
 
 
         it('should import GeometryCollection from textarea', function () {
-            assert.equal(this.datalayer._index.length, 11);
+            this.datalayer.empty()
             textarea.value = '{"type": "GeometryCollection","geometries": [{"type": "Point","coordinates": [-80.66080570220947,35.04939206472683]},{"type": "Polygon","coordinates": [[[-80.66458225250244,35.04496519190309],[-80.66344499588013,35.04603679820616],[-80.66258668899536,35.045580049697556],[-80.66387414932251,35.044280059194946],[-80.66458225250244,35.04496519190309]]]},{"type": "LineString","coordinates": [[-80.66237211227417,35.05950973022538],[-80.66269397735596,35.0592638296087],[-80.66284418106079,35.05893010615862],[-80.66308021545409,35.05833291342246],[-80.66359519958496,35.057753281001425],[-80.66387414932251,35.05740198662245],[-80.66441059112549,35.05703312589789],[-80.66486120223999,35.056787217822475],[-80.66541910171509,35.05650617911516],[-80.66563367843628,35.05631296444281],[-80.66601991653441,35.055891403570705],[-80.66619157791138,35.05545227534804],[-80.66619157791138,35.05517123204622],[-80.66625595092773,35.05489018777713],[-80.6662130355835,35.054222703761525],[-80.6662130355835,35.05392409072499],[-80.66595554351807,35.05290528508858],[-80.66569805145262,35.052044560077285],[-80.66550493240356,35.0514824490509],[-80.665762424469,35.05048117920187],[-80.66617012023926,35.04972582715769],[-80.66651344299316,35.049286665781096],[-80.66692113876343,35.0485313026898],[-80.66700696945189,35.048215102112344],[-80.66707134246826,35.04777593261294],[-80.66704988479614,35.04738946150025],[-80.66696405410767,35.04698542156371],[-80.66681385040283,35.046353007216055],[-80.66659927368164,35.04596652937105],[-80.66640615463257,35.04561518428889],[-80.6659984588623,35.045193568195565],[-80.66552639007568,35.044877354697526],[-80.6649899482727,35.04454357245502],[-80.66449642181396,35.04417465365292],[-80.66385269165039,35.04387600387859],[-80.66303730010986,35.043717894732545]]}]}';
             formatSelect = qs('.storage-upload select[name="format"]');
-            formatSelect.selectedIndex = 1;
+            changeSelectValue(formatSelect, 'geojson');
             happen.click(submit);
-            assert.equal(this.datalayer._index.length, 14);
+            assert.equal(this.datalayer._index.length, 3);
+        });
+
+        it('should import multipolygon', function () {
+            this.datalayer.empty()
+            textarea.value = '{"type": "Feature", "properties": { "name": "Some states" }, "geometry": { "type": "MultiPolygon", "coordinates": [[[[-109, 36], [-109, 40], [-102, 37], [-109, 36]], [[-108, 39], [-107, 37], [-104, 37], [-108, 39]]], [[[-119, 42], [-120, 39], [-114, 41], [-119, 42]]]] }}';
+            changeSelectValue(formatSelect, 'geojson');
+            happen.click(submit);
+            assert.equal(this.datalayer._index.length, 1);
+            var layer = this.datalayer.getFeatureByIndex(0);
+            assert.equal(layer._latlngs.length, 2);  // Two shapes.
+            assert.equal(layer._latlngs[0].length, 2); // Hole.
+        });
+
+        it('should import multipolyline', function () {
+            this.datalayer.empty()
+            textarea.value = '{"type": "FeatureCollection", "features": [{ "type": "Feature", "properties": {}, "geometry": { "type": "MultiLineString", "coordinates": [[[-108, 46], [-113, 43]], [[-112, 45], [-115, 44]]] } }]}';
+            changeSelectValue(formatSelect, 'geojson');
+            happen.click(submit);
+            assert.equal(this.datalayer._index.length, 1);
+            var layer = this.datalayer.getFeatureByIndex(0);
+            assert.equal(layer._latlngs.length, 2);  // Two shapes.
+        });
+
+        it('should import raw umap data from textarea', function () {
+            //Right now, the import function will try to save and reload. Stop this from happening.
+            var disabledSaveFunction = this.map.save;
+            this.map.save = function(){};
+            happen.click(qs('a.upload-data'));
+            var initialLayerCount = Object.keys(this.map.datalayers).length;
+            formatSelect = qs('.storage-upload select[name="format"]');
+            textarea = qs('.storage-upload textarea');
+            textarea.value = '{"type":"umap","properties":{"storage_id":666,"longCredit":"the illustrious mapmaker","shortCredit":"the mapmaker","slideshow":{},"captionBar":true,"dashArray":"5,5","fillOpacity":"0.5","fillColor":"Crimson","fill":true,"weight":"2","opacity":"0.9","smoothFactor":"1","iconClass":"Drop","color":"Red","limitBounds":{},"tilelayer":{"maxZoom":18,"url_template":"http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg","minZoom":0,"attribution":"Map tiles by [[http://stamen.com|Stamen Design]], under [[http://creativecommons.org/licenses/by/3.0|CC BY 3.0]]. Data by [[http://openstreetmap.org|OpenStreetMap]], under [[http://creativecommons.org/licenses/by-sa/3.0|CC BY SA]].","name":"Watercolor"},"licence":{"url":"","name":"No licence set"},"description":"Map description","name":"Imported map","tilelayersControl":true,"onLoadPanel":"caption","displayPopupFooter":true,"miniMap":true,"moreControl":true,"scaleControl":true,"zoomControl":true,"scrollWheelZoom":true,"datalayersControl":true,"zoom":6},"layers":[{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[4.2939,50.8893],[4.2441,50.8196],[4.3869,50.7642],[4.4813,50.7929],[4.413,50.9119],[4.2939,50.8893]]]},"properties":{"name":"Bruxelles","description":"polygon"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[3.0528,50.6269]},"properties":{"_storage_options":{"color":"Orange"},"name":"Lille","description":"une ville"}}],"_storage":{"displayOnLoad":true,"name":"Cities","id":108,"remoteData":{},"description":"A layer with some cities","color":"Navy","iconClass":"Drop","smoothFactor":"1","dashArray":"5,1","fillOpacity":"0.5","fillColor":"Blue","fill":true}},{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"LineString","coordinates":[[1.7715,50.9255],[1.6589,50.9696],[1.4941,51.0128],[1.4199,51.0638],[1.2881,51.1104]]},"properties":{"_storage_options":{"weight":"4"},"name":"tunnel sous la Manche"}}],"_storage":{"displayOnLoad":true,"name":"Tunnels","id":109,"remoteData":{}}}]}';
+            formatSelect.value = 'umap';
+            submit = qs('.storage-upload input[type="button"]');
+            happen.click(submit);
+            assert.equal(Object.keys(this.map.datalayers).length, initialLayerCount + 2);
+            assert.equal(this.map.options.name, "Imported map");
+            var foundFirstLayer = false;
+            var foundSecondLayer = false;
+            for (var idx in this.map.datalayers) {
+                var datalayer = this.map.datalayers[idx];
+                if (datalayer.options.name === "Cities") {
+                    foundFirstLayer = true;
+                    assert.equal(datalayer._index.length, 2);
+                }
+                if (datalayer.options.name === "Tunnels") {
+                    foundSecondLayer = true;
+                    assert.equal(datalayer._index.length, 1);
+                }
+            }
+            assert.equal(foundFirstLayer, true);
+            assert.equal(foundSecondLayer, true);
+
+        });
+
+        it('should only import options on the whitelist (umap format import)', function () {
+            assert.equal(this.map.options.storage_id, 99);
+        });
+
+        it('should update title bar (umap format import)', function () {
+            var title = qs("#map div.storage-main-edit-toolbox h3 a.storage-click-to-edit");
+            assert.equal(title.innerHTML, "Imported map");
+        });
+
+        it('should reinitialize controls (umap format import)', function () {
+            var minimap = qs("#map div.leaflet-control-container div.leaflet-control-minimap");
+            assert.ok(minimap);
+        });
+
+        it('should update the tilelayer switcher control (umap format import)', function () {
+            //The tilelayer in the imported data isn't in the tilelayer list (set in _pre.js), there should be no selection on the tilelayer switcher
+            var selectedLayer = qs(".storage-tilelayer-switcher-container li.selected");
+            assert.equal(selectedLayer, null);
+        });
+
+        it('should set the tilelayer (umap format import)', function () {
+            assert.equal(this.map.selected_tilelayer._url, "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg");
         });
 
     });

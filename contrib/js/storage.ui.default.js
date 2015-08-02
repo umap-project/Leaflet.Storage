@@ -88,7 +88,7 @@ L.Storage.on('ui:alert', function (e) {
                 L.DomEvent.on(el, 'click', L.DomEvent.stop)
                           .on(el, 'click', close);
                 if (action.callback) {
-                    L.DomEvent.on(el, 'click', action.callback, action.callbackContext || this);
+                    L.DomEvent.on(el, 'click', action.callback, action.callbackContext || this);
                 }
             }
         }
@@ -99,7 +99,7 @@ L.Storage.on('ui:alert', function (e) {
         label.title = label.innerHTML = L._('Close');
         L.DomEvent.on(closeLink, 'click', L.DomEvent.stop)
                   .on(closeLink, 'click', close);
-        UI_ALERT_ID = timeoutID = window.setTimeout(close, e.duration || 3000);
+        UI_ALERT_ID = timeoutID = window.setTimeout(close, e.duration || 3000);
     };
     if (L.DomUtil.hasClass(document.body, 'storage-alert')) {
         UI_ALERTS.push(e);
