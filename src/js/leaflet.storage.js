@@ -238,7 +238,7 @@ L.Storage.Map.include({
                 }
                 if (e.keyCode === L.S.Keys.ESC) {
                     if (this.editEnabled) this.editTools.stopDrawing();
-                    if (this.measuring()) this.measureTools.stopDrawing();
+                    if (this.measureTools.enabled()) this.measureTools.stopDrawing();
                 }
             };
             L.DomEvent.addListener(document, 'keydown', editShortcuts, this);
@@ -301,23 +301,7 @@ L.Storage.Map.include({
                 widgetOptions: {helpText: L._('Open this map extent in a map editor to provide more accurate data to OpenStreetMap')}
             };
             this._controls.editInOSMControl = (new L.Control.EditInOSM(editInOSMControlOptions)).addTo(this);
-            var measureOptions = {
-                handler: {
-                    icon: new L.DivIcon({
-                        iconSize: new L.Point(8, 8),
-                        className: 'leaflet-div-icon leaflet-editing-icon storage-measure-edge'
-                    }),
-                    shapeOptions: {
-                        stroke: true,
-                        color: 'darkslategray',
-                        weight: 3,
-                        opacity: 0.5,
-                        fill: false,
-                        clickable: false
-                    }
-                }
-            };
-            this._controls.measureControl = (new L.S.MeasureControl(measureOptions).addTo(this));
+            this._controls.measureControl = (new L.MeasureControl().addTo(this));
         }
         if (this.options.scaleControl) {
             this._controls.scaleControl = L.control.scale().addTo(this);

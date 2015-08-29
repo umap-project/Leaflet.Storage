@@ -282,7 +282,7 @@ L.Storage.FeatureMixin = {
     },
 
     _onClick: function (e) {
-        if (this.map.measuring()) return;
+        if (this.map.measureTools.enabled()) return;
         this._popupHandlersAdded = true;  // Prevent leaflet from managing event
         if(!this.map.editEnabled) {
             this.view(e.latlng);
@@ -625,7 +625,7 @@ L.Storage.PathMixin = {
     },
 
     _onMouseOver: function () {
-        if (this.map.measuring()) {
+        if (this.map.measureTools.enabled()) {
             L.Storage.fire('ui:tooltip', {content: this.getMeasure()});
             this.once('mouseout', function () { L.Storage.fire('ui:tooltip:abort');});
         } else if (this.map.editEnabled && !this.map.editedFeature) {
@@ -720,7 +720,7 @@ L.Storage.Polyline = L.Polyline.extend({
 
     getMeasure: function () {
         var length = L.GeoUtil.lineLength(this.map, this._defaultShape());
-        return L.GeoUtil.readableDistance(length);
+        return L.GeoUtil.readableDistance(length, this.map.measureTools.getMeasureUnit());
     },
 
     getContextMenuEditItems: function (e) {
@@ -869,7 +869,7 @@ L.Storage.Polygon = L.Polygon.extend({
 
     getMeasure: function () {
         var area = L.GeoUtil.geodesicArea(this._defaultShape());
-        return L.GeoUtil.readableArea(area);
+        return L.GeoUtil.readableArea(area, this.map.measureTools.getMeasureUnit());
     },
 
     getContextMenuEditItems: function (e) {

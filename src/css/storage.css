@@ -29,6 +29,7 @@
     border-radius: 4px;
     border: 1px solid #bbb;
 }
+.leaflet-measure-control a,
 .storage-control a {
     background-position: 50% 50%;
     background-repeat: no-repeat;
@@ -44,7 +45,7 @@
 .leaflet-control-locate,
 .leaflet-control-search,
 .leaflet-control-edit-in-osm,
-.storage-measure-control,
+.leaflet-measure-control,
 a.storage-control-less {
     display: none;
 }
@@ -54,7 +55,7 @@ a.storage-control-less {
 .storage-more-controls .leaflet-control-locate,
 .storage-more-controls .leaflet-control-search,
 .storage-more-controls .leaflet-control-edit-in-osm,
-.storage-more-controls .storage-measure-control,
+.storage-more-controls .leaflet-measure-control,
 .storage-more-controls .storage-control-less {
     display: block;
 }
@@ -190,23 +191,46 @@ a.storage-control-text {
     background-image: url('../img/24.png');
     background-position: -121px -121px;
 }
-.storage-measure-control,
+.leaflet-measure-control,
 .leaflet-control-edit-in-osm {
     border: 1px solid #bbb;
     border-radius: 4px;
     box-shadow: none;
 }
-.measure-enabled .storage-measure-control {
-    box-shadow: 0 0 2px 0 black inset;
-}
-.storage-measure-control a {
+.leaflet-measure-control a {
     background-position: -1px -81px;
 }
-.storage-measure-edge {
+.leaflet-control .leaflet-measure-toggle {
+    display: inline-block;
+    vertical-align: middle;
+}
+/*.storage-measure-edge {
     background: none repeat scroll 0 0 #2F4F4F;
     border-radius: 6px;
 }
-
+.storage-measure-control input:checked + label:before {
+    content: '✓';
+    padding-left: -2em;
+}
+.storage-measure-control input[type=radio] {
+    display: none;
+}
+.storage-measure-control input[type=radio] + label {
+    display: none;
+    line-height: 36px;
+    height: 36px;
+    width: 36px;
+    margin: 0;
+    padding: 0;
+    font-size: 12px;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+}
+.measure-enabled .storage-measure-control input[type=radio] + label {
+    display: inline-block;
+}
+*/
 
 /* ********************************* */
 /*     Help Lightbox                 */
