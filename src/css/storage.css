@@ -204,33 +204,7 @@ a.storage-control-text {
     display: inline-block;
     vertical-align: middle;
 }
-/*.storage-measure-edge {
-    background: none repeat scroll 0 0 #2F4F4F;
-    border-radius: 6px;
-}
-.storage-measure-control input:checked + label:before {
-    content: '✓';
-    padding-left: -2em;
-}
-.storage-measure-control input[type=radio] {
-    display: none;
-}
-.storage-measure-control input[type=radio] + label {
-    display: none;
-    line-height: 36px;
-    height: 36px;
-    width: 36px;
-    margin: 0;
-    padding: 0;
-    font-size: 12px;
-    text-align: center;
-    vertical-align: middle;
-    cursor: pointer;
-}
-.measure-enabled .storage-measure-control input[type=radio] + label {
-    display: inline-block;
-}
-*/
+
 
 /* ********************************* */
 /*     Help Lightbox                 */
@@ -483,6 +457,18 @@ a.storage-control-text {
 .storage-slideshow-active .storage-slideshow-toolbox .play .spinner {
     visibility: visible;
 }
+.storage-datalayer-version a {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-left: 5px;
+    background-position: -209px -132px;
+    background-repeat: no-repeat;
+    background-image: url("../img/16.png");
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
 
 /* ********************************* */
 /*   Datalayers Control              */

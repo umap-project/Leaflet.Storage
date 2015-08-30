@@ -110,6 +110,8 @@ function initMap (options) {
                 "login_popup_end": "/login/popupd/",
                 "login": "/login/",
                 "datalayer_delete": "/map/{map_id}/datalayer/delete/{pk}/",
+                "datalayer_versions": "/map/{map_id}/datalayer/{pk}/versions/",
+                "datalayer_version": "/datalayer/{pk}/{name}",
                 "pictogram_list_json": "/pictogram/json/",
                 "map_update_permissions": "/map/{map_id}/update/permissions/"
             },

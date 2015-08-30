@@ -194,7 +194,7 @@ describe('L.DataLayer', function () {
 
         it('should change icon class', function () {
             happen.click(qs('.layer-edit'));
-            changeSelectValue(qs('form#datalayer-advanced-properties select[name=iconClass]'), "Circle");
+            changeSelectValue(qs('form#datalayer-advanced-properties select[name=iconClass]'), 'Circle');
             assert.notOk(qs('div.storage-div-icon'));
             assert.ok(qs('div.storage-circle-icon'));
             clickCancel();
@@ -237,10 +237,58 @@ describe('L.DataLayer', function () {
 
     });
 
+    describe('#restore()', function () {
+        var oldConfirm,
+            newConfirm = function () {
+                return true;
+            };
+
+        before(function () {
+            oldConfirm = window.confirm;
+            window.confirm = newConfirm;
+        });
+        after(function () {
+            window.confirm = oldConfirm;
+        });
+
+        it('should restore everything', function () {
+            enableEdit();
+            var geojson = L.Util.CopyJSON(RESPONSES.datalayer62_GET);
+            geojson.features.push({
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': [-1.274658203125, 50.57634993749885]
+                },
+                'type': 'Feature',
+                'id': 1807,
+                'properties': {_storage_options: {}, name: 'new point from restore'}
+            });
+            geojson._storage.color = 'Chocolate';
+            this.server.respondWith('GET', '/datalayer/62/olderversion.geojson', JSON.stringify(geojson));
+            sinon.spy(window, 'confirm');
+            this.datalayer.restore('olderversion.geojson');
+            this.server.respond();
+            assert(window.confirm.calledOnce);
+            window.confirm.restore();
+            assert.equal(this.datalayer.storage_id, 62);
+            assert.ok(this.datalayer.isDirty);
+            assert.equal(this.datalayer._index.length, 4);
+            assert.ok(qs('path[fill="Chocolate"]'));
+        });
+
+        it('should revert anything on cancel click', function () {
+            clickCancel();
+            assert.equal(this.datalayer._index.length, 3);
+            assert.notOk(qs('path[fill="Chocolate"]'));
+        });
+
+    });
+
     describe('#delete()', function () {
         var deleteLink, deletePath = '/map/99/datalayer/delete/62/';
 
         it('should have a delete link in update form', function () {
+            enableEdit();
             happen.click(qs('#browse_data_toggle_62 .layer-edit'));
             deleteLink = qs('a.delete_datalayer_button');
             assert.ok(deleteLink);

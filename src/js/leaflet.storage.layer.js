@@ -182,6 +182,7 @@ L.Storage.DataLayer = L.Class.extend({
         }
         this.setStorageId(data.id);
         this.setOptions(data);
+        this.backupOptions();
         this.connectToMap();
         if ((this.map.datalayersOnLoad && this.storage_id && this.map.datalayersOnLoad.indexOf(this.storage_id.toString()) !== -1) ||
             (!this.map.datalayersOnLoad && this.options.displayOnLoad)) {
@@ -249,6 +250,7 @@ L.Storage.DataLayer = L.Class.extend({
             callback: function (geojson, response) {
                 this._etag = response.getResponseHeader('ETag');
                 this.fromUmapGeoJSON(geojson);
+                this.backupOptions();
                 this.fire('loaded');
             },
             context: this
@@ -279,9 +281,13 @@ L.Storage.DataLayer = L.Class.extend({
         this._layers = {};
         this._index = Array();
         if (this._geojson) {
-            this._geojson_bk = L.Util.CopyJSON(this._geojson);
+            this.backupData();
             this._geojson = null;
         }
+    },
+
+    backupData: function () {
+        this._geojson_bk = L.Util.CopyJSON(this._geojson);
     },
 
     reindex: function () {
@@ -361,8 +367,12 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     setOptions: function (options) {
+        this.options = L.Util.CopyJSON(L.Storage.DataLayer.prototype.options);  // Start from fresh.
+        this.updateOptions(options);
+    },
+
+    updateOptions: function (options) {
         L.Util.setOptions(this, options);
-        this.backupOptions();
         this.resetLayer();
     },
 
@@ -600,6 +610,14 @@ L.Storage.DataLayer = L.Class.extend({
 
     },
 
+    getVersionsUrl: function () {
+        return L.Util.template(this.map.options.urls.datalayer_versions, {'pk': this.storage_id, 'map_id': this.map.options.storage_id});
+    },
+
+    getVersionUrl: function (name) {
+        return L.Util.template(this.map.options.urls.datalayer_version, {'pk': this.storage_id, 'map_id': this.map.options.storage_id, name: name});
+    },
+
     _delete: function () {
         this.isDeleted = true;
         this.erase();
@@ -735,6 +753,8 @@ L.Storage.DataLayer = L.Class.extend({
         builder = new L.S.FormBuilder(this, remoteDataFields);
         remoteDataContainer.appendChild(builder.build());
 
+        if (this.map.options.urls.datalayer_versions) this.buildVersionsFieldset(container);
+
         var advancedActions = L.DomUtil.createFieldset(container, L._('Advanced actions'));
         var deleteLink = L.DomUtil.create('a', 'delete_datalayer_button storage-delete', advancedActions);
         deleteLink.innerHTML = L._('Delete');
@@ -761,6 +781,49 @@ L.Storage.DataLayer = L.Class.extend({
                 }, this);
         L.S.fire('ui:start', {data: {html: container}});
 
+    },
+
+    buildVersionsFieldset: function (container) {
+
+        var appendVersion = function (data) {
+            var date = new Date(parseInt(data.at, 10) * 1000);
+            var content = date.toLocaleFormat() + ' (' + parseInt(data.size) / 1000 + 'Kb)';
+            var el = L.DomUtil.create('div', 'storage-datalayer-version', versionsContainer);
+            var a = L.DomUtil.create('a', '', el);
+            L.DomUtil.add('span', '', el, content);
+            a.href = '#';
+            a.title = L._('Restore this version');
+            L.DomEvent.on(a, 'click', L.DomEvent.stop)
+                      .on(a, 'click', function () {
+                        this.restore(data.name);
+                      }, this);
+        };
+
+        var versionsContainer = L.DomUtil.createFieldset(container, L._('Versions'), {callback: function () {
+            L.S.Xhr.get(this.getVersionsUrl(), {
+                callback: function (data) {
+                    for (var i = 0; i < data.versions.length; i++) {
+                        appendVersion.call(this, data.versions[i]);
+                    };
+                },
+                context: this
+            });
+        }, context: this});
+    },
+
+    restore: function (version) {
+        if (!this.map.editEnabled) return;
+        if (!confirm(L._('Are you sure you want to restore this version?'))) return;
+        L.S.Xhr.get(this.getVersionUrl(version), {
+            callback: function (geojson) {
+                if (geojson._storage) this.setOptions(geojson._storage);
+                this.empty();
+                if (this.isRemoteLayer()) this.fetchRemoteData();
+                else this.addData(geojson);
+                this.isDirty = true;
+            },
+            context: this
+        })
     },
 
     featuresToGeoJSON: function () {
@@ -865,7 +928,6 @@ L.Storage.DataLayer = L.Class.extend({
         }
         if (!this.isLoaded()) {return;}
         var geojson = this.umapGeoJSON();
-        this.backupOptions();
         var formData = new FormData();
         formData.append('name', this.options.name);
         formData.append('display_on_load', !!this.options.displayOnLoad);
@@ -878,7 +940,8 @@ L.Storage.DataLayer = L.Class.extend({
                 this._geojson = geojson;
                 this._etag = response.getResponseHeader('ETag');
                 this.setStorageId(data.id);
-                this.setOptions(data);
+                this.updateOptions(data);
+                this.backupOptions();
                 this.connectToMap();
                 this.reset();  // Needed for reordering features
                 this.map.continueSaving();

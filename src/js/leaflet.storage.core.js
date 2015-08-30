@@ -162,7 +162,7 @@ L.Util.sortFeatures = function (features, sortKey) {
 };
 
 L.Util.flattenCoordinates = function (coords) {
-    while (coords[0] && typeof coords[0][0] !== "number") coords = coords[0];
+    while (coords[0] && typeof coords[0][0] !== 'number') coords = coords[0];
     return coords;
 };
 
@@ -179,7 +179,8 @@ L.DomUtil.add = function (tagName, className, container, content) {
     return el;
 };
 
-L.DomUtil.createFieldset = function (container, legend) {
+L.DomUtil.createFieldset = function (container, legend, options) {
+    options = options || {};
     var fieldset = L.DomUtil.create('fieldset', 'toggle', container);
     var legendEl = L.DomUtil.add('legend', 'style_options_toggle', fieldset, legend);
     L.DomEvent.on(legendEl, 'click', function () {
@@ -187,6 +188,7 @@ L.DomUtil.createFieldset = function (container, legend) {
             L.DomUtil.removeClass(fieldset, 'on');
         } else {
             L.DomUtil.addClass(fieldset, 'on');
+            if (options.callback) options.callback.call(options.context || this);
         }
     });
     return fieldset;

@@ -27,9 +27,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="3.959798"
-     inkscape:cx="195.403"
-     inkscape:cy="69.916194"
+     inkscape:zoom="7.919596"
+     inkscape:cx="214.40041"
+     inkscape:cy="62.437908"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -96,7 +96,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -602,6 +602,28 @@
          id="path4873-4"
          d="m 179.00805,873.34296 -6.35851,6.35851"
          style="fill:none;fill-rule:evenodd;stroke:#464646;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+    </g>
+    <g
+       id="g4244"
+       transform="matrix(0.51357238,-0.54309229,0.54309229,0.51357238,-430.0199,602.22551)">
+      <path
+         transform="matrix(-0.90185488,0.43203909,-0.43203909,-0.90185488,0,0)"
+         sodipodi:open="true"
+         d="m 231.87666,-980.51414 a 8,8 0 0 1 -8.12623,-4.12713 8,8 0 0 1 1.012,-9.05786 8,8 0 0 1 8.83671,-2.23192 8,8 0 0 1 5.1918,7.49093"
+         sodipodi:end="0"
+         sodipodi:start="1.4346606"
+         sodipodi:ry="8"
+         sodipodi:rx="8"
+         sodipodi:cy="-988.44012"
+         sodipodi:cx="230.79094"
+         sodipodi:type="arc"
+         id="path4240"
+         style="fill:none;fill-opacity:1;stroke:#464646;stroke-width:1.33785301;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path4242"
+         d="m 216,980.36218 -1.59512,4.19351 3.53553,1.89404"
+         style="fill:none;fill-rule:evenodd;stroke:#464646;stroke-width:1.33785301;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none" />
     </g>
   </g>
 </svg>
