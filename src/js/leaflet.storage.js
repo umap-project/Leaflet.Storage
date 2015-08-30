@@ -268,12 +268,8 @@ L.Storage.Map.include({
 
         L.DomUtil.classIf(document.body, 'storage-caption-bar-enabled', this.options.captionBar || (this.options.slideshow && (this.options.slideshow.delay || this.options.slideshow.autoplay)));
         L.DomUtil.classIf(document.body, 'storage-slideshow-enabled', this.options.slideshow && (this.options.slideshow.delay || this.options.slideshow.autoplay));
-        if (this.options.zoomControl) {
-            this._controls.zoomControl = (new L.Control.Zoom({zoomInTitle: L._('Zoom in'), zoomOutTitle: L._('Zoom out')})).addTo(this);
-        }
-        if (this.options.datalayersControl) {
-            this._controls.datalayersControl = new L.Storage.DataLayersControl().addTo(this);
-        }
+        if (this.options.zoomControl) this._controls.zoomControl = (new L.Control.Zoom({zoomInTitle: L._('Zoom in'), zoomOutTitle: L._('Zoom out')})).addTo(this);
+        if (this.options.datalayersControl) this._controls.datalayersControl = new L.Storage.DataLayersControl().addTo(this);
         if (this.options.allowEdit) {
             this._controls.toggleEdit = new L.Storage.EditControl(this);
             this.addControl(this._controls.toggleEdit);
@@ -290,9 +286,9 @@ L.Storage.Map.include({
             new L.S.SettingsToolbar({actions: editActions}).addTo(this);
         }
         if (this.options.moreControl) {
-            this._controls.moreControl = (new L.Storage.MoreControls()).addTo(this);
-            this._controls.homeControl = (new L.Storage.HomeControl()).addTo(this);
-            this._controls.locateControl = (new L.Storage.LocateControl()).addTo(this);
+            this._controls.moreControl = (new L.S.MoreControls()).addTo(this);
+            this._controls.homeControl = (new L.S.HomeControl()).addTo(this);
+            this._controls.locateControl = (new L.S.LocateControl()).addTo(this);
             this._controls.jumpToLocationControl = (new L.Storage.JumpToLocationControl()).addTo(this);
             this._controls.embedControl = (new L.Control.Embed(this, this.options.embedOptions)).addTo(this);
             this._controls.tilelayersControl = new L.Storage.TileLayerControl().addTo(this);
@@ -320,7 +316,6 @@ L.Storage.Map.include({
         } else {
             this.scrollWheelZoom.disable();
         }
-
     },
 
     initDatalayers: function () {
