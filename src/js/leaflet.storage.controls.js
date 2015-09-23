@@ -776,6 +776,7 @@ L.Storage.JumpToLocationControl = L.Control.extend({
                 ];
             viewbox = viewbox.join(',');
             var params = {
+                key: map.options.mapquest_key,
                 format: 'json',
                 q: searchTerms,
                 viewbox: viewbox, // this is just a preferred area, not a constraint
