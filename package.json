@@ -38,7 +38,7 @@
     "leaflet": "git://github.com/Leaflet/Leaflet",
     "leaflet-contextmenu": "^1.0.0",
     "leaflet-editable": "yohanboniface/Leaflet.Editable#gh-pages",
-    "leaflet-editinosm": "^0.2.2",
+    "leaflet-editinosm": "^0.2.3",
     "leaflet-formbuilder": "^0.2.0",
     "leaflet-hash": "^0.2.1",
     "leaflet-i18n": "0.2.0",
