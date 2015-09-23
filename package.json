@@ -45,7 +45,7 @@
     "leaflet-label": "dr-itz/Leaflet.label#leaflet-1.0-fixes",
     "leaflet-loading": "^0.1.15",
     "leaflet-minimap": "^2.1.0",
-    "leaflet-toolbar": "yohanboniface/Leaflet.toolbar#leaflet1.0-compat",
+    "leaflet-toolbar": "Leaflet/Leaflet.toolbar",
     "leaflet.heat": "^0.1.3",
     "leaflet-measurable": "umap-project/Leaflet.Measurable",
     "leaflet.markercluster": "git://github.com/Leaflet/Leaflet.markercluster#leaflet-master",
