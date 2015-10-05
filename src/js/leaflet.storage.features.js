@@ -741,17 +741,11 @@ L.Storage.Polyline = L.Polyline.extend({
                     callback: e.vertex.split,
                     context: e.vertex
                 });
-            } else if (index === 0) {
+            } else if (index === 0 || index === e.vertex.getLastIndex()) {
                 items.push({
                     text: L._('Continue line (Ctrl-click)'),
-                    callback: this.editor.continueBackward,
-                    context: this.editor
-                });
-            } else if (index === e.vertex.getLastIndex()) {
-                items.push({
-                    text: L._('Continue line (Ctrl-click)'),
-                    callback: this.editor.continueForward,
-                    context: this.editor
+                    callback: e.vertex.continue,
+                    context: e.vertex.continue
                 });
             }
         }
