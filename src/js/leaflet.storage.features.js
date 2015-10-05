@@ -282,7 +282,7 @@ L.Storage.FeatureMixin = {
     },
 
     _onClick: function (e) {
-        if (this.map.measureTools.enabled()) return;
+        if (this.map.measureTools && this.map.measureTools.enabled()) return;
         this._popupHandlersAdded = true;  // Prevent leaflet from managing event
         if(!this.map.editEnabled) {
             this.view(e.latlng);
