@@ -97,7 +97,7 @@ L.Storage.FeatureMixin = {
         this.getAdvancedEditActions(advancedActions);
         L.S.fire('ui:start', {data: {html: container}});
         this.map.editedFeature = this;
-        this.bringToCenter(e);
+        if (!this.isOnScreen()) this.bringToCenter(e);
     },
 
     getAdvancedEditActions: function (container) {
@@ -516,6 +516,11 @@ L.Storage.Marker = L.Marker.extend({
         } else {
             L.Storage.FeatureMixin.bringToCenter.call(this, e, callback);
         }
+    },
+
+    isOnScreen: function () {
+        var bounds = this.map.getBounds();
+        return bounds.contains(this._latlng);
     }
 
 });
@@ -697,6 +702,11 @@ L.Storage.PathMixin = {
         var items = L.S.FeatureMixin.getInplaceToolbarActions.call(this, e);
         if (this.isMulti()) items.push(L.S.DeleteShapeAction);
         return items;
+    },
+
+    isOnScreen: function () {
+        var bounds = this.map.getBounds();
+        return bounds.overlaps(this.getBounds());
     }
 
 };
