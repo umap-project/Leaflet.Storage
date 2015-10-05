@@ -92,6 +92,25 @@ describe('L.Storage.Polygon', function () {
                 assert.notOk(qst('Remove shape from the multi'));
             });
 
+            it('should not allow to isolate shape when not multi', function () {
+                var latlngs = [
+                        [[p2ll(100, 150), p2ll(150, 200), p2ll(200, 100)]]
+                    ],
+                    layer = new L.S.Polygon(this.map, latlngs, {datalayer: this.datalayer}).addTo(this.datalayer);
+                happen.once(layer._path, {type: 'contextmenu'});
+                assert.notOk(qst('Extract shape to separate feature'));
+            });
+
+            it('should allow to isolate shape when multi', function () {
+                var latlngs = [
+                        [[p2ll(100, 150), p2ll(150, 200), p2ll(200, 100)]],
+                        [[p2ll(300, 350), p2ll(350, 400), p2ll(400, 300)]]
+                    ],
+                    layer = new L.S.Polygon(this.map, latlngs, {datalayer: this.datalayer}).addTo(this.datalayer);
+                happen.once(layer._path, {type: 'contextmenu'});
+                assert.ok(qst('Extract shape to separate feature'));
+            });
+
             it('should not allow to transform to lines when multi', function () {
                 var latlngs = [
                         [[p2ll(100, 150), p2ll(150, 200), p2ll(200, 100)]],
@@ -211,6 +230,41 @@ describe('L.Storage.Polygon', function () {
             assert.deepEqual(other._latlngs[1][0], latlngs[0][0]);
             assert.ok(this.map.hasLayer(layer));
             assert.equal(layer._latlngs.length, 1);
+        });
+
+    });
+
+    describe('#isolateShape', function () {
+
+        it('should not allow to isolate simple polygon', function () {
+            var latlngs = [p2ll(100, 150), p2ll(100, 200), p2ll(200, 100)],
+                layer = new L.S.Polygon(this.map, latlngs, {datalayer: this.datalayer}).addTo(this.datalayer);
+            assert.equal(this.datalayer._index.length, 1);
+            assert.ok(this.map.hasLayer(layer));
+            layer.isolateShape(p2ll(150, 150));
+            assert.equal(layer._latlngs[0].length, 3);
+            assert.equal(this.datalayer._index.length, 1);
+        });
+
+        it('should isolate multipolygon shape', function () {
+            var latlngs = [
+                    [
+                        [p2ll(100, 150), p2ll(100, 200), p2ll(200, 100)],
+                        [p2ll(120, 150), p2ll(150, 180), p2ll(180, 120)]
+                    ],
+                    [[p2ll(200, 300), p2ll(300, 200)]]
+                ],
+                layer = new L.S.Polygon(this.map, latlngs, {datalayer: this.datalayer}).addTo(this.datalayer);
+            assert.equal(this.datalayer._index.length, 1);
+            assert.ok(this.map.hasLayer(layer));
+            var other = layer.isolateShape(p2ll(150, 150));
+            assert.equal(this.datalayer._index.length, 2);
+            assert.equal(other._latlngs.length, 2);
+            assert.deepEqual(other._latlngs[0], latlngs[0][0]);
+            assert.ok(this.map.hasLayer(layer));
+            assert.ok(this.map.hasLayer(other));
+            assert.equal(layer._latlngs.length, 1);
+            other.remove();
         });
 
     });

@@ -654,6 +654,19 @@ L.Storage.PathMixin = {
         if (!this._latlngs.length || !this._latlngs[0].length) this.del();
     },
 
+    isolateShape: function (at) {
+        if (!this.isMulti()) return;
+        var shape = this.enableEdit().deleteShapeAt(at);
+        this.disableEdit();
+        if (!shape) return;
+        console.log(shape)
+        var properties = this.cloneProperties();
+        var other = new (this instanceof L.S.Polyline ? L.S.Polyline : L.S.Polygon)(this.map, shape, {geojson: {properties: properties}});
+        this.datalayer.addLayer(other);
+        other.edit();
+        return other;
+    },
+
     getContextMenuItems: function (e) {
         var items = L.S.FeatureMixin.getContextMenuItems.call(this, e);
         if (this.map.editEnabled && !this.isReadOnly() && this.isMulti()) {
@@ -691,6 +704,15 @@ L.Storage.PathMixin = {
                 text: L._('Transfer shape to edited feature'),
                 callback: function () {
                     this.transferShape(e.latlng, this.map.editedFeature);
+                },
+                context: this
+            });
+        }
+        if (this.isMulti()) {
+            items.push({
+                text: L._('Extract shape to separate feature'),
+                callback: function () {
+                    this.isolateShape(e.latlng, this.map.editedFeature);
                 },
                 context: this
             });
