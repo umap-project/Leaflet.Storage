@@ -27,6 +27,7 @@ L.S.TableEditor = L.Class.extend({
                 this.datalayer.eachLayer(function (feature) {
                     feature.deleteProperty(property);
                 });
+                this.datalayer.deindexProperty(property);
                 this.resetProperties();
                 this.edit();
             }
@@ -56,20 +57,7 @@ L.S.TableEditor = L.Class.extend({
     },
 
     compileProperties: function () {
-        var self = this,
-            usable = function (feature, key) {
-                return typeof feature.properties[key] !== 'object' && self.properties.indexOf(key) === -1;
-            };
-        this.datalayer.eachLayer(function (feature) {
-            for (var key in feature.properties) {
-                if (feature.properties.hasOwnProperty(key) && usable(feature, key)) {
-                    this.properties.push(key);
-                }
-            }
-        }, this);
-        if (this.properties.length === 0) {
-            this.properties = ['name'];
-        }
+        if (this.properties.length === 0) this.properties = ['name'];
         // description is a forced textarea, don't edit it in a text input, or you lose cariage returns
         if (this.properties.indexOf('description') !== -1) this.properties.splice(this.properties.indexOf('description'), 1);
         this.properties.sort();
@@ -80,7 +68,7 @@ L.S.TableEditor = L.Class.extend({
     },
 
     resetProperties: function () {
-        this.properties = [];
+        this.properties = this.datalayer._propertiesIndex;
     },
 
     edit: function () {
@@ -97,7 +85,7 @@ L.S.TableEditor = L.Class.extend({
         var addProperty = function () {
             var newName = prompt(L._('Please enter the name of the property'));
             if (!newName) return;
-            this.properties = [newName];
+            this.datalayer.indexProperty(newName);
             this.edit();
         };
         L.DomEvent.on(addButton, 'click', addProperty, this);

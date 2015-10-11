@@ -76,11 +76,11 @@ L.Storage.FeatureMixin = {
         });
         container.appendChild(builder.build());
 
-        var properties = [];
-        for (var i in this.properties) {
-            if (typeof this.properties[i] === 'object' ||
-                ['name', 'description'].indexOf(i) !== -1) {continue;}
-            properties.push(['properties.' + i, {label: i}]);
+        var properties = [], property;
+        for (var i = 0; i < this.datalayer._propertiesIndex.length; i++) {
+            property = this.datalayer._propertiesIndex[i];
+            if (L.Util.indexOf(['name', 'description'], property) !== -1) {continue;}
+            properties.push(['properties.' + property, {label: property}]);
         }
         // We always want name and description for now (properties management to come)
         properties.unshift('properties.description');
@@ -387,6 +387,10 @@ L.Storage.FeatureMixin = {
 
     getVertexActions: function () {
         return [L.S.DeleteVertexAction];
+    },
+
+    isMulti: function () {
+        return false;
     }
 
 };

@@ -137,6 +137,7 @@ L.Storage.DataLayer = L.Class.extend({
         this._index = Array();
         this._layers = {};
         this._geojson = null;
+        this._propertiesIndex = [];
 
         var isDirty = false,
             isDeleted = false,
@@ -404,6 +405,7 @@ L.Storage.DataLayer = L.Class.extend({
         this._index.push(id);
         this._layers[id] = feature;
         this.layer.addLayer(feature);
+        this.indexProperties(feature);
         if (this.hasDataLoaded()) {
             this.fire('datachanged');
         }
@@ -418,6 +420,21 @@ L.Storage.DataLayer = L.Class.extend({
         if (this.hasDataLoaded()) {
             this.fire('datachanged');
         }
+    },
+
+    indexProperties: function (feature) {
+        for (var i in feature.properties) this.indexProperty(i);
+    },
+
+    indexProperty: function (name) {
+        if (name.indexOf('_') === 0) return;
+        if (L.Util.indexOf(this._propertiesIndex, name) !== -1) return;
+        this._propertiesIndex.push(name);
+    },
+
+    deindexProperty: function (name) {
+        var idx = this._propertiesIndex.indexOf(name);
+        if (idx !== -1) this._propertiesIndex.splice(idx, 1);
     },
 
     addData: function (geojson) {
