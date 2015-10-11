@@ -1480,7 +1480,8 @@ L.Storage.Map.include({
             var params = {
                 lat: e.latlng.lat,
                 lng: e.latlng.lng,
-                locale: L.locale
+                locale: L.locale,
+                zoom: this.getZoom()
             };
             window.open(L.Util.template(url, params));
         }
