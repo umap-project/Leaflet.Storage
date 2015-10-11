@@ -903,15 +903,8 @@ L.Storage.Map.include({
     },
 
     continueSaving: function () {
-        if (this.dirty_datalayers.length) {
-            this.dirty_datalayers[0].save();
-        } else {
-            if (this._post_save_alert) {
-                L.S.fire('saved');
-                L.S.fire('ui:alert', this._post_save_alert);
-                delete this._post_save_alert;
-            }
-        }
+        if (this.dirty_datalayers.length) this.dirty_datalayers[0].save();
+        else this.fire('saved');
     },
 
     editableOptions: [
@@ -965,7 +958,7 @@ L.Storage.Map.include({
 
     serialize: function () {
         var umapfile = {
-            type: "umap",
+            type: 'umap',
             properties: this.exportOptions(),
             layers: []
         };
@@ -1009,9 +1002,9 @@ L.Storage.Map.include({
                 } else {
                     msg = L._('Map has been saved!');
                 }
-                // Delegate alert to the end of the save process
-                // (how to do that the light and clean way without endless and unmaintainable callbacks chains?)
-                this._post_save_alert = {content: msg, level: 'info', duration: duration};
+                this.once('saved', function () {
+                    L.S.fire('ui:alert', {content: msg, level: 'info', duration: duration});
+                });
                 L.S.fire('ui:end');
                 this.isDirty = false;
                 this.continueSaving();
