@@ -32,7 +32,6 @@
         <script src="../src/js/leaflet.storage.js"></script>
         <script src="../contrib/js/storage.ui.default.js"></script>
         <link rel="stylesheet" href="../reqs/leaflet/leaflet.css" />
-        <link rel="stylesheet" href="../reqs/draw/leaflet.draw.css" />
         <link rel="stylesheet" href="../reqs/minimap/Control.MiniMap.css" />
         <link rel="stylesheet" href="../reqs/editinosm/Leaflet.EditInOSM.css" />
         <link rel="stylesheet" href="../reqs/markercluster/MarkerCluster.css" />
@@ -93,7 +92,7 @@
         <div id="storage-alert-container"></div>
         <div id="storage-tooltip-container"></div>
         <script>
-            var runner = mocha.run(function (failures) {
+            var runner = (window.mochaPhantomJS || window.mocha).run(function (failures) {
                 if (window.location.search.indexOf('debug') === -1) qs('#mocha').style.display = 'block';
                 console.log(failures);
             });
