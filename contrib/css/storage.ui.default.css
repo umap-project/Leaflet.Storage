@@ -20,6 +20,7 @@ input[type="url"], textarea {
 }
 textarea {
     height: inherit;
+    padding: 7px;
 }
 select {
     width: 100%;
