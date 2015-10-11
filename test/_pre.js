@@ -200,7 +200,7 @@ var RESPONSES = {
                 "coordinates": [[-0.5712890625, 54.47642158429295], [0.439453125, 54.610254981579146], [1.724853515625, 53.44880683542759], [4.163818359375, 53.98839506479995], [5.306396484375, 53.533778184257805], [6.591796875, 53.70971358510174], [7.042236328124999, 53.35055131839989]]
             },
             "type": "Feature",
-            "id": 20, "properties": {"options": {"fill": false}, "datalayer_id": 62, "name": "test", "icon": {}}
+            "id": 20, "properties": {"_storage_options": {"fill": false}, "name": "test"}
         },
         {
             "geometry": {
@@ -297,8 +297,4 @@ sinon.format = function (what) {
     } else {
         return what.toString();
     }
-};
-
-sinon.log = function (message) {
-    console.log(message);
 };

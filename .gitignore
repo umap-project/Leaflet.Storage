@@ -12,3 +12,4 @@ doc/_build/*
 node_modules/*
 reqs/*
 npm-debug.log
+*.bk

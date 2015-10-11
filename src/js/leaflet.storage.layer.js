@@ -423,10 +423,11 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     indexProperties: function (feature) {
-        for (var i in feature.properties) this.indexProperty(i);
+        for (var i in feature.properties) if (typeof feature.properties[i] !== 'object') this.indexProperty(i);
     },
 
     indexProperty: function (name) {
+        if (!name) return;
         if (name.indexOf('_') === 0) return;
         if (L.Util.indexOf(this._propertiesIndex, name) !== -1) return;
         this._propertiesIndex.push(name);

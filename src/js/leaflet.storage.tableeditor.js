@@ -38,6 +38,8 @@ L.S.TableEditor = L.Class.extend({
             this.datalayer.eachLayer(function (feature) {
                 feature.renameProperty(property, newName);
             });
+            this.datalayer.deindexProperty(property);
+            this.datalayer.indexProperty(newName);
             this.resetProperties();
             this.edit();
         };
@@ -48,7 +50,7 @@ L.S.TableEditor = L.Class.extend({
     renderRow: function (feature) {
         var builder = new L.S.FormBuilder(feature, this.field_properties,
             {
-                id: 'storage-feature-properties',
+                id: 'storage-feature-properties_' + L.stamp(feature),
                 className: 'trow',
                 callback: feature.resetLabel
             }
@@ -78,7 +80,7 @@ L.S.TableEditor = L.Class.extend({
         this.renderHeaders();
         this.body.innerHTML = '';
         this.datalayer.eachLayer(this.renderRow, this);
-        var addButton = L.DomUtil.create('li', '');
+        var addButton = L.DomUtil.create('li', 'add-property');
         L.DomUtil.create('i', 'storage-icon-16 storage-add', addButton);
         var label = L.DomUtil.create('span', '', addButton);
         label.innerHTML = label.title = L._('Add a new property');
