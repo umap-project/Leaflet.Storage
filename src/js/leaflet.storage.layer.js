@@ -704,6 +704,7 @@ L.Storage.DataLayer = L.Class.extend({
                 ['options.type', {handler: 'LayerTypeChooser', label: L._('Type of layer')}],
                 ['options.displayOnLoad', {label: L._('Display on load'), handler: 'CheckBox'}]
             ];
+        var title = L.DomUtil.add('h3', '', container, L._('Layer properties'));
         var builder = new L.S.FormBuilder(this, metadataFields, {
             callback: function (e) {
                 this.map.updateDatalayersControl();
