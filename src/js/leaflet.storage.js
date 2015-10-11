@@ -244,9 +244,11 @@ L.Storage.Map.include({
             L.DomEvent.addListener(document, 'keydown', editShortcuts, this);
         }
 
-        window.onbeforeunload = function () {
+        window.onbeforeunload = function (e) {
+            var msg = L._('You have unsaved changes.');
             if (self.isDirty) {
-                return true;
+                e.returnValue = msg;
+                return msg;
             }
         };
         this.backupOptions();
