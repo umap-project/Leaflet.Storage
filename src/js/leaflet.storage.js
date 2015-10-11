@@ -997,16 +997,13 @@ L.Storage.Map.include({
                         window.location = data.url;
                     }
                 }
-                if (data.info) {
-                    msg = data.info;
-                } else {
-                    msg = L._('Map has been saved!');
-                }
+                if (data.info) msg = data.info;
+                else msg = L._('Map has been saved!');
                 this.once('saved', function () {
+                    this.isDirty = false;
                     L.S.fire('ui:alert', {content: msg, level: 'info', duration: duration});
                 });
                 L.S.fire('ui:end');
-                this.isDirty = false;
                 this.continueSaving();
             },
             context: this
