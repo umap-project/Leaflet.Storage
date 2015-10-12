@@ -289,10 +289,15 @@ L.Storage.FeatureMixin = {
         } else if (!this.isReadOnly()) {
             new L.Toolbar.Popup(e.latlng, {
                 className: 'leaflet-inplace-toolbar',
+                anchor: this.getPopupToolbarAnchor(),
                 actions: this.getInplaceToolbarActions(e)
             }).addTo(this.map, this, e.latlng);
         }
         L.DomEvent.stop(e);
+    },
+
+    getPopupToolbarAnchor: function () {
+        return [0, 0];
     },
 
     getInplaceToolbarActions: function (e) {
@@ -525,6 +530,10 @@ L.Storage.Marker = L.Marker.extend({
     isOnScreen: function () {
         var bounds = this.map.getBounds();
         return bounds.contains(this._latlng);
+    },
+
+    getPopupToolbarAnchor: function () {
+        return this.options.icon.options.popupAnchor;
     }
 
 });
