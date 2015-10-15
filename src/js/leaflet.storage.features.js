@@ -643,7 +643,7 @@ L.Storage.PathMixin = {
     },
 
     _onMouseOver: function () {
-        if (this.map.measureTools.enabled()) {
+        if (this.map.measureTools && this.map.measureTools.enabled()) {
             L.Storage.fire('ui:tooltip', {content: this.getMeasure()});
             this.once('mouseout', function () { L.Storage.fire('ui:tooltip:abort');});
         } else if (this.map.editEnabled && !this.map.editedFeature) {
