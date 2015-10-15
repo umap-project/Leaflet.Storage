@@ -814,7 +814,7 @@ L.Storage.Map.include({
                 datalayer.onceLoaded(function () {
                     color.style.backgroundColor = this.getColor();
                     if (datalayer.options.description) {
-                        description.innerHTML = datalayer.options.description;
+                        description.innerHTML = L.Util.toHTML(datalayer.options.description);
                     }
                 });
             datalayer.renderToolbox(headline);
