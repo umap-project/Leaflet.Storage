@@ -1,6 +1,6 @@
 {
   "name": "leaflet-storage",
-  "version": "0.7.6",
+  "version": "0.8.0-beta.1",
   "description": "Manage map and features with Leaflet and expose them for backend storage through an API.",
   "directories": {
     "test": "test"
@@ -8,7 +8,7 @@
   "devDependencies": {
     "chai": "^3.3.0",
     "grunt": "^0.4.4",
-    "grunt-contrib-concat": "^0.4.0",
+    "grunt-contrib-concat": "^0.5.1",
     "grunt-contrib-copy": "^0.5.0",
     "happen": "~0.1.3",
     "mocha": "^2.3.3",
@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/yohanboniface/Leaflet.Storage.git"
+    "url": "git://github.com/umap-project/Leaflet.Storage.git"
   },
   "keywords": [
     "leaflet"
@@ -31,26 +31,26 @@
   "author": "Yohan Boniface",
   "license": "WTFPL",
   "bugs": {
-    "url": "https://github.com/yohanboniface/Leaflet.Storage/issues"
+    "url": "https://github.com/umap-project/Leaflet.Storage/issues"
   },
   "homepage": "http://wiki.openstreetmap.org/wiki/UMap",
   "dependencies": {
     "csv2geojson": "^4.0.0",
     "georsstogeojson": "^0.0.2",
-    "leaflet": "git://github.com/Leaflet/Leaflet",
+    "leaflet": "1.0.0-beta.2",
     "leaflet-contextmenu": "^1.0.0",
-    "leaflet-editable": "yohanboniface/Leaflet.Editable#gh-pages",
+    "leaflet-editable": "0.7.0-beta.1",
     "leaflet-editinosm": "^0.2.3",
     "leaflet-formbuilder": "^0.2.1",
     "leaflet-hash": "^0.2.1",
     "leaflet-i18n": "0.2.0",
-    "leaflet-label": "dr-itz/Leaflet.label#leaflet-1.0-fixes",
+    "leaflet-label": "Leaflet/Leaflet.label#leaflet-master",
     "leaflet-loading": "^0.1.15",
     "leaflet-minimap": "^2.1.0",
     "leaflet-toolbar": "Leaflet/Leaflet.toolbar",
     "leaflet.heat": "^0.1.3",
     "leaflet-measurable": "umap-project/Leaflet.Measurable",
-    "leaflet.markercluster": "git://github.com/Leaflet/Leaflet.markercluster#leaflet-master",
+    "leaflet.markercluster": "git://github.com/Leaflet/Leaflet.markercluster#leaflet-master-merge",
     "osmtogeojson": "^2.1.0",
     "togeojson": "^0.7.0",
     "togpx": "^0.3.1",
