@@ -294,5 +294,11 @@
     "{distance} km": "{distance} km",
     "{distance} m": "{distance} m",
     "{distance} miles": "{distance} miles",
-    "{distance} yd": "{distance} yd"
+    "{distance} yd": "{distance} yd",
+    "Are you sure you want to restore this version?": "Are you sure you want to restore this version?",
+    "Extract shape to separate feature": "Extract shape to separate feature",
+    "Layer properties": "Layer properties",
+    "Restore this version": "Restore this version",
+    "Versions": "Versions",
+    "You have unsaved changes.": "You have unsaved changes."
 }
