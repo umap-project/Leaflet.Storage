@@ -1036,6 +1036,10 @@ L.Storage.Map.include({
 
     defaultDataLayer: function () {
         var datalayer, fallback;
+        datalayer = this.lastUsedDataLayer;
+        if (datalayer && !datalayer.isRemoteLayer() && datalayer.isBrowsable() && datalayer.isVisible()) {
+            return datalayer;
+        }
         for (var i in this.datalayers) {
             if (this.datalayers.hasOwnProperty(i)) {
                 datalayer = this.datalayers[i];
