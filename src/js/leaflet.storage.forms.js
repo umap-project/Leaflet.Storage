@@ -162,6 +162,7 @@ L.FormBuilder.DataLayerSwitcher = L.FormBuilder.Select.extend({
     },
 
     set: function () {
+        this.builder.map.lastUsedDataLayer = this.toJS();
         this.obj.changeDataLayer(this.toJS());
     }
 
