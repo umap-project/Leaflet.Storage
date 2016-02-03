@@ -256,8 +256,8 @@ L.Storage.Xhr = {
             L.Storage.Xhr.listen_form('login_form', {
                 'callback': function (data) {
                     if (data.html) {
-                        // Problem in the login
-                        self.login(data, args);
+                        // Problem in the login - ask again
+                        ask_for_login(data);
                     }
                     else {
                         proceed();
