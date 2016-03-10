@@ -636,6 +636,8 @@ a.storage-control-text {
 .storage-browse-features li {
     padding: 2px 0;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .storage-browse-features li:nth-child(even) {
     background-color: #f8f8f3;
