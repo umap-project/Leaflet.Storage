@@ -256,6 +256,21 @@ L.Storage.DeleteVertexAction = L.S.BaseVertexAction.extend({
 
 });
 
+L.Storage.SplitLineAction = L.S.BaseVertexAction.extend({
+
+    options: {
+        toolbarIcon: {
+            className: 'storage-split-line',
+            tooltip: L._('Split line')
+        }
+    },
+
+    onClick: function () {
+        this.vertex.split();
+    }
+
+});
+
 L.Storage.ContinueLineAction = L.S.BaseVertexAction.extend({
 
     options: {

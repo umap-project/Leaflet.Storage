@@ -390,8 +390,13 @@ L.Storage.FeatureMixin = {
         }).addTo(this.map, this, e.latlng, e.vertex);
     },
 
-    getVertexActions: function () {
-        return [L.S.DeleteVertexAction];
+    getVertexActions: function (e) {
+        var ret = [L.S.DeleteVertexAction];
+        var index = e.vertex.getIndex();
+        if (index !== 0 && index !== e.vertex.getLastIndex()) {
+            ret.push(L.S.SplitLineAction);
+        }
+        return ret;
     },
 
     isMulti: function () {
