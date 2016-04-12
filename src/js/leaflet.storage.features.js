@@ -740,7 +740,10 @@ L.Storage.PathMixin = {
 
     getInplaceToolbarActions: function (e) {
         var items = L.S.FeatureMixin.getInplaceToolbarActions.call(this, e);
-        if (this.isMulti()) items.push(L.S.DeleteShapeAction);
+        if (this.isMulti()) {
+            items.push(L.S.DeleteShapeAction);
+            items.push(L.S.ExtractShapeFromMultiAction);
+        }
         return items;
     },
 
