@@ -556,6 +556,12 @@ a.storage-control-text {
 .storage-continue-line {
     background-position: -165px -5px;
 }
+.storage-split-line {
+    background-position: -205px -45px;
+}
+.storage-extract-shape-from-multi{
+    background-position: -205px -5px;
+}
 .storage-browse-features .feature-title,
 .leaflet-control-browse .storage-browse-actions .layer-title {
     width: inherit;
