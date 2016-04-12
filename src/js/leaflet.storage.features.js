@@ -390,13 +390,8 @@ L.Storage.FeatureMixin = {
         }).addTo(this.map, this, e.latlng, e.vertex);
     },
 
-    getVertexActions: function (e) {
-        var ret = [L.S.DeleteVertexAction];
-        var index = e.vertex.getIndex();
-        if (index !== 0 && index !== e.vertex.getLastIndex()) {
-            ret.push(L.S.SplitLineAction);
-        }
-        return ret;
+    getVertexActions: function () {
+        return [L.S.DeleteVertexAction];
     },
 
     isMulti: function () {
@@ -885,6 +880,7 @@ L.Storage.Polyline = L.Polyline.extend({
         var actions = L.S.FeatureMixin.getVertexActions.call(this, e),
             index = e.vertex.getIndex();
         if (index === 0 || index === e.vertex.getLastIndex()) actions.push(L.S.ContinueLineAction);
+        else actions.push(L.S.SplitLineAction);
         return actions;
     }
 
