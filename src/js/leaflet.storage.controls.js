@@ -232,7 +232,7 @@ L.Storage.DeleteShapeAction = L.S.BaseFeatureAction.extend({
 
 });
 
-L.Storage.ExtractShapeAction = L.S.BaseFeatureAction.extend({
+L.Storage.ExtractShapeFromMultiAction = L.S.BaseFeatureAction.extend({
 
     options: {
         toolbarIcon: {
