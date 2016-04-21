@@ -287,11 +287,19 @@ L.Storage.FeatureMixin = {
         if(!this.map.editEnabled) {
             this.view(e.latlng);
         } else if (!this.isReadOnly()) {
-            new L.Toolbar.Popup(e.latlng, {
-                className: 'leaflet-inplace-toolbar',
-                anchor: this.getPopupToolbarAnchor(),
-                actions: this.getInplaceToolbarActions(e)
-            }).addTo(this.map, this, e.latlng);
+            if(e.originalEvent.shiftKey) {
+                if(this._toggleEditing)
+                    this._toggleEditing(e);
+                else
+                    this.edit(e);
+            }
+            else {
+                new L.Toolbar.Popup(e.latlng, {
+                    className: 'leaflet-inplace-toolbar',
+                    anchor: this.getPopupToolbarAnchor(),
+                    actions: this.getInplaceToolbarActions(e)
+                }).addTo(this.map, this, e.latlng);
+            }
         }
         L.DomEvent.stop(e);
     },
