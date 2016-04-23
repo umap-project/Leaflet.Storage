@@ -134,7 +134,8 @@ L.Storage.FeatureMixin = {
     endEdit: function () {},
 
     getDisplayName: function () {
-        return this.properties.name || this.properties.title || this.datalayer.options.name;
+        var key = this.getOption('labelKey') || 'name';
+        return this.properties[key] || this.properties.title || this.datalayer.options.name;
     },
 
     hasPopupFooter: function () {

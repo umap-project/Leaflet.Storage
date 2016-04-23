@@ -397,7 +397,8 @@ L.Storage.FormBuilder = L.FormBuilder.extend({
         displayPopupFooter: {handler: 'CheckBox', helpText: L._('Do you want to display popup footer?')},
         captionBar: {handler: 'CheckBox', helpText: L._('Do you want to display a caption bar?')},
         zoomTo: {handler: 'IntInput', placeholder: L._('Inherit'), helpText: L._('Zoom level for automatic zooms')},
-        showLabel: {handler: 'NullableBoolean', helpText: L._('Add a permanent label')}
+        showLabel: {handler: 'NullableBoolean', helpText: L._('Add a permanent label')},
+        labelKey: {helpText: L._('Property to use as feature label'), placeholder: L._('Default: name')}
     },
 
     initialize: function (obj, fields, options) {

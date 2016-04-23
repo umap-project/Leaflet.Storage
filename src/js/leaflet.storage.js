@@ -1128,6 +1128,7 @@ L.Storage.Map.include({
             'options.zoomTo',
             ['options.easing', {handler: 'CheckBox', helpText: L._('Use advanced transition mode?')}],
             'options.showLabel',
+            'options.labelKey',
             ['options.sortKey', {handler: 'BlurInput', helpText: L._('Property to use for sorting features'), placeholder: L._('Default: name')}],
             ['options.filterKey', {handler: 'Input', helpText: L._('Comma separated list of properties to use when filtering features'), placeholder: L._('Default: name')}]
         ];
