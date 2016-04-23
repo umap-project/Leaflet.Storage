@@ -92,6 +92,14 @@ L.S.Layer.Heat = L.HeatLayer.extend({
         this.setLatLngs([]);
     },
 
+    _redraw: function () {
+        // setlalngs call _redraw through setAnimFrame, thus async, so this
+        // can ends with race condition if we remove the layer very faslty after.
+        // Remove me when https://github.com/Leaflet/Leaflet.heat/pull/53 is released.
+        if (!this._map) return;
+        L.HeatLayer.prototype._redraw.call(this);
+    },
+
     getFeatures: function () {
         return {};
     },
@@ -210,20 +218,14 @@ L.Storage.DataLayer = L.Class.extend({
 
         if (this.layer && this.options.type === this.layer._type && !force) return;
         var visible = this.isVisible();
-        if (visible) {
-            this.map.removeLayer(this.layer);
-        }
-        if (this.layer) {
-            this.layer.clearLayers();
-        }
+        if (this.layer) this.layer.clearLayers();
+        if (visible) this.map.removeLayer(this.layer);
         var Class = L.S.Layer[this.options.type] || L.S.Layer.Default;
         this.layer = new Class(this);
         this.eachLayer(function (layer) {
             this.layer.addLayer(layer);
         });
-        if (visible) {
-            this.map.addLayer(this.layer);
-        }
+        if (visible) this.map.addLayer(this.layer);
         this.propagateRemote();
     },
 
@@ -244,9 +246,7 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     fetchData: function () {
-        if (!this.storage_id) {
-            return;
-        }
+        if (!this.storage_id) return;
         this.map.get(this._dataUrl(), {
             callback: function (geojson, response) {
                 this._etag = response.getResponseHeader('ETag');
@@ -266,14 +266,9 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     fromUmapGeoJSON: function (geojson) {
-        if (geojson._storage) {
-            this.setOptions(geojson._storage);
-        }
-        if (this.isRemoteLayer()) {
-            this.fetchRemoteData();
-        } else {
-            this.fromGeoJSON(geojson);
-        }
+        if (geojson._storage) this.setOptions(geojson._storage);
+        if (this.isRemoteLayer()) this.fetchRemoteData();
+        else this.fromGeoJSON(geojson);
         this._loaded = true;
     },
 
@@ -313,9 +308,7 @@ L.Storage.DataLayer = L.Class.extend({
         }
         var self = this,
             url = this.map.localizeUrl(this.options.remoteData.url);
-        if (this.options.remoteData.proxy) {
-            url = this.map.proxyUrl(url);
-        }
+        if (this.options.remoteData.proxy) url = this.map.proxyUrl(url);
         this.map.ajax({
             uri: url,
             verb: 'GET',
@@ -675,8 +668,8 @@ L.Storage.DataLayer = L.Class.extend({
             if (this._leaflet_events_bk && !this._leaflet_events) {
                 this._leaflet_events = this._leaflet_events_bk;
             }
-            this.hide();
             this.clear();
+            this.hide();
             if (this.isRemoteLayer()) {
                 this.fetchRemoteData();
             } else if (this._geojson_bk) {

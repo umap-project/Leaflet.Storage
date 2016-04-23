@@ -397,8 +397,8 @@ L.Storage.Map.include({
     selectTileLayer: function (tilelayer) {
         if (tilelayer === this.selected_tilelayer) { return; }
         try {
-            this.fire('baselayerchange', {layer: tilelayer});
             this.addLayer(tilelayer);
+            this.fire('baselayerchange', {layer: tilelayer});
             if (this.selected_tilelayer) {
                 this.removeLayer(this.selected_tilelayer);
             }
@@ -473,6 +473,18 @@ L.Storage.Map.include({
             this.options.minZoom = 0;
             this.setMaxBounds();
         }
+    },
+
+    setMaxBounds: function (bounds) {
+        // Hack. Remove me when fix is released:
+        // https://github.com/Leaflet/Leaflet/pull/4494
+        bounds = L.latLngBounds(bounds);
+
+        if (!bounds.isValid()) {
+            this.options.maxBounds = null;
+            return this.off('moveend', this._panInsideMaxBounds);
+        }
+        return L.Map.prototype.setMaxBounds.call(this, bounds);
     },
 
     createDataLayer: function(datalayer) {
