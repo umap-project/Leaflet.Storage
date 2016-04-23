@@ -23,7 +23,7 @@ L.Map.mergeOptions({
     homeControl: true,
     zoomControl: true,
     locateControl: true,
-    jumpToLocationControl: true,
+    searchControl: true,
     editInOSMControl: false,
     editInOSMControlOptions: false,
     scaleControl: true,
@@ -196,53 +196,9 @@ L.Storage.Map.include({
                 this.editedFeature = null;
             }, this);
             this.initEditBar();
-            var editShortcuts = function (e) {
-                var key = e.keyCode;
-                if (key === L.S.Keys.E && e.ctrlKey && !this.editEnabled) {
-                    L.DomEvent.stop(e);
-                    this.enableEdit();
-                } else if (key === L.S.Keys.E && e.ctrlKey && this.editEnabled && !this.isDirty) {
-                    L.DomEvent.stop(e);
-                    this.disableEdit();
-                    L.S.fire('ui:end');
-                }
-                if (key === L.S.Keys.S && e.ctrlKey) {
-                    L.DomEvent.stop(e);
-                    if (this.isDirty) {
-                        this.save();
-                    }
-                }
-                if (key === L.S.Keys.Z && e.ctrlKey && this.isDirty) {
-                    L.DomEvent.stop(e);
-                    this.askForReset();
-                }
-                if (key === L.S.Keys.M && e.ctrlKey && this.editEnabled) {
-                    L.DomEvent.stop(e);
-                    this.editTools.startMarker();
-                }
-                if (key === L.S.Keys.P && e.ctrlKey && this.editEnabled) {
-                    L.DomEvent.stop(e);
-                    this.editTools.startPolygon();
-                }
-                if (key === L.S.Keys.L && e.ctrlKey && this.editEnabled) {
-                    L.DomEvent.stop(e);
-                    this.editTools.startPolyline();
-                }
-                if (key === L.S.Keys.I && e.ctrlKey && this.editEnabled) {
-                    L.DomEvent.stop(e);
-                    this.importPanel();
-                }
-                if (key === L.S.Keys.H && e.ctrlKey && this.editEnabled) {
-                    L.DomEvent.stop(e);
-                    this.help.show('edit');
-                }
-                if (e.keyCode === L.S.Keys.ESC) {
-                    if (this.editEnabled) this.editTools.stopDrawing();
-                    if (this.measureTools.enabled()) this.measureTools.stopDrawing();
-                }
-            };
-            L.DomEvent.addListener(document, 'keydown', editShortcuts, this);
         }
+        this.initShortcuts();
+
 
         window.onbeforeunload = function (e) {
             var msg = L._('You have unsaved changes.');
@@ -291,7 +247,7 @@ L.Storage.Map.include({
             this._controls.moreControl = (new L.S.MoreControls()).addTo(this);
             this._controls.homeControl = (new L.S.HomeControl()).addTo(this);
             this._controls.locateControl = (new L.S.LocateControl()).addTo(this);
-            this._controls.jumpToLocationControl = (new L.Storage.JumpToLocationControl()).addTo(this);
+            this._controls.searchControl = (new L.Storage.SearchControl()).addTo(this);
             this._controls.embedControl = (new L.Control.Embed(this, this.options.embedOptions)).addTo(this);
             this._controls.tilelayersControl = new L.Storage.TileLayerControl().addTo(this);
             var editInOSMControlOptions = {
@@ -369,6 +325,65 @@ L.Storage.Map.include({
     resetOptions: function () {
         this.options = L.extend({}, this._backupOptions);
         this.options.tilelayer = L.extend({}, this._backupOptions.tilelayer);
+    },
+
+    initShortcuts: function () {
+        var globalShortcuts = function (e) {
+            var key = e.keyCode;
+
+            /* Edit mode only shortcuts */
+            if (key === L.S.Keys.F && e.ctrlKey) {
+                L.DomEvent.stop(e);
+                this.search();
+            }
+
+            if (!this.options.allowEdit) return;
+
+            /* Edit mode only shortcuts */
+            if (key === L.S.Keys.E && e.ctrlKey && !this.editEnabled) {
+                L.DomEvent.stop(e);
+                this.enableEdit();
+            } else if (key === L.S.Keys.E && e.ctrlKey && this.editEnabled && !this.isDirty) {
+                L.DomEvent.stop(e);
+                this.disableEdit();
+                L.S.fire('ui:end');
+            }
+            if (key === L.S.Keys.S && e.ctrlKey) {
+                L.DomEvent.stop(e);
+                if (this.isDirty) {
+                    this.save();
+                }
+            }
+            if (key === L.S.Keys.Z && e.ctrlKey && this.isDirty) {
+                L.DomEvent.stop(e);
+                this.askForReset();
+            }
+            if (key === L.S.Keys.M && e.ctrlKey && this.editEnabled) {
+                L.DomEvent.stop(e);
+                this.editTools.startMarker();
+            }
+            if (key === L.S.Keys.P && e.ctrlKey && this.editEnabled) {
+                L.DomEvent.stop(e);
+                this.editTools.startPolygon();
+            }
+            if (key === L.S.Keys.L && e.ctrlKey && this.editEnabled) {
+                L.DomEvent.stop(e);
+                this.editTools.startPolyline();
+            }
+            if (key === L.S.Keys.I && e.ctrlKey && this.editEnabled) {
+                L.DomEvent.stop(e);
+                this.importPanel();
+            }
+            if (key === L.S.Keys.H && e.ctrlKey && this.editEnabled) {
+                L.DomEvent.stop(e);
+                this.help.show('edit');
+            }
+            if (e.keyCode === L.S.Keys.ESC) {
+                if (this.editEnabled) this.editTools.stopDrawing();
+                if (this.measureTools.enabled()) this.measureTools.stopDrawing();
+            }
+        };
+        L.DomEvent.addListener(document, 'keydown', globalShortcuts, this);
     },
 
     initTileLayers: function () {
@@ -759,8 +774,7 @@ L.Storage.Map.include({
             var option = this.editableOptions[i];
             if (typeof importedData.properties[option] !== 'undefined') {
                 this.options[option] = importedData.properties[option];
-                if (option === "sortKey")
-                    mustReindex = true;
+                if (option === 'sortKey') mustReindex = true;
             }
         }
 
@@ -1533,6 +1547,10 @@ L.Storage.Map.include({
     closeInplaceToolbar: function () {
         var toolbar = this._toolbars[L.Toolbar.Popup._toolbar_class_id];
         if (toolbar) toolbar.remove();
+    },
+
+    search: function () {
+        if (this._controls.searchControl) this._controls.searchControl.openPanel(this);
     }
 
 });

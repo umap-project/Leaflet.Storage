@@ -76,21 +76,10 @@ a.storage-control-less {
 }
 .leaflet-control-search a {
     background-position: -42px -122px;
-    display: inline-block;
+    display: block;
 }
 .leaflet-control-search a.loading {
     background-image: url("../img/search.gif");
-}
-.leaflet-control-search input {
-    display: none;
-    height: 30px;
-}
-.leaflet-control-search form {
-    display: inline;
-}
-.leaflet-control-search input:focus, div.leaflet-control-search:hover input {
-    display: inline-block;
-    margin-right: 5px;
 }
 a.storage-control-text {
     float: right;
@@ -110,6 +99,52 @@ a.storage-control-text {
     background-position: -1px -1px;
 }
 
+
+
+
+/* ***************** */
+/*    Search panel   */
+/* ***************** */
+ul.photon-autocomplete {
+    position: absolute;
+    background-color: white;
+    z-index: 1000;
+    display: none;
+}
+.photon-autocomplete li {
+    min-height: 40px;
+    line-height: 1em;
+    padding: 5px 10px;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 1em;
+    border-left: 4px solid #efefef;
+}
+.photon-autocomplete li strong {
+    display: block;
+}
+.photon-autocomplete li.on {
+    border-left: 4px solid #2980b9;
+    cursor: pointer;
+}
+.photon-autocomplete li.photon-no-result {
+    text-align: center;
+    color: #666;
+    font-size: 0.9em;
+    line-height: 40px;
+}
+.photon-autocomplete .photon-feedback {
+    display: block;
+    text-align: right;
+    font-size: 0.8em;
+    padding: 3px;
+    color: #999;
+    border-top: 1px solid #eee;
+}
+.search-result-tools {
+    float: right;
+    display: block;
+}
 
 
 
@@ -491,6 +526,7 @@ a.storage-control-text {
     max-height: 10em;
     overflow-y: auto;
 }
+.search-result-tools i,
 .leaflet-inplace-toolbar a,
 .storage-browse-features i,
 .storage-caption i,
@@ -1111,7 +1147,7 @@ a.storage-control-text {
     top: 0;
     left: 0;
     right: 0;
-    height: 2px;
+    height: 4px;
     z-index: 10100;
     background-color: DarkRed;
     -webkit-transform: translateX(100%);

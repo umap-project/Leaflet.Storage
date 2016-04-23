@@ -774,11 +774,51 @@ L.Storage.LocateControl = L.Control.extend({
 });
 
 
-L.Storage.JumpToLocationControl = L.Control.extend({
+L.Storage.Search = L.PhotonSearch.extend({
+
+    onBlur: function (e) {
+        // Overrided because we don't want to hide the results on blur.
+        this.fire('blur');
+    },
+
+    formatResult: function (feature, el) {
+        var self = this;
+        var tools = L.DomUtil.create('span', 'search-result-tools', el),
+            zoom = L.DomUtil.create('i', 'feature-zoom_to', tools),
+            edit = L.DomUtil.create('i', 'feature-edit show-on-edit', tools);
+        zoom.title = L._('Zoom to this place');
+        edit.title = L._('Save this location as new feature');
+        // We need to use "mousedown" because Leaflet.Photon listen to mousedown
+        // on el.
+        L.DomEvent.on(zoom, 'mousedown', function (e) {
+            L.DomEvent.stop(e);
+            self.zoomToFeature(feature);
+        });
+        L.DomEvent.on(edit, 'mousedown', function (e) {
+            L.DomEvent.stop(e);
+            var datalayer = self.map.defaultDataLayer();
+            var layer = datalayer.geojsonToFeatures(feature);
+            layer.isDirty = true;
+            layer.edit();
+        });
+        this._formatResult(feature, el);
+    },
+
+    zoomToFeature: function (feature) {
+        this.map.setView([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], 16);
+    },
+
+    onSelected: function (feature) {
+        this.zoomToFeature(feature);
+        L.Storage.fire('ui:end');
+    }
+
+});
+
+L.Storage.SearchControl = L.Control.extend({
 
     options: {
         position: 'topleft',
-        server_url: 'https://open.mapquestapi.com/nominatim/v1/search.php'
     },
 
     onAdd: function (map) {
@@ -787,59 +827,40 @@ L.Storage.JumpToLocationControl = L.Control.extend({
 
         L.DomEvent.disableClickPropagation(container);
         var link = L.DomUtil.create('a', '', container);
-        var form = L.DomUtil.create('form', '', container);
-        var input = L.DomUtil.create('input', '', form);
         link.href = '#';
-        link.title = input.placeholder = L._('Jump to location');
-        link.innerHTML = '&nbsp;';
-        var fn = function () {
-            var searchTerms = input.value;
-            if (!searchTerms) {
-                return;
-            }
-            L.DomUtil.addClass(link, 'loading');
-            var url = [],
-                bounds = map.getBounds(),
-                viewbox = [
-                    //left,top,right,bottom,
-                    bounds.getNorthWest().lng,
-                    bounds.getNorthWest().lat,
-                    bounds.getSouthEast().lng,
-                    bounds.getSouthEast().lat
-                ];
-            viewbox = viewbox.join(',');
-            var params = {
-                key: map.options.mapquest_key,
-                format: 'json',
-                q: searchTerms,
-                viewbox: viewbox, // this is just a preferred area, not a constraint
-                limit: 1
-            };
-            url = self.options.server_url + '?' + L.S.Xhr.buildQueryString(params);
-            L.Storage.Xhr.get(url, {
-                callback: function (data) {
-                    L.DomUtil.removeClass(link, 'loading');
-                    if (data.length > 0 && data[0].lon && data[0].lat) {
-                        map.panTo([data[0].lat, data[0].lon]);
-                        map.setZoom(map.getOption('zoomTo'));
-                    }
-                    else {
-                        L.S.fire('ui:alert', {content: L._('Sorry, no location found for {location}', {location: searchTerms})});
-                    }
-                }
-            });
-        };
-
-        L.DomEvent
-            .on(form, 'submit', L.DomEvent.stop)
-            .on(form, 'submit', fn);
-        L.DomEvent
-            .on(link, 'click', L.DomEvent.stop)
-            .on(link, 'click', fn)
-            .on(link, 'dblclick', L.DomEvent.stopPropagation);
-
+        L.DomEvent.on(link, 'click', function (e) {
+            L.DomEvent.stop(e);
+            self.openPanel(map);
+        });
         return container;
+    },
+
+    openPanel: function (map) {
+        var options = {
+            limit: 10,
+            noResultLabel: L._('No results')
+        }
+        var container = L.DomUtil.create('div', 'leaflet-photon');
+
+        var title = L.DomUtil.create('h3', '', container);
+        title.textContent = L._('Search location');
+        var input = L.DomUtil.create('input', 'photon-input', container);
+        var resultsContainer = L.DomUtil.create('div', 'photon-autocomplete', container);
+        this.search = new L.S.Search(map, input, options);
+        var id = Math.random();
+        this.search.on('ajax:send', function () {
+            map.fire('dataloading', {id: id});
+        });
+        this.search.on('ajax:return', function () {
+            map.fire('dataload', {id: id});
+        });
+        this.search.resultsContainer = resultsContainer;
+        L.Storage.once('ui:ready', function () {
+            input.focus();
+        });
+        L.Storage.fire('ui:start', {data: {html: container}});
     }
+
 });
 
 

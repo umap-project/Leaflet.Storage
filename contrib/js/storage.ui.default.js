@@ -1,9 +1,4 @@
 /*
-* Demonstration on how listen to L.Storage notification events.
-* Mainly for tests.
-*/
-
-/*
 * Modals
 */
 L.Storage.on('ui:start', function (e) {
@@ -14,12 +9,8 @@ L.Storage.on('ui:start', function (e) {
     container.innerHTML = '';
     var actionsContainer = L.DomUtil.create('ul', 'toolbox', container);
     var body = L.DomUtil.create('div', 'body', container);
-    if (e.data.html.nodeType && e.data.html.nodeType === 1) {
-        body.appendChild(e.data.html);
-    }
-    else {
-        body.innerHTML = e.data.html;
-    }
+    if (e.data.html.nodeType && e.data.html.nodeType === 1) body.appendChild(e.data.html);
+    else body.innerHTML = e.data.html;
     L.DomUtil.addClass(document.body, 'storage-ui');
     var closeLink = L.DomUtil.create('li', 'storage-close-link', actionsContainer);
     L.DomUtil.add('i', 'storage-close-icon', closeLink);
@@ -30,9 +21,7 @@ L.Storage.on('ui:start', function (e) {
             actionsContainer.appendChild(e.actions[i]);
         }
     }
-    if (e.cssClass) {
-        L.DomUtil.addClass(container, e.cssClass);
-    }
+    if (e.cssClass) L.DomUtil.addClass(container, e.cssClass);
     L.Storage.fire('ui:ready');
     var close = function () {
         L.Storage.fire('ui:end');
