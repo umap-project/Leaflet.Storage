@@ -598,6 +598,9 @@ L.Storage.Map.include({
             L.DomEvent.on(zoom_to, 'click', function (e) {
                 this.bringToCenter(e, L.bind(this.view, this));
             }, feature);
+            L.DomEvent.on(title, 'click', function (e) {
+                this.bringToCenter(e, L.bind(this.view, this));
+            }, feature);
             L.DomEvent.on(edit, 'click', function () {
                 this.edit();
             }, feature);
