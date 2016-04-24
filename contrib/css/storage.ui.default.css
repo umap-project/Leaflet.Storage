@@ -18,6 +18,10 @@ input[type="url"], textarea {
     padding: 7px;
     width: 100%;
 }
+input[type="checkbox"] {
+    margin: 0 5px;
+    vertical-align: middle;
+}
 textarea {
     height: inherit;
     padding: 7px;

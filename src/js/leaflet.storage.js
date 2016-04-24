@@ -668,6 +668,7 @@ L.Storage.Map.include({
             rawInput = L.DomUtil.create('textarea', '', container),
             typeLabel = L.DomUtil.create('label', '', container),
             layerLabel = L.DomUtil.create('label', '', container),
+            clearLabel = L.DomUtil.create('label', '', container),
             submitInput = L.DomUtil.create('input', '', container),
             map = this, option,
             types = ['geojson', 'csv', 'gpx', 'kml', 'osm', 'georss', 'umap'];
@@ -687,6 +688,10 @@ L.Storage.Map.include({
         urlInput.type = 'text';
         urlInput.placeholder = L._('Provide an URL here');
         rawInput.placeholder = L._('Paste here your data');
+        clearLabel.textContent = L._('Replace layer content');
+        var clearFlag = L.DomUtil.create('input', '', clearLabel);
+        clearFlag.type = 'checkbox';
+        clearFlag.name = 'clear';
         this.eachDataLayer(function (datalayer) {
             if (datalayer.isLoaded()) {
                 var id = L.stamp(datalayer);
@@ -718,6 +723,7 @@ L.Storage.Map.include({
                 layerId = layerInput[layerInput.selectedIndex].value,
                 layer;
             if (layerId) layer = map.datalayers[layerId];
+            if (layer && clearFlag.checked) layer.empty();
             if (fileInput.files.length) {
                 var file;
                 for (var i = 0, f; f = fileInput.files[i]; i++) {
@@ -726,9 +732,7 @@ L.Storage.Map.include({
                         this.importFromFile(file, 'umap');
                     } else {
                         var importLayer = layer;
-                        if (!layer) {
-                            importLayer = this.createDataLayer({name: f.name});
-                        }
+                        if (!layer) importLayer = this.createDataLayer({name: f.name});
                         importLayer.importFromFile(f, type);
                     }
                 }
@@ -740,7 +744,6 @@ L.Storage.Map.include({
                     } catch (e) {
                         L.S.fire('ui:alert', {content: L._('Invalid umap data'), level: 'error'});
                     }
-
                 } else {
                     if (!layer) layer = this.createDataLayer();
                     if (rawInput.value) layer.importRaw(rawInput.value, type);

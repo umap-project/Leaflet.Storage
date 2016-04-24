@@ -119,7 +119,7 @@ describe('L.Storage.Map', function(){
     });
 
     describe('#importData()', function () {
-        var fileInput, textarea, submit, formatSelect, layerSelect;
+        var fileInput, textarea, submit, formatSelect, layerSelect, clearFlag;
 
         it('should build a form on click', function () {
             happen.click(qs('a.upload-data'));
@@ -177,6 +177,20 @@ describe('L.Storage.Map', function(){
             submit = qs('.storage-upload input[type="button"]');
             formatSelect = qs('.storage-upload select[name="format"]');
             assert.equal(this.datalayer._index.length, 0);
+            textarea.value = csv_example;
+            changeSelectValue(formatSelect, 'csv');
+            happen.click(submit);
+            assert.equal(this.datalayer._index.length, 1);
+        });
+
+        it('should replace content if asked so', function () {
+            happen.click(qs('a.upload-data'));
+            textarea = qs('.storage-upload textarea');
+            submit = qs('.storage-upload input[type="button"]');
+            formatSelect = qs('.storage-upload select[name="format"]');
+            clearFlag = qs('.storage-upload input[name="clear"]');
+            clearFlag.checked = true;
+            assert.equal(this.datalayer._index.length, 1);
             textarea.value = csv_example;
             changeSelectValue(formatSelect, 'csv');
             happen.click(submit);
