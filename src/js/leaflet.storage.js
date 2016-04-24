@@ -1484,6 +1484,10 @@ L.Storage.Map.include({
             {
                 text: L._('About'),
                 callback: this.displayCaption
+            },
+            {
+                text: L._('Search location'),
+                callback: this.search
             }
         );
         if (this.options.urls.routing) {

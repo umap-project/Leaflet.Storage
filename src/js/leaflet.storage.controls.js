@@ -805,7 +805,8 @@ L.Storage.Search = L.PhotonSearch.extend({
     },
 
     zoomToFeature: function (feature) {
-        this.map.setView([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], 16);
+        var zoom = Math.max(this.map.getZoom(), 16);  // Never unzoom.
+        this.map.setView([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], zoom);
     },
 
     onSelected: function (feature) {
