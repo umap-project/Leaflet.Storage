@@ -1,3 +1,9 @@
+body.map_detail {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
 /* *********** */
 /*    forms    */
 /* *********** */
@@ -99,44 +105,53 @@ input + .error {
 input[type="file"] + .error {
     margin-top: 0;
 }
-fieldset.toggle > * {
-    display: none;
-}
-fieldset.toggle {
-    border-top: 1px solid #999;
-    border-bottom: 1px solid #ddd;
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-    padding: 0 10px;
-}
-fieldset.toggle.on {
+.fieldset {
     border: 1px solid #999;
-    padding-bottom: 5px;
+    margin-bottom: 5px;
 }
-
-fieldset.toggle .more_style_options,
-fieldset.toggle legend {
+.fieldset .fields {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s linear;
+    height: 0;
+}
+.fieldset.toggle.on {
+    border: 1px solid #999;
+}
+.fieldset.toggle.on .fields {
+  visibility: visible;
+  opacity: 1;
+  height: initial;
+    padding: 10px;
+}
+.fieldset.toggle .legend {
     display: block;
     cursor: pointer;
+    background-color: #999;
+    height: 30px;
+    line-height: 30px;
+    color: #fff;
+    margin: 0;
+    font-family: fira_sanslight;
+    font-size: 1.2em;
 }
-fieldset.toggle .more_style_options:before {
-    content: "…";
-}
-fieldset.toggle legend:before {
+.fieldset.toggle .legend:before {
     content: "▶";
     padding-right: 5px;
-    color: #666;
+    color: #ccc;
     font-size: 0.9em;
     vertical-align: middle;
+    padding-left: 5px;
 }
-fieldset.toggle.on legend:before {
+.fieldset.toggle.on .legend:before {
     content: "▼";
 }
-fieldset.toggle.on > * {
-    display: block;
-}
-fieldset.toggle.on .more_style_options {
-    display: none;
+.with-transition {
+    -webkit-transition: all .7s;
+    -moz-transition: all .7s;
+    -ms-transition: all .7s;
+    -o-transition: all .7s;
+    transition: all .7s;
 }
 
 
@@ -150,10 +165,9 @@ fieldset.toggle.on .more_style_options {
     position: absolute;
     top: 0;
     bottom: 0;
-    right: 0;
+    right: -400px;
     padding: 0 20px 40px 20px;
     border-left: 1px solid #ddd;
-    display: none;
     overflow-x: auto;
     z-index: 1000;
     background-color: #fff;
@@ -172,7 +186,14 @@ fieldset.toggle.on .more_style_options {
     bottom: 46px;
 }
 .storage-ui #storage-ui-container {
-    display: block;
+    right: 0;
+}
+.leaflet-right {
+    -webkit-transition: all .7s;
+    -moz-transition: all .7s;
+    -ms-transition: all .7s;
+    -o-transition: all .7s;
+    transition: all .7s;
 }
 .storage-ui .leaflet-right {
     right: 400px;

@@ -1316,7 +1316,7 @@ L.Storage.Map.include({
     },
 
     initEditBar: function () {
-        var container = L.DomUtil.create('div', 'storage-main-edit-toolbox', this._controlContainer),
+        var container = L.DomUtil.create('div', 'storage-main-edit-toolbox with-transition', this._controlContainer),
             title = L.DomUtil.add('h3', '', container, L._('Editing') + '&nbsp;'),
             name = L.DomUtil.create('a', 'storage-click-to-edit', title),
             setName = function () {

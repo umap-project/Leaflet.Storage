@@ -187,7 +187,7 @@ L.Storage.ToggleEditAction = L.S.BaseFeatureAction.extend({
     options: {
         toolbarIcon: {
             className: 'storage-toggle-edit',
-            tooltip: L._('Toggle edit mode')
+            tooltip: L._('Toggle edit mode (shift-click)')
         }
     },
 
@@ -841,7 +841,7 @@ L.Storage.SearchControl = L.Control.extend({
             limit: 10,
             noResultLabel: L._('No results')
         }
-        var container = L.DomUtil.create('div', 'leaflet-photon');
+        var container = L.DomUtil.create('div', '');
 
         var title = L.DomUtil.create('h3', '', container);
         title.textContent = L._('Search location');

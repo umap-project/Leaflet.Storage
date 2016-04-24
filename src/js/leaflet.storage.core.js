@@ -181,8 +181,9 @@ L.DomUtil.add = function (tagName, className, container, content) {
 
 L.DomUtil.createFieldset = function (container, legend, options) {
     options = options || {};
-    var fieldset = L.DomUtil.create('fieldset', 'toggle', container);
-    var legendEl = L.DomUtil.add('legend', 'style_options_toggle', fieldset, legend);
+    var fieldset = L.DomUtil.create('div', 'fieldset toggle', container);
+    var legendEl = L.DomUtil.add('h5', 'legend style_options_toggle', fieldset, legend);
+    var fieldsEl = L.DomUtil.add('div', 'fields with-transition', fieldset);
     L.DomEvent.on(legendEl, 'click', function () {
         if (L.DomUtil.hasClass(fieldset, 'on')) {
             L.DomUtil.removeClass(fieldset, 'on');
@@ -191,7 +192,7 @@ L.DomUtil.createFieldset = function (container, legend, options) {
             if (options.callback) options.callback.call(options.context || this);
         }
     });
-    return fieldset;
+    return fieldsEl;
 };
 
 L.DomUtil.classIf = function (el, className, bool) {
@@ -240,6 +241,27 @@ L.DomUtil.TextColorFromBackgroundColor = function (el) {
     }
     return out;
 };
+L.DomEvent.once = function (el, types, fn, context) {
+    // cf https://github.com/Leaflet/Leaflet/pull/3528#issuecomment-134551575
+
+    if (typeof types === 'object') {
+        for (var type in types) {
+            L.DomEvent.once(el, type, types[type], fn);
+        }
+        return L.DomEvent;
+    }
+
+    var handler = L.bind(function () {
+        L.DomEvent
+            .off(el, types, fn, context)
+            .off(el, types, handler, context);
+    }, L.DomEvent);
+
+    // add a listener that's executed once and removed after that
+    return L.DomEvent
+        .on(el, types, fn, context)
+        .on(el, types, handler, context);
+};
 
 
 /*
@@ -272,7 +294,7 @@ L.S._onKeyDown = function (e) {
         L.S.fire('ui:end');
     }
 };
-L.DomEvent.addListener(document, 'keydown', L.S._onKeyDown, L.S);
+L.DomEvent.on(document, 'keydown', L.S._onKeyDown, L.S);
 
 
 L.Storage.Help = L.Class.extend({
@@ -289,7 +311,7 @@ L.Storage.Help = L.Class.extend({
         label.title = label.innerHTML = L._('Close');
         this.content = L.DomUtil.create('div', 'storage-help-content', this.box);
         L.DomEvent.on(closeLink, 'click', this.hide, this);
-        L.DomEvent.addListener(this.parentContainer, 'keydown', this.onKeyDown, this);
+        L.DomEvent.on(this.parentContainer, 'keydown', this.onKeyDown, this);
     },
 
     onKeyDown: function (e) {

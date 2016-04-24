@@ -5,13 +5,12 @@ L.Storage.on('ui:start', function (e) {
     var container = L.DomUtil.get('storage-ui-container');
     // We reset all because we can't know which class has been added
     // by previous ui processes...
-    container.className = '';
+    container.className = 'with-transition';
     container.innerHTML = '';
     var actionsContainer = L.DomUtil.create('ul', 'toolbox', container);
     var body = L.DomUtil.create('div', 'body', container);
     if (e.data.html.nodeType && e.data.html.nodeType === 1) body.appendChild(e.data.html);
     else body.innerHTML = e.data.html;
-    L.DomUtil.addClass(document.body, 'storage-ui');
     var closeLink = L.DomUtil.create('li', 'storage-close-link', actionsContainer);
     L.DomUtil.add('i', 'storage-close-icon', closeLink);
     var label = L.DomUtil.create('span', '', closeLink);
@@ -22,7 +21,15 @@ L.Storage.on('ui:start', function (e) {
         }
     }
     if (e.cssClass) L.DomUtil.addClass(container, e.cssClass);
-    L.Storage.fire('ui:ready');
+    if (L.DomUtil.hasClass(document.body, 'storage-ui')) {
+        // Already open.
+        L.Storage.fire('ui:ready');
+    } else {
+        L.DomEvent.once(container, 'transitionend', function (e) {
+        L.Storage.fire('ui:ready');
+        })
+        L.DomUtil.addClass(document.body, 'storage-ui');
+    }
     var close = function () {
         L.Storage.fire('ui:end');
     };
@@ -31,7 +38,6 @@ L.Storage.on('ui:start', function (e) {
 
 L.Storage.on('ui:end', function () {
     var div = L.DomUtil.get('storage-ui-container');
-    div.innerHTML = '';
     L.DomUtil.removeClass(document.body, 'storage-ui');
     L.Storage.fire('ui:closed');
 });
@@ -90,11 +96,9 @@ L.Storage.on('ui:alert', function (e) {
                   .on(closeLink, 'click', close);
         UI_ALERT_ID = timeoutID = window.setTimeout(close, e.duration || 3000);
     };
-    if (L.DomUtil.hasClass(document.body, 'storage-alert')) {
-        UI_ALERTS.push(e);
-    } else {
-        pop(e);
-    }
+    if (L.DomUtil.hasClass(document.body, 'storage-alert')) UI_ALERTS.push(e);
+    else pop(e);
+
 });
 
 /*
