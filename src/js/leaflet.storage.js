@@ -329,10 +329,11 @@ L.Storage.Map.include({
 
     initShortcuts: function () {
         var globalShortcuts = function (e) {
-            var key = e.keyCode;
+            var key = e.keyCode,
+                modifierKey = e.ctrlKey || e.metaKey;
 
-            /* Edit mode only shortcuts */
-            if (key === L.S.Keys.F && e.ctrlKey) {
+            /* Generic shortcuts */
+            if (key === L.S.Keys.F && modifierKey) {
                 L.DomEvent.stop(e);
                 this.search();
             }
@@ -340,41 +341,41 @@ L.Storage.Map.include({
             if (!this.options.allowEdit) return;
 
             /* Edit mode only shortcuts */
-            if (key === L.S.Keys.E && e.ctrlKey && !this.editEnabled) {
+            if (key === L.S.Keys.E && modifierKey && !this.editEnabled) {
                 L.DomEvent.stop(e);
                 this.enableEdit();
-            } else if (key === L.S.Keys.E && e.ctrlKey && this.editEnabled && !this.isDirty) {
+            } else if (key === L.S.Keys.E && modifierKey && this.editEnabled && !this.isDirty) {
                 L.DomEvent.stop(e);
                 this.disableEdit();
                 L.S.fire('ui:end');
             }
-            if (key === L.S.Keys.S && e.ctrlKey) {
+            if (key === L.S.Keys.S && modifierKey) {
                 L.DomEvent.stop(e);
                 if (this.isDirty) {
                     this.save();
                 }
             }
-            if (key === L.S.Keys.Z && e.ctrlKey && this.isDirty) {
+            if (key === L.S.Keys.Z && modifierKey && this.isDirty) {
                 L.DomEvent.stop(e);
                 this.askForReset();
             }
-            if (key === L.S.Keys.M && e.ctrlKey && this.editEnabled) {
+            if (key === L.S.Keys.M && modifierKey && this.editEnabled) {
                 L.DomEvent.stop(e);
                 this.editTools.startMarker();
             }
-            if (key === L.S.Keys.P && e.ctrlKey && this.editEnabled) {
+            if (key === L.S.Keys.P && modifierKey && this.editEnabled) {
                 L.DomEvent.stop(e);
                 this.editTools.startPolygon();
             }
-            if (key === L.S.Keys.L && e.ctrlKey && this.editEnabled) {
+            if (key === L.S.Keys.L && modifierKey && this.editEnabled) {
                 L.DomEvent.stop(e);
                 this.editTools.startPolyline();
             }
-            if (key === L.S.Keys.I && e.ctrlKey && this.editEnabled) {
+            if (key === L.S.Keys.I && modifierKey && this.editEnabled) {
                 L.DomEvent.stop(e);
                 this.importPanel();
             }
-            if (key === L.S.Keys.H && e.ctrlKey && this.editEnabled) {
+            if (key === L.S.Keys.H && modifierKey && this.editEnabled) {
                 L.DomEvent.stop(e);
                 this.help.show('edit');
             }
