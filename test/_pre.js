@@ -59,7 +59,7 @@ var changeSelectValue = function (path_or_select, value) {
     return path_or_select;
 }
 var cleanAlert = function () {
-    L.DomUtil.removeClass(document.body, 'storage-alert');
+    L.DomUtil.removeClass(qs('#map'), 'storage-alert');
     L.DomUtil.get('storage-alert-container').innerHTML = '';
     UI_ALERT_ID = null;  // Prevent setTimeout to be called
 };

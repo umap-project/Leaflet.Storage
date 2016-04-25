@@ -91,9 +91,10 @@ describe('L.DataLayer', function () {
             clickSave();
             this.server.respond();
             this.server.respond();
-            assert(L.DomUtil.hasClass(document.body, 'storage-alert'));
+            assert(L.DomUtil.hasClass(this.map._container, 'storage-alert'));
             assert.notEqual(this.map.dirty_datalayers.indexOf(this.datalayer), -1);
             forceButton = qs('#storage-alert-container .storage-action');
+            console.log(qs('#storage-alert-container').innerHTML)
             assert.ok(forceButton);
         });
 

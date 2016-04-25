@@ -95,7 +95,7 @@ L.Storage.FeatureMixin = {
         this.appendEditFieldsets(container);
         var advancedActions = L.DomUtil.createFieldset(container, L._('Advanced actions'));
         this.getAdvancedEditActions(advancedActions);
-        L.S.fire('ui:start', {data: {html: container}});
+        this.map.ui.openPanel({data: {html: container}});
         this.map.editedFeature = this;
         if (!this.isOnScreen()) this.bringToCenter(e);
     },
@@ -106,9 +106,7 @@ L.Storage.FeatureMixin = {
         deleteLink.innerHTML = L._('Delete');
         L.DomEvent.on(deleteLink, 'click', function (e) {
             L.DomEvent.stop(e);
-            if (this.confirmDelete()) {
-                L.S.fire('ui:end');
-            }
+            if (this.confirmDelete()) this.map.ui.closePanel();
         }, this);
     },
 
@@ -369,7 +367,7 @@ L.Storage.FeatureMixin = {
         this.parentClass.prototype.onRemove.call(this, map);
         if (this.map.editedFeature === this) {
             this.endEdit();
-            L.Storage.fire('ui:end');
+            this.map.ui.closePanel();
         }
     },
 
@@ -561,7 +559,7 @@ L.Storage.PathMixin = {
         if(this.map.editEnabled) {
             if(this.editEnabled()) {
                 this.endEdit();
-                L.Storage.fire('ui:end');
+                this.map.ui.closePanel();
             }
             else {
                 this.edit(e);
@@ -653,11 +651,9 @@ L.Storage.PathMixin = {
 
     _onMouseOver: function () {
         if (this.map.measureTools && this.map.measureTools.enabled()) {
-            L.Storage.fire('ui:tooltip', {content: this.getMeasure()});
-            this.once('mouseout', function () { L.Storage.fire('ui:tooltip:abort');});
+            this.map.ui.tooltip({content: this.getMeasure(), attachTo: this});
         } else if (this.map.editEnabled && !this.map.editedFeature) {
-            L.Storage.fire('ui:tooltip', {content: L._('Click to edit')});
-            this.once('mouseout', function () { L.Storage.fire('ui:tooltip:abort');});
+            this.map.ui.tooltip({content: L._('Click to edit'), attachTo: this});
         }
     },
 

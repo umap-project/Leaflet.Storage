@@ -289,12 +289,6 @@ L.S.Keys = {
     S: 83,
     Z: 90
 };
-L.S._onKeyDown = function (e) {
-    if (e.keyCode === L.S.Keys.ESC) {
-        L.S.fire('ui:end');
-    }
-};
-L.DomEvent.on(document, 'keydown', L.S._onKeyDown, L.S);
 
 
 L.Storage.Help = L.Class.extend({

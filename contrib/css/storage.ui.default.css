@@ -1,9 +1,3 @@
-body {
-    width: 100%;
-    height: 100%;
-    overflow-x: hidden;
-}
-
 /* *********** */
 /*    forms    */
 /* *********** */
@@ -159,7 +153,9 @@ input[type="file"] + .error {
 /* *********** */
 /*    Panel    */
 /* *********** */
-
+.leaflet-ui-container {
+    overflow-x: hidden;
+}
 #storage-ui-container {
     width: 400px;
     position: absolute;
@@ -188,6 +184,7 @@ input[type="file"] + .error {
 .storage-ui #storage-ui-container {
     right: 0;
 }
+.leaflet-top,
 .leaflet-right {
     -webkit-transition: all .7s;
     -moz-transition: all .7s;

@@ -371,17 +371,17 @@ ul.photon-autocomplete {
     line-height: 36px;
     cursor: auto;
     border-bottom: 1px solid #ddd;
+    z-index: 1000;
+    opacity: 0.93;
 }
 .storage-edit-enabled .storage-main-edit-toolbox {
     top: 0;
-    opacity: 0.93;
-    z-index: 1000;
 }
 .storage-edit-enabled .storage-caption-bar {
     display: none;
 }
 .storage-caption-bar h3,
-.storage-edit-enabled .storage-main-edit-toolbox h3 {
+.storage-main-edit-toolbox h3 {
     display: inline;
 }
 .storage-edit-enabled .leaflet-top {

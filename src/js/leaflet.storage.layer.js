@@ -443,6 +443,7 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     rawToGeoJSON: function (c, type, callback) {
+        var self = this;
         var toDom = function (x) {
                 return (new DOMParser()).parseFromString(x, 'text/xml');
             };
@@ -458,7 +459,7 @@ L.Storage.DataLayer = L.Class.extend({
                     for (var i = 0; i < err.length; i++) {
                         message += err[i].message;
                     }
-                    L.S.fire('ui:alert', {content: message, level: 'error'});
+                    self.map.ui.alert({content: message, level: 'error'});
                     console.log(err);
                 } else {
                     callback(result);
@@ -483,7 +484,7 @@ L.Storage.DataLayer = L.Class.extend({
                 var gj = JSON.parse(c);
                 callback(gj);
             } catch(err) {
-                L.S.fire('ui:alert', {content: 'Invalid JSON file: ' + err});
+                self.map.ui.alert({content: 'Invalid JSON file: ' + err});
                 return;
             }
         }
@@ -534,7 +535,7 @@ L.Storage.DataLayer = L.Class.extend({
                 return this.geojsonToFeatures(geojson.geometries);
 
             default:
-                L.S.fire('ui:alert', {content: L._('Skipping unkown geometry.type: {type}', {type: geometry.type}), level: 'error'});
+                this.map.ui.alert({content: L._('Skipping unkown geometry.type: {type}', {type: geometry.type}), level: 'error'});
         }
         if (layer) {
             this.addLayer(layer);
@@ -595,7 +596,7 @@ L.Storage.DataLayer = L.Class.extend({
     importFromUrl: function (url, type) {
         url = this.map.localizeUrl(url);
         var self = this;
-        L.S.Xhr._ajax({verb: 'GET', uri: url, callback: function (data) {
+        this.map.xhr._ajax({verb: 'GET', uri: url, callback: function (data) {
             self.importRaw(data, type);
         }});
     },
@@ -775,7 +776,7 @@ L.Storage.DataLayer = L.Class.extend({
         L.DomEvent.on(deleteLink, 'click', L.DomEvent.stop)
                   .on(deleteLink, 'click', function () {
                     this._delete();
-                    L.S.fire('ui:end');
+                    this.map.ui.closePanel();
                 }, this);
         if (!this.isRemoteLayer()) {
             var emptyLink = L.DomUtil.create('a', 'storage-empty', advancedActions);
@@ -792,7 +793,7 @@ L.Storage.DataLayer = L.Class.extend({
                     var datalayer = this.clone();
                     datalayer.edit();
                 }, this);
-        L.S.fire('ui:start', {data: {html: container}});
+        this.map.ui.openPanel({data: {html: container}});
 
     },
 
@@ -813,7 +814,7 @@ L.Storage.DataLayer = L.Class.extend({
         };
 
         var versionsContainer = L.DomUtil.createFieldset(container, L._('Versions'), {callback: function () {
-            L.S.Xhr.get(this.getVersionsUrl(), {
+            this.map.xhr.get(this.getVersionsUrl(), {
                 callback: function (data) {
                     for (var i = 0; i < data.versions.length; i++) {
                         appendVersion.call(this, data.versions[i]);
@@ -827,7 +828,7 @@ L.Storage.DataLayer = L.Class.extend({
     restore: function (version) {
         if (!this.map.editEnabled) return;
         if (!confirm(L._('Are you sure you want to restore this version?'))) return;
-        L.S.Xhr.get(this.getVersionUrl(version), {
+        this.map.xhr.get(this.getVersionUrl(version), {
             callback: function (geojson) {
                 if (geojson._storage) this.setOptions(geojson._storage);
                 this.empty();
@@ -965,7 +966,7 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     saveDelete: function () {
-        L.S.Xhr.post(this.getDeleteUrl(), {
+        this.map.xhr.post(this.getDeleteUrl(), {
             callback: function () {
                 this.isDirty = false;
                 this.map.continueSaving();

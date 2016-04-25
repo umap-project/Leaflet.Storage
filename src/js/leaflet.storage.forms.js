@@ -348,9 +348,7 @@ L.FormBuilder.IconUrl = L.FormBuilder.Input.extend({
     unselectAll: function (container) {
         var els = container.querySelectorAll('div.selected');
         for (var el in els) {
-            if (els.hasOwnProperty(el)) {
-                L.DomUtil.removeClass(els[el], 'selected');
-            }
+            if (els.hasOwnProperty(el)) L.DomUtil.removeClass(els[el], 'selected');
         }
     }
 
@@ -413,14 +411,12 @@ L.Storage.FormBuilder = L.FormBuilder.extend({
     },
 
     finish: function () {
-        L.S.fire('ui:end');
+        this.map.ui.closePanel();
     },
 
     buildField: function (field) {
         var helper = L.FormBuilder.prototype.buildField.call(this, field);
-        if (helper.options.helpEntries) {
-            this.map.help.button(helper.label, helper.options.helpEntries);
-        }
+        if (helper.options.helpEntries) this.map.help.button(helper.label, helper.options.helpEntries);
         return helper;
     }
 

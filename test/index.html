@@ -89,9 +89,6 @@
     <body>
         <div id="mocha"></div>
         <div id="map"></div>
-        <div id="storage-ui-container"></div>
-        <div id="storage-alert-container"></div>
-        <div id="storage-tooltip-container"></div>
         <script>
             var runner = (window.mochaPhantomJS || window.mocha).run(function (failures) {
                 if (window.location.search.indexOf('debug') === -1) qs('#mocha').style.display = 'block';

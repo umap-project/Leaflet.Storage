@@ -98,15 +98,18 @@ describe('L.Storage.FeatureMixin', function () {
             disableEdit();
         });
 
-        it('should reset map.editedFeature on panel open', function () {
+        it('should reset map.editedFeature on panel open', function (done) {
             enableEdit();
             assert.notOk(this.map.editedFeature);
             happen.click(qs('path[fill="DarkBlue"]'));
             happen.click(qs('ul.leaflet-inplace-toolbar a.storage-toggle-edit'));
             assert.ok(this.map.editedFeature);
             this.map.displayCaption();
-            assert.notOk(this.map.editedFeature);
-            disableEdit();
+            window.setTimeout(function () {
+                assert.notOk(this.map.editedFeature);
+                disableEdit();
+                done();
+            }, 1001);  // CSS transition time.
         });
 
     });
@@ -150,7 +153,7 @@ describe('L.Storage.FeatureMixin', function () {
             changeInputValue(qs('form#datalayer-advanced-properties input[name=color]'), 'MediumAquaMarine');
             happen.click(qs('path[fill="DarkBlue"]'));
             happen.click(qs('ul.leaflet-inplace-toolbar a.storage-toggle-edit'));
-            var select = document.querySelector('select[name=datalayer]');
+            var select = qs('select[name=datalayer]');
             select.selectedIndex = 1;
             happen.once(select, {type: 'change'});
             assert.ok(qs('path[fill="none"]')); // Polyline fill is unchanged

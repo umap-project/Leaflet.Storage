@@ -1,144 +1,141 @@
 /*
 * Modals
 */
-L.Storage.on('ui:start', function (e) {
-    var container = L.DomUtil.get('storage-ui-container');
-    // We reset all because we can't know which class has been added
-    // by previous ui processes...
-    container.className = 'with-transition';
-    container.innerHTML = '';
-    var actionsContainer = L.DomUtil.create('ul', 'toolbox', container);
-    var body = L.DomUtil.create('div', 'body', container);
-    if (e.data.html.nodeType && e.data.html.nodeType === 1) body.appendChild(e.data.html);
-    else body.innerHTML = e.data.html;
-    var closeLink = L.DomUtil.create('li', 'storage-close-link', actionsContainer);
-    L.DomUtil.add('i', 'storage-close-icon', closeLink);
-    var label = L.DomUtil.create('span', '', closeLink);
-    label.title = label.innerHTML = L._('Close');
-    if (e.actions) {
-        for (var i = 0; i < e.actions.length; i++) {
-            actionsContainer.appendChild(e.actions[i]);
+L.S.UI = L.Evented.extend({
+
+    ALERTS: Array(),
+    ALERT_ID:  null,
+    TOOLTIP_ID:  null,
+
+    initialize: function (parent) {
+        this.parent = parent;
+        this.container = L.DomUtil.create('div', 'leaflet-ui-container', this.parent);
+        L.DomEvent.disableClickPropagation(this.container);
+        L.DomEvent.on(this.container, 'mousewheel', L.DomEvent.stopPropagation);
+        L.DomEvent.on(this.container, 'MozMousePixelScroll', L.DomEvent.stopPropagation);
+        this._panel = L.DomUtil.create('div', '', this.container);
+        this._panel.id = 'storage-ui-container';
+        this._alert = L.DomUtil.create('div', '', this.container);
+        this._alert.id = 'storage-alert-container';
+        this._tooltip = L.DomUtil.create('div', '', this.container);
+        this._tooltip.id = 'storage-tooltip-container';
+    },
+
+    resetPanelClassName: function () {
+        this._panel.className = 'with-transition';
+    },
+
+    openPanel: function (e) {
+        this.fire('panel:open');
+        // We reset all because we can't know which class has been added
+        // by previous ui processes...
+        this.resetPanelClassName();
+        this._panel.innerHTML = '';
+        var actionsContainer = L.DomUtil.create('ul', 'toolbox', this._panel);
+        var body = L.DomUtil.create('div', 'body', this._panel);
+        if (e.data.html.nodeType && e.data.html.nodeType === 1) body.appendChild(e.data.html);
+        else body.innerHTML = e.data.html;
+        var closeLink = L.DomUtil.create('li', 'storage-close-link', actionsContainer);
+        L.DomUtil.add('i', 'storage-close-icon', closeLink);
+        var label = L.DomUtil.create('span', '', closeLink);
+        label.title = label.innerHTML = L._('Close');
+        if (e.actions) {
+            for (var i = 0; i < e.actions.length; i++) {
+                actionsContainer.appendChild(e.actions[i]);
+            }
         }
-    }
-    if (e.cssClass) L.DomUtil.addClass(container, e.cssClass);
-    if (L.DomUtil.hasClass(document.body, 'storage-ui')) {
-        // Already open.
-        L.Storage.fire('ui:ready');
-    } else {
-        L.DomEvent.once(container, 'transitionend', function (e) {
-        L.Storage.fire('ui:ready');
-        })
-        L.DomUtil.addClass(document.body, 'storage-ui');
-    }
-    var close = function () {
-        L.Storage.fire('ui:end');
-    };
-    L.DomEvent.on(closeLink, 'click', close);
-});
+        if (e.cssClass) L.DomUtil.addClass(this._panel, e.cssClass);
+        if (L.DomUtil.hasClass(this.parent, 'storage-ui')) {
+            // Already open.
+            this.fire('panel:ready');
+        } else {
+            L.DomEvent.once(this._panel, 'transitionend', function (e) {
+                this.fire('panel:ready');
+            }, this);
+            L.DomUtil.addClass(this.parent, 'storage-ui');
+        }
+        L.DomEvent.on(closeLink, 'click', this.closePanel, this);
+    },
 
-L.Storage.on('ui:end', function () {
-    var div = L.DomUtil.get('storage-ui-container');
-    L.DomUtil.removeClass(document.body, 'storage-ui');
-    L.Storage.fire('ui:closed');
-});
+    closePanel: function () {
+        this.resetPanelClassName();
+        L.DomUtil.removeClass(this.parent, 'storage-ui');
+        this.fire('panel:closed');
+    },
 
-/*
-* Alerts
-*/
-var UI_ALERTS = Array();
-var UI_ALERT_ID =  null;
-L.Storage.on('ui:alert', function (e) {
-    var pop = function (e) {
+    alert: function (e) {
+        if (L.DomUtil.hasClass(this.parent, 'storage-alert')) this.ALERTS.push(e);
+        else this.popAlert(e);
+    },
+
+    popAlert: function (e) {
+        var self = this;
         if(!e) {
-            if (UI_ALERTS.length) {
-                e = UI_ALERTS.pop();
-            } else {
-                return;
-            }
+            if (this.ALERTS.length) e = this.ALERTS.pop();
+            else return;
         }
-        var div = L.DomUtil.get('storage-alert-container'),
-            timeoutID,
+        var timeoutID,
             level_class = e.level && e.level == 'info'? 'info': 'error';
-        div.innerHTML = '';
-        div.innerHTML = e.content;
-        L.DomUtil.addClass(document.body, 'storage-alert');
-        L.DomUtil.addClass(div, level_class);
+        this._alert.innerHTML = '';
+        this._alert.innerHTML = e.content;
+        L.DomUtil.addClass(this.parent, 'storage-alert');
+        L.DomUtil.addClass(this._alert, level_class);
         var close = function () {
-            if (timeoutID !== UI_ALERT_ID) { return;}  // Another alert has been forced
-            div.innerHTML = '';
-            L.DomUtil.removeClass(document.body, 'storage-alert');
-            L.DomUtil.removeClass(div, level_class);
-            if (timeoutID) {
-                window.clearTimeout(timeoutID);
-            }
-            pop();
+            if (timeoutID !== this.ALERT_ID) { return;}  // Another alert has been forced
+            this._alert.innerHTML = '';
+            L.DomUtil.removeClass(this.parent, 'storage-alert');
+            L.DomUtil.removeClass(this._alert, level_class);
+            if (timeoutID) window.clearTimeout(timeoutID);
+            this.popAlert();
         };
         if (e.actions) {
             var action, el;
             for (var i = 0; i < e.actions.length; i++) {
                 action = e.actions[i];
-                el = L.DomUtil.element('a', {'className': 'storage-action'}, div);
+                el = L.DomUtil.element('a', {'className': 'storage-action'}, this._alert);
                 el.href = '#';
                 el.innerHTML = action.label;
                 L.DomEvent.on(el, 'click', L.DomEvent.stop)
-                          .on(el, 'click', close);
-                if (action.callback) {
-                    L.DomEvent.on(el, 'click', action.callback, action.callbackContext || this);
-                }
+                          .on(el, 'click', close, this);
+                if (action.callback) L.DomEvent.on(el, 'click', action.callback, action.callbackContext || this.map);
             }
         }
-        var closeLink = L.DomUtil.create('a', 'storage-close-link', div);
+        var closeLink = L.DomUtil.create('a', 'storage-close-link', this._alert);
         closeLink.href = '#';
         L.DomUtil.add('i', 'storage-close-icon', closeLink);
         var label = L.DomUtil.create('span', '', closeLink);
         label.title = label.innerHTML = L._('Close');
         L.DomEvent.on(closeLink, 'click', L.DomEvent.stop)
-                  .on(closeLink, 'click', close);
-        UI_ALERT_ID = timeoutID = window.setTimeout(close, e.duration || 3000);
-    };
-    if (L.DomUtil.hasClass(document.body, 'storage-alert')) UI_ALERTS.push(e);
-    else pop(e);
+                  .on(closeLink, 'click', close, this);
+        self.ALERT_ID = timeoutID = window.setTimeout(L.bind(close, this), e.duration || 3000);
+    },
 
-});
-
-/*
-* Tooltips
-*/
-L.Storage.on('ui:tooltip:init', function (e) {
-    var tooltip = L.DomUtil.get('storage-tooltip-container'),
-        map = e.map,
-        ID;
-
-    var close = function (id) {
-        if (id && id !== ID) return;
-        tooltip.innerHTML = '';
-        L.DomUtil.removeClass(document.body, 'storage-tooltip');
-    };
-
-    var setFixedPosition = function () {
-        var left = map._container.offsetLeft + (map._container.clientWidth / 2) - (tooltip.clientWidth / 2),
-            top = map._container.offsetTop + 5,
+    fixTooltip: function () {
+        var left = this.parent.offsetLeft + (this.parent.clientWidth / 2) - (this._tooltip.clientWidth / 2),
+            top = this.parent.offsetTop + 5,
             point = L.point(left, top);
-        L.DomUtil.setPosition(tooltip, point);
-    };
+        L.DomUtil.setPosition(this._tooltip, point);
+    },
 
-    L.Storage.on('ui:tooltip', function (e) {
-        ID = Math.random();
-        var id = ID;
-        L.DomUtil.addClass(document.body, 'storage-tooltip');
-        setFixedPosition();
-        tooltip.innerHTML = e.content;
-        function closeIt () {close(id);}
-        if (e.attachTo) {
-            L.DomEvent.on(e.attachTo, 'mouseout', closeIt);
-        }
-        if (e.duration !== Infinity) {
-            window.setTimeout(closeIt, e.duration || 3000);
-        }
-    });
+    closeTooltip: function (id) {
+        if (id && id !== this.TOOLTIP_ID) return;
+        this._tooltip.innerHTML = '';
+        L.DomUtil.removeClass(this.parent, 'storage-tooltip');
+    },
 
-    L.Storage.on('ui:tooltip:abort', function () {
-        close();
-    });
+    tooltip: function (e) {
+        this.TOOLTIP_ID = Math.random();
+        var id = this.TOOLTIP_ID;
+        L.DomUtil.addClass(this.parent, 'storage-tooltip');
+        this.fixTooltip();
+        this._tooltip.innerHTML = e.content;
+        function closeIt () { this.closeTooltip(id); }
+        if (e.attachTo) L.DomEvent.on(e.attachTo, 'mouseout', closeIt, this);
+        if (e.duration !== Infinity) window.setTimeout(L.bind(closeIt, this), e.duration || 3000);
+    },
+
+    abortTooltip: function () {
+        this.closeTooltip();
+    }
 
 });

@@ -66,14 +66,10 @@ L.S.Popup = L.Popup.extend({
             }
             zoomLi.title = L._('Zoom to this feature');
             L.DomEvent.on(nextLi, 'click', function () {
-                if (next) {
-                    next.bringToCenter({zoomTo: next.getOption('zoomTo')}, function () {next.view(next.getCenter());});
-                }
+                if (next) next.bringToCenter({zoomTo: next.getOption('zoomTo')}, function () {next.view(next.getCenter());});
             });
             L.DomEvent.on(previousLi, 'click', function () {
-                if (prev) {
-                    prev.bringToCenter({zoomTo: prev.getOption('zoomTo')}, function () {prev.view(prev.getCenter());});
-                }
+                if (prev) prev.bringToCenter({zoomTo: prev.getOption('zoomTo')}, function () {prev.view(prev.getCenter());});
             });
             L.DomEvent.on(zoomLi, 'click', function () {
                 this.bringToCenter({zoomTo: this.getOption('zoomTo')});
@@ -83,13 +79,9 @@ L.S.Popup = L.Popup.extend({
 
     format: function () {
         var title = this.renderTitle();
-        if (title) {
-            this.container.appendChild(title);
-        }
+        if (title) this.container.appendChild(title);
         var body = this.renderBody();
-        if (body) {
-            L.DomUtil.add('div', 'storage-popup-content', this.container, body);
-        }
+        if (body) L.DomUtil.add('div', 'storage-popup-content', this.container, body);
         this.renderFooter();
     },
 
@@ -142,9 +134,7 @@ L.S.Popup.Table = L.S.Popup.BaseWithTitle.extend({
         var table = L.DomUtil.create('table');
 
         for (var key in this.feature.properties) {
-            if (typeof this.feature.properties[key] === 'object' || key === 'name') {
-                continue;
-            }
+            if (typeof this.feature.properties[key] === 'object' || key === 'name') continue;
             // TODO, manage links (url, mailto, wikipedia...)
             this.addRow(table, key, L.Util.escapeHTML(this.feature.properties[key]).trim());
         }
@@ -213,11 +203,11 @@ L.S.Popup.SimplePanel = L.S.Popup.extend({
     },
 
     update: function () {
-        L.S.fire('ui:start', {data: {html: this._content}, actions: [this.allButton()]});
+        this.feature.map.ui.openPanel({data: {html: this._content}, actions: [this.allButton()]});
     },
 
     onRemove: function (map) {
-        L.S.fire('ui:end');
+        map.ui.closePanel();
         L.S.Popup.prototype.onRemove.call(this, map);
     },
 

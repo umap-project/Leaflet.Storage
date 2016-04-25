@@ -51,22 +51,29 @@ L.Map.mergeOptions({
 
 L.Storage.Map.include({
 
-    initialize: function (/* DOM element or id*/ el, /* Object*/ geojson) {
-        // We manage it, so don't use Leaflet default behaviour
-        if (geojson.properties && geojson.properties.locale) {
-            L.setLocale(geojson.properties.locale);
-        }
+    initialize: function (el, geojson) {
+
+        if (geojson.properties && geojson.properties.locale) L.setLocale(geojson.properties.locale);
+
         var zoomControl = typeof geojson.properties.zoomControl !== 'undefined' ? geojson.properties.zoomControl : true;
         geojson.properties.zoomControl = false;
         L.Util.setBooleanFromQueryString(geojson.properties, 'scrollWheelZoom');
         L.Map.prototype.initialize.call(this, el, geojson.properties);
+
+        this.ui = new L.S.UI(this._container);
+        this.xhr = new L.S.Xhr(this.ui);
+        this.xhr.on('dataloding', function (e) {
+            this.fire('dataloding', e);
+        });
+        this.xhr.on('datalaod', function (e) {
+            this.fire('datalaod', e);
+        });
+
         this.initLoader();
         this.name = this.options.name;
         this.description = this.options.description;
         this.demoTileInfos = this.options.demoTileInfos;
-        if (geojson.geometry) {
-            this.options.center = geojson.geometry;
-        }
+        if (geojson.geometry) this.options.center = geojson.geometry;
         this.options.zoomControl = zoomControl;
         this.overrideBooleanOptionFromQueryString('zoomControl');
         this.overrideBooleanOptionFromQueryString('moreControl');
@@ -80,10 +87,8 @@ L.Storage.Map.include({
         this.datalayersOnLoad = L.Util.queryString('datalayers');
         this.options.onLoadPanel = L.Util.queryString('onLoadPanel', this.options.onLoadPanel);
         if (this.datalayersOnLoad) this.datalayersOnLoad = this.datalayersOnLoad.toString().split(',');
-        if (L.Browser.ielt9) {
-            // TODO include ie9
-            this.options.allowEdit = false;
-        }
+
+        if (L.Browser.ielt9) this.options.allowEdit = false; // TODO include ie9
 
         var editedFeature = null,
             self = this;
@@ -105,9 +110,7 @@ L.Storage.Map.include({
             // Certainly IE8, which has a limited version of defineProperty
         }
 
-        if (this.options.hash) {
-            this.addHash();
-        }
+        if (this.options.hash) this.addHash();
         this.initCenter();
         this.handleLimitBounds();
 
@@ -140,7 +143,7 @@ L.Storage.Map.include({
             this.displayCaption();
         }
 
-        L.Storage.on('ui:closed', function () {
+        this.ui.on('panel:closed', function () {
             this.invalidateSize({pan: false});
         }, this);
 
@@ -190,9 +193,8 @@ L.Storage.Map.include({
         this.slideshow = new L.S.Slideshow(this, this.options.slideshow);
         this.initCaptionBar();
         if (this.options.allowEdit) {
-            L.Storage.fire('ui:tooltip:init', {map: this});
             this.editTools = new L.S.Editable(this);
-            L.Storage.on('ui:end ui:start', function () {
+            this.ui.on('panel:closed panel:open', function () {
                 this.editedFeature = null;
             }, this);
             this.initEditBar();
@@ -336,6 +338,8 @@ L.Storage.Map.include({
             if (key === L.S.Keys.F && modifierKey) {
                 L.DomEvent.stop(e);
                 this.search();
+            } else if (e.keyCode === L.S.Keys.ESC) {
+                this.ui.closePanel();
             }
 
             if (!this.options.allowEdit) return;
@@ -347,7 +351,7 @@ L.Storage.Map.include({
             } else if (key === L.S.Keys.E && modifierKey && this.editEnabled && !this.isDirty) {
                 L.DomEvent.stop(e);
                 this.disableEdit();
-                L.S.fire('ui:end');
+                this.ui.closePanel();
             }
             if (key === L.S.Keys.S && modifierKey) {
                 L.DomEvent.stop(e);
@@ -427,7 +431,7 @@ L.Storage.Map.include({
             }
         } catch (e) {
             this.removeLayer(tilelayer);
-            L.S.fire('ui:alert', {content: L._('Error in the tilelayer URL') + ': ' + tilelayer._url, level: 'error'});
+            this.ui.alert({content: L._('Error in the tilelayer URL') + ': ' + tilelayer._url, level: 'error'});
             // Users can put tilelayer URLs by hand, and if they add wrong {variable},
             // Leaflet throw an error, and then the map is no more editable
         }
@@ -524,7 +528,7 @@ L.Storage.Map.include({
         this.options.center = this.getCenter();
         this.options.zoom = this.getZoom();
         this.isDirty = true;
-        L.Storage.fire('ui:alert', {content: L._('The zoom and center have been setted.'), 'level': 'info'});
+        this.ui.alert({content: L._('The zoom and center have been setted.'), 'level': 'info'});
     },
 
     updateTileLayers: function () {
@@ -630,7 +634,7 @@ L.Storage.Map.include({
             var blob = new Blob([content], {type: type.filetype});
             download.href = window.URL.createObjectURL(blob);
         }, this);
-        L.S.fire('ui:start', {data: {html: container}});
+        this.ui.openPanel({data: {html: container}});
     },
 
     toGeoJSON: function () {
@@ -648,10 +652,7 @@ L.Storage.Map.include({
     },
 
     updatePermissions: function () {
-        if (!this.options.storage_id) {
-            L.S.fire('ui:alert', {content: L._('Please save the map before'), level: 'info'});
-            return;
-        }
+        if (!this.options.storage_id) return this.ui.alert({content: L._('Please save the map before'), level: 'info'});
         var url = L.Util.template(this.options.urls.map_update_permissions, {'map_id': this.options.storage_id});
         this.get(url, {
             'listen_form': {'id': 'map_edit'}
@@ -738,12 +739,12 @@ L.Storage.Map.include({
                     }
                 }
             } else {
-                if (!type) return L.S.fire('ui:alert', {content: L._('Please choose a format'), level: 'error'});
+                if (!type) return this.ui.alert({content: L._('Please choose a format'), level: 'error'});
                 if (rawInput.value && type === 'umap') {
                     try {
                         this.importRaw(rawInput.value, type);
                     } catch (e) {
-                        L.S.fire('ui:alert', {content: L._('Invalid umap data'), level: 'error'});
+                        this.ui.alert({content: L._('Invalid umap data'), level: 'error'});
                     }
                 } else {
                     if (!layer) layer = this.createDataLayer();
@@ -766,7 +767,7 @@ L.Storage.Map.include({
             }
             typeInput.value = type;
         }, this);
-        L.S.fire('ui:start', {data: {html: container}});
+        this.ui.openPanel({data: {html: container}});
     },
 
     importRaw: function(rawData){
@@ -809,7 +810,7 @@ L.Storage.Map.include({
             try {
                 self.importRaw(rawData);
             } catch (e) {
-                L.S.fire('ui:alert', {content: L._('Invalid umap data in {filename}', {filename: file.name}), level: 'error'});
+                this.ui.alert({content: L._('Invalid umap data in {filename}', {filename: file.name}), level: 'error'});
             }
         };
     },
@@ -884,7 +885,7 @@ L.Storage.Map.include({
         var label = L.DomUtil.create('span', '', browser);
         label.innerHTML = label.title = L._('Browse data');
         L.DomEvent.on(browser, 'click', this.openBrowser, this);
-        L.S.fire('ui:start', {data: {html: container}, actions: [browser]});
+        this.ui.openPanel({data: {html: container}, actions: [browser]});
     },
 
     eachDataLayer: function (method, context) {
@@ -1031,9 +1032,9 @@ L.Storage.Map.include({
                 else msg = L._('Map has been saved!');
                 this.once('saved', function () {
                     this.isDirty = false;
-                    L.S.fire('ui:alert', {content: msg, level: 'info', duration: duration});
+                    this.ui.alert({content: msg, level: 'info', duration: duration});
                 });
-                L.S.fire('ui:end');
+                this.ui.closePanel();
                 this.continueSaving();
             },
             context: this
@@ -1268,7 +1269,7 @@ L.Storage.Map.include({
         L.DomEvent
             .on(clone, 'click', L.DomEvent.stop)
             .on(clone, 'click', this.clone, this);
-        L.S.fire('ui:start', {data: {html: container}});
+        this.ui.openPanel({data: {html: container}});
     },
 
     enableEdit: function() {
@@ -1344,7 +1345,7 @@ L.Storage.Map.include({
             .addListener(disable, 'click', L.DomEvent.stop)
             .addListener(disable, 'click', function (e) {
                 this.disableEdit(e);
-                L.S.fire('ui:end');
+                this.ui.closePanel();
             }, this);
 
         L.DomEvent
@@ -1360,7 +1361,7 @@ L.Storage.Map.include({
         if (!confirm(L._('Are you sure you want to cancel your changes?'))) return;
         this.reset();
         this.disableEdit(e);
-        L.S.fire('ui:end');
+        this.ui.closePanel();
     },
 
     startMarker: function () {
@@ -1397,18 +1398,18 @@ L.Storage.Map.include({
     post: function (url, options) {
         options = options || {};
         options.listener = this;
-        L.S.Xhr.post(url, options);
+        this.xhr.post(url, options);
     },
 
     get: function (url, options) {
         options = options || {};
         options.listener = this;
-        L.S.Xhr.get(url, options);
+        this.xhr.get(url, options);
     },
 
     ajax: function (options) {
         options.listener = this;
-        L.S.Xhr._ajax(options);
+        this.xhr._ajax(options);
     },
 
     initContextMenu: function () {

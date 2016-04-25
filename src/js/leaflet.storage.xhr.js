@@ -1,4 +1,8 @@
-L.Storage.Xhr = {
+L.Storage.Xhr = L.Evented.extend({
+
+    initialize: function (ui) {
+        this.ui = ui;
+    },
 
     _wrapper: function () {
         var wrapper;
@@ -25,7 +29,7 @@ L.Storage.Xhr = {
 
     _ajax: function (settings) {
         var xhr = this._wrapper(), id = Math.random(), self = this;
-        if (settings.listener) settings.listener.fire('dataloading', {id: id});
+        this.fire('dataloading', {id: id});
         xhr.open(settings.verb, settings.uri, true);
         if (settings.uri.indexOf('http') !== 0 || settings.uri.indexOf(window.location.origin) === 0) {
             // "X-" mode headers cause the request to be in preflight mode,
@@ -38,7 +42,7 @@ L.Storage.Xhr = {
             }
         }
 
-        var loaded = function () {if (settings.listener) settings.listener.fire('dataload', {id: id});};
+        var loaded = function () {self.fire('dataload', {id: id});};
 
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
@@ -46,7 +50,7 @@ L.Storage.Xhr = {
                     settings.callback.call(settings.context || xhr, xhr.responseText, xhr);
                 }
                 else if (xhr.status === 403) {
-                    L.Storage.fire('ui:alert', {content: L._('Action not allowed :('), level: 'error'});
+                    self.ui.alert({content: L._('Action not allowed :('), level: 'error'});
                 }
                 else if (xhr.status === 412) {
                     var msg = L._('Woops! Someone else seems to have edited the data. You can save anyway, but this will erase the changes made by others.');
@@ -63,11 +67,11 @@ L.Storage.Xhr = {
                             label: L._('Cancel')
                         }
                     ];
-                    L.Storage.fire('ui:alert', {content: msg, level: 'error', duration: 100000, actions: actions});
+                    self.ui.alert({content: msg, level: 'error', duration: 100000, actions: actions});
                 }
                 else {
                     if (xhr.status !== 0) {  // 0 === request cut by user
-                        L.Storage.fire('ui:alert', {'content': L._('Problem in the response'), 'level': 'error'});
+                        self.ui.alert({'content': L._('Problem in the response'), 'level': 'error'});
                     }
                 }
                 loaded();
@@ -112,27 +116,20 @@ L.Storage.Xhr = {
             }
             catch (err) {
                 console.log(err);
-                L.Storage.fire('ui:alert', {content: L._('Problem in the response format'), level: 'error'});
+                self.ui.alert({content: L._('Problem in the response format'), level: 'error'});
                 return;
             }
             if (data.errors) {
                 console.log(data.errors);
-                L.Storage.fire('ui:alert', {content: L._('An error occured'), level: 'error'});
+                self.ui.alert({content: L._('An error occured'), level: 'error'});
             } else if (data.login_required) {
                 // login_required should be an URL for the login form
-                if (settings.login_callback) {
-                    settings.login_callback(data);
-                }
-                else {
-                    self.login(data, args);
-                }
+                if (settings.login_callback) settings.login_callback(data);
+                else self.login(data, args);
             }
             else {
-                if (settings.callback) {
-                    L.bind(settings.callback, settings.context || this)(data, response);
-                } else {
-                    self.default_callback(data, settings, response);
-                }
+                if (settings.callback) L.bind(settings.callback, settings.context || this)(data, response);
+                else self.default_callback(data, settings, response);
             }
         };
 
@@ -147,48 +144,42 @@ L.Storage.Xhr = {
     },
 
     get: function(uri, options) {
-        L.Storage.Xhr._json('GET', uri, options);
+        this._json('GET', uri, options);
     },
 
     post: function(uri, options) {
-        L.Storage.Xhr._json('POST', uri, options);
+        this._json('POST', uri, options);
     },
 
     submit_form: function(form_id, options) {
-        if(typeof options === 'undefined') {
-            options = {};
-        }
+        if(typeof options === 'undefined') options = {};
         var form = L.DomUtil.get(form_id);
         var formData = new FormData(form);
-        if(options.extraFormData) {
-            formData.append(options.extraFormData);
-        }
+        if(options.extraFormData) formData.append(options.extraFormData);
         options.data = formData;
-        L.Storage.Xhr.post(form.action, options);
+        this.post(form.action, options);
         return false;
     },
 
     listen_form: function (form_id, options) {
-        var form = L.DomUtil.get(form_id);
-        if (!form) {
-            return;
-        }
+        var form = L.DomUtil.get(form_id), self = this;
+        if (!form) return;
         L.DomEvent
             .on(form, 'submit', L.DomEvent.stopPropagation)
             .on(form, 'submit', L.DomEvent.preventDefault)
             .on(form, 'submit', function () {
-                L.Storage.Xhr.submit_form(form_id, options);
+                self.submit_form(form_id, options);
             });
     },
 
     listen_link: function (link_id, options) {
-        var link = L.DomUtil.get(link_id);
+        var link = L.DomUtil.get(link_id), self = this;
         if (link) {
             L.DomEvent
                 .on(link, 'click', L.DomEvent.stop)
                 .on(link, 'click', function () {
                     if (options.confirm && !confirm(options.confirm)) { return;}
-                    L.Storage.Xhr.get(link.href, options);
+                    self.get(link.href, options);
                 });
         }
     },
@@ -197,38 +188,32 @@ L.Storage.Xhr = {
         // default callback, to avoid boilerplate
         if (data.redirect) {
             var newPath = data.redirect;
-            if (window.location.pathname == newPath) {
-                window.location.reload();  // Keep the hash, so the current view
-            }
-            else {
-                window.location = newPath;
-            }
+            if (window.location.pathname == newPath) window.location.reload();  // Keep the hash, so the current view
+            else window.location = newPath;
         }
         else if (data.info) {
-            L.Storage.fire('ui:alert', {content: data.info, level: 'info'});
-            L.Storage.fire('ui:end');
+            this.ui.alert({content: data.info, level: 'info'});
+            this.ui.closePanel();
         }
         else if (data.error) {
-            L.Storage.fire('ui:alert', {content: data.error, level: 'error'});
+            this.ui.alert({content: data.error, level: 'error'});
         }
         else if (data.html) {
             var ui_options = {'data': data},
                 listen_options;
-            if (options.cssClass) {
-                ui_options.cssClass = options.cssClass;
-            }
-            L.Storage.fire('ui:start', ui_options);
+            if (options.cssClass) ui_options.cssClass = options.cssClass;
+            this.ui.openPanel(ui_options);
             // To low boilerplate, if there is a form, listen it
             if (options.listen_form) {
                 // Listen form again
                 listen_options = L.Util.extend({}, options, options.listen_form.options);
-                L.Storage.Xhr.listen_form(options.listen_form.id, listen_options);
+                this.listen_form(options.listen_form.id, listen_options);
             }
             if (options.listen_link) {
                 for (var i=0, l=options.listen_link.length; i<l; i++) {
                     // Listen link again
                     listen_options = L.Util.extend({}, options, options.listen_link[i].options);
-                    L.Storage.Xhr.listen_link(options.listen_link[i].id, listen_options);
+                    this.listen_link(options.listen_link[i].id, listen_options);
                 }
             }
         }
@@ -243,25 +228,16 @@ L.Storage.Xhr = {
         // args: args of the first _json call, to call again at process end
         var self = this;
         var proceed = function () {
-            L.Storage.fire('ui:end');
-            if (typeof args !== 'undefined') {
-                L.Storage.Xhr._json.apply(self, args);
-            }
-            else {
-                self.default_callback(data, {});
-            }
+            self.ui.closePanel();
+            if (typeof args !== 'undefined') self._json.apply(self, args);
+            else self.default_callback(data, {});
         };
         var ask_for_login = function (data) {
-            L.Storage.fire('ui:start', {'data': data});
-            L.Storage.Xhr.listen_form('login_form', {
+            self.ui.openPanel({'data': data});
+            self.listen_form('login_form', {
                 'callback': function (data) {
-                    if (data.html) {
-                        // Problem in the login - ask again
-                        ask_for_login(data);
-                    }
-                    else {
-                        proceed();
-                    }
+                    if (data.html) ask_for_login(data);  // Problem in the login - ask again
+                    else proceed();
                 }
             });
             // Auth links
@@ -269,10 +245,9 @@ L.Storage.Xhr = {
             Object.keys(links).forEach(function (el) {
                 var link = links[el];
                 L.DomEvent
-                    .on(link, 'click', L.DomEvent.stopPropagation)
-                    .on(link, 'click', L.DomEvent.preventDefault)
+                    .on(link, 'click', L.DomEvent.stop)
                     .on(link, 'click', function () {
-                        L.Storage.fire('ui:end');
+                        self.ui.closePanel();
                         var win = window.open(link.href);
                         window.storage_proceed = function () {
                             proceed();
@@ -306,4 +281,4 @@ L.Storage.Xhr = {
         return query_string.join('&');
     }
 
-};
+});

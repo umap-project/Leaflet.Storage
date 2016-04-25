@@ -625,11 +625,11 @@ L.Storage.Map.include({
             };
             build();
             datalayer.on('datachanged', build);
-            L.Storage.once('ui:end', function () {
+            datalayer.map.ui.once('panel:closed', function () {
                 datalayer.off('datachanged', build);
             });
-            L.Storage.once('ui:ready', function () {
-                L.Storage.once('ui:start', function () {
+            datalayer.map.ui.once('panel:ready', function () {
+                datalayer.map.ui.once('panel:ready', function () {
                     datalayer.off('datachanged', build);
                 });
             });
@@ -649,7 +649,7 @@ L.Storage.Map.include({
         var label = L.DomUtil.create('span', '', link);
         label.innerHTML = label.title = L._('About');
         L.DomEvent.on(link, 'click', this.displayCaption, this);
-        L.Storage.fire('ui:start', {data: {html: browserContainer}, actions: [link]});
+        this.ui.openPanel({data: {html: browserContainer}, actions: [link]});
     }
 
 });
@@ -685,7 +685,7 @@ L.Storage.TileLayerControl = L.Control.extend({
         this._map.eachTileLayer(function (tilelayer) {
             this.addTileLayerElement(tilelayer, options);
         }, this);
-        L.Storage.fire('ui:start', {data: {html: this._tilelayers_container}});
+        this._map.ui.openPanel({data: {html: this._tilelayers_container}});
     },
 
     addTileLayerElement: function (tilelayer, options) {
@@ -697,10 +697,8 @@ L.Storage.TileLayerControl = L.Control.extend({
         name.innerHTML = tilelayer.options.name;
         L.DomEvent.on(el, 'click', function () {
             this._map.selectTileLayer(tilelayer);
-            L.S.fire('ui:end');
-            if (options && options.callback) {
-                options.callback(tilelayer);
-            }
+            this._map.ui.closePanel();
+            if (options && options.callback) options.callback(tilelayer);
         }, this);
     }
 
@@ -811,7 +809,7 @@ L.Storage.Search = L.PhotonSearch.extend({
 
     onSelected: function (feature) {
         this.zoomToFeature(feature);
-        L.Storage.fire('ui:end');
+        this.map.ui.closePanel();
     }
 
 });
@@ -856,10 +854,10 @@ L.Storage.SearchControl = L.Control.extend({
             map.fire('dataload', {id: id});
         });
         this.search.resultsContainer = resultsContainer;
-        L.Storage.once('ui:ready', function () {
+        map.ui.once('panel:ready', function () {
             input.focus();
         });
-        L.Storage.fire('ui:start', {data: {html: container}});
+        map.ui.openPanel({data: {html: container}});
     }
 
 });
@@ -977,7 +975,7 @@ L.S.IframeExporter = L.Class.extend({
             delete this.queryString.datalayers;
         }
         var currentView = this.options.currentView ? window.location.hash : '',
-            iframeUrl = this.baseUrl + '?' + L.S.Xhr.buildQueryString(this.queryString) + currentView,
+            iframeUrl = this.baseUrl + '?' + this.map.xhr.buildQueryString(this.queryString) + currentView,
             code = '<iframe width="' + this.dimensions.width + '" height="' + this.dimensions.height + '" frameBorder="0" src="' + iframeUrl + '"></iframe>';
         if (this.options.includeFullScreenLink) {
             code += '<p><a href="' + this.baseUrl + '">' + L._('See full screen') + '</a></p>';
@@ -1046,11 +1044,11 @@ L.S.Editable = L.Editable.extend({
                 content = L._('Click last point to finish shape');
             }
         }
-        if (content) L.S.fire('ui:tooltip', {content: content});
+        if (content) this.map.ui.tooltip({content: content});
     },
 
     closeTooltip: function () {
-        L.S.fire('ui:tooltip:abort');
+        this.map.ui.abortTooltip();
     },
 
     onVertexRawClick: function (e) {
