@@ -246,21 +246,22 @@ L.Storage.Map.include({
             new L.S.SettingsToolbar({actions: editActions}).addTo(this);
         }
         if (this.options.moreControl) {
-            this._controls.moreControl = (new L.S.MoreControls()).addTo(this);
-            this._controls.homeControl = (new L.S.HomeControl()).addTo(this);
-            this._controls.locateControl = (new L.S.LocateControl()).addTo(this);
-            this._controls.searchControl = (new L.Storage.SearchControl()).addTo(this);
-            this._controls.embedControl = (new L.Control.Embed(this, this.options.embedOptions)).addTo(this);
-            this._controls.tilelayersControl = new L.Storage.TileLayerControl().addTo(this);
+            this._controls.more = (new L.S.MoreControls()).addTo(this);
+            this._controls.home = (new L.S.HomeControl()).addTo(this);
+            this._controls.locate = (new L.S.LocateControl()).addTo(this);
+            this._controls.fullscreen = (new L.Control.Fullscreen({title: {'false': L._('View Fullscreen'), 'true': L._('Exit Fullscreen')}})).addTo(this);
+            this._controls.search = (new L.Storage.SearchControl()).addTo(this);
+            this._controls.embed = (new L.Control.Embed(this, this.options.embedOptions)).addTo(this);
+            this._controls.tilelayers = new L.Storage.TileLayerControl().addTo(this);
             var editInOSMControlOptions = {
                 position: 'topleft',
                 widgetOptions: {helpText: L._('Open this map extent in a map editor to provide more accurate data to OpenStreetMap')}
             };
-            this._controls.editInOSMControl = (new L.Control.EditInOSM(editInOSMControlOptions)).addTo(this);
-            this._controls.measureControl = (new L.MeasureControl().addTo(this));
+            this._controls.editInOSM = (new L.Control.EditInOSM(editInOSMControlOptions)).addTo(this);
+            this._controls.measure = (new L.MeasureControl().addTo(this));
         }
         if (this.options.scaleControl) {
-            this._controls.scaleControl = L.control.scale().addTo(this);
+            this._controls.scale = L.control.scale().addTo(this);
         }
         this._controls.attribution = new L.S.AttributionControl().addTo(this);
         if (this.options.miniMap) {

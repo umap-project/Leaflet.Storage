@@ -31,7 +31,7 @@
   "author": "Yohan Boniface",
   "license": "WTFPL",
   "bugs": {
-    "url": "https://github.com/umap-project/Leaflet.Storage/issues"
+      "url": "https://github.com/umap-project/Leaflet.Storage/issues"
   },
   "homepage": "http://wiki.openstreetmap.org/wiki/UMap",
   "dependencies": {
@@ -42,6 +42,7 @@
     "leaflet-editable": "0.7.0-beta.1",
     "leaflet-editinosm": "^0.2.3",
     "leaflet-formbuilder": "^0.2.1",
+    "leaflet-fullscreen": "^1.0.1",
     "leaflet-hash": "^0.2.1",
     "leaflet-i18n": "0.2.0",
     "leaflet-label": "Leaflet/Leaflet.label#leaflet-master",
