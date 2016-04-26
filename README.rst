@@ -6,6 +6,13 @@ Manage map and features with Leaflet and expose them for backend storage with an
 
 Demo: http://umap.fluv.io/
 
+-------------------
+Feedback and issues
+-------------------
+
+Please use uMap issues: https://github.com/umap-project/umap/issues
+
+
 ----------------
 Backend agnostic
 ----------------
