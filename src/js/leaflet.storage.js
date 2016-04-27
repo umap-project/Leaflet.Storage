@@ -166,9 +166,7 @@ L.Storage.Map.include({
             // Certainly IE8, which has a limited version of defineProperty
         }
         this.on('baselayerchange', function (e) {
-            if (this._controls.miniMap) {
-                this._controls.miniMap.onMainMapBaseLayerChange(e);
-            }
+            if (this._controls.miniMap) this._controls.miniMap.onMainMapBaseLayerChange(e);
         }, this);
 
         // Creation mode
@@ -228,8 +226,8 @@ L.Storage.Map.include({
 
         L.DomUtil.classIf(document.body, 'storage-caption-bar-enabled', this.options.captionBar || (this.options.slideshow && (this.options.slideshow.delay || this.options.slideshow.autoplay)));
         L.DomUtil.classIf(document.body, 'storage-slideshow-enabled', this.options.slideshow && (this.options.slideshow.delay || this.options.slideshow.autoplay));
-        if (this.options.zoomControl) this._controls.zoomControl = (new L.Control.Zoom({zoomInTitle: L._('Zoom in'), zoomOutTitle: L._('Zoom out')})).addTo(this);
-        if (this.options.datalayersControl) this._controls.datalayersControl = new L.Storage.DataLayersControl().addTo(this);
+        if (this.options.zoomControl) this._controls.zoom = (new L.Control.Zoom({zoomInTitle: L._('Zoom in'), zoomOutTitle: L._('Zoom out')})).addTo(this);
+        if (this.options.datalayersControl) this._controls.datalayers = new L.Storage.DataLayersControl().addTo(this);
         if (this.options.allowEdit) {
             this._controls.toggleEdit = new L.Storage.EditControl(this);
             this.addControl(this._controls.toggleEdit);
@@ -314,9 +312,7 @@ L.Storage.Map.include({
     },
 
     updateDatalayersControl: function () {
-        if (this._controls.datalayersControl) {
-            this._controls.datalayersControl.update();
-        }
+        if (this._controls.datalayers) this._controls.datalayers.update();
     },
 
     backupOptions: function () {
@@ -518,11 +514,8 @@ L.Storage.Map.include({
     },
 
     getOption: function (option) {
-        if (L.Util.usableOption(this.options, option)) {
-            return this.options[option];
-        } else {
-            return this.getDefaultOption(option);
-        }
+        if (L.Util.usableOption(this.options, option)) return this.options[option];
+        else return this.getDefaultOption(option);
     },
 
     updateExtent: function() {
@@ -538,9 +531,7 @@ L.Storage.Map.include({
                 self.options.tilelayer = tilelayer.toJSON();
                 self.isDirty = true;
             };
-        if (this._controls.tilelayersControl) {
-            this._controls.tilelayersControl.openSwitcher({callback: callback});
-        }
+        if (this._controls.tilelayers) this._controls.tilelayers.openSwitcher({callback: callback});
     },
 
     renderShareBox: function () {
@@ -1560,7 +1551,7 @@ L.Storage.Map.include({
     },
 
     search: function () {
-        if (this._controls.searchControl) this._controls.searchControl.openPanel(this);
+        if (this._controls.search) this._controls.search.openPanel(this);
     }
 
 });
