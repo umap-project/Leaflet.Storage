@@ -91,8 +91,8 @@ L.S.TableEditor = L.Class.extend({
             this.edit();
         };
         L.DomEvent.on(addButton, 'click', addProperty, this);
-        var className = (this.properties.length > 2) ? 'storage-table-editor fullwidth' : 'storage-table-editor';
-        this.datalayer.map.ui.openPanel({data: {html: this.table}, cssClass: className, actions: [addButton]});
+        var className = (this.properties.length > 2) ? 'storage-table-editor fullwidth dark' : 'storage-table-editor dark';
+        this.datalayer.map.ui.openPanel({data: {html: this.table}, className: className, actions: [addButton]});
         this.datalayer.map.fire('dataload', {id: id});
     }
 

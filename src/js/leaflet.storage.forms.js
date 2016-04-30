@@ -362,6 +362,28 @@ L.FormBuilder.Url = L.FormBuilder.Input.extend({
 
 });
 
+L.FormBuilder.Switch = L.FormBuilder.CheckBox.extend({
+
+    build: function () {
+        L.FormBuilder.CheckBox.prototype.build.apply(this);
+        this.input.parentNode.appendChild(this.label);
+        L.DomUtil.addClass(this.input.parentNode, 'with-switch');
+        var id = (this.builder.options.id || Date.now()) + '.' + this.name;
+        this.label.setAttribute('for', id);
+        L.DomUtil.addClass(this.input, 'switch');
+        this.input.id = id;
+    }
+
+});
+
+L.FormBuilder.Range = L.FormBuilder.Input.extend({
+
+    type: function () {
+        return 'range';
+    }
+
+});
+
 L.Storage.FormBuilder = L.FormBuilder.extend({
 
     options: {
@@ -372,9 +394,9 @@ L.Storage.FormBuilder = L.FormBuilder.extend({
         name: {label: L._('name')},
         description: {label: L._('description'), handler: 'Textarea', helpEntries: 'textFormatting'},
         color: {handler: 'ColorPicker', label: L._('color'), helpText: L._('Must be a CSS valid name (eg.: DarkBlue or #123456)')},
-        opacity: {label: L._('opacity'), helpText: L._('Opacity, from 0.1 to 1.0 (opaque).')},
+        opacity: {handler: 'Input', min: 0, max: 1, step: 0.1, label: L._('opacity'), helpText: L._('Opacity, from 0.1 to 1.0 (opaque).')},
         stroke: {handler: 'NullableBoolean', label: L._('stroke'), helpText: L._('Whether to display or not the Polygon path.')},
-        weight: {label: L._('weight'), helpText: L._('Path weight in pixels. From 0 to 10.')},
+        weight: {handler: 'Input', min: 0, max: 10, step: 1, label: L._('weight'), helpText: L._('Path weight in pixels. From 0 to 10.')},
         fill: {handler: 'NullableBoolean', label: L._('fill'), helpText: L._('Whether to fill the path with color.')},
         fillColor: {handler: 'ColorPicker', label: L._('fill color'), helpText: L._('Optional. Same as color if not set.')},
         fillOpacity: {label: L._('fill opacity'), helpText: L._('Fill opacity, from 0.1 to 1.0 (opaque).')},
@@ -385,15 +407,15 @@ L.Storage.FormBuilder = L.FormBuilder.extend({
         popupTemplate: {handler: 'PopupTemplate', label: L._('template to use for the popup')},
         popupContentTemplate: {label: L._('Popup content template'), handler: 'Textarea', helpEntries: ['dynamicProperties', 'textFormatting'], helpText: L._('You can use formatting and &#123;properties&#125; from your features.'), placeholder: '# {name}'},
         datalayer: {handler: 'DataLayerSwitcher', label: L._('Choose the layer of the feature')},
-        moreControl: {handler: 'CheckBox', helpText: L._('Do you want to display the «more» control?')},
-        datalayersControl: {handler: 'CheckBox', helpText: L._('Do you want to display the data layers control?')},
-        zoomControl: {handler: 'CheckBox', helpText: L._('Do you want to display zoom control?')},
-        scrollWheelZoom: {handler: 'CheckBox', helpText: L._('Allow scroll wheel zoom?')},
-        miniMap: {handler: 'CheckBox', helpText: L._('Do you want to display a minimap?')},
-        scaleControl: {handler: 'CheckBox', helpText: L._('Do you want to display the scale control?')},
-        onLoadPanel: {handler: 'onLoadPanel', helpText: L._('Do you want to display a panel on load?')},
-        displayPopupFooter: {handler: 'CheckBox', helpText: L._('Do you want to display popup footer?')},
-        captionBar: {handler: 'CheckBox', helpText: L._('Do you want to display a caption bar?')},
+        moreControl: {handler: 'Switch', label: L._('Do you want to display the «more» control?')},
+        datalayersControl: {handler: 'Switch', label: L._('Do you want to display the data layers control?')},
+        zoomControl: {handler: 'Switch', label: L._('Do you want to display zoom control?')},
+        scrollWheelZoom: {handler: 'Switch', label: L._('Allow scroll wheel zoom?')},
+        miniMap: {handler: 'Switch', label: L._('Do you want to display a minimap?')},
+        scaleControl: {handler: 'Switch', label: L._('Do you want to display the scale control?')},
+        onLoadPanel: {handler: 'onLoadPanel', label: L._('Do you want to display a panel on load?')},
+        displayPopupFooter: {handler: 'Switch', label: L._('Do you want to display popup footer?')},
+        captionBar: {handler: 'Switch', label: L._('Do you want to display a caption bar?')},
         zoomTo: {handler: 'IntInput', placeholder: L._('Inherit'), helpText: L._('Zoom level for automatic zooms')},
         showLabel: {handler: 'NullableBoolean', helpText: L._('Add a permanent label')},
         labelKey: {helpText: L._('Property to use as feature label'), placeholder: L._('Default: name')}

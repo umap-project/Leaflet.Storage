@@ -16,7 +16,7 @@ L.Storage.ImportAction = L.Storage.BaseAction.extend({
 
     options: {
         helpMenu: true,
-        className: 'upload-data',
+        className: 'upload-data dark',
         tooltip: L._('Import data') + ' (Ctrl+I)'
     },
 
@@ -30,7 +30,7 @@ L.Storage.EditPropertiesAction = L.Storage.BaseAction.extend({
 
     options: {
         helpMenu: true,
-        className: 'update-map-settings',
+        className: 'update-map-settings dark',
         tooltip: L._('Edit map settings')
     },
 
@@ -44,7 +44,7 @@ L.Storage.ChangeTileLayerAction = L.Storage.BaseAction.extend({
 
     options: {
         helpMenu: true,
-        className: 'update-map-tilelayers',
+        className: 'dark update-map-tilelayers',
         tooltip: L._('Change tilelayers')
     },
 
@@ -57,7 +57,7 @@ L.Storage.ChangeTileLayerAction = L.Storage.BaseAction.extend({
 L.Storage.UpdateExtentAction = L.Storage.BaseAction.extend({
 
     options: {
-        className: 'update-map-extent',
+        className: 'update-map-extent dark',
         tooltip: L._('Save this center and zoom')
     },
 
@@ -70,7 +70,7 @@ L.Storage.UpdateExtentAction = L.Storage.BaseAction.extend({
 L.Storage.UpdatePermsAction = L.Storage.BaseAction.extend({
 
     options: {
-        className: 'update-map-permissions',
+        className: 'update-map-permissions dark',
         tooltip: L._('Update permissions and editors')
     },
 
@@ -84,7 +84,7 @@ L.Storage.DrawMarkerAction = L.Storage.BaseAction.extend({
 
     options: {
         helpMenu: true,
-        className: 'storage-draw-marker',
+        className: 'storage-draw-marker dark',
         tooltip: L._('Draw a marker')
     },
 
@@ -98,7 +98,7 @@ L.Storage.DrawPolylineAction = L.Storage.BaseAction.extend({
 
     options: {
         helpMenu: true,
-        className: 'storage-draw-polyline',
+        className: 'storage-draw-polyline dark',
         tooltip: L._('Draw a polyline')
     },
 
@@ -112,7 +112,7 @@ L.Storage.DrawPolygonAction = L.Storage.BaseAction.extend({
 
     options: {
         helpMenu: true,
-        className: 'storage-draw-polygon',
+        className: 'storage-draw-polygon dark',
         tooltip: L._('Draw a polygon')
     },
 
@@ -125,7 +125,7 @@ L.Storage.DrawPolygonAction = L.Storage.BaseAction.extend({
 L.Storage.AddPolylineShapeAction = L.Storage.BaseAction.extend({
 
     options: {
-        className: 'storage-draw-polyline-multi',
+        className: 'storage-draw-polyline-multi dark',
         tooltip: L._('Add a line to the current multi')
     },
 
@@ -138,7 +138,7 @@ L.Storage.AddPolylineShapeAction = L.Storage.BaseAction.extend({
 L.Storage.AddPolygonShapeAction = L.S.AddPolylineShapeAction.extend({
 
     options: {
-        className: 'storage-draw-polygon-multi',
+        className: 'storage-draw-polygon-multi dark',
         tooltip: L._('Add a polygon to the current multi')
     }
 
@@ -685,7 +685,7 @@ L.Storage.TileLayerControl = L.Control.extend({
         this._map.eachTileLayer(function (tilelayer) {
             this.addTileLayerElement(tilelayer, options);
         }, this);
-        this._map.ui.openPanel({data: {html: this._tilelayers_container}});
+        this._map.ui.openPanel({data: {html: this._tilelayers_container}, className: options.className});
     },
 
     addTileLayerElement: function (tilelayer, options) {

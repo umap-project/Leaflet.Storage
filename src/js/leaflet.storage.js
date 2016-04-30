@@ -531,7 +531,7 @@ L.Storage.Map.include({
                 self.options.tilelayer = tilelayer.toJSON();
                 self.isDirty = true;
             };
-        if (this._controls.tilelayers) this._controls.tilelayers.openSwitcher({callback: callback});
+        if (this._controls.tilelayers) this._controls.tilelayers.openSwitcher({callback: callback, className: 'dark'});
     },
 
     renderShareBox: function () {
@@ -647,7 +647,8 @@ L.Storage.Map.include({
         if (!this.options.storage_id) return this.ui.alert({content: L._('Please save the map before'), level: 'info'});
         var url = L.Util.template(this.options.urls.map_update_permissions, {'map_id': this.options.storage_id});
         this.get(url, {
-            'listen_form': {'id': 'map_edit'}
+            listen_form: {'id': 'map_edit'},
+            className: 'dark'
         });
     },
 
@@ -759,7 +760,7 @@ L.Storage.Map.include({
             }
             typeInput.value = type;
         }, this);
-        this.ui.openPanel({data: {html: container}});
+        this.ui.openPanel({data: {html: container}, className: 'dark'});
     },
 
     importRaw: function(rawData){
@@ -1137,7 +1138,7 @@ L.Storage.Map.include({
             'options.fillOpacity',
             'options.dashArray',
             'options.zoomTo',
-            ['options.easing', {handler: 'CheckBox', helpText: L._('Use advanced transition mode?')}],
+            ['options.easing', {handler: 'Switch', label: L._('Use advanced transition mode?')}],
             'options.showLabel',
             'options.labelKey',
             ['options.sortKey', {handler: 'BlurInput', helpText: L._('Property to use for sorting features'), placeholder: L._('Default: name')}],
@@ -1261,7 +1262,7 @@ L.Storage.Map.include({
         L.DomEvent
             .on(clone, 'click', L.DomEvent.stop)
             .on(clone, 'click', this.clone, this);
-        this.ui.openPanel({data: {html: container}});
+        this.ui.openPanel({data: {html: container}, className: 'dark'});
     },
 
     enableEdit: function() {
@@ -1310,7 +1311,7 @@ L.Storage.Map.include({
     },
 
     initEditBar: function () {
-        var container = L.DomUtil.create('div', 'storage-main-edit-toolbox with-transition', this._controlContainer),
+        var container = L.DomUtil.create('div', 'storage-main-edit-toolbox with-transition dark', this._controlContainer),
             title = L.DomUtil.add('h3', '', container, L._('Editing') + '&nbsp;'),
             name = L.DomUtil.create('a', 'storage-click-to-edit', title),
             setName = function () {

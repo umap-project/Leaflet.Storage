@@ -95,7 +95,7 @@ L.Storage.FeatureMixin = {
         this.appendEditFieldsets(container);
         var advancedActions = L.DomUtil.createFieldset(container, L._('Advanced actions'));
         this.getAdvancedEditActions(advancedActions);
-        this.map.ui.openPanel({data: {html: container}});
+        this.map.ui.openPanel({data: {html: container}, className: 'dark'});
         this.map.editedFeature = this;
         if (!this.isOnScreen()) this.bringToCenter(e);
     },
@@ -617,7 +617,7 @@ L.Storage.PathMixin = {
         this._container = null;
         this.setStyle();
         // Show tooltip again when Leaflet.label allow static label on path.
-        // cf https://github.com/Leaflet/Leaflet.label/pull/97/files
+        // cf https://github.com/Leaflet/Leaflet/pull/3952
         // this.map.on('showmeasure', this.showMeasureTooltip, this);
         // this.map.on('hidemeasure', this.removeTooltip, this);
         this.parentClass.prototype.onAdd.call(this, map);

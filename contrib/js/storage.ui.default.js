@@ -15,7 +15,7 @@ L.S.UI = L.Evented.extend({
         L.DomEvent.on(this.container, 'MozMousePixelScroll', L.DomEvent.stopPropagation);
         this._panel = L.DomUtil.create('div', '', this.container);
         this._panel.id = 'storage-ui-container';
-        this._alert = L.DomUtil.create('div', '', this.container);
+        this._alert = L.DomUtil.create('div', 'with-transition', this.container);
         this._alert.id = 'storage-alert-container';
         this._tooltip = L.DomUtil.create('div', '', this.container);
         this._tooltip.id = 'storage-tooltip-container';
@@ -44,7 +44,7 @@ L.S.UI = L.Evented.extend({
                 actionsContainer.appendChild(e.actions[i]);
             }
         }
-        if (e.cssClass) L.DomUtil.addClass(this._panel, e.cssClass);
+        if (e.className) L.DomUtil.addClass(this._panel, e.className);
         if (L.DomUtil.hasClass(this.parent, 'storage-ui')) {
             // Already open.
             this.fire('panel:ready');
@@ -77,7 +77,6 @@ L.S.UI = L.Evented.extend({
         var timeoutID,
             level_class = e.level && e.level == 'info'? 'info': 'error';
         this._alert.innerHTML = '';
-        this._alert.innerHTML = e.content;
         L.DomUtil.addClass(this.parent, 'storage-alert');
         L.DomUtil.addClass(this._alert, level_class);
         var close = function () {
@@ -88,6 +87,14 @@ L.S.UI = L.Evented.extend({
             if (timeoutID) window.clearTimeout(timeoutID);
             this.popAlert();
         };
+        var closeLink = L.DomUtil.create('a', 'storage-close-link', this._alert);
+        closeLink.href = '#';
+        L.DomUtil.add('i', 'storage-close-icon', closeLink);
+        var label = L.DomUtil.create('span', '', closeLink);
+        label.title = label.innerHTML = L._('Close');
+        L.DomEvent.on(closeLink, 'click', L.DomEvent.stop)
+                  .on(closeLink, 'click', close, this);
+        L.DomUtil.add('div', '', this._alert, e.content);
         if (e.actions) {
             var action, el;
             for (var i = 0; i < e.actions.length; i++) {
@@ -100,13 +107,6 @@ L.S.UI = L.Evented.extend({
                 if (action.callback) L.DomEvent.on(el, 'click', action.callback, action.callbackContext || this.map);
             }
         }
-        var closeLink = L.DomUtil.create('a', 'storage-close-link', this._alert);
-        closeLink.href = '#';
-        L.DomUtil.add('i', 'storage-close-icon', closeLink);
-        var label = L.DomUtil.create('span', '', closeLink);
-        label.title = label.innerHTML = L._('Close');
-        L.DomEvent.on(closeLink, 'click', L.DomEvent.stop)
-                  .on(closeLink, 'click', close, this);
         self.ALERT_ID = timeoutID = window.setTimeout(L.bind(close, this), e.duration || 3000);
     },
 

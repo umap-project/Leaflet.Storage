@@ -201,7 +201,7 @@ L.Storage.Xhr = L.Evented.extend({
         else if (data.html) {
             var ui_options = {'data': data},
                 listen_options;
-            if (options.cssClass) ui_options.cssClass = options.cssClass;
+            if (options.className) ui_options.className = options.className;
             this.ui.openPanel(ui_options);
             // To low boilerplate, if there is a form, listen it
             if (options.listen_form) {

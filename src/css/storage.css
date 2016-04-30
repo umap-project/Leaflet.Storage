@@ -24,6 +24,7 @@
 /* Controls    */
 /* *********** */
 
+.leaflet-control-zoom,
 .storage-control {
     background: none no-repeat scroll center center #F8F8F9;
     border-radius: 4px;
@@ -175,10 +176,17 @@ ul.photon-autocomplete {
     margin-top: 0;
     vertical-align: top;
     border-bottom: none;
+    background-color: #323737;
     border-right: 1px solid #eee;
     background-repeat: no-repeat;
     background-image: url("../img/24.png");
     background-size: auto auto;
+}
+.leaflet-control-toolbar li .leaflet-toolbar-icon.dark {
+    background-image: url("../img/24-white.png");
+}
+.leaflet-control-toolbar .leaflet-toolbar-icon.dark:hover {
+    background-color: #353c3e;
 }
 .storage-toolbar {
     margin-top: 0;
@@ -301,6 +309,9 @@ ul.photon-autocomplete {
     background-image: url("../img/16.png");
     vertical-align: middle;
 }
+.dark .storage-help-button {
+    background-image: url("../img/16-white.png");
+}
 
 
 /* ********************************* */
@@ -313,7 +324,7 @@ ul.photon-autocomplete {
     display: block;
     height: 36px;
     line-height: 36px;
-    color: #666;
+    color: #efefef;
     border: none;
     font-size: 11px;
     margin-left: 10px;
@@ -354,6 +365,10 @@ ul.photon-autocomplete {
 .storage-is-dirty a.leaflet-control-edit-disable {
     display: none;
 }
+.storage-click-to-edit {
+    color: #4a90d9;
+    font-weight: bold;
+}
 .storage-click-to-edit:after {
     content: "\00a0";
     background-repeat: no-repeat;
@@ -362,9 +377,13 @@ ul.photon-autocomplete {
     width: 26px;
     height: 100%;
     display: inline-block;
+    background-position: -82px -82px;
 }
 .storage-click-to-edit:hover:after {
-    background-image: url("../img/edit-16.png");
+    background-image: url("../img/16.png");
+}
+.dark .storage-click-to-edit:hover:after {
+    background-image: url("../img/16-white.png");
 }
 .storage-caption-bar {
     display: none;
@@ -376,14 +395,15 @@ ul.photon-autocomplete {
     left: 0;
     right: 0;
     height: 46px;
-    background-color: #fff;
+    background-color: #323737;
     padding: 5px;
     text-align: left;
     line-height: 36px;
     cursor: auto;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #222;
     z-index: 1000;
-    opacity: 0.93;
+    opacity: 0.98;
+    color: #efefef;
 }
 .storage-edit-enabled .storage-main-edit-toolbox {
     top: 0;
@@ -517,6 +537,7 @@ ul.photon-autocomplete {
 }
 
 
+
 /* ********************************* */
 /*   Datalayers Control              */
 /* ********************************* */
@@ -551,6 +572,16 @@ ul.photon-autocomplete {
     height: 24px;
     line-height: 24px;
     vertical-align: middle;
+}
+.leaflet-inplace-toolbar a {
+    background-image: url("../../src/img/16-white.png");
+    background-color: #323737!important;
+}
+.leaflet-toolbar-tip {
+    background-color: #323737;
+}
+.leaflet-inplace-toolbar a:hover {
+    background-color: #353c3e!important;
 }
 .leaflet-control-browse .storage-browse-datalayers .off i {
     cursor: inherit;
@@ -777,10 +808,10 @@ ul.photon-autocomplete {
     text-align: center;
     height: 48px;
     line-height: 48px;
-    background-color: #ddd;
+    background-color: #2c3133;
 }
 .storage-table-editor .thead .tcell {
-    border-left: 1px solid #ccc;
+    border-left: 1px solid #0b0c0c;
 }
 .storage-table-editor .tbody .trow input {
     margin: 0;
@@ -801,14 +832,11 @@ ul.photon-autocomplete {
 .storage-table-editor .thead i:before {
     width: 40px;
 }
-.storage-table-editor .thead i + i {
-    border-left: 1px solid #fff;
-}
 .storage-table-editor .thead .tcell:hover i {
     display: inline-block;
 }
 .storage-table-editor .thead .tcell i:hover {
-    background-color: #d0d0d0;
+    background-color: #33393b;
 }
 .storage-table-editor .thead .tcell:hover span {
     display: none;
@@ -843,6 +871,9 @@ ul.photon-autocomplete {
 /*      Tilelayer switcher           */
 /* ********************************* */
 
+.storage-tilelayer-switcher-container {
+    margin-top: 10px;
+}
 .storage-tilelayer-switcher-container li {
     border: 1px solid rgb(116, 116, 116);
     border-radius: 4px 4px 4px 4px;
@@ -1041,6 +1072,13 @@ ul.photon-autocomplete {
     background-image: url("../img/24.png");
     vertical-align: bottom;
     content: " ";
+}
+.dark .storage-delete:before, .dark .storage-empty:before,
+.dark .storage-to-polygon:before,
+.dark .storage-clone:before,
+.dark .storage-edit:before,
+.dark .storage-to-polyline:before {
+    background-image: url("../img/24-white.png");
 }
 .storage-to-polygon:before {
     background-position: -80px -48px;
@@ -1348,7 +1386,6 @@ ul.photon-autocomplete {
 }
 .leaflet-control-toolbar,
 .leaflet-bar {
-    border: 1px solid #bbb;
     box-shadow: none;
 }
 .marker-cluster {
