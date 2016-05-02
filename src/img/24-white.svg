@@ -88,7 +88,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -177,17 +177,18 @@
     </g>
     <g
        id="g3692"
-       transform="translate(72,8.0001016)">
+       transform="translate(72,8.0001016)"
+       style="fill:#f2f2f2;fill-opacity:1;stroke:#999999;stroke-opacity:1;stroke-width:0.25;stroke-miterlimit:4;stroke-dasharray:none">
       <path
          sodipodi:nodetypes="sccccsssccs"
          inkscape:connector-curvature="0"
          id="rect2985"
          d="m 105.25387,934.36268 c -3.17753,0 -6.346004,2.1278 -7.25387,6.3794 0,2.551 1.806672,7.6679 7.25387,13.6201 1.46368,-1.5994 2.66945,-3.1177 3.64397,-4.5613 -1.4505,-2.1639 -2.41497,-4.0873 -2.96285,-5.7095 -0.22599,0.041 -0.44225,0.063 -0.68112,0.063 -2.0056,0 -3.64396,-1.5346 -3.64396,-3.413 0,-1.8785 1.63836,-3.3811 3.64396,-3.3811 0.51205,0 0.98854,0.076 1.43034,0.2552 0.64347,-0.9222 1.4345,-1.6571 2.31579,-2.169 -1.14444,-0.7114 -2.44633,-1.0845 -3.74613,-1.0845 z"
-         style="fill:#4d4d4d;fill-opacity:1;stroke:none" />
+         style="fill:#f2f2f2;fill-opacity:1;stroke:#999999;stroke-opacity:1;stroke-width:0.25;stroke-miterlimit:4;stroke-dasharray:none" />
       <path
          id="path3378"
          d="m 111,934.36218 c -3.0625,0 -6.125,2.1277 -7,6.383 0,2.5532 1.75,7.6596 7,13.617 5.25,-5.9574 7,-11.0638 7,-13.617 -0.875,-4.2553 -3.9375,-6.383 -7,-6.383 z m 0,2.9788 c 1.933,0 3.5,1.5241 3.5,3.4042 0,1.8801 -1.567,3.4043 -3.5,3.4043 -1.93299,0 -3.5,-1.5242 -3.5,-3.4043 0,-1.8801 1.56701,-3.4042 3.5,-3.4042 z"
-         style="fill:#4d4d4d;fill-opacity:1;stroke:none"
+         style="fill:#f2f2f2;fill-opacity:1;stroke:#999999;stroke-opacity:1;stroke-width:0.25;stroke-miterlimit:4;stroke-dasharray:none"
          inkscape:connector-curvature="0" />
     </g>
     <g
@@ -394,17 +395,18 @@
     </g>
     <g
        id="g7291"
-       transform="translate(0,3.6429698)">
+       transform="translate(0,3.6429698)"
+       style="fill:#f2f2f2;fill-opacity:1;stroke:#999999;stroke-opacity:1;stroke-width:0.25;stroke-miterlimit:4;stroke-dasharray:none">
       <path
          id="path3378-6"
          d="m 178.57143,979.21934 c -3.0625,0 -6.125,2.1197 -7,6.375 0,2.5532 1.75,7.6676 7,13.625 3.4166,-3.877 5.31568,-7.3755 6.25,-10.0625 -1.31416,-0.1622 -2.497,-0.7235 -3.40625,-1.5938 -0.63462,0.8653 -1.6677,1.4375 -2.84375,1.4375 -1.933,0 -3.5,-1.5261 -3.5,-3.4062 0,-1.8801 1.567,-3.4063 3.5,-3.4063 0.36776,0 0.72951,0.085 1.0625,0.1875 0.14352,-1.0312 0.55799,-1.956 1.15625,-2.75 -0.72276,-0.259 -1.46314,-0.4062 -2.21875,-0.4062 z"
-         style="fill:#4d4d4d;fill-opacity:1;stroke:none"
+         style="fill:#f2f2f2;fill-opacity:1;stroke:#999999;stroke-opacity:1;stroke-width:0.25;stroke-miterlimit:4;stroke-dasharray:none"
          inkscape:connector-curvature="0" />
       <path
          inkscape:connector-curvature="0"
          id="path6764"
          d="m 185.57143,978.21934 c -2.76142,0 -5,2.2386 -5,5 0,2.7615 2.23858,5 5,5 2.76142,0 5,-2.2385 5,-5 0,-2.7614 -2.23858,-5 -5,-5 z m -1.81818,2.2727 1.81818,1.8182 1.81818,-1.8182 0.90909,0.9091 -1.81818,1.8182 1.81818,1.8182 -0.90909,0.9091 -1.81818,-1.8182 -1.81818,1.8182 -0.90909,-0.9091 1.81818,-1.8182 -1.81818,-1.8182 0.90909,-0.9091 z"
-         style="fill:#4d4d4d;fill-opacity:1;fill-rule:nonzero;stroke:none" />
+         style="fill:#f2f2f2;fill-opacity:1;fill-rule:nonzero;stroke:#999999;stroke-opacity:1;stroke-width:0.25;stroke-miterlimit:4;stroke-dasharray:none" />
     </g>
     <path
        style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#f2f2f2;fill-opacity:1;stroke:#999999;stroke-width:0.25;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"

@@ -1126,23 +1126,37 @@ L.Storage.Map.include({
         var controlsOptions = L.DomUtil.createFieldset(container, L._('User interface options'));
         controlsOptions.appendChild(builder.build());
 
-        var optionsFields = [
+        var shapeOptions = [
             'options.color',
             'options.iconClass',
             'options.iconUrl',
-            'options.smoothFactor',
             'options.opacity',
             'options.weight',
             'options.fill',
             'options.fillColor',
-            'options.fillOpacity',
+            'options.fillOpacity'
+        ];
+
+        builder = new L.S.FormBuilder(this, shapeOptions, {
+            callback: function (e) {
+                this.eachDataLayer(function (datalayer) {
+                    if (e.helper.field === 'options.sortKey') datalayer.reindex();
+                    datalayer.redraw();
+                });
+            }
+        });
+        var defaultShapeProperties = L.DomUtil.createFieldset(container, L._('Default shape properties'));
+        defaultShapeProperties.appendChild(builder.build());
+
+        var optionsFields = [
+            'options.smoothFactor',
             'options.dashArray',
             'options.zoomTo',
-            ['options.easing', {handler: 'Switch', label: L._('Use advanced transition mode?')}],
+            ['options.easing', {handler: 'Switch', label: L._('Advanced transition'), inheritable: true}],
             'options.showLabel',
             'options.labelKey',
-            ['options.sortKey', {handler: 'BlurInput', helpText: L._('Property to use for sorting features'), placeholder: L._('Default: name')}],
-            ['options.filterKey', {handler: 'Input', helpText: L._('Comma separated list of properties to use when filtering features'), placeholder: L._('Default: name')}]
+            ['options.sortKey', {handler: 'BlurInput', helpText: L._('Property to use for sorting features'), placeholder: L._('Default: name'), label: L._('Sort key'), inheritable: true}],
+            ['options.filterKey', {handler: 'Input', helpText: L._('Comma separated list of properties to use when filtering features'), placeholder: L._('Default: name'), label: L._('Filter keys'), inheritable: true}]
         ];
 
         builder = new L.S.FormBuilder(this, optionsFields, {
@@ -1161,7 +1175,7 @@ L.Storage.Map.include({
             'options.popupContentTemplate'
         ];
         builder = new L.S.FormBuilder(this, popupFields);
-        var popupFieldset = L.DomUtil.createFieldset(container, L._('Default popup options'));
+        var popupFieldset = L.DomUtil.createFieldset(container, L._('Default interaction options'));
         popupFieldset.appendChild(builder.build());
 
         if (!L.Util.isObject(this.options.tilelayer)) {
@@ -1173,7 +1187,7 @@ L.Storage.Map.include({
             ['options.tilelayer.maxZoom', {handler: 'BlurIntInput', placeholder: L._('max zoom')}],
             ['options.tilelayer.minZoom', {handler: 'BlurIntInput', placeholder: L._('min zoom')}],
             ['options.tilelayer.attribution', {handler: 'BlurInput', placeholder: L._('attribution')}],
-            ['options.tilelayer.tms', {handler: 'CheckBox', helpText: L._('TMS format')}]
+            ['options.tilelayer.tms', {handler: 'Switch', label: L._('TMS format')}]
         ];
         var customTilelayer = L.DomUtil.createFieldset(container, L._('Custom background'));
         builder = new L.S.FormBuilder(this, tilelayerFields, {
@@ -1225,7 +1239,7 @@ L.Storage.Map.include({
         var slideshow = L.DomUtil.createFieldset(container, L._('Slideshow'));
         var slideshowFields = [
             ['options.slideshow.delay', {handler: 'IntInput', placeholder: L._('Set a value for adding a slideshow'), helpText: L._('Delay between elements (in milliseconds)')}],
-            ['options.slideshow.autoplay', {handler: 'CheckBox', helpText: L._('Autostart slideshow when map is loaded?')}]
+            ['options.slideshow.autoplay', {handler: 'Switch', label: L._('Autostart when map is loaded')}]
         ];
         var slideshowHandler = function () {
             this.slideshow.setOptions(this.options.slideshow);
@@ -1250,13 +1264,14 @@ L.Storage.Map.include({
         credits.appendChild(creditsBuilder.build());
 
         var advancedActions = L.DomUtil.createFieldset(container, L._('Advanced actions'));
-        var del = L.DomUtil.create('a', 'storage-delete', advancedActions);
+        var advancedButtons = L.DomUtil.create('div', 'button-bar', advancedActions);
+        var del = L.DomUtil.create('a', 'button half storage-delete', advancedButtons);
         del.href = '#';
         del.innerHTML = L._('Delete');
         L.DomEvent
             .on(del, 'click', L.DomEvent.stop)
             .on(del, 'click', this.del, this);
-        var clone = L.DomUtil.create('a', 'storage-clone', advancedActions);
+        var clone = L.DomUtil.create('a', 'button half storage-clone', advancedButtons);
         clone.href = '#';
         clone.innerHTML = L._('Clone this map');
         L.DomEvent

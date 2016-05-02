@@ -101,7 +101,7 @@ L.Storage.FeatureMixin = {
     },
 
     getAdvancedEditActions: function (container) {
-        var deleteLink = L.DomUtil.create('a', 'storage-delete', container);
+        var deleteLink = L.DomUtil.create('a', 'button storage-delete', container);
         deleteLink.href = '#';
         deleteLink.innerHTML = L._('Delete');
         L.DomEvent.on(deleteLink, 'click', function (e) {
@@ -111,8 +111,17 @@ L.Storage.FeatureMixin = {
     },
 
     appendEditFieldsets: function (container) {
-        var optionsFields = this.getAdvancedOptions();
+        var optionsFields = this.getShapeOptions();
         var builder = new L.S.FormBuilder(this, optionsFields, {
+            id: 'storage-feature-shape-properties',
+            callback: this._redraw,
+            callbackContext: this
+        });
+        var shapeProperties = L.DomUtil.createFieldset(container, L._('Shape properties'));
+        shapeProperties.appendChild(builder.build());
+
+        var advancedOptions = this.getAdvancedOptions();
+        var builder = new L.S.FormBuilder(this, advancedOptions, {
             id: 'storage-feature-advanced-properties',
             callback: this._redraw,
             callbackContext: this
@@ -120,13 +129,17 @@ L.Storage.FeatureMixin = {
         var advancedProperties = L.DomUtil.createFieldset(container, L._('Advanced properties'));
         advancedProperties.appendChild(builder.build());
 
-        var popupFields = [
-            'properties._storage_options.popupTemplate'
-        ];
-        builder = new L.S.FormBuilder(this, popupFields);
-        var popupFieldset = L.DomUtil.createFieldset(container, L._('Popup options'));
+        var interactionOptions = this.getInteractionOptions();
+        builder = new L.S.FormBuilder(this, interactionOptions);
+        var popupFieldset = L.DomUtil.createFieldset(container, L._('Interaction options'));
         popupFieldset.appendChild(builder.build());
 
+    },
+
+    getInteractionOptions: function () {
+        return [
+            'properties._storage_options.popupTemplate'
+        ];
     },
 
     endEdit: function () {},
@@ -211,8 +224,8 @@ L.Storage.FeatureMixin = {
         else if (L.Util.usableOption(this.properties._storage_options, option)) {
             value = this.properties._storage_options[option];
         }
-        else if (this.datalayer && L.Util.usableOption(this.datalayer.options, option)) {
-            value = this.datalayer.options[option];
+        else if (this.datalayer) {
+            value = this.datalayer.getOption(option);
         }
         else {
             value = this.map.getOption(option);
@@ -498,11 +511,16 @@ L.Storage.Marker = L.Marker.extend({
         return 'marker';
     },
 
-    getAdvancedOptions: function () {
+    getShapeOptions: function () {
         return [
             'properties._storage_options.color',
             'properties._storage_options.iconClass',
-            'properties._storage_options.iconUrl',
+            'properties._storage_options.iconUrl'
+        ];
+    },
+
+    getAdvancedOptions: function () {
+        return [
             'properties._storage_options.zoomTo',
             'properties._storage_options.showLabel'
         ];
@@ -586,11 +604,16 @@ L.Storage.PathMixin = {
         'interactive'
     ],
 
-    getAdvancedOptions: function () {
+    getShapeOptions: function () {
         return [
             'properties._storage_options.color',
             'properties._storage_options.opacity',
-            'properties._storage_options.weight',
+            'properties._storage_options.weight'
+        ];
+    },
+
+    getAdvancedOptions: function () {
+        return [
             'properties._storage_options.smoothFactor',
             'properties._storage_options.dashArray',
             'properties._storage_options.zoomTo'
@@ -826,7 +849,7 @@ L.Storage.Polyline = L.Polyline.extend({
 
     getAdvancedEditActions: function (container) {
         L.Storage.FeatureMixin.getAdvancedEditActions.call(this, container);
-        var toPolygon = L.DomUtil.create('a', 'storage-to-polygon', container);
+        var toPolygon = L.DomUtil.create('a', 'button storage-to-polygon', container);
         toPolygon.href = '#';
         toPolygon.innerHTML = L._('Transform to polygon');
         L.DomEvent.on(toPolygon, 'click', this.toPolygon, this);
@@ -903,16 +926,22 @@ L.Storage.Polygon = L.Polygon.extend({
         return 'polygon';
     },
 
-    getAdvancedOptions: function () {
-        var options = L.Storage.PathMixin.getAdvancedOptions();
+    getShapeOptions: function () {
+        var options = L.Storage.PathMixin.getShapeOptions();
         options.push('properties._storage_options.stroke',
             'properties._storage_options.fill',
             'properties._storage_options.fillColor',
             'properties._storage_options.fillOpacity'
         );
-        options.push(['properties._storage_options.outlink', {label: L._('outlink'), helpText: L._('Define output link to open a new window on polygon click.'), placeholder: 'http://...'}]);
-        options.push(['properties._storage_options.interactive', {handler: 'NullableBoolean', label: L._('Mouse interactions'), helpText: L._('If false, the polygon will act as a part of the underlying map.')}]);
         return options;
+    },
+
+    getInteractionOptions: function () {
+        var options = [
+            ['properties._storage_options.interactive', {handler: 'Switch', label: L._('Allow interactions'), helpText: L._('If false, the polygon will act as a part of the underlying map.'), inheritable: true}],
+            ['properties._storage_options.outlink', {label: L._('Link to…'), helpText: L._('Define link to open in a new window on polygon click.'), placeholder: 'http://...', inheritable: true}]
+        ];
+        return options.concat(L.Storage.FeatureMixin.getInteractionOptions());
     },
 
     getMeasure: function () {
@@ -954,7 +983,7 @@ L.Storage.Polygon = L.Polygon.extend({
 
     getAdvancedEditActions: function (container) {
         L.Storage.FeatureMixin.getAdvancedEditActions.call(this, container);
-        var toPolyline = L.DomUtil.create('a', 'storage-to-polyline', container);
+        var toPolyline = L.DomUtil.create('a', 'button storage-to-polyline', container);
         toPolyline.href = '#';
         toPolyline.innerHTML = L._('Transform to lines');
         L.DomEvent.on(toPolyline, 'click', this.toPolyline, this);

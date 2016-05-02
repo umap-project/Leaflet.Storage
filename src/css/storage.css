@@ -263,41 +263,21 @@ ul.photon-autocomplete {
 /* ********************************* */
 /*     Help Lightbox                 */
 /* ********************************* */
-.storage-help-container {
-    display: none;
+.storage-help-box {
     z-index: 10001;
     position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-}
-.storage-help-on .storage-help-container {
-    display: block;
-}
-.storage-help-overlay {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #fff;
-    opacity: 0.5;
-}
-.storage-help-box {
-    position: absolute;
-    top: 10%;
     margin: 0 calc(50% - 500px/2);
-    background-color: #fff;
     width: 500px;
     padding: 40px 20px;
-    border: 1px solid #ddd;
-    z-index: 10002;
+    border: 1px solid #222;
+    background-color: #323737;
+    color: #efefef;
     font-size: 0.8em;
+    visibility: hidden;
+    top: -100%;
 }
 .storage-help-box .storage-close-link {
     float: right;
-    color: #464646;
 }
 .storage-help-button {
     display: inline-block;
@@ -311,6 +291,10 @@ ul.photon-autocomplete {
 }
 .dark .storage-help-button {
     background-image: url("../img/16-white.png");
+}
+.storage-help-on .storage-help-box {
+    visibility: visible;
+    top: 100px;
 }
 
 
@@ -1079,6 +1063,7 @@ ul.photon-autocomplete {
 .dark .storage-edit:before,
 .dark .storage-to-polyline:before {
     background-image: url("../img/24-white.png");
+    vertical-align: middle;
 }
 .storage-to-polygon:before {
     background-position: -80px -48px;
@@ -1090,7 +1075,7 @@ ul.photon-autocomplete {
     background-position: -160px -88px;
 }
 .storage-delete:before {
-    background-position: -40px -6px;
+    background-position: -40px -8px;
 }
 .storage-edit:before {
     background-position: -6px -6px;
@@ -1098,16 +1083,20 @@ ul.photon-autocomplete {
 .storage-empty:before {
     background-position: -160px -126px;
 }
+.storage-edit-actions {
+    padding-top: 5px;
+    clear: both;
+}
 .storage-edit-actions li {
     height: 36px;
     line-height: 36px;
     cursor: pointer;
     margin-bottom: 5px;
     border-radius: 2px;
-    border: 1px solid #ddd;
+    border: 1px solid #222;
 }
 .storage-edit-actions li i {
-    background-image: url("../img/24.png");
+    background-image: url("../img/24-white.png");
     background-repeat: no-repeat;
     display: table-cell;
     width: 36px;
@@ -1118,7 +1107,7 @@ ul.photon-autocomplete {
     vertical-align: middle;
 }
 .storage-edit-actions li:hover {
-    box-shadow: 0 0 3px 0 #ccc;
+    background-color: #353c3e;
 }
 .storage-form-iconfield {
     position: relative;

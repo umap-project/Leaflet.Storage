@@ -295,9 +295,7 @@ L.Storage.Help = L.Class.extend({
 
     initialize: function (map) {
         this.map = map;
-        this.parentContainer = L.DomUtil.create('div', 'storage-help-container', document.body);
-        this.overlay = L.DomUtil.create('div', 'storage-help-overlay', this.parentContainer);
-        this.box = L.DomUtil.create('div', 'storage-help-box', this.parentContainer);
+        this.box = L.DomUtil.create('div', 'storage-help-box with-transition dark', document.body);
         var closeLink = L.DomUtil.create('a', 'storage-close-link', this.box);
         closeLink.href = '#';
         L.DomUtil.add('i', 'storage-close-icon', closeLink);
@@ -305,7 +303,6 @@ L.Storage.Help = L.Class.extend({
         label.title = label.innerHTML = L._('Close');
         this.content = L.DomUtil.create('div', 'storage-help-content', this.box);
         L.DomEvent.on(closeLink, 'click', this.hide, this);
-        L.DomEvent.on(this.parentContainer, 'keydown', this.onKeyDown, this);
     },
 
     onKeyDown: function (e) {

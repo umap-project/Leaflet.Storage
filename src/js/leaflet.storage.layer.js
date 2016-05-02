@@ -696,7 +696,7 @@ L.Storage.DataLayer = L.Class.extend({
                 'options.name',
                 'options.description',
                 ['options.type', {handler: 'LayerTypeChooser', label: L._('Type of layer')}],
-                ['options.displayOnLoad', {label: L._('Display on load'), handler: 'CheckBox'}]
+                ['options.displayOnLoad', {label: L._('Display on load'), handler: 'Switch'}]
             ];
         var title = L.DomUtil.add('h3', '', container, L._('Layer properties'));
         var builder = new L.S.FormBuilder(this, metadataFields, {
@@ -710,17 +710,34 @@ L.Storage.DataLayer = L.Class.extend({
             callbackContext: this
         });
         container.appendChild(builder.build());
-        var optionsFields = [
+
+        var shapeOptions = [
             'options.color',
             'options.iconClass',
             'options.iconUrl',
-            'options.smoothFactor',
             'options.opacity',
             'options.stroke',
             'options.weight',
             'options.fill',
             'options.fillColor',
             'options.fillOpacity',
+        ];
+
+        shapeOptions = shapeOptions.concat(this.layer.getEditableOptions());
+
+        builder = new L.S.FormBuilder(this, shapeOptions, {
+            id: 'datalayer-advanced-properties',
+            callback: function (field) {
+                this.hide();
+                this.layer.postUpdate(field);
+                this.show();
+            }
+        });
+        var shapeProperties = L.DomUtil.createFieldset(container, L._('Shape properties'));
+        shapeProperties.appendChild(builder.build());
+
+        var optionsFields = [
+            'options.smoothFactor',
             'options.dashArray',
             'options.zoomTo',
             'options.showLabel',
@@ -745,7 +762,7 @@ L.Storage.DataLayer = L.Class.extend({
             'options.popupContentTemplate'
         ];
         builder = new L.S.FormBuilder(this, popupFields);
-        var popupFieldset = L.DomUtil.createFieldset(container, L._('Popup options'));
+        var popupFieldset = L.DomUtil.createFieldset(container, L._('Interaction options'));
         popupFieldset.appendChild(builder.build());
 
         if (!L.Util.isObject(this.options.remoteData)) {
@@ -756,11 +773,11 @@ L.Storage.DataLayer = L.Class.extend({
             ['options.remoteData.format', {handler: 'DataFormat', label: L._('Format')}],
             ['options.remoteData.from', {label: L._('From zoom'), helpText: L._('Optionnal.')}],
             ['options.remoteData.to', {label: L._('To zoom'), helpText: L._('Optionnal.')}],
-            ['options.remoteData.dynamic', {handler: 'CheckBox', label: L._('Dynamic')}],
+            ['options.remoteData.dynamic', {handler: 'Switch', label: L._('Dynamic'), helpText: L._('Fetch data each time map view changes.')}],
             ['options.remoteData.licence', {label: L._('Licence'), helpText: L._('Please be sure the licence is compliant with your use.')}]
         ];
         if (this.map.options.urls.ajax_proxy) {
-            remoteDataFields.push(['options.remoteData.proxy', {handler: 'CheckBox', label: L._('Proxy request'), helpText: L._('To use if remote server doesn\'t allow cross domain (slower)')}]);
+            remoteDataFields.push(['options.remoteData.proxy', {handler: 'Switch', label: L._('Proxy request'), helpText: L._('To use if remote server doesn\'t allow cross domain (slower)')}]);
         }
 
         var remoteDataContainer = L.DomUtil.createFieldset(container, L._('Remote data'));
@@ -770,7 +787,8 @@ L.Storage.DataLayer = L.Class.extend({
         if (this.map.options.urls.datalayer_versions) this.buildVersionsFieldset(container);
 
         var advancedActions = L.DomUtil.createFieldset(container, L._('Advanced actions'));
-        var deleteLink = L.DomUtil.create('a', 'delete_datalayer_button storage-delete', advancedActions);
+        var advancedButtons = L.DomUtil.create('div', 'button-bar', advancedActions);
+        var deleteLink = L.DomUtil.create('a', 'button third delete_datalayer_button storage-delete', advancedButtons);
         deleteLink.innerHTML = L._('Delete');
         deleteLink.href = '#';
         L.DomEvent.on(deleteLink, 'click', L.DomEvent.stop)
@@ -779,13 +797,13 @@ L.Storage.DataLayer = L.Class.extend({
                     this.map.ui.closePanel();
                 }, this);
         if (!this.isRemoteLayer()) {
-            var emptyLink = L.DomUtil.create('a', 'storage-empty', advancedActions);
+            var emptyLink = L.DomUtil.create('a', 'button third storage-empty', advancedButtons);
             emptyLink.innerHTML = L._('Empty');
             emptyLink.href = '#';
             L.DomEvent.on(emptyLink, 'click', L.DomEvent.stop)
                       .on(emptyLink, 'click', this.empty, this);
         }
-        var cloneLink = L.DomUtil.create('a', 'storage-clone', advancedActions);
+        var cloneLink = L.DomUtil.create('a', 'button third storage-clone', advancedButtons);
         cloneLink.innerHTML = L._('Clone');
         cloneLink.href = '#';
         L.DomEvent.on(cloneLink, 'click', L.DomEvent.stop)
@@ -795,6 +813,11 @@ L.Storage.DataLayer = L.Class.extend({
                 }, this);
         this.map.ui.openPanel({data: {html: container}, className: 'dark'});
 
+    },
+
+    getOption: function (option) {
+        if (L.Util.usableOption(this.options, option)) return this.options[option];
+        else return this.map.getOption(option);
     },
 
     buildVersionsFieldset: function (container) {
