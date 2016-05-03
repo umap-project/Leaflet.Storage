@@ -296,6 +296,11 @@ ul.photon-autocomplete {
     visibility: visible;
     top: 100px;
 }
+.storage-help-entry + .storage-help-entry {
+    margin-top: 10px;
+    border-top: 1px solid #aaa;
+    padding-top: 10px;
+}
 
 
 /* ********************************* */

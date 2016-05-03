@@ -1048,7 +1048,7 @@ L.S.Editable = L.Editable.extend({
     },
 
     closeTooltip: function () {
-        this.map.ui.abortTooltip();
+        this.map.ui.closeTooltip();
     },
 
     onVertexRawClick: function (e) {

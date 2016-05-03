@@ -317,13 +317,17 @@ L.Storage.Help = L.Class.extend({
         this.content.innerHTML = '';
         for (var i = 0, name; i < arguments.length; i++) {
             name = arguments[i];
-            L.DomUtil.add('div', '', this.content, this.resolve(name));
+            L.DomUtil.add('div', 'storage-help-entry', this.content, this.resolve(name));
         }
         L.DomUtil.addClass(document.body, 'storage-help-on');
     },
 
     hide: function () {
         L.DomUtil.removeClass(document.body, 'storage-help-on');
+    },
+
+    visible: function () {
+        return L.DomUtil.hasClass(document.body, 'storage-help-on')
     },
 
     resolve: function (name) {
@@ -405,6 +409,20 @@ L.Storage.Help = L.Class.extend({
     },
 
     formatURL: L._('Supported variables that will be dynamically replaced') + ': {bbox}, {lat}, {lng}, {zoom}, {east}, {north}..., {left}, {top}...',
-    formatIconURL: L._('You can use feature properties as variables: ex.: with "http://myserver.org/images/{name}.png", the {name} variable will be replaced by the "name" value of each markers.')
+    formatIconURL: L._('You can use feature properties as variables: ex.: with "http://myserver.org/images/{name}.png", the {name} variable will be replaced by the "name" value of each markers.'),
+    colorValue: L._('Must be a valid CSS value (eg.: DarkBlue or #123456)'),
+    smoothFactor: L._('How much to simplify the polyline on each zoom level (more = better performance and smoother look, less = more accurate)'),
+    dashArray: L._('A comma separated list of numbers that defines the stroke dash pattern. Ex.: "5, 10, 15".'),
+    zoomTo: L._('Zoom level for automatic zooms'),
+    labelKey: L._('The name of the property to use as feature label (ex.: "nom")'),
+    stroke: L._('Whether to display or not polygons paths.'),
+    fill: L._('Whether to fill polygons with color.'),
+    fillColor: L._('Optional. Same as color if not set.'),
+    shortCredit: L._('Will be displayed in the bottom right corner of the map'),
+    longCredit: L._('Will be visible in the caption of the map'),
+    sortKey: L._('Property to use for sorting features'),
+    filterKey: L._('Comma separated list of properties to use when filtering features'),
+    interactive: L._('If false, the polygon will act as a part of the underlying map.'),
+    outlink: L._('Define link to open in a new window on polygon click.')
 
 });

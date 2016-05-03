@@ -43,6 +43,20 @@ L.FormBuilder.Element.include({
 
     setInheritedValue: function () {
         this.input.value = this.getInheritedValue();
+    },
+
+    buildLabel: function () {
+        if (this.options.label) {
+            this.label = L.DomUtil.create('label', '', this.getLabelParent());
+            this.label.innerHTML = this.options.label;
+            if (this.options.helpEntries) this.builder.map.help.button(this.label, this.options.helpEntries);
+            else if (this.options.helpText) {
+                var info = L.DomUtil.create('i', 'info', this.label);
+                L.DomEvent.on(info, 'mouseover', function () {
+                    this.builder.map.ui.tooltip({anchor: info, content: this.options.helpText, position: 'top'});
+                }, this);
+            }
+        }
     }
 
 });
@@ -482,19 +496,19 @@ L.Storage.FormBuilder = L.FormBuilder.extend({
     defaultOptions: {
         name: {label: L._('name')},
         description: {label: L._('description'), handler: 'Textarea', helpEntries: 'textFormatting'},
-        color: {handler: 'ColorPicker', label: L._('color'), helpText: L._('Must be a valid CSS value (eg.: DarkBlue or #123456)'), inheritable: true},
-        opacity: {handler: 'Range', min: 0.1, max: 1, step: 0.1, label: L._('opacity'), helpText: L._('Opacity, from 0.1 to 1.0 (opaque).'), inheritable: true},
-        stroke: {handler: 'Switch', label: L._('stroke'), helpText: L._('Whether to display or not the Polygon path.'), inheritable: true},
+        color: {handler: 'ColorPicker', label: L._('color'), helpEntries: 'colorValue', inheritable: true},
+        opacity: {handler: 'Range', min: 0.1, max: 1, step: 0.1, label: L._('opacity'), inheritable: true},
+        stroke: {handler: 'Switch', label: L._('stroke'), helpEntries: 'stroke', inheritable: true},
         weight: {handler: 'Range', min: 1, max: 20, step: 1, label: L._('weight'), inheritable: true},
-        fill: {handler: 'Switch', label: L._('fill'), helpText: L._('Whether to fill the path with color.'), inheritable: true},
-        fillColor: {handler: 'ColorPicker', label: L._('fill color'), helpText: L._('Optional. Same as color if not set.'), inheritable: true},
-        fillOpacity: {handler: 'Range', min: 0.1, max: 1, step: 0.1, label: L._('fill opacity'), helpText: L._('Fill opacity, from 0.1 to 1.0 (opaque).'), inheritable: true},
-        smoothFactor: {handler: 'Range', min: 0, max: 10, step: 0.5, label: L._('Simplify'), helpText: L._('How much to simplify the polyline on each zoom level (more = better performance and smoother look, less = more accurate)'), inheritable: true},
-        dashArray: {label: L._('dash array'), helpText: L._('A string that defines the stroke dash pattern. Ex.: «5, 10, 15».'), inheritable: true},
-        iconClass: {handler: 'IconClassSwitcher', label: L._('type of icon'), inheritable: true},
-        iconUrl: {handler: 'IconUrl', label: L._('symbol of the icon'), inheritable: true},
-        popupTemplate: {handler: 'PopupTemplate', label: L._('Popup style'), helpText: L._('template to use for the popup'), inheritable: true},
-        popupContentTemplate: {label: L._('Popup content template'), handler: 'Textarea', helpEntries: ['dynamicProperties', 'textFormatting'], helpText: L._('You can use formatting and &#123;properties&#125; from your features.'), placeholder: '# {name}', inheritable: true},
+        fill: {handler: 'Switch', label: L._('fill'), helpEntries: 'fill', inheritable: true},
+        fillColor: {handler: 'ColorPicker', label: L._('fill color'), helpEntries: 'fillColor', inheritable: true},
+        fillOpacity: {handler: 'Range', min: 0.1, max: 1, step: 0.1, label: L._('fill opacity'), inheritable: true},
+        smoothFactor: {handler: 'Range', min: 0, max: 10, step: 0.5, label: L._('Simplify'), helpEntries: 'smoothFactor', inheritable: true},
+        dashArray: {label: L._('dash array'), helpEntries: 'dashArray', inheritable: true},
+        iconClass: {handler: 'IconClassSwitcher', label: L._('Icon shape'), inheritable: true},
+        iconUrl: {handler: 'IconUrl', label: L._('Icon symbol'), inheritable: true},
+        popupTemplate: {handler: 'PopupTemplate', label: L._('Popup style'), inheritable: true},
+        popupContentTemplate: {label: L._('Popup content template'), handler: 'Textarea', helpEntries: ['dynamicProperties', 'textFormatting'], placeholder: '# {name}', inheritable: true},
         datalayer: {handler: 'DataLayerSwitcher', label: L._('Choose the layer of the feature')},
         moreControl: {handler: 'Switch', label: L._('Do you want to display the «more» control?')},
         datalayersControl: {handler: 'Switch', label: L._('Do you want to display the data layers control?')},
@@ -505,9 +519,9 @@ L.Storage.FormBuilder = L.FormBuilder.extend({
         onLoadPanel: {handler: 'onLoadPanel', label: L._('Do you want to display a panel on load?')},
         displayPopupFooter: {handler: 'Switch', label: L._('Do you want to display popup footer?')},
         captionBar: {handler: 'Switch', label: L._('Do you want to display a caption bar?')},
-        zoomTo: {handler: 'IntInput', placeholder: L._('Inherit'), helpText: L._('Zoom level for automatic zooms'), label: L._('Default zoom level'), inheritable: true},
-        showLabel: {handler: 'Switch', helpText: L._('Add a permanent label'), label: L._('Permanent label'), inheritable: true},
-        labelKey: {helpText: L._('Property to use as feature label'), placeholder: L._('Default: name'), label: L._('Label key'), inheritable: true}
+        zoomTo: {handler: 'IntInput', placeholder: L._('Inherit'), helpEntries: 'zoomTo', label: L._('Default zoom level'), inheritable: true},
+        showLabel: {handler: 'Switch', label: L._('Permanent label'), inheritable: true},
+        labelKey: {helpEntries: 'labelKey', placeholder: L._('Default: name'), label: L._('Label key'), inheritable: true}
     },
 
     initialize: function (obj, fields, options) {
@@ -523,12 +537,6 @@ L.Storage.FormBuilder = L.FormBuilder.extend({
 
     finish: function () {
         this.map.ui.closePanel();
-    },
-
-    buildField: function (field) {
-        var helper = L.FormBuilder.prototype.buildField.call(this, field);
-        if (helper.options.helpEntries) this.map.help.button(helper.label, helper.options.helpEntries);
-        return helper;
     }
 
 });

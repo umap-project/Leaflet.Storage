@@ -336,7 +336,8 @@ L.Storage.Map.include({
                 L.DomEvent.stop(e);
                 this.search();
             } else if (e.keyCode === L.S.Keys.ESC) {
-                this.ui.closePanel();
+                if (this.help.visible()) this.help.hide();
+                else this.ui.closePanel();
             }
 
             if (!this.options.allowEdit) return;
@@ -1155,8 +1156,8 @@ L.Storage.Map.include({
             ['options.easing', {handler: 'Switch', label: L._('Advanced transition'), inheritable: true}],
             'options.showLabel',
             'options.labelKey',
-            ['options.sortKey', {handler: 'BlurInput', helpText: L._('Property to use for sorting features'), placeholder: L._('Default: name'), label: L._('Sort key'), inheritable: true}],
-            ['options.filterKey', {handler: 'Input', helpText: L._('Comma separated list of properties to use when filtering features'), placeholder: L._('Default: name'), label: L._('Filter keys'), inheritable: true}]
+            ['options.sortKey', {handler: 'BlurInput', helpEntries: 'sortKey', placeholder: L._('Default: name'), label: L._('Sort key'), inheritable: true}],
+            ['options.filterKey', {handler: 'Input', helpEntries: 'filterKey', placeholder: L._('Default: name'), label: L._('Filter keys'), inheritable: true}]
         ];
 
         builder = new L.S.FormBuilder(this, optionsFields, {
@@ -1254,8 +1255,8 @@ L.Storage.Map.include({
         var credits = L.DomUtil.createFieldset(container, L._('Credits'));
         var creditsFields = [
             ['options.licence', {handler: 'LicenceChooser', label: L._('licence')}],
-            ['options.shortCredit', {handler: 'Input', label: L._('Short credits'), helpText: L._('Will be displayed in the bottom right corner of the map'), helpEntries: 'textFormatting'}],
-            ['options.longCredit', {handler: 'Textarea', label: L._('Long credits'), helpText: L._('Will be visible in the caption of the map'), helpEntries: 'textFormatting'}]
+            ['options.shortCredit', {handler: 'Input', label: L._('Short credits'), helpEntries: ['shortCredit', 'textFormatting']}],
+            ['options.longCredit', {handler: 'Textarea', label: L._('Long credits'), helpEntries: ['longCredit', 'textFormatting']}]
         ];
         var creditsBuilder = new L.S.FormBuilder(this, creditsFields, {
             callback: function () {this._controls.attribution._update();},

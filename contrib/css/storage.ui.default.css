@@ -241,6 +241,19 @@ input.switch:checked ~ label:after {
 .inheritable.undefined .define {
     display: block;
 }
+i.info {
+    background-repeat: no-repeat;
+    background-image: url("../../src/img/16.png");
+    background-position: -170px -50px;
+    display: inline-block;
+    margin-left: 5px;
+    vertical-align: middle;
+    width: 16px;
+    height: 18px;
+}
+.dark i.info {
+    background-image: url("../../src/img/16-white.png");
+}
 .with-transition {
     /*transition: top .7s, right .7s, left .7s, width .7s, visibility .7s;*/
     transition: all .7s;
@@ -405,21 +418,47 @@ input.switch:checked ~ label:after {
     padding: 5px 10px;
     width: auto;
     position: absolute;
-    top: 60px;
-    left: 10px;
     box-shadow: 0 1px 7px #999999;
     display: none;
-    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.6);
-    color: #fff;
+    background-color: rgba(40, 40, 40, 0.8);
+    color: #eeeeec;
     font-size: 0.8em;
     border-radius: 2px;
     z-index: 1004;
     font-weight: normal;
-    white-space: nowrap;
+    max-width: 300px;
 }
 .storage-tooltip #storage-tooltip-container {
     display: block;
 }
+#storage-tooltip-container.tooltip-top:after {
+    top: 100%;
+    left: calc(50% - 11px);
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-top-color: rgba(30, 30, 30, 0.8);
+    border-width: 11px;
+    margin-left: calc(-50% + 21px);
+}
+#storage-tooltip-container.tooltip.tooltip-left:after {
+    left: 100%;
+    top: 50%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-color: rgba(136, 183, 213, 0);
+    border-left-color: #333;
+    border-width: 11px;
+    margin-top: -10px;
+}
+
 
 
 /* *********** */
@@ -441,6 +480,7 @@ input.switch:checked ~ label:after {
     color: #eeeeec;
     padding: 0 7px;
     line-height: 32px;
+    background-color: #323737;
 }
 .dark .storage-close-link:hover {
     background-color: #2e3436;

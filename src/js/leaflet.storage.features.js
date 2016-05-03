@@ -53,9 +53,7 @@ L.Storage.FeatureMixin = {
             var win = window.open(this.properties._storage_options.outlink);
             return;
         }
-        if (this.map.slideshow) {
-            this.map.slideshow.current = this;
-        }
+        if (this.map.slideshow) this.map.slideshow.current = this;
         this.attachPopup();
         this.openPopup(latlng || this.getCenter());
     },
@@ -674,9 +672,9 @@ L.Storage.PathMixin = {
 
     _onMouseOver: function () {
         if (this.map.measureTools && this.map.measureTools.enabled()) {
-            this.map.ui.tooltip({content: this.getMeasure(), attachTo: this});
+            this.map.ui.tooltip({content: this.getMeasure(), anchor: this});
         } else if (this.map.editEnabled && !this.map.editedFeature) {
-            this.map.ui.tooltip({content: L._('Click to edit'), attachTo: this});
+            this.map.ui.tooltip({content: L._('Click to edit'), anchor: this});
         }
     },
 
@@ -938,8 +936,8 @@ L.Storage.Polygon = L.Polygon.extend({
 
     getInteractionOptions: function () {
         var options = [
-            ['properties._storage_options.interactive', {handler: 'Switch', label: L._('Allow interactions'), helpText: L._('If false, the polygon will act as a part of the underlying map.'), inheritable: true}],
-            ['properties._storage_options.outlink', {label: L._('Link to…'), helpText: L._('Define link to open in a new window on polygon click.'), placeholder: 'http://...', inheritable: true}]
+            ['properties._storage_options.interactive', {handler: 'Switch', label: L._('Allow interactions'), helpEntries: 'interactive', inheritable: true}],
+            ['properties._storage_options.outlink', {label: L._('Link to…'), helpEntries: 'outlink', placeholder: 'http://...', inheritable: true}]
         ];
         return options.concat(L.Storage.FeatureMixin.getInteractionOptions());
     },

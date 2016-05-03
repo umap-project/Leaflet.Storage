@@ -111,11 +111,36 @@ L.S.UI = L.Evented.extend({
         self.ALERT_ID = timeoutID = window.setTimeout(L.bind(close, this), e.duration || 3000);
     },
 
-    fixTooltip: function () {
+    tooltip: function (e) {
+        this.TOOLTIP_ID = Math.random();
+        var id = this.TOOLTIP_ID;
+        L.DomUtil.addClass(this.parent, 'storage-tooltip');
+        if (e.anchor && e.position === 'top') this.anchorTooltipTop(e.anchor);
+        else if (e.anchor && e.position === 'left') this.anchorTooltipLeft(e.anchor);
+        else this.anchorTooltipAbsolute();
+        this._tooltip.innerHTML = e.content;
+        function closeIt () { this.closeTooltip(id); }
+        if (e.anchor) L.DomEvent.once(e.anchor, 'mouseout', closeIt, this);
+        if (e.duration !== Infinity) window.setTimeout(L.bind(closeIt, this), e.duration || 3000);
+    },
+
+    anchorTooltipAbsolute: function () {
+        this._tooltip.className = '';
         var left = this.parent.offsetLeft + (this.parent.clientWidth / 2) - (this._tooltip.clientWidth / 2),
-            top = this.parent.offsetTop + 5,
-            point = L.point(left, top);
-        L.DomUtil.setPosition(this._tooltip, point);
+            top = this.parent.offsetTop + 75;
+        this.setTooltipPosition({top: top, left: left});
+    },
+
+    anchorTooltipTop: function (el) {
+        this._tooltip.className = 'tooltip-top';
+        var coords = this.getPosition(el);
+        this.setTooltipPosition({left: coords.left - 10, bottom: this.getDocHeight() - coords.top + 11});
+    },
+
+    anchorTooltipLeft: function (el) {
+        this._tooltip.className = 'tooltip-left';
+        var coords = this.getPosition(el);
+        this.setTooltipPosition({top: coords.top, right: document.documentElement.offsetWidth - coords.left + 11});
     },
 
     closeTooltip: function (id) {
@@ -124,19 +149,28 @@ L.S.UI = L.Evented.extend({
         L.DomUtil.removeClass(this.parent, 'storage-tooltip');
     },
 
-    tooltip: function (e) {
-        this.TOOLTIP_ID = Math.random();
-        var id = this.TOOLTIP_ID;
-        L.DomUtil.addClass(this.parent, 'storage-tooltip');
-        this.fixTooltip();
-        this._tooltip.innerHTML = e.content;
-        function closeIt () { this.closeTooltip(id); }
-        if (e.attachTo) L.DomEvent.on(e.attachTo, 'mouseout', closeIt, this);
-        if (e.duration !== Infinity) window.setTimeout(L.bind(closeIt, this), e.duration || 3000);
+    getPosition: function (el) {
+        return el.getBoundingClientRect();
     },
 
-    abortTooltip: function () {
-        this.closeTooltip();
-    }
+    setTooltipPosition: function (coords) {
+        if (coords.left) this._tooltip.style.left = coords.left + 'px';
+        else this._tooltip.style.left = 'initial';
+        if (coords.right) this._tooltip.style.right = coords.right + 'px';
+        else this._tooltip.style.right = 'initial';
+        if (coords.top) this._tooltip.style.top = coords.top + 'px';
+        else this._tooltip.style.top = 'initial';
+        if (coords.bottom) this._tooltip.style.bottom = coords.bottom + 'px';
+        else this._tooltip.style.bottom = 'initial';
+    },
+
+    getDocHeight: function () {
+        var D = document;
+        return Math.max(
+            D.body.scrollHeight, D.documentElement.scrollHeight,
+            D.body.offsetHeight, D.documentElement.offsetHeight,
+            D.body.clientHeight, D.documentElement.clientHeight
+        );
+    },
 
 });
