@@ -53,7 +53,7 @@ describe('L.Storage.FeatureMixin', function () {
         });
 
         it('should give precedence to feature style over datalayer styles', function () {
-            var input = qs('form#storage-feature-advanced-properties input[name="color"]');
+            var input = qs('#storage-ui-container form input[name="color"]');
             assert.ok(input);
             changeInputValue(input, 'DarkGreen');
             assert.notOk(qs('path[fill="DarkRed"]'));
@@ -64,17 +64,20 @@ describe('L.Storage.FeatureMixin', function () {
 
         it('should remove stroke if set to no', function () {
             assert.notOk(qs('path[stroke="none"]'));
-            var select = qs('form#storage-feature-advanced-properties select[name="stroke"]');
-            assert.ok(select);
-            select.selectedIndex = 2;
-            happen.once(select, {type: 'change'});
+            var defineButton = qs('#storage-feature-shape-properties .formbox:nth-child(4) .define');
+            happen.click(defineButton);
+            var input = qs('#storage-feature-shape-properties input[name="stroke"]');
+            assert.ok(input);
+            input.checked = false;
+            console.log(input, input.checked)
+            happen.once(input, {type: 'change'});
             assert.ok(qs('path[stroke="none"]'));
             assert.ok(qs('path[fill="none"]')); // Polyline fill is unchanged
         });
 
         it('should not override already set style on features', function () {
             happen.click(qs('#browse_data_toggle_62 .layer-edit'));
-            changeInputValue(qs('form#datalayer-advanced-properties input[name=color]'), 'Chocolate');
+            changeInputValue(qs('#storage-ui-container form input[name=color]'), 'Chocolate');
             assert.notOk(qs('path[fill="DarkBlue"]'));
             assert.notOk(qs('path[fill="DarkRed"]'));
             assert.notOk(qs('path[fill="Chocolate"]'));
