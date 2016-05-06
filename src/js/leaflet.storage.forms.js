@@ -454,7 +454,7 @@ L.FormBuilder.Switch = L.FormBuilder.CheckBox.extend({
     getParentNode: function () {
         L.FormBuilder.CheckBox.prototype.getParentNode.call(this);
         if (this.options.inheritable) return this.quickContainer;
-        return this.parentNode;
+        return this.extendedContainer;
     },
 
     build: function () {
