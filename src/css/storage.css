@@ -49,25 +49,11 @@
     line-height: 36px;
     background-image: url("../img/24.png");
 }
-.leaflet-control-embed,
-.leaflet-control-tilelayers,
-.leaflet-control-home,
-.leaflet-control-locate,
-.leaflet-control-search,
-.leaflet-control-edit-in-osm,
-.leaflet-measure-control,
-.leaflet-control-fullscreen,
+.leaflet-control.display-on-more,
 a.storage-control-less {
     display: none;
 }
-.storage-more-controls .leaflet-control-embed,
-.storage-more-controls .leaflet-control-tilelayers,
-.storage-more-controls .leaflet-control-home,
-.storage-more-controls .leaflet-control-locate,
-.storage-more-controls .leaflet-control-search,
-.storage-more-controls .leaflet-control-edit-in-osm,
-.storage-more-controls .leaflet-measure-control,
-.storage-more-controls .leaflet-control-fullscreen,
+.storage-more-controls .display-on-more,
 .storage-more-controls .storage-control-less {
     display: block;
 }

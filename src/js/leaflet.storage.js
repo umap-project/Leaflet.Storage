@@ -20,10 +20,11 @@ L.Map.mergeOptions({
     default_interactive: true,
     attributionControl: false,
     allowEdit: true,
-    homeControl: true,
-    zoomControl: true,
-    locateControl: true,
-    searchControl: true,
+    controls: {
+        zoom: true,
+        datalayers: true,
+        search: true
+    },
     editInOSMControl: false,
     editInOSMControlOptions: false,
     scaleControl: true,
@@ -226,8 +227,6 @@ L.Storage.Map.include({
 
         L.DomUtil.classIf(document.body, 'storage-caption-bar-enabled', this.options.captionBar || (this.options.slideshow && (this.options.slideshow.delay || this.options.slideshow.autoplay)));
         L.DomUtil.classIf(document.body, 'storage-slideshow-enabled', this.options.slideshow && (this.options.slideshow.delay || this.options.slideshow.autoplay));
-        if (this.options.zoomControl) this._controls.zoom = (new L.Control.Zoom({zoomInTitle: L._('Zoom in'), zoomOutTitle: L._('Zoom out')})).addTo(this);
-        if (this.options.datalayersControl) this._controls.datalayers = new L.Storage.DataLayersControl().addTo(this);
         if (this.options.allowEdit) {
             this._controls.toggleEdit = new L.Storage.EditControl(this);
             this.addControl(this._controls.toggleEdit);
@@ -243,20 +242,33 @@ L.Storage.Map.include({
             if (this.options.urls.map_update_permissions) editActions.push(L.Storage.UpdatePermsAction);
             new L.S.SettingsToolbar({actions: editActions}).addTo(this);
         }
+        this._controls.zoom = new L.Control.Zoom({zoomInTitle: L._('Zoom in'), zoomOutTitle: L._('Zoom out')});
+        this._controls.datalayers = new L.Storage.DataLayersControl();
+        this._controls.home = new L.S.HomeControl();
+        this._controls.locate = new L.S.LocateControl();
+        this._controls.fullscreen = new L.Control.Fullscreen({title: {'false': L._('View Fullscreen'), 'true': L._('Exit Fullscreen')}});
+        this._controls.search = new L.Storage.SearchControl();
+        this._controls.embed = new L.Control.Embed(this, this.options.embedOptions);
+        this._controls.tilelayers = new L.Storage.TileLayerControl();
+        this._controls.editinosm = new L.Control.EditInOSM({
+            position: 'topleft',
+            widgetOptions: {helpText: L._('Open this map extent in a map editor to provide more accurate data to OpenStreetMap')}
+        });
+        this._controls.measure = new L.MeasureControl();
+        // We want to keep the order.
+        var candidates = ['zoom', 'search', 'fullscreen', 'embed', 'locate', 'measure', 'tilelayers', 'editinosm', 'home', 'datalayers'],
+            more = [], name, status, control;
+        for (var i = 0; i < candidates.length; i++) {
+            name = candidates[i];
+            status = this.options.controls[name];
+            control = this._controls[name];
+            if (status !== false) {
+                control.addTo(this);
+                if (status === undefined) L.DomUtil.addClass(control._container, 'display-on-more');
+            }
+        }
         if (this.options.moreControl) {
             this._controls.more = (new L.S.MoreControls()).addTo(this);
-            this._controls.home = (new L.S.HomeControl()).addTo(this);
-            this._controls.locate = (new L.S.LocateControl()).addTo(this);
-            this._controls.fullscreen = (new L.Control.Fullscreen({title: {'false': L._('View Fullscreen'), 'true': L._('Exit Fullscreen')}})).addTo(this);
-            this._controls.search = (new L.Storage.SearchControl()).addTo(this);
-            this._controls.embed = (new L.Control.Embed(this, this.options.embedOptions)).addTo(this);
-            this._controls.tilelayers = new L.Storage.TileLayerControl().addTo(this);
-            var editInOSMControlOptions = {
-                position: 'topleft',
-                widgetOptions: {helpText: L._('Open this map extent in a map editor to provide more accurate data to OpenStreetMap')}
-            };
-            this._controls.editInOSM = (new L.Control.EditInOSM(editInOSMControlOptions)).addTo(this);
-            this._controls.measure = (new L.MeasureControl().addTo(this));
         }
         if (this.options.scaleControl) {
             this._controls.scale = L.control.scale().addTo(this);
@@ -967,7 +979,8 @@ L.Storage.Map.include({
         'filterKey',
         'showLabel',
         'shortCredit',
-        'longCredit'
+        'longCredit',
+        'controls'
     ],
 
     exportOptions: function () {
@@ -1110,9 +1123,17 @@ L.Storage.Map.include({
         var form = builder.build();
         container.appendChild(form);
         var UIFields = [
+            ['options.controls.zoom', {handler: 'ControlChoice', label: L._('Display the zoom control')}],
+            ['options.controls.search', {handler: 'ControlChoice', label: L._('Display the search control')}],
+            ['options.controls.fullscreen', {handler: 'ControlChoice', label: L._('Display the fullscreen control')}],
+            ['options.controls.embed', {handler: 'ControlChoice', label: L._('Display the embed control')}],
+            ['options.controls.locate', {handler: 'ControlChoice', label: L._('Display the locate control')}],
+            ['options.controls.measure', {handler: 'ControlChoice', label: L._('Display the measure control')}],
+            ['options.controls.tilelayers', {handler: 'ControlChoice', label: L._('Display the tile layers control')}],
+            ['options.controls.editinosm', {handler: 'ControlChoice', label: L._('Display the control to open OpenStreetMap editor')}],
+            ['options.controls.home', {handler: 'ControlChoice', label: L._('Display the control to go back to home page')}],
+            ['options.controls.datalayers', {handler: 'ControlChoice', label: L._('Display the data layers control')}],
             'options.moreControl',
-            'options.datalayersControl',
-            'options.zoomControl',
             'options.scrollWheelZoom',
             'options.miniMap',
             'options.scaleControl',

@@ -1,34 +1,38 @@
 L.FormBuilder.Element.include({
 
     getParentNode: function () {
+        if (this.options.wrapper) {
+            return L.DomUtil.create(this.options.wrapper, this.options.wrapperClass || '', this.form);
+        }
+        var className = 'formbox';
         if (this.options.inheritable) {
-            var className = this.get() === undefined ? ' undefined' : '';
-            var container = this.wrapper = L.DomUtil.create('div', 'inheritable' + className, this.form);
-            var labelContainer = this.labelContainer = L.DomUtil.create('div', 'header', container);
-            var undefine = L.DomUtil.add('a', 'button undefine', labelContainer, L._('clear'));
-            var define = L.DomUtil.add('a', 'button define', labelContainer, L._('define'));
-            this.quickContainer = L.DomUtil.create('span', 'quick-actions show-on-defined', labelContainer);
-            this.extendedContainer = L.DomUtil.create('div', 'show-on-defined', container);
+            className += this.get() === undefined ? ' inheritable undefined' : ' inheritable ';
+        }
+        this.wrapper = L.DomUtil.create('div', className, this.form);
+        this.header = L.DomUtil.create('div', 'header', this.wrapper);
+        if (this.options.inheritable) {
+            var undefine = L.DomUtil.add('a', 'button undefine', this.header, L._('clear'));
+            var define = L.DomUtil.add('a', 'button define', this.header, L._('define'));
             L.DomEvent.on(define, 'click', function (e) {
                 L.DomEvent.stop(e);
                 this.setInheritedValue();
                 this.fire('define');
-                L.DomUtil.removeClass(container, 'undefined');
+                L.DomUtil.removeClass(this.wrapper, 'undefined');
             }, this);
             L.DomEvent.on(undefine, 'click', function (e) {
                 L.DomEvent.stop(e);
-                L.DomUtil.addClass(container, 'undefined');
+                L.DomUtil.addClass(this.wrapper, 'undefined');
                 this.clear();
                 this.sync();
             }, this);
-            return this.extendedContainer;
         }
-        return this.options.wrapper ? L.DomUtil.create(this.options.wrapper, this.options.wrapperClass || '', this.form) : this.form;
+        this.quickContainer = L.DomUtil.create('span', 'quick-actions show-on-defined', this.header);
+        this.extendedContainer = L.DomUtil.create('div', 'show-on-defined', this.wrapper);
+        return this.extendedContainer;
     },
 
     getLabelParent: function () {
-        if (this.options.inheritable) return this.labelContainer;
-        return this.parentNode;
+        return this.header;
     },
 
     clear: function () {
@@ -128,10 +132,6 @@ L.FormBuilder.ColorPicker = L.FormBuilder.Input.extend({
     getParentNode: function () {
         L.FormBuilder.CheckBox.prototype.getParentNode.call(this);
         return this.quickContainer;
-    },
-
-    getHelpTextParent: function () {
-        return this.extendedContainer;
     },
 
     build: function () {
@@ -452,14 +452,9 @@ L.FormBuilder.Url = L.FormBuilder.Input.extend({
 L.FormBuilder.Switch = L.FormBuilder.CheckBox.extend({
 
     getParentNode: function () {
-        var container = L.FormBuilder.CheckBox.prototype.getParentNode.call(this);
+        L.FormBuilder.CheckBox.prototype.getParentNode.call(this);
         if (this.options.inheritable) return this.quickContainer;
-        return container;
-    },
-
-    getHelpTextParent: function () {
-        if (this.options.inheritable) return this.extendedContainer;
-        return L.FormBuilder.CheckBox.prototype.getHelpTextParent.call(this);
+        return this.parentNode;
     },
 
     build: function () {
@@ -472,6 +467,71 @@ L.FormBuilder.Switch = L.FormBuilder.CheckBox.extend({
         L.DomUtil.addClass(this.input, 'switch');
         this.input.id = id;
     }
+
+});
+
+L.FormBuilder.MultiChoice = L.FormBuilder.Element.extend({
+
+    fetch: function () {
+        var value = this.backup = this.toHTML();
+        this.container.querySelector('input[type="radio"][value="' + value + '"]').checked = true;
+    },
+
+    value: function () {
+        return this.container.querySelector('input[type="radio"]:checked').value;
+    },
+
+    toJS: function () {
+        var value = this.value();
+        switch (value) {
+            case 'true':
+            case true:
+                value = true;
+                break;
+            case 'false':
+            case false:
+                value = false;
+                break;
+            default:
+                value = undefined;
+        }
+        return value;
+    },
+
+    getChoices: function () {
+        return this.options.choices || this.choices;
+    },
+
+    build: function () {
+        var choices = this.getChoices();
+        this.container = L.DomUtil.create('div', 'storage-multiplechoice', this.parentNode);
+        for (var i = 0; i < choices.length; i++) {
+            this.addChoice(choices[i][0], choices[i][1], i);
+        }
+        this.fetch();
+    },
+
+    addChoice: function (value, label, counter) {
+        var input = L.DomUtil.create('input', '', this.container);
+        label = L.DomUtil.add('label', '', this.container, label);
+        input.type = 'radio';
+        input.name = this.name;
+        input.value = value;
+        var id = Date.now() + '.' + this.name + '.' + counter;
+        label.setAttribute('for', id);
+        input.id = id;
+        L.DomEvent.on(input, 'change', this.sync, this);
+    }
+
+});
+
+L.FormBuilder.ControlChoice = L.FormBuilder.MultiChoice.extend({
+
+    choices: [
+        [true, L._('always')],
+        [false, L._('never')],
+        [undefined, L._('hidden')]
+    ]
 
 });
 
@@ -511,8 +571,6 @@ L.Storage.FormBuilder = L.FormBuilder.extend({
         popupContentTemplate: {label: L._('Popup content template'), handler: 'Textarea', helpEntries: ['dynamicProperties', 'textFormatting'], placeholder: '# {name}', inheritable: true},
         datalayer: {handler: 'DataLayerSwitcher', label: L._('Choose the layer of the feature')},
         moreControl: {handler: 'Switch', label: L._('Do you want to display the «more» control?')},
-        datalayersControl: {handler: 'Switch', label: L._('Do you want to display the data layers control?')},
-        zoomControl: {handler: 'Switch', label: L._('Do you want to display zoom control?')},
         scrollWheelZoom: {handler: 'Switch', label: L._('Allow scroll wheel zoom?')},
         miniMap: {handler: 'Switch', label: L._('Do you want to display a minimap?')},
         scaleControl: {handler: 'Switch', label: L._('Do you want to display the scale control?')},
