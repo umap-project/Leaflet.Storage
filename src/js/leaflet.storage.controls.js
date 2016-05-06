@@ -261,7 +261,7 @@ L.Storage.DeleteVertexAction = L.S.BaseVertexAction.extend({
     options: {
         toolbarIcon: {
             className: 'storage-delete-vertex',
-            tooltip: L._('Delete this vertex')
+            tooltip: L._('Delete this vertex (Alt-click)')
         }
     },
 
@@ -1006,6 +1006,9 @@ L.S.Editable = L.Editable.extend({
         this.on('editable:vertex:ctrlclick', function (e) {
             var index = e.vertex.getIndex();
             if (index === 0 || index === e.vertex.getLastIndex() && e.vertex.continue) e.vertex.continue();
+        });
+        this.on('editable:vertex:altclick', function (e) {
+            if (e.vertex.editor.vertexCanBeDeleted(e.vertex)) e.vertex.delete();
         });
         this.on('editable:vertex:rawclick', this.onVertexRawClick);
     },
