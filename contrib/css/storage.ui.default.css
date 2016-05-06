@@ -161,6 +161,7 @@ input.switch:empty ~ label {
     -ms-user-select: none;
     user-select: none;
     text-shadow: 0 1px rgba(0, 0, 0, 0.1);
+    width: 80px;
 }
 input.switch:empty ~ label:before,
 input.switch:empty ~ label:after {
