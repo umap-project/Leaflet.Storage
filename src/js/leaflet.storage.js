@@ -5,7 +5,6 @@ L.Map.mergeOptions({
     center: [4, 50],
     zoom: 6,
     hash: true,
-    embedControl: true,
     default_color: 'DarkBlue',
     default_smoothFactor: 1.0,
     default_opacity: 0.5,
@@ -19,20 +18,19 @@ L.Map.mergeOptions({
     default_interactive: true,
     attributionControl: false,
     allowEdit: true,
-    controls: {
-        zoom: true,
-        datalayers: true,
-        search: true
-    },
+    embedControl: true,
+    zoomControl: true,
+    datalayersControl: true,
+    searchControl: true,
     editInOSMControl: false,
     editInOSMControlOptions: false,
     scaleControl: true,
+    noControl: false,  // Do not render any control.
     miniMap: false,
     name: '',
     description: '',
     displayPopupFooter: false,
     demoTileInfos: {s: 'a', z: 9, x: 265, y: 181},
-    tilelayersControl: true,
     licences: [],
     licence: '',
     enableMarkerDraw: true,
@@ -50,6 +48,8 @@ L.Map.mergeOptions({
 });
 
 L.Storage.Map.include({
+
+    HIDDABLE_CONTROLS: ['zoom', 'search', 'fullscreen', 'embed', 'locate', 'measure', 'tilelayers', 'editinosm', 'home', 'datalayers'],
 
     initialize: function (el, geojson) {
 
@@ -75,15 +75,16 @@ L.Storage.Map.include({
         this.demoTileInfos = this.options.demoTileInfos;
         if (geojson.geometry) this.options.center = geojson.geometry;
         this.options.zoomControl = zoomControl;
-        this.overrideBooleanOptionFromQueryString('zoomControl');
-        this.overrideBooleanOptionFromQueryString('moreControl');
-        this.overrideBooleanOptionFromQueryString('miniMap');
-        this.overrideBooleanOptionFromQueryString('scaleControl');
-        this.overrideBooleanOptionFromQueryString('allowEdit');
-        this.overrideBooleanOptionFromQueryString('datalayersControl');
-        this.overrideBooleanOptionFromQueryString('displayDataBrowserOnLoad');
-        this.overrideBooleanOptionFromQueryString('displayCaptionOnLoad');
-        this.overrideBooleanOptionFromQueryString('captionBar');
+        L.Util.setBooleanFromQueryString(this.options, 'moreControl');
+        L.Util.setBooleanFromQueryString(this.options, 'scaleControl');
+        L.Util.setBooleanFromQueryString(this.options, 'miniMap');
+        L.Util.setBooleanFromQueryString(this.options, 'allowEdit');
+        L.Util.setBooleanFromQueryString(this.options, 'displayDataBrowserOnLoad');
+        L.Util.setBooleanFromQueryString(this.options, 'displayCaptionOnLoad');
+        L.Util.setBooleanFromQueryString(this.options, 'captionBar');
+        for (var i = 0; i < this.HIDDABLE_CONTROLS.length; i++) {
+            L.Util.setNullableBooleanFromQueryString(this.options, this.HIDDABLE_CONTROLS[i] + 'Control');
+        }
         this.datalayersOnLoad = L.Util.queryString('datalayers');
         this.options.onLoadPanel = L.Util.queryString('onLoadPanel', this.options.onLoadPanel);
         if (this.datalayersOnLoad) this.datalayersOnLoad = this.datalayersOnLoad.toString().split(',');
@@ -137,11 +138,8 @@ L.Storage.Map.include({
             }
             delete this.options.displayDataBrowserOnLoad;
         }
-        if (this.options.onLoadPanel === 'databrowser') {
-            this.openBrowser();
-        } else if (this.options.onLoadPanel === 'caption') {
-            this.displayCaption();
-        }
+        if (this.options.onLoadPanel === 'databrowser') this.openBrowser();
+        else if (this.options.onLoadPanel === 'caption') this.displayCaption();
 
         this.ui.on('panel:closed', function () {
             this.invalidateSize({pan: false});
@@ -154,9 +152,7 @@ L.Storage.Map.include({
                     return isDirty || this.dirty_datalayers.length;
                 },
                 set: function (status) {
-                    if (!isDirty && status) {
-                        self.fire('isdirty');
-                    }
+                    if (!isDirty && status) self.fire('isdirty');
                     isDirty = status;
                     self.checkDirty();
                 }
@@ -212,10 +208,6 @@ L.Storage.Map.include({
         this.on('click contextmenu.show', this.closeInplaceToolbar);
     },
 
-    overrideBooleanOptionFromQueryString: function (name) {
-        L.Util.setBooleanFromQueryString(this.options, name);
-    },
-
     initControls: function () {
         this.helpMenuActions = {};
         this._controls = this._controls || {};
@@ -226,7 +218,7 @@ L.Storage.Map.include({
 
         L.DomUtil.classIf(document.body, 'storage-caption-bar-enabled', this.options.captionBar || (this.options.slideshow && (this.options.slideshow.delay || this.options.slideshow.autoplay)));
         L.DomUtil.classIf(document.body, 'storage-slideshow-enabled', this.options.slideshow && (this.options.slideshow.delay || this.options.slideshow.autoplay));
-        if (this.options.allowEdit) {
+        if (this.options.allowEdit && !this.options.noControl) {
             this._controls.toggleEdit = new L.Storage.EditControl(this);
             this.addControl(this._controls.toggleEdit);
 
@@ -255,26 +247,14 @@ L.Storage.Map.include({
             widgetOptions: {helpText: L._('Open this map extent in a map editor to provide more accurate data to OpenStreetMap')}
         });
         this._controls.measure = new L.MeasureControl();
-        // We want to keep the order.
-        var candidates = ['zoom', 'search', 'fullscreen', 'embed', 'locate', 'measure', 'tilelayers', 'editinosm', 'home', 'datalayers'],
-            more = [], name, status, control;
-        for (var i = 0; i < candidates.length; i++) {
-            name = candidates[i];
-            status = this.options.controls[name];
-            control = this._controls[name];
-            if (status !== false) {
-                control.addTo(this);
-                if (status === undefined) L.DomUtil.addClass(control._container, 'display-on-more');
-            }
-        }
-        if (this.options.moreControl) {
-            this._controls.more = (new L.S.MoreControls()).addTo(this);
-        }
-        if (this.options.scaleControl) {
-            this._controls.scale = L.control.scale().addTo(this);
-        }
-        this._controls.attribution = new L.S.AttributionControl().addTo(this);
-        if (this.options.miniMap) {
+        this._controls.more = new L.S.MoreControls();
+        this._controls.scale = L.control.scale();
+        if (this.options.scrollWheelZoom) this.scrollWheelZoom.enable();
+        else this.scrollWheelZoom.disable();
+
+        if (this.options.noControl) return;
+
+        if (this.options.miniMap && !this.options.noControl) {
             this.whenReady(function () {
                 if (this.selected_tilelayer) {
                     this._controls.miniMap = new L.Control.MiniMap(this.selected_tilelayer).addTo(this);
@@ -282,11 +262,18 @@ L.Storage.Map.include({
                 }
             });
         }
-        if (this.options.scrollWheelZoom) {
-            this.scrollWheelZoom.enable();
-        } else {
-            this.scrollWheelZoom.disable();
+        var name, status, control;
+        for (var i = 0; i < this.HIDDABLE_CONTROLS.length; i++) {
+            name = this.HIDDABLE_CONTROLS[i];
+            status = this.options[name + 'Control'];
+            control = this._controls[name];
+            if (status === false) continue;
+            control.addTo(this);
+            if (status === undefined || status === null) L.DomUtil.addClass(control._container, 'display-on-more');
         }
+        if (this.options.moreControl) this._controls.more.addTo(this);
+        if (this.options.scaleControl) this._controls.scale.addTo(this);
+        this._controls.attribution = new L.S.AttributionControl().addTo(this);
     },
 
     initDatalayers: function () {
@@ -559,18 +546,19 @@ L.Storage.Map.include({
         var UIFields = [
             ['dimensions.width', {handler: 'Input', label: L._('width')}],
             ['dimensions.height', {handler: 'Input', label: L._('height')}],
-            ['options.includeFullScreenLink', {handler: 'CheckBox', helpText: L._('Include full screen link?')}],
-            ['options.currentView', {handler: 'CheckBox', helpText: L._('Current view instead of default map view?')}],
-            ['options.keepCurrentDatalayers', {handler: 'CheckBox', helpText: L._('Keep current visible layers')}],
+            ['options.includeFullScreenLink', {handler: 'Switch', label: L._('Include full screen link?')}],
+            ['options.currentView', {handler: 'Switch', label: L._('Current view instead of default map view?')}],
+            ['options.keepCurrentDatalayers', {handler: 'Switch', label: L._('Keep current visible layers')}],
             'queryString.moreControl',
-            'queryString.datalayersControl',
-            'queryString.zoomControl',
             'queryString.scrollWheelZoom',
             'queryString.miniMap',
             'queryString.scaleControl',
             'queryString.onLoadPanel',
             'queryString.captionBar'
         ];
+        for (var i = 0; i < this.HIDDABLE_CONTROLS.length; i++) {
+            UIFields.push('queryString.' + this.HIDDABLE_CONTROLS[i] + 'Control');
+        }
         var iframeExporter = new L.S.IframeExporter(this);
         var buildIframeCode = function () {
             iframe.innerHTML = iframeExporter.build();
@@ -593,13 +581,10 @@ L.Storage.Map.include({
         var typeInput = L.DomUtil.create('select', '', container);
         typeInput.name = 'format';
         var exportCaveat = L.DomUtil.add('small', 'help-text', container, L._('Only visible features will be downloaded.'));
-        exportCaveat.id = "export_caveat_text";
+        exportCaveat.id = 'export_caveat_text';
         L.DomEvent.on(typeInput, 'change', function () {
-            if (typeInput.value === "umap") {
-                exportCaveat.style.display = "none";
-            } else {
-                exportCaveat.style.display = "inherit";
-            }
+            if (typeInput.value === 'umap') exportCaveat.style.display = 'none';
+            else exportCaveat.style.display = 'inherit';
         }, this);
         var types = {
             geojson: {
@@ -982,7 +967,16 @@ L.Storage.Map.include({
         'showLabel',
         'shortCredit',
         'longCredit',
-        'controls'
+        'zoomControl',
+        'datalayersControl',
+        'searchControl',
+        'locateControl',
+        'fullscreenControl',
+        'editinosmControl',
+        'embedControl',
+        'measureControl',
+        'homeControl',
+        'tilelayersControl'
     ],
 
     exportOptions: function () {
@@ -1124,17 +1118,11 @@ L.Storage.Map.include({
         var builder = new L.S.FormBuilder(this, metadataFields);
         var form = builder.build();
         container.appendChild(form);
-        var UIFields = [
-            ['options.controls.zoom', {handler: 'ControlChoice', label: L._('Display the zoom control')}],
-            ['options.controls.search', {handler: 'ControlChoice', label: L._('Display the search control')}],
-            ['options.controls.fullscreen', {handler: 'ControlChoice', label: L._('Display the fullscreen control')}],
-            ['options.controls.embed', {handler: 'ControlChoice', label: L._('Display the embed control')}],
-            ['options.controls.locate', {handler: 'ControlChoice', label: L._('Display the locate control')}],
-            ['options.controls.measure', {handler: 'ControlChoice', label: L._('Display the measure control')}],
-            ['options.controls.tilelayers', {handler: 'ControlChoice', label: L._('Display the tile layers control')}],
-            ['options.controls.editinosm', {handler: 'ControlChoice', label: L._('Display the control to open OpenStreetMap editor')}],
-            ['options.controls.home', {handler: 'ControlChoice', label: L._('Display the control to go back to home page')}],
-            ['options.controls.datalayers', {handler: 'ControlChoice', label: L._('Display the data layers control')}],
+        var UIFields = [];
+        for (var i = 0; i < this.HIDDABLE_CONTROLS.length; i++) {
+            UIFields.push('options.' + this.HIDDABLE_CONTROLS[i] + 'Control');
+        }
+        UIFields = UIFields.concat([
             'options.moreControl',
             'options.scrollWheelZoom',
             'options.miniMap',
@@ -1142,7 +1130,7 @@ L.Storage.Map.include({
             'options.onLoadPanel',
             'options.displayPopupFooter',
             'options.captionBar'
-        ];
+        ]);
         builder = new L.S.FormBuilder(this, UIFields, {
             callback: this.initControls,
             callbackContext: this

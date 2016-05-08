@@ -474,28 +474,12 @@ L.FormBuilder.MultiChoice = L.FormBuilder.Element.extend({
 
     fetch: function () {
         var value = this.backup = this.toHTML();
+        if (value === null || value === undefined) value = 'null';
         this.container.querySelector('input[type="radio"][value="' + value + '"]').checked = true;
     },
 
     value: function () {
         return this.container.querySelector('input[type="radio"]:checked').value;
-    },
-
-    toJS: function () {
-        var value = this.value();
-        switch (value) {
-            case 'true':
-            case true:
-                value = true;
-                break;
-            case 'false':
-            case false:
-                value = false;
-                break;
-            default:
-                value = undefined;
-        }
-        return value;
     },
 
     getChoices: function () {
@@ -530,8 +514,25 @@ L.FormBuilder.ControlChoice = L.FormBuilder.MultiChoice.extend({
     choices: [
         [true, L._('always')],
         [false, L._('never')],
-        [undefined, L._('hidden')]
-    ]
+        ['null', L._('hidden')]
+    ],
+
+    toJS: function () {
+        var value = this.value();
+        switch (value) {
+            case 'true':
+            case true:
+                value = true;
+                break;
+            case 'false':
+            case false:
+                value = false;
+                break;
+            default:
+                value = null;
+        }
+        return value;
+    }
 
 });
 
@@ -579,7 +580,17 @@ L.Storage.FormBuilder = L.FormBuilder.extend({
         captionBar: {handler: 'Switch', label: L._('Do you want to display a caption bar?')},
         zoomTo: {handler: 'IntInput', placeholder: L._('Inherit'), helpEntries: 'zoomTo', label: L._('Default zoom level'), inheritable: true},
         showLabel: {handler: 'Switch', label: L._('Permanent label'), inheritable: true},
-        labelKey: {helpEntries: 'labelKey', placeholder: L._('Default: name'), label: L._('Label key'), inheritable: true}
+        labelKey: {helpEntries: 'labelKey', placeholder: L._('Default: name'), label: L._('Label key'), inheritable: true},
+        zoomControl: {handler: 'ControlChoice', label: L._('Display the zoom control')},
+        searchControl: {handler: 'ControlChoice', label: L._('Display the search control')},
+        fullscreenControl: {handler: 'ControlChoice', label: L._('Display the fullscreen control')},
+        embedControl: {handler: 'ControlChoice', label: L._('Display the embed control')},
+        locateControl: {handler: 'ControlChoice', label: L._('Display the locate control')},
+        measureControl: {handler: 'ControlChoice', label: L._('Display the measure control')},
+        tilelayersControl: {handler: 'ControlChoice', label: L._('Display the tile layers control')},
+        editinosmControl: {handler: 'ControlChoice', label: L._('Display the control to open OpenStreetMap editor')},
+        homeControl: {handler: 'ControlChoice', label: L._('Display the control to go back to home page')},
+        datalayersControl: {handler: 'ControlChoice', label: L._('Display the data layers control')},
     },
 
     initialize: function (obj, fields, options) {

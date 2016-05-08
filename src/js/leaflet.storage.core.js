@@ -1,8 +1,6 @@
 /* Poor man pub/sub handler, enough for now */
 
-L.StorageSingleton = L.Class.extend({
-    includes: L.Mixin.Events
-});
+L.StorageSingleton = L.Evented.extend({});
 L.Storage = new L.StorageSingleton();
 L.S = L.Storage;
 L.Storage.Map = L.Map.extend({});
@@ -13,7 +11,7 @@ L.Storage.Map = L.Map.extend({});
 L.Util.queryString = function (name, fallback) {
     var decode = function (s) { return decodeURIComponent(s.replace(/\+/g, ' ')); };
     var qs = window.location.search.slice(1).split('&'), qa = {};
-    for(var i in qs) {
+    for (var i in qs) {
         var key = qs[i].split('=');
         if (!key) continue;
         qa[decode(key[0])] = key[1] ? decode(key[1]) : 1;
@@ -28,15 +26,19 @@ L.Util.booleanFromQueryString = function (name) {
 
 L.Util.setFromQueryString = function (options, name) {
     var value = L.Util.queryString(name);
-    if (typeof value !== 'undefined') {
-        options[name] = value;
-    }
+    if (typeof value !== 'undefined') options[name] = value;
 };
 
 L.Util.setBooleanFromQueryString = function (options, name) {
     var value = L.Util.queryString(name);
+    if (typeof value !== 'undefined') options[name] = value == '1' || value == 'true';
+};
+L.Util.setNullableBooleanFromQueryString = function (options, name) {
+    var value = L.Util.queryString(name);
     if (typeof value !== 'undefined') {
-        options[name] = value == '1' || value == 'true';
+        if (value === 'null') value = null;
+        else if (value === '0' || value === 'false') value = false;
+        else value = true;
     }
 };
 L.Util.escapeHTML = function (s) {
