@@ -408,7 +408,7 @@ L.Storage.MoreControls = L.Control.extend({
             less = L.DomUtil.create('a', 'storage-control-less storage-control-text', container);
         more.href = '#';
         more.title = L._('More controls');
-        more.innerHTML = L._('More');
+        more.innerHTML = '🞁';
 
         L.DomEvent
             .on(more, 'click', L.DomEvent.stop)
@@ -416,7 +416,7 @@ L.Storage.MoreControls = L.Control.extend({
 
         less.href = '#';
         less.title = L._('Hide controls');
-        less.innerHTML = L._('Less');
+        less.innerHTML = '🞁';
 
         L.DomEvent
             .on(less, 'click', L.DomEvent.stop)
