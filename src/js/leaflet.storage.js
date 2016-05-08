@@ -6,7 +6,6 @@ L.Map.mergeOptions({
     zoom: 6,
     hash: true,
     embedControl: true,
-    datalayersControl: true,
     default_color: 'DarkBlue',
     default_smoothFactor: 1.0,
     default_opacity: 0.5,
@@ -237,13 +236,14 @@ L.Storage.Map.include({
                 L.S.ImportAction,
                 L.S.EditPropertiesAction,
                 L.S.ChangeTileLayerAction,
+                L.S.ManageDatalayersAction,
                 L.S.UpdateExtentAction
             ];
             if (this.options.urls.map_update_permissions) editActions.push(L.Storage.UpdatePermsAction);
             new L.S.SettingsToolbar({actions: editActions}).addTo(this);
         }
         this._controls.zoom = new L.Control.Zoom({zoomInTitle: L._('Zoom in'), zoomOutTitle: L._('Zoom out')});
-        this._controls.datalayers = new L.Storage.DataLayersControl();
+        this._controls.datalayers = new L.Storage.DataLayersControl(this);
         this._controls.home = new L.S.HomeControl();
         this._controls.locate = new L.S.LocateControl();
         this._controls.fullscreen = new L.Control.Fullscreen({title: {'false': L._('View Fullscreen'), 'true': L._('Exit Fullscreen')}});
@@ -545,6 +545,10 @@ L.Storage.Map.include({
                 self.isDirty = true;
             };
         if (this._controls.tilelayers) this._controls.tilelayers.openSwitcher({callback: callback, className: 'dark'});
+    },
+
+    manageDatalayers: function () {
+        if (this._controls.datalayers) this._controls.datalayers.openPanel();
     },
 
     renderShareBox: function () {
@@ -946,9 +950,7 @@ L.Storage.Map.include({
 
     editableOptions: [
         'zoom',
-        'datalayersControl',
         'scrollWheelZoom',
-        'zoomControl',
         'scaleControl',
         'moreControl',
         'miniMap',

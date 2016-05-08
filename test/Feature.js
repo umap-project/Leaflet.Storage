@@ -151,7 +151,8 @@ describe('L.Storage.FeatureMixin', function () {
 
         it('should change style on datalayer select change', function () {
             enableEdit();
-            happen.click(qs('.leaflet-control-browse .add-datalayer'));
+            happen.click(qs('.manage-datalayers'));
+            happen.click(qs('#storage-ui-container .add-datalayer'));
             changeInputValue(qs('form.storage-form input[name="name"]'), 'New layer');
             changeInputValue(qs('form#datalayer-advanced-properties input[name=color]'), 'MediumAquaMarine');
             happen.click(qs('path[fill="DarkBlue"]'));

@@ -200,6 +200,9 @@ input.switch:checked ~ label:before {
 input.switch:checked ~ label:after {
     margin-left: 3em;
 }
+.button-bar {
+    margin-top: 5px;
+}
 .storage-multiplechoice input[type='radio'] {
     display: none;
 }

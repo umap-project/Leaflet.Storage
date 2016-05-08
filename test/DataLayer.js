@@ -39,7 +39,7 @@ describe('L.DataLayer', function () {
         });
 
         it('should exist only one datalayer', function () {
-            assert.equal(document.querySelectorAll('.leaflet-control-browse i.layer-toggle').length, 1);
+            assert.equal(qsa('.leaflet-control-browse i.layer-toggle').length, 1);
         });
 
         it('should build a form on edit button click', function () {
@@ -112,12 +112,17 @@ describe('L.DataLayer', function () {
     });
 
     describe('#save() new', function () {
-        var newLayerButton, form, input, newDatalayer, editButton;
+        var newLayerButton, form, input, newDatalayer, editButton, manageButton;
 
+        it('should have a manage datalayers action', function () {
+            enableEdit();
+            manageButton = qs('.manage-datalayers');
+            assert.ok(manageButton);
+            happen.click(manageButton);
+        });
 
         it('should have a new layer button', function () {
-            enableEdit();
-            newLayerButton = qs('.leaflet-control-browse .add-datalayer');
+            newLayerButton = qs('#storage-ui-container .add-datalayer');
             assert.ok(newLayerButton);
         });
 

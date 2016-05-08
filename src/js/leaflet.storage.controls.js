@@ -54,6 +54,19 @@ L.Storage.ChangeTileLayerAction = L.Storage.BaseAction.extend({
 
 });
 
+L.Storage.ManageDatalayersAction = L.Storage.BaseAction.extend({
+
+    options: {
+        className: 'dark manage-datalayers',
+        tooltip: L._('Manage layers')
+    },
+
+    addHooks: function () {
+        this.map.manageDatalayers();
+    }
+
+});
+
 L.Storage.UpdateExtentAction = L.Storage.BaseAction.extend({
 
     options: {
@@ -416,11 +429,8 @@ L.Storage.MoreControls = L.Control.extend({
         var pos = this.getPosition(),
             corner = this._map._controlCorners[pos],
             className = 'storage-more-controls';
-        if (L.DomUtil.hasClass(corner, className)) {
-            L.DomUtil.removeClass(corner, className);
-        } else {
-            L.DomUtil.addClass(corner, className);
-        }
+        if (L.DomUtil.hasClass(corner, className)) L.DomUtil.removeClass(corner, className);
+        else L.DomUtil.addClass(corner, className);
     }
 
 });
@@ -438,6 +448,11 @@ L.Storage.DataLayersControl = L.Control.extend({
         editLayer: L._('Edit')
     },
 
+    initialize: function (map, options) {
+        this.map = map;
+        L.Control.prototype.initialize.call(this, options);
+    },
+
     onAdd: function (map) {
         var container = L.DomUtil.create('div', 'leaflet-control-browse storage-control'),
             actions = L.DomUtil.create('div', 'storage-browse-actions', container);
@@ -446,10 +461,6 @@ L.Storage.DataLayersControl = L.Control.extend({
         var link = L.DomUtil.create('a', 'storage-browse-link', actions);
         link.href = '#';
         link.title = link.innerHTML = L._('Browse data');
-
-        var add = L.DomUtil.create('a', 'show-on-edit block add-datalayer', actions);
-        add.href = '#';
-        add.innerHTML = add.title = L._('Add a layer');
 
         var toggle = L.DomUtil.create('a', 'storage-browse-toggle', container);
         toggle.href = '#';
@@ -460,10 +471,6 @@ L.Storage.DataLayersControl = L.Control.extend({
         L.DomEvent
             .on(link, 'click', L.DomEvent.stop)
             .on(link, 'click', map.openBrowser, map);
-
-        L.DomEvent
-            .on(add, 'click', L.DomEvent.stop)
-            .on(add, 'click', this.newDataLayer, this);
 
         map.whenReady(function () {
             this.update();
@@ -483,13 +490,13 @@ L.Storage.DataLayersControl = L.Control.extend({
         if (this._datalayers_container) {
             this._datalayers_container.innerHTML = '';
             for(var idx in this._map.datalayers) {
-                this.addDataLayer(this._map.datalayers[idx]);
+                this.addDataLayer(this._datalayers_container, this._map.datalayers[idx]);
             }
         }
     },
 
-    addDataLayer: function (datalayer) {
-        var datalayerLi = L.DomUtil.create('li', '', this._datalayers_container);
+    addDataLayer: function (container, datalayer) {
+        var datalayerLi = L.DomUtil.create('li', '', container);
         datalayer.renderToolbox(datalayerLi);
         var title = L.DomUtil.add('span', 'layer-title', datalayerLi, datalayer.options.name);
 
@@ -500,8 +507,26 @@ L.Storage.DataLayersControl = L.Control.extend({
     },
 
     newDataLayer: function () {
-        var datalayer = this._map.createDataLayer({});
+        var datalayer = this.map.createDataLayer({});
         datalayer.edit();
+    },
+
+    openPanel: function () {
+        var container = L.DomUtil.create('ul', 'storage-browse-datalayers');
+        for(var idx in this.map.datalayers) {
+            this.addDataLayer(container, this.map.datalayers[idx]);
+        }
+
+        var bar = L.DomUtil.create('div', 'button-bar', container),
+            add = L.DomUtil.create('a', 'show-on-edit block add-datalayer button', bar);
+        add.href = '#';
+        add.innerHTML = add.title = L._('Add a layer');
+
+        L.DomEvent
+            .on(add, 'click', L.DomEvent.stop)
+            .on(add, 'click', this.newDataLayer, this);
+
+        this.map.ui.openPanel({data: {html: container}, className: 'dark'});
     }
 
 });

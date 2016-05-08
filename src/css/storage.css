@@ -185,6 +185,9 @@ ul.photon-autocomplete {
 .update-map-tilelayers {
     background-position: -80px 0;
 }
+.manage-datalayers {
+    background-position: -40px -80px;
+}
 .storage-toolbar .update-map-permissions,
 .update-map-permissions {
     background-position: -40px -40px;
@@ -539,7 +542,7 @@ ul.photon-autocomplete {
 .leaflet-inplace-toolbar a,
 .storage-browse-features i,
 .storage-caption i,
-.leaflet-control-browse .storage-browse-datalayers i {
+.storage-browse-datalayers i {
     background-repeat: no-repeat;
     background-image: url("../../src/img/16.png");
     display: inline;
@@ -548,6 +551,9 @@ ul.photon-autocomplete {
     height: 24px;
     line-height: 24px;
     vertical-align: middle;
+}
+.dark .storage-browse-datalayers i {
+    background-image: url("../../src/img/16-white.png");
 }
 .leaflet-inplace-toolbar a {
     background-image: url("../../src/img/16-white.png");
@@ -575,7 +581,7 @@ ul.photon-autocomplete {
     background-position: -10px -91px;
 }
 .layer-table-edit {
-    background-position: -90px -9px;
+    background-position: -90px -10px;
 }
 .feature-edit,
 .layer-edit {
@@ -636,7 +642,6 @@ ul.photon-autocomplete {
 .leaflet-control-browse:hover .storage-browse-actions {
     display: block;
 }
-.leaflet-control-browse a.add-datalayer,
 .leaflet-control-browse a.storage-browse-link {
     background-image: none;
     background-color: rgb(68, 68, 68);
@@ -651,7 +656,7 @@ ul.photon-autocomplete {
     width: 100%;
     border-radius: 2px;
 }
-.leaflet-control-browse a.add-datalayer:before,
+a.add-datalayer:before,
 .leaflet-control-browse a.storage-browse-link:before {
     background-image: url("../img/16.png");
     background-repeat: no-repeat;
@@ -662,10 +667,10 @@ ul.photon-autocomplete {
     display: block;
     float: left;
 }
-.leaflet-control-browse a.add-datalayer:before {
-    background-position: -52px -49px;
+a.add-datalayer:before {
+    background-position: -45px -45px;
 }
-.leaflet-control-browse a.add-datalayer:hover,
+a.add-datalayer:hover,
 .leaflet-control-browse a.storage-browse-link:hover {
     background-color: rgb(99, 99, 99);
 }
