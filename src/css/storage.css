@@ -93,8 +93,9 @@ a.storage-control-text {
     font-size: 0.8em;
 }
 .leaflet-control-edit-enable a {
-    background-image: url("../img/24.png");
+    background-image: url("../img/24-white.png");
     background-position: -1px -1px;
+    background-color: #353c3e;
 }
 
 
