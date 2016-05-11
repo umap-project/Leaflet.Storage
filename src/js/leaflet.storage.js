@@ -408,6 +408,11 @@ L.Storage.Map.include({
     },
 
     createTileLayer: function (tilelayer) {
+        // out-of-box support for Mapbox Studio layers
+        if (tilelayer.url_template.indexOf('api.mapbox.com/styles') != -1) {
+		    tilelayer.tileSize = 512;  
+		    tilelayer.zoomOffset = -1;
+	    }
         return new L.TileLayer(tilelayer.url_template, tilelayer);
     },
 
