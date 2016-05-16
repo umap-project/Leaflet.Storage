@@ -147,6 +147,11 @@ L.Storage.DataLayer = L.Class.extend({
         this._geojson = null;
         this._propertiesIndex = [];
 
+        this.parentPane = this.map.getPane('overlayPane');
+        this.pane = this.map.createPane('datalayer' + L.stamp(this), this.parentPane);
+        this.pane.dataset.id = L.stamp(this);
+        this.renderer = L.svg({pane: this.pane});
+
         var isDirty = false,
             isDeleted = false,
             self = this;
@@ -209,13 +214,16 @@ L.Storage.DataLayer = L.Class.extend({
         });
     },
 
-    resetLayer: function (force) {
-        // Backward compat, to be removed
-        if (this.options.markercluster) {
-            this.options.type = 'Cluster';
-            delete this.options.markercluster;
-        }
+    insertBefore: function (other) {
+        if (!other) return;
+        this.parentPane.insertBefore(this.pane, other.pane);
+    },
 
+    bringToTop: function () {
+        this.parentPane.appendChild(this.pane);
+    },
+
+    resetLayer: function (force) {
         if (this.layer && this.options.type === this.layer._type && !force) return;
         var visible = this.isVisible();
         if (this.layer) this.layer.clearLayers();
@@ -320,20 +328,14 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     onceLoaded: function (callback, context) {
-        if (this.isLoaded()) {
-            callback.call(context || this, this);
-        } else {
-            this.once('loaded', callback, context);
-        }
+        if (this.isLoaded()) callback.call(context || this, this);
+        else this.once('loaded', callback, context);
         return this;
     },
 
     onceDataLoaded: function (callback, context) {
-        if (this.hasDataLoaded()) {
-            callback.call(context || this, this);
-        } else {
-            this.once('dataloaded', callback, context);
-        }
+        if (this.hasDataLoaded()) callback.call(context || this, this);
+        else this.once('dataloaded', callback, context);
         return this;
     },
 
@@ -347,9 +349,7 @@ L.Storage.DataLayer = L.Class.extend({
 
     setStorageId: function (id) {
         // Datalayer is null when listening creation form
-        if (!this.storage_id && id) {
-            this.storage_id = id;
-        }
+        if (!this.storage_id && id) this.storage_id = id;
     },
 
     backupOptions: function () {
@@ -655,6 +655,7 @@ L.Storage.DataLayer = L.Class.extend({
         this.hide();
         delete this.map.datalayers[L.stamp(this)];
         this.map.datalayers_index.splice(this.map.datalayers_index.indexOf(this), 1);
+        this.parentPane.removeChild(this.pane);
         this.map.updateDatalayersControl();
         this.fire('erase');
         this._leaflet_events_bk = this._leaflet_events;
@@ -666,16 +667,15 @@ L.Storage.DataLayer = L.Class.extend({
     reset: function () {
         if (this.storage_id) {
             this.resetOptions();
+            this.parentPane.appendChild(this.pane);
+            this.map.indexDatalayers();
             if (this._leaflet_events_bk && !this._leaflet_events) {
                 this._leaflet_events = this._leaflet_events_bk;
             }
             this.clear();
             this.hide();
-            if (this.isRemoteLayer()) {
-                this.fetchRemoteData();
-            } else if (this._geojson_bk) {
-                this.fromGeoJSON(this._geojson_bk);
-            }
+            if (this.isRemoteLayer()) this.fetchRemoteData();
+            else if (this._geojson_bk) this.fromGeoJSON(this._geojson_bk);
             this._loaded = true;
             this.show();
             this.isDirty = false;
@@ -872,9 +872,7 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     show: function () {
-        if(!this.isLoaded()) {
-            this.fetchData();
-        }
+        if(!this.isLoaded()) this.fetchData();
         this.map.addLayer(this.layer);
         this.fire('show');
     },
@@ -885,22 +883,14 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     toggle: function () {
-        if (!this.isVisible()) {
-            this.show();
-        }
-        else {
-            this.hide();
-        }
+        if (!this.isVisible()) this.show();
+        else this.hide();
     },
 
     zoomTo: function () {
-        if (!this.isVisible()) {
-            return;
-        }
+        if (!this.isVisible()) return;
         var bounds = this.layer.getBounds();
-        if (bounds.isValid()) {
-            this.map.fitBounds(bounds);
-        }
+        if (bounds.isValid()) this.map.fitBounds(bounds);
     },
 
     isVisible: function () {
@@ -908,9 +898,7 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     getFeatureByIndex: function (index) {
-        if (index === -1) {
-            index = this._index.length - 1;
-        }
+        if (index === -1) index = this._index.length - 1;
         var id = this._index[index];
         return this._layers[id];
     },
@@ -958,11 +946,16 @@ L.Storage.DataLayer = L.Class.extend({
         };
     },
 
-    save: function () {
-        if (this.isDeleted) {
-            this.saveDelete();
-            return;
+    metadata: function () {
+        return {
+            id: this.storage_id,
+            name: this.options.name,
+            displayOnLoad: this.options.displayOnLoad
         }
+    },
+
+    save: function () {
+        if (this.isDeleted) return this.saveDelete();
         if (!this.isLoaded()) {return;}
         var geojson = this.umapGeoJSON();
         var formData = new FormData();

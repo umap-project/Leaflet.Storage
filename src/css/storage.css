@@ -556,6 +556,12 @@ ul.photon-autocomplete {
 .dark .storage-browse-datalayers i {
     background-image: url("../../src/img/16-white.png");
 }
+.storage-browse-datalayers li[draggable] .drag-handle {
+    float: right;
+    background-position: -130px -130px;
+    margin-right: 5px;
+    cursor: move;
+}
 .leaflet-inplace-toolbar a {
     background-image: url("../../src/img/16-white.png");
     background-color: #323737!important;

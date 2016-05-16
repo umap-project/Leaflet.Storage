@@ -203,7 +203,7 @@ L.Storage.Map.include({
                 return msg;
             }
         };
-        this.backupOptions();
+        this.backup();
         this.initContextMenu();
         this.on('click contextmenu.show', this.closeInplaceToolbar);
     },
@@ -284,21 +284,32 @@ L.Storage.Map.include({
         };
         var decrementToLoad = function () {
             toload--;
-            if (toload === 0) {
-                loaded();
-            }
+            if (toload === 0) loaded();
         };
-        for(var j in this.options.datalayers) {
-            if(this.options.datalayers.hasOwnProperty(j)){
-                toload++;
-                seen++;
-                datalayer = this.createDataLayer(this.options.datalayers[j]);
-                datalayer.onceLoaded(decrementToLoad);
-            }
+        for (var j = 0; j < this.options.datalayers.length; j++) {
+            toload++;
+            seen++;
+            datalayer = this.createDataLayer(this.options.datalayers[j]);
+            datalayer.onceLoaded(decrementToLoad);
         }
-        if (seen === 0) { // no datalayer
-            loaded();
+        if (seen === 0) loaded();  // no datalayer
+    },
+
+    indexDatalayers: function () {
+        var panes = this.getPane('overlayPane'),
+            pane;
+        this.datalayers_index = [];
+        for (var i = 0; i < panes.children.length; i++) {
+            pane = panes.children[i];
+            if (!pane.dataset || !pane.dataset.id) continue;
+            this.datalayers_index.push(this.datalayers[pane.dataset.id]);
         }
+    },
+
+    ensurePanesOrder: function () {
+        this.eachDataLayer(function (datalayer) {
+            datalayer.bringToTop();
+        });
     },
 
     onceDatalayersLoaded: function (callback, context) {
@@ -884,20 +895,23 @@ L.Storage.Map.include({
     },
 
     eachDataLayer: function (method, context) {
-        for (var i in this.datalayers) {
-            if (this.datalayers.hasOwnProperty(i)) {
-                method.call(context, this.datalayers[i]);
-            }
+        for (var i = 0; i < this.datalayers_index.length; i++) {
+            method.call(context, this.datalayers_index[i]);
         }
+    },
+
+    backup: function () {
+        this.backupOptions();
+        this._datalayers_index_bk = [].concat(this.datalayers_index);
     },
 
     reset: function () {
         if (this.editTools) this.editTools.stopDrawing();
         this.resetOptions();
+        this.datalayers_index = [].concat(this._datalayers_index_bk);
+        this.ensurePanesOrder();
         this.dirty_datalayers.slice().forEach(function (datalayer) {
-            if (datalayer.isDeleted) {
-                datalayer.connectToMap();
-            }
+            if (datalayer.isDeleted) datalayer.connectToMap();
             datalayer.reset();
         });
         this.dirty_datalayers = [];
@@ -907,11 +921,7 @@ L.Storage.Map.include({
     },
 
     checkDirty: function () {
-        if (this.isDirty) {
-            L.DomUtil.addClass(this._container, 'storage-is-dirty');
-        } else {
-            L.DomUtil.removeClass(this._container, 'storage-is-dirty');
-        }
+        L.DomUtil.classIf(this._container, 'storage-is-dirty', this.isDirty);
     },
 
     addDirtyDatalayer: function (datalayer) {
@@ -980,13 +990,15 @@ L.Storage.Map.include({
     ],
 
     exportOptions: function () {
-        var properties = {};
+        var properties = {datalayers: []};
         for (var i = this.editableOptions.length - 1; i >= 0; i--) {
             if (typeof this.options[this.editableOptions[i]] !== 'undefined') {
                 properties[this.editableOptions[i]] = this.options[this.editableOptions[i]];
             }
         }
-
+        this.eachDataLayer(function (datalayer) {
+            properties.datalayers.push(datalayer.metadata());
+        });
         return properties;
     },
 
@@ -1005,15 +1017,13 @@ L.Storage.Map.include({
     },
 
     save: function () {
-        if (!this.isDirty) {
-            return;
-        }
+        if (!this.isDirty) return;
         var geojson = {
             type: 'Feature',
             geometry: this.geometry(),
             properties: this.exportOptions()
         };
-        this.backupOptions();
+        this.backup();
         var formData = new FormData();
         formData.append('name', this.options.name);
         formData.append('center', JSON.stringify(this.geometry()));
@@ -1025,11 +1035,8 @@ L.Storage.Map.include({
                 if (!this.options.storage_id) {
                     duration = 100000; // we want a longer message at map creation (TODO UGLY)
                     this.options.storage_id = data.id;
-                    if (history && history.pushState) {
-                        history.pushState({}, this.options.name, data.url);
-                    } else {
-                        window.location = data.url;
-                    }
+                    if (history && history.pushState) history.pushState({}, this.options.name, data.url);
+                    else window.location = data.url;
                 }
                 if (data.info) msg = data.info;
                 else msg = L._('Map has been saved!');

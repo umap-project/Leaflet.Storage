@@ -185,6 +185,8 @@ L.Storage.FeatureMixin = {
 
     connectToDataLayer: function (datalayer) {
         this.datalayer = datalayer;
+        this.options.pane = this.datalayer.pane;
+        this.options.renderer = this.datalayer.renderer;
     },
 
     disconnectFromDataLayer: function (datalayer) {

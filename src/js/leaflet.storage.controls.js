@@ -495,8 +495,9 @@ L.Storage.DataLayersControl = L.Control.extend({
         }
     },
 
-    addDataLayer: function (container, datalayer) {
+    addDataLayer: function (container, datalayer, draggable) {
         var datalayerLi = L.DomUtil.create('li', '', container);
+        if (draggable) L.DomUtil.element('i', {className: 'drag-handle', title: L._('Drag to reorder')}, datalayerLi);
         datalayer.renderToolbox(datalayerLi);
         var title = L.DomUtil.add('span', 'layer-title', datalayerLi, datalayer.options.name);
 
@@ -512,10 +513,20 @@ L.Storage.DataLayersControl = L.Control.extend({
     },
 
     openPanel: function () {
+        if (!this.map.editEnabled) return;
         var container = L.DomUtil.create('ul', 'storage-browse-datalayers');
-        for(var idx in this.map.datalayers) {
-            this.addDataLayer(container, this.map.datalayers[idx]);
-        }
+        this.map.eachDataLayer(function (datalayer) {
+            this.addDataLayer(container, datalayer, true);
+        }, this);
+        var orderable = new L.S.Orderable(container);
+        orderable.on('drop', function (e) {
+            var layer = this.map.datalayers[e.src.dataset.id],
+                other = this.map.datalayers[e.dst.dataset.id];
+            if (e.finalIndex === this.map.datalayers_index.length - 1) layer.bringToTop();
+            else layer.insertBefore(other);
+            this.map.isDirty = true;
+            this.map.indexDatalayers();
+        }, this);
 
         var bar = L.DomUtil.create('div', 'button-bar', container),
             add = L.DomUtil.create('a', 'show-on-edit block add-datalayer button', bar);
@@ -548,6 +559,7 @@ L.Storage.DataLayer.include({
         L.DomEvent.on(table, 'click', this.tableEdit, this);
         L.DomUtil.addClass(container, this.getHidableClass());
         L.DomUtil.classIf(container, 'off', !this.isVisible());
+        container.dataset.id = this._leaflet_id;
     },
 
     getLocalId: function () {
