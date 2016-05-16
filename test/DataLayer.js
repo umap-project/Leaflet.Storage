@@ -94,7 +94,6 @@ describe('L.DataLayer', function () {
             assert(L.DomUtil.hasClass(this.map._container, 'storage-alert'));
             assert.notEqual(this.map.dirty_datalayers.indexOf(this.datalayer), -1);
             forceButton = qs('#storage-alert-container .storage-action');
-            console.log(qs('#storage-alert-container').innerHTML)
             assert.ok(forceButton);
         });
 
@@ -239,6 +238,7 @@ describe('L.DataLayer', function () {
             assert.equal(clone.options.color, this.datalayer.options.color);
             assert.equal(clone.options.stroke, this.datalayer.options.stroke);
             clone._delete();
+            clickSave();
         });
 
     });

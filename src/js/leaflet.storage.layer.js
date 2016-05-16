@@ -183,9 +183,7 @@ L.Storage.DataLayer = L.Class.extend({
                     return isDeleted;
                 },
                 set: function (status) {
-                    if (!isDeleted && status) {
-                        self.fire('deleted');
-                    }
+                    if (!isDeleted && status) self.fire('deleted');
                     isDeleted = status;
                     if (status) self.isDirty = status;
                 }
@@ -982,11 +980,13 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     saveDelete: function () {
+        var callback = function () {
+            this.isDirty = false;
+            this.map.continueSaving();
+        }
+        if (!this.storage_id) return callback.call(this);
         this.map.xhr.post(this.getDeleteUrl(), {
-            callback: function () {
-                this.isDirty = false;
-                this.map.continueSaving();
-            },
+            callback: callback,
             context: this
         });
     },
