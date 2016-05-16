@@ -874,8 +874,9 @@ L.Storage.SearchControl = L.Control.extend({
     openPanel: function (map) {
         var options = {
             limit: 10,
-            noResultLabel: L._('No results')
+            noResultLabel: L._('No results'),
         }
+        if (map.options.photonUrl) options.url = map.options.photonUrl;
         var container = L.DomUtil.create('div', '');
 
         var title = L.DomUtil.create('h3', '', container);
