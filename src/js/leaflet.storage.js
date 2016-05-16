@@ -734,14 +734,18 @@ L.Storage.Map.include({
             if (layer && clearFlag.checked) layer.empty();
             if (fileInput.files.length) {
                 var file;
-                for (var i = 0, f; f = fileInput.files[i]; i++) {
-                    file = fileInput.files[i];
-                    if (L.Util.detectFileType(file) === 'umap' || type === 'umap') {
+                for (var i = 0, file; file = fileInput.files[i]; i++) {
+                    type = type || L.Util.detectFileType(file);
+                    if (!type) {
+                        this.ui.alert({content: L._('Unable to detect format of file {filename}', {filename: file.name}), level: 'error'});
+                        continue;
+                    }
+                    if (type === 'umap') {
                         this.importFromFile(file, 'umap');
                     } else {
                         var importLayer = layer;
-                        if (!layer) importLayer = this.createDataLayer({name: f.name});
-                        importLayer.importFromFile(f, type);
+                        if (!layer) importLayer = this.createDataLayer({name: file.name});
+                        importLayer.importFromFile(file, type);
                     }
                 }
             } else {
