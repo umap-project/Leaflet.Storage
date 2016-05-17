@@ -199,6 +199,7 @@ input.switch:empty ~ label:after {
 input.switch:checked:empty ~ label:after {
     content: ' ';
 }
+.dark input.switch:checked ~ label:before,
 input.switch:checked ~ label:before {
     background-color: #215d9c;
     content: "ON";
