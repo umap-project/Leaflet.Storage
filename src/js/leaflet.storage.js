@@ -210,17 +210,10 @@ L.Storage.Map.include({
 
     initControls: function () {
         this.helpMenuActions = {};
-        this._controls = this._controls || {};
-        for (var i in this._controls) {
-            this.removeControl(this._controls[i]);
-            delete this._controls[i];
-        }
+        this._controls = {};
 
-        L.DomUtil.classIf(document.body, 'storage-caption-bar-enabled', this.options.captionBar || (this.options.slideshow && (this.options.slideshow.delay || this.options.slideshow.autoplay)));
-        L.DomUtil.classIf(document.body, 'storage-slideshow-enabled', this.options.slideshow && (this.options.slideshow.delay || this.options.slideshow.autoplay));
         if (this.options.allowEdit && !this.options.noControl) {
-            this._controls.toggleEdit = new L.Storage.EditControl(this);
-            this.addControl(this._controls.toggleEdit);
+            new L.Storage.EditControl(this).addTo(this);
 
             new L.S.DrawToolbar({map: this}).addTo(this);
 
@@ -251,7 +244,15 @@ L.Storage.Map.include({
         this._controls.scale = L.control.scale();
         if (this.options.scrollWheelZoom) this.scrollWheelZoom.enable();
         else this.scrollWheelZoom.disable();
+        this.renderControls();
+    },
 
+    renderControls: function () {
+        L.DomUtil.classIf(document.body, 'storage-caption-bar-enabled', this.options.captionBar || (this.options.slideshow && (this.options.slideshow.delay || this.options.slideshow.autoplay)));
+        L.DomUtil.classIf(document.body, 'storage-slideshow-enabled', this.options.slideshow && (this.options.slideshow.delay || this.options.slideshow.autoplay));
+        for (var i in this._controls) {
+            this.removeControl(this._controls[i]);
+        }
         if (this.options.noControl) return;
 
         this._controls.attribution = (new L.S.AttributionControl()).addTo(this);
@@ -800,7 +801,7 @@ L.Storage.Map.include({
         });
 
         this.initTileLayers();
-        this.initControls();
+        this.renderControls();
         this.handleLimitBounds();
         this.eachDataLayer(function (datalayer) {
             if (mustReindex)
@@ -1143,7 +1144,7 @@ L.Storage.Map.include({
             'options.captionBar'
         ]);
         builder = new L.S.FormBuilder(this, UIFields, {
-            callback: this.initControls,
+            callback: this.renderControls,
             callbackContext: this
         });
         var controlsOptions = L.DomUtil.createFieldset(container, L._('User interface options'));
@@ -1266,7 +1267,7 @@ L.Storage.Map.include({
         ];
         var slideshowHandler = function () {
             this.slideshow.setOptions(this.options.slideshow);
-            this.initControls();
+            this.renderControls();
         };
         var slideshowBuilder = new L.S.FormBuilder(this, slideshowFields, {
             callback: slideshowHandler,
