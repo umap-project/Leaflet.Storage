@@ -771,11 +771,11 @@ L.Storage.DataLayer = L.Class.extend({
             ['options.remoteData.format', {handler: 'DataFormat', label: L._('Format')}],
             ['options.remoteData.from', {label: L._('From zoom'), helpText: L._('Optionnal.')}],
             ['options.remoteData.to', {label: L._('To zoom'), helpText: L._('Optionnal.')}],
-            ['options.remoteData.dynamic', {handler: 'Switch', label: L._('Dynamic'), helpText: L._('Fetch data each time map view changes.')}],
+            ['options.remoteData.dynamic', {handler: 'Switch', label: L._('Dynamic'), helpEntries: 'dynamicRemoteData'}],
             ['options.remoteData.licence', {label: L._('Licence'), helpText: L._('Please be sure the licence is compliant with your use.')}]
         ];
         if (this.map.options.urls.ajax_proxy) {
-            remoteDataFields.push(['options.remoteData.proxy', {handler: 'Switch', label: L._('Proxy request'), helpText: L._('To use if remote server doesn\'t allow cross domain (slower)')}]);
+            remoteDataFields.push(['options.remoteData.proxy', {handler: 'Switch', label: L._('Proxy request'), helpEntries: 'proxyRemoteData'}]);
         }
 
         var remoteDataContainer = L.DomUtil.createFieldset(container, L._('Remote data'));

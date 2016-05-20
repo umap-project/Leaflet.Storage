@@ -425,8 +425,9 @@ L.Storage.Help = L.Class.extend({
     sortKey: L._('Property to use for sorting features'),
     filterKey: L._('Comma separated list of properties to use when filtering features'),
     interactive: L._('If false, the polygon will act as a part of the underlying map.'),
-    outlink: L._('Define link to open in a new window on polygon click.')
-
+    outlink: L._('Define link to open in a new window on polygon click.'),
+    dynamicRemoteData: L._('Fetch data each time map view changes.'),
+    proxyRemoteData: L._('To use if remote server doesn\'t allow cross domain (slower)')
 });
 
 
