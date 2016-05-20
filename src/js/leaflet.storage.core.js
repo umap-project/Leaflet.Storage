@@ -198,11 +198,8 @@ L.DomUtil.createFieldset = function (container, legend, options) {
 };
 
 L.DomUtil.classIf = function (el, className, bool) {
-    if (bool) {
-        L.DomUtil.addClass(el, className);
-    } else {
-        L.DomUtil.removeClass(el, className);
-    }
+    if (bool) L.DomUtil.addClass(el, className);
+    else L.DomUtil.removeClass(el, className);
 };
 
 

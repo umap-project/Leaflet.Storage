@@ -161,9 +161,7 @@ L.Storage.DataLayer = L.Class.extend({
                     return isDirty;
                 },
                 set: function (status) {
-                    if (!isDirty && status) {
-                        self.fire('dirty');
-                    }
+                    if (!isDirty && status) self.fire('dirty');
                     isDirty = status;
                     if (status) {
                         self.map.addDirtyDatalayer(self);
@@ -952,6 +950,10 @@ L.Storage.DataLayer = L.Class.extend({
         }
     },
 
+    getRank: function () {
+        return this.map.datalayers_index.indexOf(this);
+    },
+
     save: function () {
         if (this.isDeleted) return this.saveDelete();
         if (!this.isLoaded()) {return;}
@@ -959,7 +961,8 @@ L.Storage.DataLayer = L.Class.extend({
         var formData = new FormData();
         formData.append('name', this.options.name);
         formData.append('display_on_load', !!this.options.displayOnLoad);
-        // filename support is shaky, don't do it for now
+        formData.append('rank', this.getRank());
+        // Filename support is shaky, don't do it for now.
         var blob = new Blob([JSON.stringify(geojson)], {type: 'application/json'});
         formData.append('geojson', blob);
         this.map.post(this.getSaveUrl(), {

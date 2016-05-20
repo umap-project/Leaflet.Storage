@@ -521,10 +521,14 @@ L.Storage.DataLayersControl = L.Control.extend({
         var orderable = new L.S.Orderable(container);
         orderable.on('drop', function (e) {
             var layer = this.map.datalayers[e.src.dataset.id],
-                other = this.map.datalayers[e.dst.dataset.id];
+                other = this.map.datalayers[e.dst.dataset.id],
+                minIndex = Math.min(e.initialIndex, e.finalIndex);
             if (e.finalIndex === this.map.datalayers_index.length - 1) layer.bringToTop();
+            else if (e.finalIndex > e.initialIndex) other.insertBefore(layer);
             else layer.insertBefore(other);
-            this.map.isDirty = true;
+            this.map.eachDataLayer(function (datalayer) {
+                if (datalayer.getRank() >= minIndex) datalayer.isDirty = true;
+            });
             this.map.indexDatalayers();
         }, this);
 
