@@ -1389,15 +1389,6 @@ a.add-datalayer:hover,
 .leaflet-contextmenu-icon {
     display: none;
 }
-.leaflet-label:before {
-    left: -8px;
-}
-.leaflet-label:after {
-    right: -8px;
-}
-.leaflet-label {
-    border-width: 2px;
-}
 .storage-popup-content img,
 .storage-popup-content iframe {
     max-width: 300px !important;

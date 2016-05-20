@@ -286,6 +286,18 @@ L.FormBuilder.DataFormat = L.FormBuilder.Select.extend({
 
 });
 
+L.FormBuilder.LabelDirection = L.FormBuilder.Select.extend({
+
+    selectOptions: [
+        ['auto', L._('Automatic')],
+        ['left', L._('On the left')],
+        ['right', L._('On the right')],
+        ['top', L._('On the top')],
+        ['bottom', L._('On the bottom')]
+    ]
+
+});
+
 L.FormBuilder.LicenceChooser = L.FormBuilder.Select.extend({
 
     getOptions: function () {
@@ -579,7 +591,10 @@ L.Storage.FormBuilder = L.FormBuilder.extend({
         displayPopupFooter: {handler: 'Switch', label: L._('Do you want to display popup footer?')},
         captionBar: {handler: 'Switch', label: L._('Do you want to display a caption bar?')},
         zoomTo: {handler: 'IntInput', placeholder: L._('Inherit'), helpEntries: 'zoomTo', label: L._('Default zoom level'), inheritable: true},
-        showLabel: {handler: 'Switch', label: L._('Permanent label'), inheritable: true},
+        showLabel: {handler: 'Switch', label: L._('Display label'), inheritable: true},
+        labelHover: {handler: 'Switch', label: L._('Only display label on mouse hover'), inheritable: true},
+        labelDirection: {handler: 'LabelDirection', label: L._('Label direction'), inheritable: true},
+        labelInteractive: {handler: 'Switch', label: L._('Label are clickable'), inheritable: true},
         labelKey: {helpEntries: 'labelKey', placeholder: L._('Default: name'), label: L._('Label key'), inheritable: true},
         zoomControl: {handler: 'ControlChoice', label: L._('Display the zoom control')},
         searchControl: {handler: 'ControlChoice', label: L._('Display the search control')},

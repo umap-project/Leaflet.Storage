@@ -18,7 +18,7 @@ module.exports = function(grunt) {
           {expand: true, cwd: 'node_modules/leaflet-loading/src/', src: ['**'], dest: 'reqs/loading/'},
           {expand: true, cwd: 'node_modules/leaflet.markercluster/dist/', src: ['**'], dest: 'reqs/markercluster/'},
           {expand: true, cwd: 'node_modules/leaflet-contextmenu/dist/', src: ['**'], dest: 'reqs/contextmenu/'},
-          {expand: true, cwd: 'node_modules/leaflet.label/dist/', src: ['**'], dest: 'reqs/label/'},
+          {expand: true, cwd: 'node_modules/leaflet.label/src/', src: ['**'], dest: 'reqs/label/'},
           {expand: true, cwd: 'node_modules/leaflet.heat/dist/', src: ['**'], dest: 'reqs/heat/'},
           {expand: true, cwd: 'node_modules/leaflet-fullscreen/dist/', src: ['**'], dest: 'reqs/fullscreen/'},
           {expand: true, cwd: 'node_modules/leaflet-toolbar/dist/', src: ['**'], dest: 'reqs/toolbar/'},

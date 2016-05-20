@@ -704,8 +704,7 @@ L.Storage.DataLayer = L.Class.extend({
                     this.resetLayer();
                     this.edit();
                 }
-            },
-            callbackContext: this
+            }
         });
         container.appendChild(builder.build());
 
@@ -723,13 +722,15 @@ L.Storage.DataLayer = L.Class.extend({
 
         shapeOptions = shapeOptions.concat(this.layer.getEditableOptions());
 
+        var redrawCallback = function (field) {
+            this.hide();
+            this.layer.postUpdate(field);
+            this.show();
+        };
+
         builder = new L.S.FormBuilder(this, shapeOptions, {
             id: 'datalayer-advanced-properties',
-            callback: function (field) {
-                this.hide();
-                this.layer.postUpdate(field);
-                this.show();
-            }
+            callback: redrawCallback
         });
         var shapeProperties = L.DomUtil.createFieldset(container, L._('Shape properties'));
         shapeProperties.appendChild(builder.build());
@@ -738,28 +739,27 @@ L.Storage.DataLayer = L.Class.extend({
             'options.smoothFactor',
             'options.dashArray',
             'options.zoomTo',
-            'options.showLabel',
-            'options.labelKey',
+            'options.labelKey'
         ];
 
         optionsFields = optionsFields.concat(this.layer.getEditableOptions());
 
         builder = new L.S.FormBuilder(this, optionsFields, {
             id: 'datalayer-advanced-properties',
-            callback: function (field) {
-                this.hide();
-                this.layer.postUpdate(field);
-                this.show();
-            }
+            callback: redrawCallback
         });
         var advancedProperties = L.DomUtil.createFieldset(container, L._('Advanced properties'));
         advancedProperties.appendChild(builder.build());
 
         var popupFields = [
             'options.popupTemplate',
-            'options.popupContentTemplate'
+            'options.popupContentTemplate',
+            'options.showLabel',
+            'options.labelDirection',
+            'options.labelHover',
+            'options.labelInteractive',
         ];
-        builder = new L.S.FormBuilder(this, popupFields);
+        builder = new L.S.FormBuilder(this, popupFields, {callback: redrawCallback});
         var popupFieldset = L.DomUtil.createFieldset(container, L._('Interaction options'));
         popupFieldset.appendChild(builder.build());
 

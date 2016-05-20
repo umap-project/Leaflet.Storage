@@ -49,7 +49,7 @@ L.Storage.Icon.Default = L.Storage.Icon.extend({
     default_options: {
         iconAnchor: new L.Point(16, 40),
         popupAnchor: new L.Point(0, -40),
-        labelAnchor: new L.Point(12, -20),
+        labelAnchor: new L.Point(16, -24),
         className: 'storage-div-icon'
     },
 
@@ -86,7 +86,7 @@ L.Storage.Icon.Circle = L.Storage.Icon.extend({
         var default_options = {
             iconAnchor: new L.Point(6, 6),
             popupAnchor: new L.Point(0, -6),
-            labelAnchor: new L.Point(0, 2),
+            labelAnchor: new L.Point(6, 0),
             className: 'storage-circle-icon'
         };
         options = L.Util.extend({}, default_options, options);
@@ -112,7 +112,7 @@ L.Storage.Icon.Drop = L.Storage.Icon.Default.extend({
     default_options: {
             iconAnchor: new L.Point(16, 42),
             popupAnchor: new L.Point(0, -42),
-            labelAnchor: new L.Point(12, -20),
+            labelAnchor: new L.Point(16, -24),
             className: 'storage-drop-icon'
     }
 });
@@ -121,7 +121,7 @@ L.Storage.Icon.Ball = L.Storage.Icon.Default.extend({
     default_options: {
             iconAnchor: new L.Point(8, 30),
             popupAnchor: new L.Point(0, -28),
-            labelAnchor: new L.Point(4, -20),
+            labelAnchor: new L.Point(8, -23),
             className: 'storage-ball-icon'
     },
 

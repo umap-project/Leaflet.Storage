@@ -112,8 +112,7 @@ L.Storage.FeatureMixin = {
         var optionsFields = this.getShapeOptions();
         var builder = new L.S.FormBuilder(this, optionsFields, {
             id: 'storage-feature-shape-properties',
-            callback: this._redraw,
-            callbackContext: this
+            callback: this._redraw
         });
         var shapeProperties = L.DomUtil.createFieldset(container, L._('Shape properties'));
         shapeProperties.appendChild(builder.build());
@@ -121,14 +120,15 @@ L.Storage.FeatureMixin = {
         var advancedOptions = this.getAdvancedOptions();
         var builder = new L.S.FormBuilder(this, advancedOptions, {
             id: 'storage-feature-advanced-properties',
-            callback: this._redraw,
-            callbackContext: this
+            callback: this._redraw
         });
         var advancedProperties = L.DomUtil.createFieldset(container, L._('Advanced properties'));
         advancedProperties.appendChild(builder.build());
 
         var interactionOptions = this.getInteractionOptions();
-        builder = new L.S.FormBuilder(this, interactionOptions);
+        builder = new L.S.FormBuilder(this, interactionOptions, {
+            callback: this._redraw
+        });
         var popupFieldset = L.DomUtil.createFieldset(container, L._('Interaction options'));
         popupFieldset.appendChild(builder.build());
 
@@ -136,7 +136,11 @@ L.Storage.FeatureMixin = {
 
     getInteractionOptions: function () {
         return [
-            'properties._storage_options.popupTemplate'
+            'properties._storage_options.popupTemplate',
+            'properties._storage_options.showLabel',
+            'properties._storage_options.labelDirection',
+            'properties._storage_options.labelHover',
+            'properties._storage_options.labelInteractive'
         ];
     },
 
@@ -148,12 +152,8 @@ L.Storage.FeatureMixin = {
     },
 
     hasPopupFooter: function () {
-        if (L.Browser.ielt9) {
-            return false;
-        }
-        if (this.datalayer.isRemoteLayer() && this.datalayer.options.remoteData.dynamic) {
-            return false;
-        }
+        if (L.Browser.ielt9) return false;
+        if (this.datalayer.isRemoteLayer() && this.datalayer.options.remoteData.dynamic) return false;
         return this.map.options.displayPopupFooter;
     },
 
@@ -385,14 +385,14 @@ L.Storage.FeatureMixin = {
     },
 
     resetLabel: function () {
-        if (this.label) {
-            this.hideLabel();
-            delete this.label;
-        }
-        if (this.getOption('showLabel') && this.properties.name) {
-            this.bindLabel(L.Util.escapeHTML(this.properties.name), {noHide: true});
-            this.showLabel();
-        }
+        var displayName = this.getDisplayName(),
+            options = {
+                permanent: !this.getOption('labelHover'),
+                direction: this.getOption('labelDirection'),
+                interactive: this.getOption('labelInteractive')
+            };
+        if (this.getOption('showLabel') && displayName) this.bindLabel(L.Util.escapeHTML(displayName), options);
+        else this.unbindLabel();
     },
 
     matchFilter: function (filter, keys) {
@@ -521,8 +521,7 @@ L.Storage.Marker = L.Marker.extend({
 
     getAdvancedOptions: function () {
         return [
-            'properties._storage_options.zoomTo',
-            'properties._storage_options.showLabel'
+            'properties._storage_options.zoomTo'
         ];
     },
 
@@ -634,6 +633,7 @@ L.Storage.PathMixin = {
 
     _redraw: function () {
         this.setStyle();
+        this.resetLabel();
     },
 
     onAdd: function (map) {
@@ -644,17 +644,14 @@ L.Storage.PathMixin = {
         // this.map.on('showmeasure', this.showMeasureTooltip, this);
         // this.map.on('hidemeasure', this.removeTooltip, this);
         this.parentClass.prototype.onAdd.call(this, map);
-        if (this.editing && this.editing.enabled()) {
-            this.editing.addHooks();
-        }
+        if (this.editing && this.editing.enabled()) this.editing.addHooks();
+        this.resetLabel();
     },
 
     onRemove: function (map) {
         // this.map.off('showmeasure', this.showMeasureTooltip, this);
         // this.map.off('hidemeasure', this.removeTooltip, this);
-        if (this.editing && this.editing.enabled()) {
-            this.editing.removeHooks();
-        }
+        if (this.editing && this.editing.enabled()) this.editing.removeHooks();
         L.S.FeatureMixin.onRemove.call(this, map);
     },
 

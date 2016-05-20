@@ -16,6 +16,7 @@ L.Map.mergeOptions({
     default_zoomTo: 16,
     default_popupContentTemplate: '# {name}\n{description}',
     default_interactive: true,
+    default_labelDirection: 'auto',
     attributionControl: false,
     allowEdit: true,
     embedControl: true,
@@ -980,6 +981,9 @@ L.Storage.Map.include({
         'sortKey',
         'filterKey',
         'showLabel',
+        'labelDirection',
+        'labelHover',
+        'labelInteractive',
         'shortCredit',
         'longCredit',
         'zoomControl',
@@ -1177,7 +1181,6 @@ L.Storage.Map.include({
             'options.dashArray',
             'options.zoomTo',
             ['options.easing', {handler: 'Switch', label: L._('Advanced transition'), inheritable: true}],
-            'options.showLabel',
             'options.labelKey',
             ['options.sortKey', {handler: 'BlurInput', helpEntries: 'sortKey', placeholder: L._('Default: name'), label: L._('Sort key'), inheritable: true}],
             ['options.filterKey', {handler: 'Input', helpEntries: 'filterKey', placeholder: L._('Default: name'), label: L._('Filter keys'), inheritable: true}]
@@ -1196,9 +1199,19 @@ L.Storage.Map.include({
 
         var popupFields = [
             'options.popupTemplate',
-            'options.popupContentTemplate'
+            'options.popupContentTemplate',
+            'options.showLabel',
+            'options.labelDirection',
+            'options.labelHover',
+            'options.labelInteractive'
         ];
-        builder = new L.S.FormBuilder(this, popupFields);
+        builder = new L.S.FormBuilder(this, popupFields, {
+            callback: function () {
+                this.eachDataLayer(function (datalayer) {
+                    datalayer.redraw();
+                })
+            }
+        });
         var popupFieldset = L.DomUtil.createFieldset(container, L._('Default interaction options'));
         popupFieldset.appendChild(builder.build());
 
