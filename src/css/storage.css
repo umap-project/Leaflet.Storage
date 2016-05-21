@@ -504,16 +504,22 @@ ul.photon-autocomplete {
 .storage-slideshow-active .storage-slideshow-toolbox .play .spinner {
     visibility: visible;
 }
+.storage-datalayer-version {
+    padding: 5px 0;
+    border-bottom: 1px solid #202425;
+}
 .storage-datalayer-version a {
     display: inline-block;
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     margin-left: 5px;
-    background-position: -209px -132px;
+    background-position: -209px -130px;
     background-repeat: no-repeat;
-    background-image: url("../img/16.png");
+    background-image: url("../img/16-white.png");
     vertical-align: middle;
     margin-right: 5px;
+    border: 1px solid #202425;
+    background-color: #2c3233;
 }
 
 
