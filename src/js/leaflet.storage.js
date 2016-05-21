@@ -999,15 +999,12 @@ L.Storage.Map.include({
     ],
 
     exportOptions: function () {
-        var properties = {datalayers: []};
+        var properties = {};
         for (var i = this.editableOptions.length - 1; i >= 0; i--) {
             if (typeof this.options[this.editableOptions[i]] !== 'undefined') {
                 properties[this.editableOptions[i]] = this.options[this.editableOptions[i]];
             }
         }
-        this.eachDataLayer(function (datalayer) {
-            properties.datalayers.push(datalayer.metadata());
-        });
         return properties;
     },
 
