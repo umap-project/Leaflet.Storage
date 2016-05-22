@@ -38,6 +38,10 @@ describe('L.Util', function () {
             assert.equal(L.Util.toHTML('A simple http://osm.org link'), 'A simple <a target="_blank" href="http://osm.org">http://osm.org</a> link');
         });
 
+        it('should handle simple link in title', function () {
+            assert.equal(L.Util.toHTML('# http://osm.org'), '<h3><a target="_blank" href="http://osm.org">http://osm.org</a></h3>');
+        });
+
         it('should handle links with url parameter', function () {
             assert.equal(L.Util.toHTML('A simple https://osm.org/?url=https%3A//anotherurl.com link'), 'A simple <a target="_blank" href="https://osm.org/?url=https%3A//anotherurl.com">https://osm.org/?url=https%3A//anotherurl.com</a> link');
         });
