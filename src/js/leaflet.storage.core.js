@@ -81,7 +81,8 @@ L.Util.toHTML = function (r) {
 
     // iframe
     r = r.replace(/{{{(h_t_t_ps?[^ |]*)}}}/g, '<iframe frameBorder="0" src="$1" width="100%" height="300px"></iframe>');
-    r = r.replace(/{{{(h_t_t_ps?[^ |]*)\|(\d*?)}}}/g, '<iframe frameBorder="0" src="$1" width="100%" height="$2px"></iframe>');
+    r = r.replace(/{{{(h_t_t_ps?[^ |]*)\|(\d*)(px)?}}}/g, '<iframe frameBorder="0" src="$1" width="100%" height="$2px"></iframe>');
+    r = r.replace(/{{{(h_t_t_ps?[^ |]*)\|(\d*)(px)?\*(\d*)(px)?}}}/g, '<iframe frameBorder="0" src="$1" width="$4px" height="$2px"></iframe>');
 
     // images
     r = r.replace(/{{([^\]|]*?)}}/g, '<img src="$1">');
@@ -396,6 +397,7 @@ L.Storage.Help = L.Class.extend({
         L.DomUtil.add('li', '', elements, L._('Image with custom width (in px): {{http://image.url.com|width}}'));
         L.DomUtil.add('li', '', elements, L._('Iframe: {{{http://iframe.url.com}}}'));
         L.DomUtil.add('li', '', elements, L._('Iframe with custom height (in px): {{{http://iframe.url.com|height}}}'));
+        L.DomUtil.add('li', '', elements, L._('Iframe with custom height and width (in px): {{{http://iframe.url.com|height*width}}}'));
         L.DomUtil.add('li', '', elements, L._('--- for an horizontal rule'));
         return container;
     },
