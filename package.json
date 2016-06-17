@@ -31,7 +31,7 @@
   "author": "Yohan Boniface",
   "license": "WTFPL",
   "bugs": {
-      "url": "https://github.com/umap-project/Leaflet.Storage/issues"
+    "url": "https://github.com/umap-project/Leaflet.Storage/issues"
   },
   "homepage": "http://wiki.openstreetmap.org/wiki/UMap",
   "dependencies": {
@@ -51,7 +51,7 @@
     "leaflet-minimap": "^3.3.1",
     "leaflet-toolbar": "Leaflet/Leaflet.toolbar",
     "leaflet.heat": "^0.2.0",
-    "leaflet.markercluster": "git://github.com/Leaflet/Leaflet.markercluster",
+    "leaflet.markercluster": "^1.0.0-rc.1.0",
     "leaflet.photon": "^0.7.1",
     "osmtogeojson": "^2.2.11",
     "togeojson": "^0.13.0",
