@@ -434,9 +434,7 @@ L.Storage.Marker = L.Marker.extend({
             this.isDirty = true;
             this.edit(e);
         }, this);
-        if (!this.isReadOnly()) {
-            this.on('mouseover', this._enableDragging);
-        }
+        if (!this.isReadOnly()) this.on('mouseover', this._enableDragging);
         this.on('mouseout', this._onMouseOut);
         this._popupHandlersAdded = true; // prevent Leaflet from binding event on bindPopup
     },
@@ -656,17 +654,14 @@ L.Storage.PathMixin = {
     },
 
     getBestZoom: function () {
-        if (this.options.zoomTo) {
-            return this.options.zoomTo;
-        } else {
-            var bounds = this.getBounds();
-            return this.map.getBoundsZoom(bounds, true);
-        }
+        if (this.options.zoomTo) return this.options.zoomTo;
+        var bounds = this.getBounds();
+        return this.map.getBoundsZoom(bounds, true);
     },
 
     endEdit: function () {
         this.disableEdit();
-        L.Storage.FeatureMixin.endEdit.call(this);
+        L.S.FeatureMixin.endEdit.call(this);
     },
 
     _onMouseOver: function () {
@@ -678,10 +673,14 @@ L.Storage.PathMixin = {
     },
 
     addInteractions: function () {
-        L.Storage.FeatureMixin.addInteractions.call(this);
-        this.on('dragend', this.edit);
+        L.S.FeatureMixin.addInteractions.call(this);
         this.on('mouseover', this._onMouseOver);
         this.on('edit', this.makeDirty);
+        this.on('drag editable:drag', this._onDrag);
+    },
+
+    _onDrag: function () {
+        if (this._label) this._label.setLatLng(this.getCenter());
     },
 
     transferShape: function (at, to) {
@@ -697,7 +696,6 @@ L.Storage.PathMixin = {
         var shape = this.enableEdit().deleteShapeAt(at);
         this.disableEdit();
         if (!shape) return;
-        console.log(shape)
         var properties = this.cloneProperties();
         var other = new (this instanceof L.S.Polyline ? L.S.Polyline : L.S.Polygon)(this.map, shape, {geojson: {properties: properties}});
         this.datalayer.addLayer(other);
@@ -737,6 +735,11 @@ L.Storage.PathMixin = {
 
     getContextMenuEditItems: function (e) {
         var items = L.S.FeatureMixin.getContextMenuEditItems.call(this, e);
+        items.push({
+            text: L._('Clone this feature'),
+            callback: this.clone,
+            context: this
+        });
         if (this.map.editedFeature && this.isSameClass(this.map.editedFeature) && this.map.editedFeature !== this) {
             items.push({
                 text: L._('Transfer shape to edited feature'),
@@ -770,7 +773,14 @@ L.Storage.PathMixin = {
     isOnScreen: function () {
         var bounds = this.map.getBounds();
         return bounds.overlaps(this.getBounds());
-    }
+    },
+
+    clone: function () {
+        var layer = this.datalayer.geojsonToFeatures(this.toGeoJSON());
+        layer.isDirty = true;
+        layer.edit();
+        return layer;
+    },
 
 };
 

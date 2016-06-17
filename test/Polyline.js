@@ -306,4 +306,21 @@ describe('L.Storage.Polyline', function () {
 
     });
 
+    describe('#clone', function () {
+
+        it('should clone polyline', function () {
+            var latlngs = [p2ll(100, 150), p2ll(100, 200), p2ll(200, 100)],
+                layer = new L.S.Polyline(this.map, latlngs, {datalayer: this.datalayer}).addTo(this.datalayer);
+            assert.equal(this.datalayer._index.length, 1);
+            other = layer.clone();
+            assert.ok(this.map.hasLayer(other));
+            assert.equal(this.datalayer._index.length, 2);
+            // Must not be the same reference
+            assert.notEqual(layer._latlngs, other._latlngs);
+            assert.equal(layer._latlngs[0].lat, other._latlngs[0].lat);
+            assert.equal(layer._latlngs[0].lng, other._latlngs[0].lng);
+        });
+
+    });
+
 });
