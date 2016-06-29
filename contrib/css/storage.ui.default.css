@@ -1,3 +1,13 @@
+div, ul, li, a, section, nav,
+h1, h2, h3, h4, h5, h6, label,
+hr, input, textarea {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
 /* *********** */
 /*    forms    */
 /* *********** */
@@ -55,6 +65,7 @@ select[multiple="multiple"] {
     min-height: 32px;
     line-height: 32px;
     border: none;
+    text-decoration: none;
 }
 .dark .button {
     background-color: #2a2e30;
@@ -95,7 +106,7 @@ label {
 }
 input[type="checkbox"] + label {
     display: inline;
-    padding: 0 14px; 
+    padding: 0 14px;
 }
 select + .error,
 input + .error {
