@@ -11,6 +11,7 @@ module.exports = function(grunt) {
         files: [
           {expand: true, cwd: 'node_modules/leaflet/dist/', src: ['**'], dest: 'reqs/leaflet/'},
           {expand: true, cwd: 'node_modules/leaflet-editable/src/', src: ['*.js'], dest: 'reqs/editable/'},
+          {expand: true, cwd: 'node_modules/leaflet.path.drag/src/', src: ['*.js'], dest: 'reqs/editable/'},
           {expand: true, cwd: 'node_modules/leaflet-hash/', src: ['*.js'], dest: 'reqs/hash/'},
           {expand: true, cwd: 'node_modules/leaflet-i18n/', src: ['*.js'], dest: 'reqs/i18n/'},
           {expand: true, cwd: 'node_modules/leaflet-editinosm/', src: ['*.js', '*.css'], dest: 'reqs/editinosm/'},

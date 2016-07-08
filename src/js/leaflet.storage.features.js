@@ -584,10 +584,6 @@ L.Storage.PathMixin = {
         L.DomEvent.stop(e);
     },
 
-    closePopup: function() {
-        this.map.closePopup(this._popup);
-    },
-
     styleOptions: [
         'smoothFactor',
         'color',
