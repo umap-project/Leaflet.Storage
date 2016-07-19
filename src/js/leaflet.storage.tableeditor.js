@@ -52,7 +52,7 @@ L.S.TableEditor = L.Class.extend({
             {
                 id: 'storage-feature-properties_' + L.stamp(feature),
                 className: 'trow',
-                callback: feature.resetLabel
+                callback: feature.resetTooltip
             }
         );
         this.body.appendChild(builder.build());

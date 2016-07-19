@@ -86,7 +86,7 @@ L.Storage.FeatureMixin = {
         builder = new L.S.FormBuilder(this, properties,
             {
                 id: 'storage-feature-properties',
-                callback: this.resetLabel
+                callback: this.resetTooltip
             }
         );
         container.appendChild(builder.build());
@@ -384,15 +384,15 @@ L.Storage.FeatureMixin = {
         }
     },
 
-    resetLabel: function () {
+    resetTooltip: function () {
         var displayName = this.getDisplayName(),
             options = {
                 permanent: !this.getOption('labelHover'),
                 direction: this.getOption('labelDirection'),
                 interactive: this.getOption('labelInteractive')
             };
-        if (this.getOption('showLabel') && displayName) this.bindLabel(L.Util.escapeHTML(displayName), options);
-        else this.unbindLabel();
+        if (this.getOption('showLabel') && displayName) this.bindTooltip(L.Util.escapeHTML(displayName), options);
+        else this.unbindTooltip();
     },
 
     matchFilter: function (filter, keys) {
@@ -477,7 +477,7 @@ L.Storage.Marker = L.Marker.extend({
     _initIcon: function () {
         this.options.icon = this.getIcon();
         L.Marker.prototype._initIcon.call(this);
-        this.resetLabel();
+        this.resetTooltip();
     },
 
     disconnectFromDataLayer: function (datalayer) {
@@ -627,7 +627,7 @@ L.Storage.PathMixin = {
 
     _redraw: function () {
         this.setStyle();
-        this.resetLabel();
+        this.resetTooltip();
     },
 
     onAdd: function (map) {
@@ -639,7 +639,7 @@ L.Storage.PathMixin = {
         // this.map.on('hidemeasure', this.removeTooltip, this);
         this.parentClass.prototype.onAdd.call(this, map);
         if (this.editing && this.editing.enabled()) this.editing.addHooks();
-        this.resetLabel();
+        this.resetTooltip();
     },
 
     onRemove: function (map) {
@@ -676,7 +676,7 @@ L.Storage.PathMixin = {
     },
 
     _onDrag: function () {
-        if (this._label) this._label.setLatLng(this.getCenter());
+        if (this._tooltip) this._tooltip.setLatLng(this.getCenter());
     },
 
     transferShape: function (at, to) {
