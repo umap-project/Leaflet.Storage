@@ -6,7 +6,7 @@ L.FormBuilder.Element.include({
         }
         var className = 'formbox';
         if (this.options.inheritable) {
-            className += this.get() === undefined ? ' inheritable undefined' : ' inheritable ';
+            className += this.get(true) === undefined ? ' inheritable undefined' : ' inheritable ';
         }
         this.wrapper = L.DomUtil.create('div', className, this.form);
         this.header = L.DomUtil.create('div', 'header', this.wrapper);
@@ -15,7 +15,7 @@ L.FormBuilder.Element.include({
             var define = L.DomUtil.add('a', 'button define', this.header, L._('define'));
             L.DomEvent.on(define, 'click', function (e) {
                 L.DomEvent.stop(e);
-                this.setInheritedValue();
+                this.fetch();
                 this.fire('define');
                 L.DomUtil.removeClass(this.wrapper, 'undefined');
             }, this);
@@ -39,14 +39,11 @@ L.FormBuilder.Element.include({
         this.input.value = '';
     },
 
-    getInheritedValue: function () {
+    get: function (own) {
+        if (!this.options.inheritable || own) return this.builder.getter(this.field);
         var path = this.field.split('.'),
             key = path[path.length - 1];
         return this.obj.getOption(key);
-    },
-
-    setInheritedValue: function () {
-        this.input.value = this.getInheritedValue();
     },
 
     buildLabel: function () {
@@ -69,10 +66,6 @@ L.FormBuilder.Select.include({
 
     clear: function () {
         this.select.value = '';
-    },
-
-    setInheritedValue: function () {
-        this.select.value = this.getInheritedValue();
     }
 
 });
@@ -84,11 +77,7 @@ L.FormBuilder.CheckBox.include({
     },
 
     clear: function () {
-        this.setInheritedValue();
-    },
-
-    setInheritedValue: function () {
-        this.input.checked = this.getInheritedValue();
+        this.fetch();
     }
 
 });
@@ -484,14 +473,22 @@ L.FormBuilder.Switch = L.FormBuilder.CheckBox.extend({
 
 L.FormBuilder.MultiChoice = L.FormBuilder.Element.extend({
 
+    default: 'null',
+
+    clear: function () {
+        var checked = this.container.querySelector('input[type="radio"]:checked');
+        if (checked) checked.checked = false;
+    },
+
     fetch: function () {
         var value = this.backup = this.toHTML();
-        if (value === null || value === undefined) value = 'null';
+        if (value === null || value === undefined) value = this.default;
         this.container.querySelector('input[type="radio"][value="' + value + '"]').checked = true;
     },
 
     value: function () {
-        return this.container.querySelector('input[type="radio"]:checked').value;
+        var checked = this.container.querySelector('input[type="radio"]:checked');
+        if (checked) return checked.value;
     },
 
     getChoices: function () {
@@ -523,6 +520,8 @@ L.FormBuilder.MultiChoice = L.FormBuilder.Element.extend({
 
 L.FormBuilder.ControlChoice = L.FormBuilder.MultiChoice.extend({
 
+    default: 'null',
+
     choices: [
         [true, L._('always')],
         [false, L._('never')],
@@ -545,6 +544,18 @@ L.FormBuilder.ControlChoice = L.FormBuilder.MultiChoice.extend({
         }
         return value;
     }
+
+});
+
+L.FormBuilder.OutlinkTarget = L.FormBuilder.MultiChoice.extend({
+
+    default: 'blank',
+
+    choices: [
+        ['blank', L._('new window')],
+        ['self', L._('iframe')],
+        ['parent', L._('parent window')]
+    ]
 
 });
 

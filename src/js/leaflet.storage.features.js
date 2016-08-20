@@ -49,8 +49,19 @@ L.Storage.FeatureMixin = {
         if (this.map.editEnabled) {
             return;
         }
-        if (this.properties._storage_options.outlink) {
-            var win = window.open(this.properties._storage_options.outlink);
+        var outlink = this.properties._storage_options.outlink,
+            target = this.properties._storage_options.outlinkTarget
+        if (outlink) {
+            switch (target) {
+                case 'self':
+                    window.location = outlink;
+                    break;
+                case 'parent':
+                    window.top.location = outlink;
+                    break;
+                default:
+                    var win = window.open(this.properties._storage_options.outlink);
+            }
             return;
         }
         if (this.map.slideshow) this.map.slideshow.current = this;
@@ -942,7 +953,8 @@ L.Storage.Polygon = L.Polygon.extend({
     getInteractionOptions: function () {
         var options = [
             ['properties._storage_options.interactive', {handler: 'Switch', label: L._('Allow interactions'), helpEntries: 'interactive', inheritable: true}],
-            ['properties._storage_options.outlink', {label: L._('Link to…'), helpEntries: 'outlink', placeholder: 'http://...', inheritable: true}]
+            ['properties._storage_options.outlink', {label: L._('Link to…'), helpEntries: 'outlink', placeholder: 'http://...', inheritable: true}],
+            ['properties._storage_options.outlinkTarget', {handler: 'OutlinkTarget', label: L._('Open link in…'), inheritable: true}]
         ];
         return options.concat(L.Storage.FeatureMixin.getInteractionOptions());
     },
