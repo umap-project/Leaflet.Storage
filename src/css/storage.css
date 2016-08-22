@@ -649,10 +649,10 @@ ul.photon-autocomplete {
 .leaflet-control-browse .storage-browse-actions .off .layer-title {
     color: rgb(179, 179, 179);
 }
-.leaflet-control-browse:hover > a {
+.leaflet-control-browse.expanded > a {
     display: none;
 }
-.leaflet-control-browse:hover .storage-browse-actions {
+.leaflet-control-browse.expanded .storage-browse-actions {
     display: block;
 }
 .leaflet-control-browse a.storage-browse-link {

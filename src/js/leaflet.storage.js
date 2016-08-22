@@ -269,10 +269,11 @@ L.Storage.Map.include({
         for (var i = 0; i < this.HIDDABLE_CONTROLS.length; i++) {
             name = this.HIDDABLE_CONTROLS[i];
             status = this.options[name + 'Control'];
-            control = this._controls[name];
             if (status === false) continue;
+            control = this._controls[name];
             control.addTo(this);
             if (status === undefined || status === null) L.DomUtil.addClass(control._container, 'display-on-more');
+            else L.DomUtil.removeClass(control._container, 'display-on-more');
         }
         if (this.options.moreControl) this._controls.more.addTo(this);
         if (this.options.scaleControl) this._controls.scale.addTo(this);

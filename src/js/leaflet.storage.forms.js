@@ -474,6 +474,7 @@ L.FormBuilder.Switch = L.FormBuilder.CheckBox.extend({
 L.FormBuilder.MultiChoice = L.FormBuilder.Element.extend({
 
     default: 'null',
+    className: 'storage-multiplechoice',
 
     clear: function () {
         var checked = this.container.querySelector('input[type="radio"]:checked');
@@ -497,7 +498,7 @@ L.FormBuilder.MultiChoice = L.FormBuilder.Element.extend({
 
     build: function () {
         var choices = this.getChoices();
-        this.container = L.DomUtil.create('div', 'storage-multiplechoice', this.parentNode);
+        this.container = L.DomUtil.create('div', this.className + ' by' + choices.length, this.parentNode);
         for (var i = 0; i < choices.length; i++) {
             this.addChoice(choices[i][0], choices[i][1], i);
         }
@@ -542,6 +543,23 @@ L.FormBuilder.ControlChoice = L.FormBuilder.MultiChoice.extend({
             default:
                 value = null;
         }
+        return value;
+    }
+
+});
+
+L.FormBuilder.DataLayersControl = L.FormBuilder.ControlChoice.extend({
+
+    choices: [
+        [true, L._('collapsed')],
+        ['expanded', L._('expanded')],
+        [false, L._('never')],
+        ['null', L._('hidden')]
+    ],
+
+    toJS: function () {
+        var value = this.value();
+        if (value !== 'expanded') value = L.FormBuilder.ControlChoice.prototype.toJS.call(this);
         return value;
     }
 
@@ -616,7 +634,7 @@ L.Storage.FormBuilder = L.FormBuilder.extend({
         tilelayersControl: {handler: 'ControlChoice', label: L._('Display the tile layers control')},
         editinosmControl: {handler: 'ControlChoice', label: L._('Display the control to open OpenStreetMap editor')},
         homeControl: {handler: 'ControlChoice', label: L._('Display the control to go back to home page')},
-        datalayersControl: {handler: 'ControlChoice', label: L._('Display the data layers control')},
+        datalayersControl: {handler: 'DataLayersControl', label: L._('Display the data layers control')},
     },
 
     initialize: function (obj, fields, options) {

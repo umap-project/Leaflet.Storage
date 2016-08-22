@@ -453,8 +453,8 @@ L.Storage.DataLayersControl = L.Control.extend({
         L.Control.prototype.initialize.call(this, options);
     },
 
-    onAdd: function (map) {
-        var container = L.DomUtil.create('div', 'leaflet-control-browse storage-control'),
+    _initLayout: function (map) {
+        var container = this._container = L.DomUtil.create('div', 'leaflet-control-browse storage-control'),
             actions = L.DomUtil.create('div', 'storage-browse-actions', container);
         this._datalayers_container = L.DomUtil.create('ul', 'storage-browse-datalayers', actions);
 
@@ -480,10 +480,28 @@ L.Storage.DataLayersControl = L.Control.extend({
             L.DomEvent.disableClickPropagation(container);
             L.DomEvent.on(container, 'mousewheel', L.DomEvent.stopPropagation);
             L.DomEvent.on(container, 'MozMousePixelScroll', L.DomEvent.stopPropagation);
+            L.DomEvent.on(container, {
+                mouseenter: this.expand,
+                mouseleave: this.collapse
+            }, this);
         } else {
             L.DomEvent.on(container, 'click', L.DomEvent.stopPropagation);
+            L.DomEvent.on(toggle, 'click', L.DomEvent.stop)
+                      .on(toggle, 'click', this.expand, this);
+            map.on('click', this.collapse, this);
         }
+
         return container;
+    },
+
+    onAdd: function (map) {
+        if (!this._container) this._initLayout(map);
+        if (map.options.datalayersControl === 'expanded') this.expand();
+        return this._container;
+    },
+
+    onRemove: function (map) {
+        this.collapse();
     },
 
     update: function () {
@@ -493,6 +511,15 @@ L.Storage.DataLayersControl = L.Control.extend({
                 this.addDataLayer(this._datalayers_container, this._map.datalayers[idx]);
             }
         }
+    },
+
+    expand: function () {
+        L.DomUtil.addClass(this._container, 'expanded');
+    },
+
+    collapse: function () {
+        if (this._map.options.datalayersControl === 'expanded') return;
+        L.DomUtil.removeClass(this._container, 'expanded');
     },
 
     addDataLayer: function (container, datalayer, draggable) {
