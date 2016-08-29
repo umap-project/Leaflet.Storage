@@ -451,11 +451,8 @@ L.Storage.DataLayer = L.Class.extend({
                 includeLatLon: false
             }, function(err, result) {
                 if (err) {
-                    var message = '';
-                    for (var i = 0; i < err.length; i++) {
-                        message += err[i].message;
-                    }
-                    self.map.ui.alert({content: message, level: 'error'});
+                    var message = L._('{count} errors during import: {message}', {count: err.length, message: err[0].message});
+                    self.map.ui.alert({content: message, level: 'error', duration: 10000});
                     console.log(err);
                 } else {
                     callback(result);
