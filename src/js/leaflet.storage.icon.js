@@ -16,26 +16,16 @@ L.Storage.Icon = L.DivIcon.extend({
 
     _getIconUrl: function (name) {
         var url;
-        if(this.feature && this.feature._getIconUrl(name)) {
-            url = this.feature._getIconUrl(name);
-        }
-        else {
-            url = this.options[name + 'Url'];
-        }
+        if(this.feature && this.feature._getIconUrl(name)) url = this.feature._getIconUrl(name);
+        else url = this.options[name + 'Url'];
         return this.formatUrl(url, this.feature);
     },
 
     _getColor: function () {
         var color;
-        if(this.feature) {
-            color = this.feature.getOption('color');
-        }
-        else if (this.options.color) {
-            color = this.options.color;
-        }
-        else {
-            color = this.map.getDefaultOption('color');
-        }
+        if(this.feature) color = this.feature.getOption('color');
+        else if (this.options.color) color = this.options.color;
+        else color = this.map.getDefaultOption('color');
         return color;
     },
 
@@ -71,9 +61,7 @@ L.Storage.Icon.Default = L.Storage.Icon.extend({
         this.elements.arrow = L.DomUtil.create('div', 'icon_arrow', this.elements.main);
         this.elements.img = L.DomUtil.create('img', null, this.elements.container);
         var src = this._getIconUrl('icon');
-        if(src) {
-            this.elements.img.src = src;
-        }
+        if (src) this.elements.img.src = src;
         this._setColor();
         this._setIconStyles(this.elements.main, 'icon');
         return this.elements.main;
