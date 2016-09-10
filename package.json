@@ -41,7 +41,7 @@
     "georsstogeojson": "^0.0.2",
     "leaflet": "^1.0.0-rc.3",
     "leaflet-contextmenu": "^1.0.0",
-    "leaflet-editable": "1.0.0-rc.1",
+    "leaflet-editable": "1.0.0-rc.2",
     "leaflet-editinosm": "^0.2.3",
     "leaflet-formbuilder": "^0.2.3",
     "leaflet-fullscreen": "^1.0.1",
