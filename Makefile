@@ -1,6 +1,6 @@
 .PHONY: test
 install:
-	npm install --production
+	npm install
 vendors:
 	grunt
 testfx:
