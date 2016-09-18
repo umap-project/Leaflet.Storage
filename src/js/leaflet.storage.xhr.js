@@ -30,7 +30,17 @@ L.Storage.Xhr = L.Evented.extend({
     _ajax: function (settings) {
         var xhr = this._wrapper(), id = Math.random(), self = this;
         this.fire('dataloading', {id: id});
-        xhr.open(settings.verb, settings.uri, true);
+        var loaded = function () {self.fire('dataload', {id: id});};
+
+        try {
+            xhr.open(settings.verb, settings.uri, true);
+        } catch (err) {
+            // Unknown protocol?
+            this.ui.alert({content: L._('Error while fetching {url}', {url: settings.uri}), level: 'error'});
+            loaded();
+            return
+        }
+
         if (settings.uri.indexOf('http') !== 0 || settings.uri.indexOf(window.location.origin) === 0) {
             // "X-" mode headers cause the request to be in preflight mode,
             // we don"t want that by default for CORS requests
@@ -42,7 +52,6 @@ L.Storage.Xhr = L.Evented.extend({
             }
         }
 
-        var loaded = function () {self.fire('dataload', {id: id});};
 
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
