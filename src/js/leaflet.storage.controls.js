@@ -1070,7 +1070,12 @@ L.S.Editable = L.Editable.extend({
             if (this.map.editedFeature !== e.layer) e.layer.edit(e);
         });
         this.on('editable:editing', function (e) {
-            e.layer.isDirty = true;
+            var layer = e.layer;
+            layer.isDirty = true;
+            if (layer._tooltip && layer.isTooltipOpen()) {
+                layer._tooltip.setLatLng(layer.getCenter());
+                layer._tooltip.update();
+            }
         });
         this.on('editable:vertex:ctrlclick', function (e) {
             var index = e.vertex.getIndex();
