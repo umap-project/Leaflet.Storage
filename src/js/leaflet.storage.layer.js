@@ -654,7 +654,7 @@ L.Storage.DataLayer = L.Class.extend({
     erase: function () {
         this.hide();
         delete this.map.datalayers[L.stamp(this)];
-        this.map.datalayers_index.splice(this.map.datalayers_index.indexOf(this), 1);
+        this.map.datalayers_index.splice(this.getRank(), 1);
         this.parentPane.removeChild(this.pane);
         this.map.updateDatalayersControl();
         this.fire('erase');
@@ -668,7 +668,6 @@ L.Storage.DataLayer = L.Class.extend({
         if (this.storage_id) {
             this.resetOptions();
             this.parentPane.appendChild(this.pane);
-            this.map.indexDatalayers();
             if (this._leaflet_events_bk && !this._leaflet_events) {
                 this._leaflet_events = this._leaflet_events_bk;
             }
@@ -917,7 +916,7 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     getNextVisible: function () {
-        var id = this.map.datalayers_index.indexOf(this),
+        var id = this.getRank(),
             next = this.map.datalayers_index[id + 1] || this.map.datalayers_index[0];
         while(!next.isVisible() || !next.isBrowsable() || next._index.length === 0) {
             next = next.getNextVisible();
@@ -926,7 +925,7 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     getPreviousVisible: function () {
-        var id = this.map.datalayers_index.indexOf(this),
+        var id = this.getRank(),
             prev = this.map.datalayers_index[id - 1] || this.map.datalayers_index[this.map.datalayers_index.length - 1];
         while(!prev.isVisible() || !prev.isBrowsable() || prev._index.length === 0) {
             prev = prev.getPreviousVisible();

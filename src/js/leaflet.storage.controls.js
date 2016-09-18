@@ -590,7 +590,7 @@ L.Storage.DataLayer.include({
         L.DomEvent.on(table, 'click', this.tableEdit, this);
         L.DomUtil.addClass(container, this.getHidableClass());
         L.DomUtil.classIf(container, 'off', !this.isVisible());
-        container.dataset.id = this._leaflet_id;
+        container.dataset.id = L.stamp(this);
     },
 
     getLocalId: function () {
