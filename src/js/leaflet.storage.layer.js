@@ -165,6 +165,9 @@ L.Storage.DataLayer = L.Class.extend({
                     isDirty = status;
                     if (status) {
                         self.map.addDirtyDatalayer(self);
+                        // A layer can be made dirty by indirect action (like dragging layers)
+                        // we need to have it loaded before saving it.
+                        if (!self.isLoaded()) self.fetchData();
                     } else {
                         self.map.removeDirtyDatalayer(self);
                         self.isDeleted = false;
@@ -198,9 +201,7 @@ L.Storage.DataLayer = L.Class.extend({
             (!this.map.datalayersOnLoad && this.options.displayOnLoad)) {
             this.show();
         }
-        if (!this.storage_id) {
-            this.isDirty = true;
-        }
+        if (!this.storage_id) this.isDirty = true;
         this.onceLoaded(function () {
             this.map.on('moveend', function () {
                 if (this.isRemoteLayer() && this.options.remoteData.dynamic && this.isVisible()) {
