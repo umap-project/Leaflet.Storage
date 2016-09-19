@@ -623,7 +623,7 @@ L.Storage.FormBuilder = L.FormBuilder.extend({
         showLabel: {handler: 'Switch', label: L._('Display label'), inheritable: true},
         labelHover: {handler: 'Switch', label: L._('Only display label on mouse hover'), inheritable: true},
         labelDirection: {handler: 'LabelDirection', label: L._('Label direction'), inheritable: true},
-        labelInteractive: {handler: 'Switch', label: L._('Label are clickable'), inheritable: true},
+        labelInteractive: {handler: 'Switch', label: L._('Labels are clickable'), inheritable: true},
         labelKey: {helpEntries: 'labelKey', placeholder: L._('Default: name'), label: L._('Label key'), inheritable: true},
         zoomControl: {handler: 'ControlChoice', label: L._('Display the zoom control')},
         searchControl: {handler: 'ControlChoice', label: L._('Display the search control')},
