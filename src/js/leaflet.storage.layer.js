@@ -371,7 +371,7 @@ L.Storage.DataLayer = L.Class.extend({
         var id = L.stamp(this);
         if (!this.map.datalayers[id]) {
             this.map.datalayers[id] = this;
-            this.map.datalayers_index.push(this);
+            if (L.Util.indexOf(this.map.datalayers_index, this) === -1) this.map.datalayers_index.push(this);
         }
         this.map.updateDatalayersControl();
     },
