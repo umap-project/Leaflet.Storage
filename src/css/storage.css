@@ -596,6 +596,9 @@ ul.photon-autocomplete {
 .layer-table-edit {
     background-position: -90px -10px;
 }
+.layer-delete {
+    background-position: -209px -90px;
+}
 .feature-edit,
 .layer-edit {
     background-position: -90px -89px;
@@ -611,6 +614,9 @@ ul.photon-autocomplete {
 }
 .off .layer-zoom_to {
     background-position: -50px -91px;
+}
+.off .layer-delete {
+    background-position: -209px -208px;
 }
 .storage-new-hole {
     background-position: -125px -165px;
