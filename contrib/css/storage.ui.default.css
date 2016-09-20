@@ -549,7 +549,7 @@ i.info {
 /*    Mobile   */
 /* *********** */
 @media all and (orientation:portrait) {
-    #storage-ui-container {
+    .storage-ui #storage-ui-container {
         height: 50%;
         max-height: 400px;
         width: 100%;
