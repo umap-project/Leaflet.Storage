@@ -797,26 +797,13 @@ L.S.AttributionControl = L.Control.Attribution.extend({
             .on(link, 'click', L.DomEvent.stop)
             .on(link, 'click', this._map.displayCaption, this._map)
             .on(link, 'dblclick', L.DomEvent.stop);
+        if (window.top === window.self) {
+            // We are not in iframe mode
+            var home = L.DomUtil.add('a', '', this._container, ' — ' + L._('Home'));
+            home.href = '/';
+        }
     }
 
-});
-
-
-L.Storage.HomeControl = L.Control.extend({
-
-    options: {
-        position: 'topleft'
-    },
-
-    onAdd: function () {
-        var container = L.DomUtil.create('div', 'leaflet-control-home storage-control'),
-            link = L.DomUtil.create('a', '', container);
-
-        link.href = '/';
-        link.title = L._('Go to home page');
-
-        return container;
-    }
 });
 
 

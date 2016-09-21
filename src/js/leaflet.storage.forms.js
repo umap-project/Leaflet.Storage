@@ -633,7 +633,6 @@ L.Storage.FormBuilder = L.FormBuilder.extend({
         measureControl: {handler: 'ControlChoice', label: L._('Display the measure control')},
         tilelayersControl: {handler: 'ControlChoice', label: L._('Display the tile layers control')},
         editinosmControl: {handler: 'ControlChoice', label: L._('Display the control to open OpenStreetMap editor')},
-        homeControl: {handler: 'ControlChoice', label: L._('Display the control to go back to home page')},
         datalayersControl: {handler: 'DataLayersControl', label: L._('Display the data layers control')},
     },
 

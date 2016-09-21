@@ -50,7 +50,7 @@ L.Map.mergeOptions({
 
 L.Storage.Map.include({
 
-    HIDDABLE_CONTROLS: ['zoom', 'search', 'fullscreen', 'embed', 'locate', 'measure', 'tilelayers', 'editinosm', 'home', 'datalayers'],
+    HIDDABLE_CONTROLS: ['zoom', 'search', 'fullscreen', 'embed', 'locate', 'measure', 'tilelayers', 'editinosm', 'datalayers'],
 
     initialize: function (el, geojson) {
 
@@ -230,7 +230,6 @@ L.Storage.Map.include({
         }
         this._controls.zoom = new L.Control.Zoom({zoomInTitle: L._('Zoom in'), zoomOutTitle: L._('Zoom out')});
         this._controls.datalayers = new L.Storage.DataLayersControl(this);
-        this._controls.home = new L.S.HomeControl();
         this._controls.locate = new L.S.LocateControl();
         this._controls.fullscreen = new L.Control.Fullscreen({title: {'false': L._('View Fullscreen'), 'true': L._('Exit Fullscreen')}});
         this._controls.search = new L.Storage.SearchControl();
@@ -995,7 +994,6 @@ L.Storage.Map.include({
         'editinosmControl',
         'embedControl',
         'measureControl',
-        'homeControl',
         'tilelayersControl'
     ],
 
