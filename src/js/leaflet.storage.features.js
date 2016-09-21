@@ -402,8 +402,8 @@ L.Storage.FeatureMixin = {
                 direction: this.getOption('labelDirection'),
                 interactive: this.getOption('labelInteractive')
             };
+        this.unbindTooltip();
         if (this.getOption('showLabel') && displayName) this.bindTooltip(L.Util.escapeHTML(displayName), options);
-        else this.unbindTooltip();
     },
 
     matchFilter: function (filter, keys) {
