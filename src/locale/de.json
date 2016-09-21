@@ -49,7 +49,6 @@
     "Enable editing": "Bearbeiten aktivieren",
     "Format": "Format",
     "From zoom": "Von Zoomstufe",
-    "Go to home page": "Zur Startseite zurückkehren",
     "Go to «{feature}»": "Gehe zu „{feature}“",
     "Hide controls": "Schaltflächen ausblenden",
     "How much to simplify the polyline on each zoom level (more = better performance and smoother look, less = more accurate)": "Wie stark Linien mit jeder Zoomstufe vereinfacht werden (mehr = bessere Performance und glatteres Aussehen, weniger = präziser)",
@@ -279,7 +278,6 @@
     "Default zoom level": "Standard-Zoomstufe",
     "Define link to open in a new window on polygon click.": "Definiere einen externen Link, der sich beim Klick auf die Fläche in einem neuen Fenster öffnet.",
     "Delete this vertex (Alt-click)": "Diesen Eckpunkt löschen (Alt-Klick)",
-    "Display the control to go back to home page": "Den Button um zur Startseite zurückzukehren anzeigen",
     "Display the control to open OpenStreetMap editor": "Den Button zum OpenStreetMap editor anzeigen",
     "Display the data layers control": "Datenebenensteuerung anzeigen",
     "Display the embed control": "Eingebettete Steuerung anzeigen",
@@ -338,5 +336,9 @@
     "iframe": "iframe",
     "new window": "neues Fenster",
     "parent window": "übergeordnetes Fenster",
-    "{count} errors during import: {message}": "{count} Fehler während dem Import: {message}"
+    "{count} errors during import: {message}": "{count} Fehler während dem Import: {message}",
+    "Are you sure you want to delete this layer?": "Are you sure you want to delete this layer?",
+    "Delete layer": "Delete layer",
+    "Error while fetching {url}": "Error while fetching {url}",
+    "Home": "Home"
 }

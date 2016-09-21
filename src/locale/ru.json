@@ -49,7 +49,6 @@
     "Enable editing": "Разрешить редактирование",
     "Format": "Формат",
     "From zoom": "С масштаба",
-    "Go to home page": "Домашняя страница",
     "Go to «{feature}»": "Перейти к «{feature}»",
     "Hide controls": "Убрать элементы управления",
     "How much to simplify the polyline on each zoom level (more = better performance and smoother look, less = more accurate)": "Насколько сильно упрощать линии на каждом масштабе (больше значение — больше скорость, но выглядит хуже; меньше значение — более гладкое отображение)",
@@ -279,7 +278,6 @@
     "Default zoom level": "Масштаб по умолчанию",
     "Define link to open in a new window on polygon click.": "Задайте адрес для открытия его в новом окне по клику на полигон.",
     "Delete this vertex (Alt-click)": "Удалить эту точку (Alt-клик)",
-    "Display the control to go back to home page": "Отображать кнопку заглавной страницы",
     "Display the control to open OpenStreetMap editor": "Отображать кнопку редактора OpenStreetMap",
     "Display the data layers control": "Отображать кнопку управления слоями данных",
     "Display the embed control": "Отображать кнопку встраивания",
@@ -338,5 +336,9 @@
     "iframe": "iframe",
     "new window": "new window",
     "parent window": "parent window",
-    "{count} errors during import: {message}": "{count} errors during import: {message}"
+    "{count} errors during import: {message}": "{count} errors during import: {message}",
+    "Are you sure you want to delete this layer?": "Are you sure you want to delete this layer?",
+    "Delete layer": "Delete layer",
+    "Error while fetching {url}": "Error while fetching {url}",
+    "Home": "Home"
 }

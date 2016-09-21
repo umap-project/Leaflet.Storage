@@ -49,7 +49,6 @@
     "Enable editing": "Activer l'édition",
     "Format": "Format",
     "From zoom": "À partir du zoom",
-    "Go to home page": "Retourner à l'accueil",
     "Go to «{feature}»": "Naviguer jusqu'à «{feature}»",
     "Hide controls": "Masquer les outils",
     "How much to simplify the polyline on each zoom level (more = better performance and smoother look, less = more accurate)": "Valeur de simplification des lignes pour chaque niveau de zoom (grand nombre = meilleure performance, petit nombre = plus précis)",
@@ -279,7 +278,6 @@
     "Default zoom level": "Niveau de zoom par défaut",
     "Define link to open in a new window on polygon click.": "Définit un lien à ouvrir dans une nouvelle fenêtre au clic sur le polygone.",
     "Delete this vertex (Alt-click)": "Supprimer ce point (Alt-clic)",
-    "Display the control to go back to home page": "Afficher le bouton pour retourner à la page d'accueil",
     "Display the control to open OpenStreetMap editor": "Afficher le bouton pour ouvrir l'éditeur d'OpenStreetMap",
     "Display the data layers control": "Afficher le bouton d''accès rapide aux couches de données",
     "Display the embed control": "Afficher le bouton de partage",
@@ -338,5 +336,9 @@
     "iframe": "iframe",
     "new window": "nouvelle fenêtre",
     "parent window": "fenêtre parente",
-    "{count} errors during import: {message}": "{count} erreurs pendant l'import: {message}"
+    "{count} errors during import: {message}": "{count} erreurs pendant l'import: {message}",
+    "Are you sure you want to delete this layer?": "Voulez-vous vraiment supprimer ce calque?",
+    "Delete layer": "Supprimer le calque",
+    "Error while fetching {url}": "Erreur en appelant l'URL {url}",
+    "Home": "Accueil"
 }
