@@ -606,7 +606,7 @@ L.Storage.Map.include({
                 filetype: 'application/json'
             },
             gpx: {
-                formatter: function (gpx) {return togpx(map.toGeoJSON());},
+                formatter: function (map) {return togpx(map.toGeoJSON());},
                 ext: '.gpx',
                 filetype: 'application/xml'
             },
