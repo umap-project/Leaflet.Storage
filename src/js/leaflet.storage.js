@@ -117,14 +117,17 @@ L.Storage.Map.include({
         this.handleLimitBounds();
 
         this.initTileLayers(this.options.tilelayers);
-        this.initControls();
 
         // Global storage for retrieving datalayers
         this.datalayers = {};
         this.datalayers_index = [];
         this.dirty_datalayers = [];
+
+        this.initControls();
+
         // create datalayers
         this.initDatalayers();
+
         if (this.options.displayCaptionOnLoad) {
             // Retrocompat
             if (!this.options.onLoadPanel) {
@@ -306,6 +309,7 @@ L.Storage.Map.include({
             if (!pane.dataset || !pane.dataset.id) continue;
             this.datalayers_index.push(this.datalayers[pane.dataset.id]);
         }
+        this.updateDatalayersControl();
     },
 
     ensurePanesOrder: function () {

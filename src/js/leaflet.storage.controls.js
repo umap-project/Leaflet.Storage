@@ -507,9 +507,9 @@ L.Storage.DataLayersControl = L.Control.extend({
     update: function () {
         if (this._datalayers_container) {
             this._datalayers_container.innerHTML = '';
-            for(var idx in this._map.datalayers) {
-                this.addDataLayer(this._datalayers_container, this._map.datalayers[idx]);
-            }
+            this._map.eachDataLayer(function (datalayer) {
+                this.addDataLayer(this._datalayers_container, datalayer);
+            }, this)
         }
     },
 
