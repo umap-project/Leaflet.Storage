@@ -196,7 +196,6 @@ L.Storage.FeatureMixin = {
 
     connectToDataLayer: function (datalayer) {
         this.datalayer = datalayer;
-        this.options.pane = this.datalayer.pane;
         this.options.renderer = this.datalayer.renderer;
     },
 
@@ -573,6 +572,12 @@ L.Storage.Marker = L.Marker.extend({
 
 
 L.Storage.PathMixin = {
+
+    connectToDataLayer: function (datalayer) {
+        L.S.FeatureMixin.connectToDataLayer.call(this, datalayer);
+        // We keep markers on their own layer on top of the paths.
+        this.options.pane = this.datalayer.pane;
+    },
 
     edit: function (e) {
         if(this.map.editEnabled) {
