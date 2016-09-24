@@ -826,7 +826,8 @@ L.Storage.Map.include({
             try {
                 self.importRaw(rawData);
             } catch (e) {
-                this.ui.alert({content: L._('Invalid umap data in {filename}', {filename: file.name}), level: 'error'});
+                console.error('Error importing data', e);
+                self.ui.alert({content: L._('Invalid umap data in {filename}', {filename: file.name}), level: 'error'});
             }
         };
     },
