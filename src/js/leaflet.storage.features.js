@@ -426,6 +426,18 @@ L.Storage.FeatureMixin = {
 
     isMulti: function () {
         return false;
+    },
+
+    closeTooltip: function () {
+        // Remove me when #371 is fixed.
+        if (this._tooltip) {
+            this._tooltip._close();
+            if (this._tooltip.options.interactive && this._tooltip._container) {
+                L.DomUtil.removeClass(this._tooltip._container, 'leaflet-clickable');
+                this.removeInteractiveTarget(this._tooltip._container);
+            }
+        }
+        return this;
     }
 
 };
