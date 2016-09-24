@@ -53,6 +53,11 @@
 a.storage-control-less {
     display: none;
 }
+.storage-control-more,
+.storage-control-less {
+    background-image: url("../img/16-white.png");
+    background-position: -160px -210px;
+}
 .storage-more-controls .display-on-more,
 .storage-more-controls .storage-control-less {
     display: block;

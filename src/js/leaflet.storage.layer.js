@@ -396,9 +396,7 @@ L.Storage.DataLayer = L.Class.extend({
         this._layers[id] = feature;
         this.layer.addLayer(feature);
         this.indexProperties(feature);
-        if (this.hasDataLoaded()) {
-            this.fire('datachanged');
-        }
+        if (this.hasDataLoaded()) this.fire('datachanged');
     },
 
     removeLayer: function (feature) {
@@ -407,9 +405,7 @@ L.Storage.DataLayer = L.Class.extend({
         this._index.splice(this._index.indexOf(id), 1);
         delete this._layers[id];
         this.layer.removeLayer(feature);
-        if (this.hasDataLoaded()) {
-            this.fire('datachanged');
-        }
+        if (this.hasDataLoaded()) this.fire('datachanged');
     },
 
     indexProperties: function (feature) {
