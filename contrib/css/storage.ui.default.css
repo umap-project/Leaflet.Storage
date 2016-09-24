@@ -326,7 +326,7 @@ i.info {
     padding: 0 20px 40px 20px;
     border-left: 1px solid #ddd;
     overflow-x: auto;
-    z-index: 1000;
+    z-index: 1010;
     background-color: #fff;
     opacity: 0.98;
     cursor: initial;
