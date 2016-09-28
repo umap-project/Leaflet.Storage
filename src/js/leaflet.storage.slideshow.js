@@ -7,7 +7,7 @@ L.S.Slideshow = L.Class.extend({
     options: {
         delay: 5000,
         autoplay: false,
-        easing: true
+        easing: false
     },
 
     initialize: function (map, options) {
