@@ -70,9 +70,7 @@ L.Storage.FeatureMixin = {
     },
 
     openPopup: function () {
-        if (this.map.editEnabled) {
-            return;
-        }
+        if (this.map.editEnabled) return;
         this.parentClass.prototype.openPopup.apply(this, arguments);
     },
 

@@ -661,22 +661,20 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     reset: function () {
-        if (this.storage_id) {
-            this.resetOptions();
-            this.parentPane.appendChild(this.pane);
-            if (this._leaflet_events_bk && !this._leaflet_events) {
-                this._leaflet_events = this._leaflet_events_bk;
-            }
-            this.clear();
-            this.hide();
-            if (this.isRemoteLayer()) this.fetchRemoteData();
-            else if (this._geojson_bk) this.fromGeoJSON(this._geojson_bk);
-            this._loaded = true;
-            this.show();
-            this.isDirty = false;
-        } else {
-            this.erase();
+        if (!this.storage_id) this.erase();
+
+        this.resetOptions();
+        this.parentPane.appendChild(this.pane);
+        if (this._leaflet_events_bk && !this._leaflet_events) {
+            this._leaflet_events = this._leaflet_events_bk;
         }
+        this.clear();
+        this.hide();
+        if (this.isRemoteLayer()) this.fetchRemoteData();
+        else if (this._geojson_bk) this.fromGeoJSON(this._geojson_bk);
+        this._loaded = true;
+        this.show();
+        this.isDirty = false;
     },
 
     redraw: function () {

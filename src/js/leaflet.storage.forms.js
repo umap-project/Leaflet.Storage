@@ -228,7 +228,7 @@ L.FormBuilder.DataLayerSwitcher = L.FormBuilder.Select.extend({
 
     getOptions: function () {
         var options = [];
-        this.builder.map.eachDataLayer(function (datalayer) {
+        this.builder.map.eachDataLayerReverse(function (datalayer) {
             if(datalayer.isLoaded() && !datalayer.isRemoteLayer() && datalayer.isBrowsable()) {
                 options.push([L.stamp(datalayer), datalayer.getName()]);
             }

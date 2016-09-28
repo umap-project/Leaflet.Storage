@@ -706,7 +706,7 @@ L.Storage.Map.include({
         var clearFlag = L.DomUtil.create('input', '', clearLabel);
         clearFlag.type = 'checkbox';
         clearFlag.name = 'clear';
-        this.eachDataLayer(function (datalayer) {
+        this.eachDataLayerReverse(function (datalayer) {
             if (datalayer.isLoaded()) {
                 var id = L.stamp(datalayer);
                 option = L.DomUtil.create('option', '', layerInput);
@@ -809,8 +809,7 @@ L.Storage.Map.include({
         this.renderControls();
         this.handleLimitBounds();
         this.eachDataLayer(function (datalayer) {
-            if (mustReindex)
-                datalayer.reindex();
+            if (mustReindex) datalayer.reindex();
             datalayer.redraw();
         });
         this.fire('postsync');
@@ -854,7 +853,7 @@ L.Storage.Map.include({
             description.innerHTML = L.Util.toHTML(this.options.description);
         }
         var datalayerContainer = L.DomUtil.create('div', 'datalayer-container', container);
-        this.eachDataLayer(function (datalayer) {
+        this.eachDataLayerReverse(function (datalayer) {
             var p = L.DomUtil.create('p', '', datalayerContainer),
                 color = L.DomUtil.create('span', 'datalayer-color', p),
                 headline = L.DomUtil.create('strong', '', p),
@@ -911,6 +910,12 @@ L.Storage.Map.include({
         }
     },
 
+    eachDataLayerReverse: function (method, context) {
+        for (var i = this.datalayers_index.length - 1; i >= 0; i--) {
+            method.call(context, this.datalayers_index[i]);
+        }
+    },
+
     backup: function () {
         this.backupOptions();
         this._datalayers_index_bk = [].concat(this.datalayers_index);
@@ -920,11 +925,11 @@ L.Storage.Map.include({
         if (this.editTools) this.editTools.stopDrawing();
         this.resetOptions();
         this.datalayers_index = [].concat(this._datalayers_index_bk);
-        this.ensurePanesOrder();
         this.dirty_datalayers.slice().forEach(function (datalayer) {
             if (datalayer.isDeleted) datalayer.connectToMap();
             datalayer.reset();
         });
+        this.ensurePanesOrder();
         this.dirty_datalayers = [];
         this.updateDatalayersControl();
         this.initTileLayers();
@@ -1169,7 +1174,6 @@ L.Storage.Map.include({
         builder = new L.S.FormBuilder(this, shapeOptions, {
             callback: function (e) {
                 this.eachDataLayer(function (datalayer) {
-                    if (e.helper.field === 'options.sortKey') datalayer.reindex();
                     datalayer.redraw();
                 });
             }

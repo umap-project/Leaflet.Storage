@@ -198,7 +198,7 @@ describe('L.DataLayer', function () {
     describe('#iconClassChange()', function () {
 
         it('should change icon class', function () {
-            happen.click(qs('.layer-edit'));
+            happen.click(qs('[data-id="' + this.datalayer._leaflet_id +'"] .layer-edit'));
             changeSelectValue(qs('form#datalayer-advanced-properties select[name=iconClass]'), 'Circle');
             assert.notOk(qs('div.storage-div-icon'));
             assert.ok(qs('div.storage-circle-icon'));

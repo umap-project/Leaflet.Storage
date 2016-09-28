@@ -159,14 +159,13 @@ describe('L.Storage.Polygon', function () {
             });
 
             it('should allow to transfer shape when another polygon is edited', function (done) {
-                var other = new L.S.Polygon(this.map, [p2ll(200, 300), p2ll(300, 200), p2ll(200, 100)], {datalayer: this.datalayer}).addTo(this.datalayer);
-                other.edit();  // This moves the map to put "other" at the center.
-                this.map.once('moveend', function () {
-                    new L.S.Polygon(this.map, [p2ll(100, 150), p2ll(100, 200), p2ll(200, 150)], {datalayer: this.datalayer}).addTo(this.datalayer);
-                    happen.at('contextmenu', 110, 160);
-                    assert.equal(qst('Transfer shape to edited feature'), 1);
-                    done();
-                }, this);
+                this.datalayer.empty();
+                var layer = new L.S.Polygon(this.map, [p2ll(200, 300), p2ll(300, 200), p2ll(200, 100)], {datalayer: this.datalayer}).addTo(this.datalayer);
+                layer.edit();  // This moves the map to put "other" at the center.
+                var other = new L.S.Polygon(this.map, [p2ll(100, 150), p2ll(100, 200), p2ll(200, 150)], {datalayer: this.datalayer}).addTo(this.datalayer);
+                happen.once(other._path, {type: 'contextmenu'});
+                assert.equal(qst('Transfer shape to edited feature'), 1);
+                done();
             });
 
         });

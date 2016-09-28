@@ -158,7 +158,7 @@ describe('L.Storage.FeatureMixin', function () {
             happen.click(qs('path[fill="DarkBlue"]'));
             happen.click(qs('ul.leaflet-inplace-toolbar a.storage-toggle-edit'));
             var select = qs('select[name=datalayer]');
-            select.selectedIndex = 1;
+            select.selectedIndex = 0;
             happen.once(select, {type: 'change'});
             assert.ok(qs('path[fill="none"]')); // Polyline fill is unchanged
             assert.notOk(qs('path[fill="DarkBlue"]'));
