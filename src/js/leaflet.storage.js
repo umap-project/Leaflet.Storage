@@ -1004,7 +1004,8 @@ L.Storage.Map.include({
         'editinosmControl',
         'embedControl',
         'measureControl',
-        'tilelayersControl'
+        'tilelayersControl',
+        'easing'
     ],
 
     exportOptions: function () {
@@ -1185,7 +1186,7 @@ L.Storage.Map.include({
             'options.smoothFactor',
             'options.dashArray',
             'options.zoomTo',
-            ['options.easing', {handler: 'Switch', label: L._('Advanced transition'), inheritable: true}],
+            ['options.easing', {handler: 'Switch', label: L._('Advanced transition')}],
             'options.labelKey',
             ['options.sortKey', {handler: 'BlurInput', helpEntries: 'sortKey', placeholder: L._('Default: name'), label: L._('Sort key'), inheritable: true}],
             ['options.filterKey', {handler: 'Input', helpEntries: 'filterKey', placeholder: L._('Default: name'), label: L._('Filter keys'), inheritable: true}]
