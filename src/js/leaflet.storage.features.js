@@ -241,9 +241,8 @@ L.Storage.FeatureMixin = {
     },
 
     bringToCenter: function (e) {
-        var latlng;
-        if (e && e.latlng) latlng = e.latlng;
-        else latlng = this.getCenter();
+        e = e || {};
+        var latlng = e.latlng || this.getCenter();
         this.map.setView(latlng, e.zoomTo || this.map.getZoom());
         if (e.callback) e.callback.call(this);
     },
