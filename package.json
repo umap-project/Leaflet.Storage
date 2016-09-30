@@ -1,6 +1,6 @@
 {
   "name": "leaflet-storage",
-  "version": "0.8.0-rc.4",
+  "version": "0.8.0-rc.5",
   "description": "Manage map and features with Leaflet and expose them for backend storage through an API.",
   "directories": {
     "test": "test"
