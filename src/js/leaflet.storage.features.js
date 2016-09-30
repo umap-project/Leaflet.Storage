@@ -153,9 +153,10 @@ L.Storage.FeatureMixin = {
 
     endEdit: function () {},
 
-    getDisplayName: function () {
+    getDisplayName: function (fallback) {
+        if (fallback === undefined) fallback = this.datalayer.options.name;
         var key = this.getOption('labelKey') || 'name';
-        return this.properties[key] || this.properties.title || this.datalayer.options.name;
+        return this.properties[key] || this.properties.title || fallback;
     },
 
     hasPopupFooter: function () {
@@ -392,7 +393,7 @@ L.Storage.FeatureMixin = {
     },
 
     resetTooltip: function () {
-        var displayName = this.getDisplayName(),
+        var displayName = this.getDisplayName(null),
             options = {
                 permanent: !this.getOption('labelHover'),
                 direction: this.getOption('labelDirection'),
