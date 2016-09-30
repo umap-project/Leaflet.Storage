@@ -49,7 +49,7 @@ L.FormBuilder.Element.include({
     buildLabel: function () {
         if (this.options.label) {
             this.label = L.DomUtil.create('label', '', this.getLabelParent());
-            this.label.innerHTML = this.options.label;
+            this.label.innerHTML = this.label.title = this.options.label;
             if (this.options.helpEntries) this.builder.map.help.button(this.label, this.options.helpEntries);
             else if (this.options.helpText) {
                 var info = L.DomUtil.create('i', 'info', this.label);
