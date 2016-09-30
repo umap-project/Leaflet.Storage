@@ -56,8 +56,11 @@ L.Storage.Map.include({
 
         if (geojson.properties && geojson.properties.locale) L.setLocale(geojson.properties.locale);
 
+        // Don't let default autocreation of controls
         var zoomControl = typeof geojson.properties.zoomControl !== 'undefined' ? geojson.properties.zoomControl : true;
         geojson.properties.zoomControl = false;
+        var fullscreenControl = typeof geojson.properties.fullscreenControl !== 'undefined' ? geojson.properties.fullscreenControl : true;
+        geojson.properties.fullscreenControl = false;
         L.Util.setBooleanFromQueryString(geojson.properties, 'scrollWheelZoom');
         L.Map.prototype.initialize.call(this, el, geojson.properties);
 
@@ -76,6 +79,7 @@ L.Storage.Map.include({
         this.demoTileInfos = this.options.demoTileInfos;
         if (geojson.geometry) this.options.center = geojson.geometry;
         this.options.zoomControl = zoomControl;
+        this.options.fullscreenControl = fullscreenControl;
         L.Util.setBooleanFromQueryString(this.options, 'moreControl');
         L.Util.setBooleanFromQueryString(this.options, 'scaleControl');
         L.Util.setBooleanFromQueryString(this.options, 'miniMap');
