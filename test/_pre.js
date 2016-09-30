@@ -20,7 +20,7 @@ happen.at = function (what, x, y, props) {
 var resetMap = function () {
     var mapElement = qs('#map');
     mapElement.innerHTML = 'Done';
-    delete mapElement._leaflet;
+    delete mapElement._leaflet_id;
     document.body.className = '';
 };
 var enableEdit = function () {
