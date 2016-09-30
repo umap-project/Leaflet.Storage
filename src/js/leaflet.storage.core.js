@@ -39,6 +39,7 @@ L.Util.setNullableBooleanFromQueryString = function (options, name) {
         if (value === 'null') value = null;
         else if (value === '0' || value === 'false') value = false;
         else value = true;
+        options[name] = value;
     }
 };
 L.Util.escapeHTML = function (s) {
