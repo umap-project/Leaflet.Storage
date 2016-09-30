@@ -969,13 +969,13 @@ a.add-datalayer:hover,
     content: " ";
 }
 .storage-popup-footer li.zoom:before {
-    background-position: -12px -172px;
+    background-position: -12px -170px;
 }
 .storage-popup-footer li.previous:before {
-    background-position: -52px -132px;
+    background-position: -52px -130px;
 }
 .storage-popup-footer li.next:before {
-    background-position: -12px -132px;
+    background-position: -12px -130px;
 }
 
 
