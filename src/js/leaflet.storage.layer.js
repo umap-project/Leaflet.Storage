@@ -92,12 +92,12 @@ L.S.Layer.Heat = L.HeatLayer.extend({
         this.setLatLngs([]);
     },
 
-    _redraw: function () {
+    redraw: function () {
         // setlalngs call _redraw through setAnimFrame, thus async, so this
         // can ends with race condition if we remove the layer very faslty after.
         // Remove me when https://github.com/Leaflet/Leaflet.heat/pull/53 is released.
         if (!this._map) return;
-        L.HeatLayer.prototype._redraw.call(this);
+        L.HeatLayer.prototype.redraw.call(this);
     },
 
     getFeatures: function () {
