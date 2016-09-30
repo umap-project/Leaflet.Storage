@@ -1005,6 +1005,9 @@ L.S.IframeExporter = L.Class.extend({
         zoomControl: true,
         allowEdit: false,
         moreControl: true,
+        searchControl: null,
+        tilelayersControl: null,
+        embedControl: null,
         datalayersControl: true,
         onLoadPanel: 'none',
         captionBar: false
