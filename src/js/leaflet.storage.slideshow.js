@@ -6,8 +6,7 @@ L.S.Slideshow = L.Class.extend({
 
     options: {
         delay: 5000,
-        autoplay: false,
-        easing: false
+        autoplay: false
     },
 
     initialize: function (map, options) {
@@ -132,19 +131,13 @@ L.S.Slideshow = L.Class.extend({
 
     backward: function () {
         this.pause();
-        if (this.current) {
-            this.current = this.current.getPrevious();
-        }
+        if (this.current) this.current = this.current.getPrevious();
         this.step();
     },
 
     step: function () {
-        if(!this.current) {
-            this.stop();
-            return;
-        }
-        if (this.options.easing) this.current.flyTo();
-        else this.current.zoomTo();
+        if(!this.current) return this.stop();
+        this.current.zoomTo({easing: this.options.easing});
         this.current.view();
     },
 

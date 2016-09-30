@@ -66,10 +66,10 @@ L.S.Popup = L.Popup.extend({
             }
             zoomLi.title = L._('Zoom to this feature');
             L.DomEvent.on(nextLi, 'click', function () {
-                if (next) next.bringToCenter({zoomTo: next.getOption('zoomTo')}, function () {next.view(next.getCenter());});
+                if (next) next.bringToCenter({zoomTo: next.getOption('zoomTo'), callback: next.view});
             });
             L.DomEvent.on(previousLi, 'click', function () {
-                if (prev) prev.bringToCenter({zoomTo: prev.getOption('zoomTo')}, function () {prev.view(prev.getCenter());});
+                if (prev) prev.bringToCenter({zoomTo: prev.getOption('zoomTo'), callback: prev.view});
             });
             L.DomEvent.on(zoomLi, 'click', function () {
                 this.bringToCenter({zoomTo: this.getOption('zoomTo')});

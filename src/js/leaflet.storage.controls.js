@@ -670,10 +670,12 @@ L.Storage.Map.include({
                 color.style.backgroundImage = 'url(' + symbol + ')';
             }
             L.DomEvent.on(zoom_to, 'click', function (e) {
-                this.bringToCenter(e, L.bind(this.view, this));
+                e.callback = this.view;
+                this.bringToCenter(e);
             }, feature);
             L.DomEvent.on(title, 'click', function (e) {
-                this.bringToCenter(e, L.bind(this.view, this));
+                e.callback = this.view
+                this.bringToCenter(e);
             }, feature);
             L.DomEvent.on(edit, 'click', function () {
                 this.edit();

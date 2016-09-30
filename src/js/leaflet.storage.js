@@ -1282,7 +1282,7 @@ L.Storage.Map.include({
         var slideshow = L.DomUtil.createFieldset(container, L._('Slideshow'));
         var slideshowFields = [
             ['options.slideshow.delay', {handler: 'IntInput', placeholder: L._('Set a value for adding a slideshow'), helpText: L._('Delay between elements (in milliseconds)')}],
-            ['options.slideshow.easing', {handler: 'Switch', label: L._('Smart transitions')}],
+            ['options.slideshow.easing', {handler: 'Switch', label: L._('Smart transitions'), inheritable: true}],
             ['options.slideshow.autoplay', {handler: 'Switch', label: L._('Autostart when map is loaded')}]
         ];
         var slideshowHandler = function () {
