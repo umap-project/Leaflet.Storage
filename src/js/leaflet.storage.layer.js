@@ -425,7 +425,13 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     addData: function (geojson) {
-        this.geojsonToFeatures(geojson);
+        try {
+            // Do not fail if remote data is somehow invalid,
+            // otherwise the layer becomes uneditable.
+            this.geojsonToFeatures(geojson);
+        } catch (err) {
+            console.error(err);
+        }
     },
 
     addRawData: function (c, type) {
