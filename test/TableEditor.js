@@ -19,7 +19,7 @@ describe('L.TableEditor', function () {
         var button;
 
         it('should exist table click on edit mode', function () {
-            button = qs('#browse_data_toggle_62 .layer-table-edit');
+            button = qs('#browse_data_toggle_' + L.stamp(this.datalayer) + ' .layer-table-edit');
             expect(button).to.be.ok;
         });
 

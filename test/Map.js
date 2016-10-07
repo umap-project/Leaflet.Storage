@@ -38,8 +38,8 @@ describe('L.Storage.Map', function(){
             assert.ok(qs('div.icon_container'));
         });
 
-        it('should hide icon container div when hiding datalayer', function(){
-            var el = qs('.leaflet-control-browse #browse_data_toggle_62 .layer-toggle');
+        it('should hide icon container div when hiding datalayer', function() {
+            var el = qs('.leaflet-control-browse #browse_data_toggle_' + L.stamp(this.datalayer) + ' .layer-toggle');
             happen.click(el);
             assert.notOk(qs('div.icon_container'));
         });
