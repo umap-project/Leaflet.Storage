@@ -1313,18 +1313,26 @@ L.Storage.Map.include({
 
         var advancedActions = L.DomUtil.createFieldset(container, L._('Advanced actions'));
         var advancedButtons = L.DomUtil.create('div', 'button-bar', advancedActions);
-        var del = L.DomUtil.create('a', 'button half storage-delete', advancedButtons);
+        var del = L.DomUtil.create('a', 'button third storage-delete', advancedButtons);
         del.href = '#';
         del.innerHTML = L._('Delete');
         L.DomEvent
             .on(del, 'click', L.DomEvent.stop)
             .on(del, 'click', this.del, this);
-        var clone = L.DomUtil.create('a', 'button half storage-clone', advancedButtons);
+        var clone = L.DomUtil.create('a', 'button third storage-clone', advancedButtons);
         clone.href = '#';
-        clone.innerHTML = L._('Clone this map');
+        clone.innerHTML = L._('Clone');
+        clone.title = L._('Clone this map');
         L.DomEvent
             .on(clone, 'click', L.DomEvent.stop)
             .on(clone, 'click', this.clone, this);
+        var empty = L.DomUtil.create('a', 'button third storage-empty', advancedButtons);
+        empty.href = '#';
+        empty.innerHTML = L._('Empty');
+        empty.title = L._('Delete all layers');
+        L.DomEvent
+            .on(empty, 'click', L.DomEvent.stop)
+            .on(empty, 'click', this.empty, this);
         this.ui.openPanel({data: {html: container}, className: 'dark'});
     },
 
@@ -1444,6 +1452,12 @@ L.Storage.Map.include({
             var url = L.Util.template(this.options.urls.map_clone, {'map_id': this.options.storage_id});
             this.post(url);
         }
+    },
+
+    empty: function () {
+        this.eachDataLayerReverse(function (datalayer) {
+            datalayer._delete();
+        });
     },
 
     initLoader: function () {
