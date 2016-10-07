@@ -624,7 +624,7 @@ L.Storage.Map.include({
                 filetype: 'application/vnd.google-earth.kml+xml'
             },
             umap: {
-                name: L._('Raw uMap data'),
+                name: L._('Full map data'),
                 formatter: function (map) {return map.serialize();},
                 ext: '.umap',
                 filetype: 'application/json'
