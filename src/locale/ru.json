@@ -234,7 +234,6 @@
     "Imports all umap data, including layers and settings.": "Импортировать все данные uMap, включая слои и настройки.",
     "Invalid umap data": "Неверные данные uMap",
     "Invalid umap data in {filename}": "Неверные данные uMap в файле {filename}",
-    "Raw uMap data": "Исходные данные uMap",
     "Add a line to the current multi": "Добавить линию к текущему мультиполигону",
     "Add a polygon to the current multi": "Добавить полигон к текущему мультиполигону",
     "Click to edit": "Щёлкните, чтобы изменить",
@@ -340,5 +339,8 @@
     "Are you sure you want to delete this layer?": "Are you sure you want to delete this layer?",
     "Delete layer": "Delete layer",
     "Error while fetching {url}": "Error while fetching {url}",
-    "Home": "Home"
+    "Home": "Home",
+    "Delete all layers": "Delete all layers",
+    "Full map data": "Full map data",
+    "Smart transitions": "Smart transitions"
 }

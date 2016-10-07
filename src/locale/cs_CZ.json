@@ -234,7 +234,6 @@
     "Imports all umap data, including layers and settings.": "Importuje všechy data umapy, včetně vrstev a nastavení",
     "Invalid umap data": "Neplatná data umapy",
     "Invalid umap data in {filename}": "Neplatná data umapy v souboru {filename}",
-    "Raw uMap data": "Interní data uMap",
     "Add a line to the current multi": "Přidat čáru k současnému multi",
     "Add a polygon to the current multi": "Přidat polygon k současnému multi",
     "Click to edit": "Klikněte pro úpravy",
@@ -340,5 +339,8 @@
     "Are you sure you want to delete this layer?": "Are you sure you want to delete this layer?",
     "Delete layer": "Delete layer",
     "Error while fetching {url}": "Error while fetching {url}",
-    "Home": "Home"
+    "Home": "Home",
+    "Delete all layers": "Delete all layers",
+    "Full map data": "Full map data",
+    "Smart transitions": "Smart transitions"
 }

@@ -234,7 +234,6 @@
     "Imports all umap data, including layers and settings.": "importa tutti i dati di umap compresi layer e le impostazioni",
     "Invalid umap data": "dati di umap non validi",
     "Invalid umap data in {filename}": "dati umap non validi nel file {filename}",
-    "Raw uMap data": "dati uMap grezzi",
     "Add a line to the current multi": "Aggiungi una linea a quelle correnti",
     "Add a polygon to the current multi": "Aggiungi un poligono a quell correnti",
     "Click to edit": "Clic per la modifica",
@@ -340,5 +339,8 @@
     "Are you sure you want to delete this layer?": "Are you sure you want to delete this layer?",
     "Delete layer": "Delete layer",
     "Error while fetching {url}": "Error while fetching {url}",
-    "Home": "Home"
+    "Home": "Home",
+    "Delete all layers": "Delete all layers",
+    "Full map data": "Full map data",
+    "Smart transitions": "Smart transitions"
 }

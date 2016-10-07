@@ -234,7 +234,6 @@
     "Imports all umap data, including layers and settings.": "Tuo kaikki karttatiedot, mukaan lukien datatasot ja asetukset.",
     "Invalid umap data": "Virheellistä uMap-dataa",
     "Invalid umap data in {filename}": "Virheellistä uMap-dataa {filename}:ssa",
-    "Raw uMap data": "Raaka uMap-data",
     "Add a line to the current multi": "Add a line to the current multi",
     "Add a polygon to the current multi": "Add a polygon to the current multi",
     "Click to edit": "Klikkaa muokataksesi",
@@ -340,5 +339,8 @@
     "Are you sure you want to delete this layer?": "Are you sure you want to delete this layer?",
     "Delete layer": "Delete layer",
     "Error while fetching {url}": "Error while fetching {url}",
-    "Home": "Home"
+    "Home": "Home",
+    "Delete all layers": "Delete all layers",
+    "Full map data": "Full map data",
+    "Smart transitions": "Smart transitions"
 }

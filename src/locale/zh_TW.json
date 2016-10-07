@@ -234,7 +234,6 @@
     "Imports all umap data, including layers and settings.": "匯入所有 umap 資料，包含圖層與設定。",
     "Invalid umap data": "無效的 umap 資料",
     "Invalid umap data in {filename}": "無效的 umap 資料於檔案 {filename}",
-    "Raw uMap data": "原始 uMap 資料",
     "Add a line to the current multi": "新增線段",
     "Add a polygon to the current multi": "新增多邊形",
     "Click to edit": "點擊開始編輯",
@@ -340,5 +339,8 @@
     "Are you sure you want to delete this layer?": "Are you sure you want to delete this layer?",
     "Delete layer": "Delete layer",
     "Error while fetching {url}": "Error while fetching {url}",
-    "Home": "Home"
+    "Home": "Home",
+    "Delete all layers": "Delete all layers",
+    "Full map data": "Full map data",
+    "Smart transitions": "Smart transitions"
 }
