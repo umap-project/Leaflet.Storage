@@ -550,7 +550,7 @@ L.Storage.DataLayersControl = L.Control.extend({
                 minIndex = Math.min(e.initialIndex, e.finalIndex);
             if (e.finalIndex === 0) layer.bringToTop();
             else if (e.finalIndex > e.initialIndex) layer.insertBefore(other);
-            else other.insertBefore(layer);
+            else layer.insertAfter(other);
             this.map.eachDataLayerReverse(function (datalayer) {
                 if (datalayer.getRank() >= minIndex) datalayer.isDirty = true;
             });

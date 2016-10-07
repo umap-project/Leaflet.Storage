@@ -216,6 +216,11 @@ L.Storage.DataLayer = L.Class.extend({
         this.parentPane.insertBefore(this.pane, other.pane);
     },
 
+    insertAfter: function (other) {
+        if (!other) return;
+        this.parentPane.insertBefore(this.pane, other.pane.nextSibling);
+    },
+
     bringToTop: function () {
         this.parentPane.appendChild(this.pane);
     },
