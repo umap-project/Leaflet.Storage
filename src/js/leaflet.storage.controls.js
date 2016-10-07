@@ -526,7 +526,7 @@ L.Storage.DataLayersControl = L.Control.extend({
         datalayer.renderToolbox(datalayerLi);
         var title = L.DomUtil.add('span', 'layer-title', datalayerLi, datalayer.options.name);
 
-        datalayerLi.id = 'browse_data_toggle_' + datalayer.storage_id;
+        datalayerLi.id = 'browse_data_toggle_' + L.stamp(datalayer);
         L.DomUtil.classIf(datalayerLi, 'off', !datalayer.isVisible());
 
         title.innerHTML = datalayer.options.name;
@@ -599,16 +599,12 @@ L.Storage.DataLayer.include({
         container.dataset.id = L.stamp(this);
     },
 
-    getLocalId: function () {
-        return this.storage_id || 'tmp' + L.Util.stamp(this);
-    },
-
     getHidableElements: function () {
         return document.querySelectorAll('.' + this.getHidableClass());
     },
 
     getHidableClass: function () {
-        return 'show_with_datalayer_' + this.getLocalId();
+        return 'show_with_datalayer_' + L.stamp(this);
     },
 
     propagateRemote: function () {
