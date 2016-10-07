@@ -1026,6 +1026,7 @@ L.Storage.Map.include({
         var umapfile = {
             type: 'umap',
             properties: this.exportOptions(),
+            geometry: this.geometry(),
             layers: []
         };
 
