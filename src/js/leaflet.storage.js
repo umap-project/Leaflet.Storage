@@ -740,6 +740,11 @@ L.Storage.Map.include({
             var type = typeInput.value,
                 layerId = layerInput[layerInput.selectedIndex].value,
                 layer;
+            if (type === 'umap') {
+                this.once('postsync', function () {
+                    this.setView(this.options.center, this.options.zoom);
+                });
+            }
             if (layerId) layer = map.datalayers[layerId];
             if (layer && clearFlag.checked) layer.empty();
             if (fileInput.files.length) {
@@ -790,7 +795,7 @@ L.Storage.Map.include({
         this.ui.openPanel({data: {html: container}, className: 'dark'});
     },
 
-    importRaw: function(rawData){
+    importRaw: function(rawData) {
         var importedData = JSON.parse(rawData);
 
         var mustReindex = false;
@@ -803,6 +808,7 @@ L.Storage.Map.include({
             }
         }
 
+        this.options.center = this.latLng(importedData.geometry);
         var self = this;
         importedData.layers.forEach( function (geojson) {
             var dataLayer = self.createDataLayer();
