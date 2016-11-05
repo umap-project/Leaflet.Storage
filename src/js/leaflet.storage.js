@@ -770,6 +770,7 @@ L.Storage.Map.include({
                         this.importRaw(rawInput.value, type);
                     } catch (e) {
                         this.ui.alert({content: L._('Invalid umap data'), level: 'error'});
+                        console.error(e);
                     }
                 } else {
                     if (!layer) layer = this.createDataLayer();
