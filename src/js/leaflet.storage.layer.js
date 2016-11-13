@@ -203,11 +203,7 @@ L.Storage.DataLayer = L.Class.extend({
         }
         if (!this.storage_id) this.isDirty = true;
         this.onceLoaded(function () {
-            this.map.on('moveend', function () {
-                if (this.isRemoteLayer() && this.options.remoteData.dynamic && this.isVisible()) {
-                    this.fetchRemoteData();
-                }
-            }, this);
+            this.map.on('moveend', this.fetchRemoteData, this);
         });
     },
 
@@ -309,6 +305,7 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     fetchRemoteData: function () {
+        if (!this.isRemoteLayer()) return;
         var from = parseInt(this.options.remoteData.from, 10),
             to = parseInt(this.options.remoteData.to, 10);
         if ((!isNaN(from) && this.map.getZoom() < from) ||
@@ -316,6 +313,8 @@ L.Storage.DataLayer = L.Class.extend({
             this.clear();
             return;
         }
+        if (!this.options.remoteData.dynamic && this.hasDataLoaded()) return;
+        if (!this.isVisible()) return;
         var self = this,
             url = this.map.localizeUrl(this.options.remoteData.url);
         if (this.options.remoteData.proxy) url = this.map.proxyUrl(url);
