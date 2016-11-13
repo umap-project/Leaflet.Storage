@@ -603,10 +603,11 @@ L.Storage.Map.include({
         typeInput.name = 'format';
         var exportCaveat = L.DomUtil.add('small', 'help-text', container, L._('Only visible features will be downloaded.'));
         exportCaveat.id = 'export_caveat_text';
-        L.DomEvent.on(typeInput, 'change', function () {
+        var toggleCaveat = function () {
             if (typeInput.value === 'umap') exportCaveat.style.display = 'none';
             else exportCaveat.style.display = 'inherit';
-        }, this);
+        }
+        L.DomEvent.on(typeInput, 'change', toggleCaveat);
         var types = {
             geojson: {
                 formatter: function (map) {return JSON.stringify(map.toGeoJSON(), null, 2);},
@@ -627,7 +628,8 @@ L.Storage.Map.include({
                 name: L._('Full map data'),
                 formatter: function (map) {return map.serialize();},
                 ext: '.umap',
-                filetype: 'application/json'
+                filetype: 'application/json',
+                selected: true
             }
         };
         for (var key in types) {
@@ -635,8 +637,10 @@ L.Storage.Map.include({
                 option = L.DomUtil.create('option', '', typeInput);
                 option.value = key;
                 option.innerHTML = types[key].name || key;
+                if (types[key].selected) option.selected = true;
             }
         }
+        toggleCaveat();
         var download = L.DomUtil.create('a', 'button', container);
         download.innerHTML = L._('Download data');
         L.DomEvent.on(download, 'click', function () {
