@@ -1370,6 +1370,7 @@ L.Storage.Map.include({
     initCaptionBar: function () {
         var container = L.DomUtil.create('div', 'storage-caption-bar', this._controlContainer),
             name = L.DomUtil.create('h3', '', container);
+        L.DomEvent.disableClickPropagation(container);
         if (this.options.author && this.options.author.name && this.options.author.link) {
             var authorContainer = L.DomUtil.add('span', 'storage-map-author', container, ' ' + L._('by') + ' '),
                 author = L.DomUtil.create('a');
