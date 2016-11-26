@@ -20,7 +20,7 @@ L.S.Slideshow = L.Class.extend({
                 get: function () {
                     if (!current) {
                         var datalayer = this.defaultDatalayer();
-                        if (datalayer) current = datalayer.getFirst();
+                        if (datalayer) current = datalayer.getFeatureByIndex(0);
                     }
                     return current;
                 },
@@ -65,9 +65,7 @@ L.S.Slideshow = L.Class.extend({
         for (var i in this.map.datalayers) {
             if (this.map.datalayers.hasOwnProperty(i)) {
                 datalayer = this.map.datalayers[i];
-                if (datalayer.isVisible() && datalayer.isBrowsable()) {
-                    return datalayer;
-                }
+                if (datalayer.useForSlideshow()) return datalayer;
             }
         }
     },

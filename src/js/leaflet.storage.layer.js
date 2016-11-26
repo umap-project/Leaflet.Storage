@@ -137,7 +137,8 @@ L.Storage.DataLayer = L.Class.extend({
     includes: [L.Mixin.Events],
 
     options: {
-        displayOnLoad: true
+        displayOnLoad: true,
+        slideshow: true
     },
 
     initialize: function (map, data) {
@@ -701,7 +702,8 @@ L.Storage.DataLayer = L.Class.extend({
                 'options.name',
                 'options.description',
                 ['options.type', {handler: 'LayerTypeChooser', label: L._('Type of layer')}],
-                ['options.displayOnLoad', {label: L._('Display on load'), handler: 'Switch'}]
+                ['options.displayOnLoad', {label: L._('Display on load'), handler: 'Switch'}],
+                ['options.slideshow', {label: L._('Use in slideshow'), handler: 'Switch'}]
             ];
         var title = L.DomUtil.add('h3', '', container, L._('Layer properties'));
         var builder = new L.S.FormBuilder(this, metadataFields, {
@@ -898,17 +900,16 @@ L.Storage.DataLayer = L.Class.extend({
         if (bounds.isValid()) this.map.fitBounds(bounds);
     },
 
+    useForSlideshow: function () {
+        return !!this.options.slideshow && this.isVisible() && this.isBrowsable() && this._index.length;
+    },
+
     isVisible: function () {
         return this.map.hasLayer(this.layer);
     },
 
-    getFirst: function () {
-        var feature = this.getFeatureByIndex(0), next;
-        if (!feature) {
-            next = this.getNextVisible();
-            if (next !== this) feature = next.getFirst();  // Prevent infinite loop.
-        }
-        return feature;
+    isBrowsable: function () {
+        return this.layer && this.layer.isBrowsable;
     },
 
     getFeatureByIndex: function (index) {
@@ -920,36 +921,30 @@ L.Storage.DataLayer = L.Class.extend({
     getNextFeature: function (feature) {
         var id = this._index.indexOf(L.stamp(feature)),
             nextId = this._index[id + 1];
-        return nextId? this._layers[nextId]: this.getNextVisible().getFirst();
+        return nextId? this._layers[nextId]: this.getNextForSlideshow().getFeatureByIndex(0);
     },
 
     getPreviousFeature: function (feature) {
         if (this._index <= 1) { return null; }
         var id = this._index.indexOf(L.stamp(feature)),
             previousId = this._index[id - 1];
-        return previousId? this._layers[previousId]: this.getPreviousVisible().getFeatureByIndex(-1);
+        return previousId? this._layers[previousId]: this.getPreviousForSlideshow().getFeatureByIndex(-1);
     },
 
-    getNextVisible: function () {
-        var id = this.getRank(),
-            next = this.map.datalayers_index[id + 1] || this.map.datalayers_index[0];
-        while(!next.isVisible() || !next.isBrowsable() || next._index.length === 0) {
-            next = next.getNextVisible();
+    getNextForSlideshow: function () {
+        var id = this.getRank(), next, index = this.map.datalayers_index;
+        while(id = index[++id] ? id : 0, next = index[id]) {
+            if (next === this || next.useForSlideshow()) break;
         }
         return next;
     },
 
-    getPreviousVisible: function () {
-        var id = this.getRank(),
-            prev = this.map.datalayers_index[id - 1] || this.map.datalayers_index[this.map.datalayers_index.length - 1];
-        while(!prev.isVisible() || !prev.isBrowsable() || prev._index.length === 0) {
-            prev = prev.getPreviousVisible();
+    getPreviousForSlideshow: function () {
+        var id = this.getRank(), prev, index = this.map.datalayers_index;
+        while(id = index[--id] ? id : index.length - 1, prev = index[id]) {
+            if (prev === this || prev.useForSlideshow()) break;
         }
         return prev;
-    },
-
-    isBrowsable: function () {
-        return this.layer && this.layer.isBrowsable;
     },
 
     umapGeoJSON: function () {
