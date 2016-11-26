@@ -299,7 +299,8 @@ L.Storage.Map.include({
             toload++;
             seen++;
             datalayer = this.createDataLayer(this.options.datalayers[j]);
-            datalayer.onceLoaded(decrementToLoad);
+            if (datalayer.displayedOnLoad()) datalayer.onceLoaded(decrementToLoad);
+            else decrementToLoad();
         }
         if (seen === 0) loaded();  // no datalayer
     },

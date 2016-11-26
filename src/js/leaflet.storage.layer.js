@@ -197,14 +197,16 @@ L.Storage.DataLayer = L.Class.extend({
         this.setOptions(data);
         this.backupOptions();
         this.connectToMap();
-        if ((this.map.datalayersOnLoad && this.storage_id && this.map.datalayersOnLoad.indexOf(this.storage_id.toString()) !== -1) ||
-            (!this.map.datalayersOnLoad && this.options.displayOnLoad)) {
-            this.show();
-        }
+        if (this.displayedOnLoad()) this.show();
         if (!this.storage_id) this.isDirty = true;
         this.onceLoaded(function () {
             this.map.on('moveend', this.fetchRemoteData, this);
         });
+    },
+
+    displayedOnLoad: function () {
+        return ((this.map.datalayersOnLoad && this.storage_id && this.map.datalayersOnLoad.indexOf(this.storage_id.toString()) !== -1) ||
+            (!this.map.datalayersOnLoad && this.options.displayOnLoad));
     },
 
     insertBefore: function (other) {
