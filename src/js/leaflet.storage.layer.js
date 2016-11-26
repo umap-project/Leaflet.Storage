@@ -902,6 +902,15 @@ L.Storage.DataLayer = L.Class.extend({
         return this.map.hasLayer(this.layer);
     },
 
+    getFirst: function () {
+        var feature = this.getFeatureByIndex(0), next;
+        if (!feature) {
+            next = this.getNextVisible();
+            if (next !== this) feature = next.getFirst();  // Prevent infinite loop.
+        }
+        return feature;
+    },
+
     getFeatureByIndex: function (index) {
         if (index === -1) index = this._index.length - 1;
         var id = this._index[index];
@@ -911,7 +920,7 @@ L.Storage.DataLayer = L.Class.extend({
     getNextFeature: function (feature) {
         var id = this._index.indexOf(L.stamp(feature)),
             nextId = this._index[id + 1];
-        return nextId? this._layers[nextId]: this.getNextVisible().getFeatureByIndex(0);
+        return nextId? this._layers[nextId]: this.getNextVisible().getFirst();
     },
 
     getPreviousFeature: function (feature) {

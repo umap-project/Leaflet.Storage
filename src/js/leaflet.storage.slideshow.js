@@ -20,7 +20,7 @@ L.S.Slideshow = L.Class.extend({
                 get: function () {
                     if (!current) {
                         var datalayer = this.defaultDatalayer();
-                        if (datalayer) current = datalayer.getFeatureByIndex(0);
+                        if (datalayer) current = datalayer.getFirst();
                     }
                     return current;
                 },
