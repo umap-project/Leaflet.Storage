@@ -184,9 +184,7 @@
     "Do you want to display the «more» control?": "是否显示 «more» 控件？",
     "Auto": "自动",
     "Default: name": "默认：名称",
-    "Delay between elements (in milliseconds)": "Delay between elements (in milliseconds)",
     "Property to use for sorting features": "Property to use for sorting features",
-    "Set a value for adding a slideshow": "Set a value for adding a slideshow",
     "Slideshow": "幻灯秀",
     "Start slideshow": "开始幻灯秀",
     "Stop slideshow": "结束幻灯秀",
@@ -342,5 +340,10 @@
     "Home": "Home",
     "Delete all layers": "Delete all layers",
     "Full map data": "Full map data",
-    "Smart transitions": "Smart transitions"
+    "Smart transitions": "Smart transitions",
+    "Activate slideshow mode": "Activate slideshow mode",
+    "Data is browsable": "Data is browsable",
+    "Delay between two transitions when in play mode": "Delay between two transitions when in play mode",
+    "Set it to false to hide this layer from the slideshow, the data browser, the popup navigation…": "Set it to false to hide this layer from the slideshow, the data browser, the popup navigation…",
+    "{delay} seconds": "{delay} seconds"
 }

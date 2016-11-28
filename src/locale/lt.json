@@ -184,9 +184,7 @@
     "Do you want to display the «more» control?": "Ar norite rodyti nuorodą \"daugiau\"?",
     "Auto": "Automatiškai",
     "Default: name": "Pagal nutylėjimą: name",
-    "Delay between elements (in milliseconds)": "Uždelsimas tarp elementų (milisekundėmis)",
     "Property to use for sorting features": "Savybės pavadinimas rūšiavimui",
-    "Set a value for adding a slideshow": "Nustatyti peržiūros režimo reikšmę",
     "Slideshow": "Peržiūra",
     "Start slideshow": "Pradėti peržiūrą",
     "Stop slideshow": "Stabdyti peržiūrą",
@@ -342,5 +340,10 @@
     "Home": "Home",
     "Delete all layers": "Delete all layers",
     "Full map data": "Full map data",
-    "Smart transitions": "Smart transitions"
+    "Smart transitions": "Smart transitions",
+    "Activate slideshow mode": "Activate slideshow mode",
+    "Data is browsable": "Data is browsable",
+    "Delay between two transitions when in play mode": "Delay between two transitions when in play mode",
+    "Set it to false to hide this layer from the slideshow, the data browser, the popup navigation…": "Set it to false to hide this layer from the slideshow, the data browser, the popup navigation…",
+    "{delay} seconds": "{delay} seconds"
 }

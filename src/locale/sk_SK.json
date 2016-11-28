@@ -184,9 +184,7 @@
     "Do you want to display the «more» control?": "Prajete si zobrazit  «viac» nastavení?",
     "Auto": "Automatická",
     "Default: name": "Štandardná hodnota: názov",
-    "Delay between elements (in milliseconds)": "Oneskorenie medzi elementami (v milisekundách)",
     "Property to use for sorting features": "Vlastnosť použitá pre radenie objektov",
-    "Set a value for adding a slideshow": "Zadajte hodnotu pre pridanie prezentácie",
     "Slideshow": "Prezentácia",
     "Start slideshow": "Spustiť prezentáciu",
     "Stop slideshow": "Zastaviť prezentáciu",
@@ -342,5 +340,10 @@
     "Home": "Domov",
     "Delete all layers": "Vymazať všetky vrstvy",
     "Full map data": "Údaje celej mapy",
-    "Smart transitions": "Chytré prechody"
+    "Smart transitions": "Chytré prechody",
+    "Activate slideshow mode": "Activate slideshow mode",
+    "Data is browsable": "Data is browsable",
+    "Delay between two transitions when in play mode": "Delay between two transitions when in play mode",
+    "Set it to false to hide this layer from the slideshow, the data browser, the popup navigation…": "Set it to false to hide this layer from the slideshow, the data browser, the popup navigation…",
+    "{delay} seconds": "{delay} seconds"
 }

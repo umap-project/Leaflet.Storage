@@ -184,9 +184,7 @@
     "Do you want to display the «more» control?": "Vil du vise mere af kontrolpanel?",
     "Auto": "Auto",
     "Default: name": "Standardnavn:",
-    "Delay between elements (in milliseconds)": "Forsinkelse mellem de forskellige elementer (i millisekunder)",
     "Property to use for sorting features": "Egenskab til brug for at sortere objekter\n",
-    "Set a value for adding a slideshow": "Sæt en værdi for tilføjelse af et slideshow",
     "Slideshow": "Slideshow",
     "Start slideshow": "Start slideshow",
     "Stop slideshow": "Stop slideshow",
@@ -342,5 +340,10 @@
     "Home": "Home",
     "Delete all layers": "Delete all layers",
     "Full map data": "Full map data",
-    "Smart transitions": "Smart transitions"
+    "Smart transitions": "Smart transitions",
+    "Activate slideshow mode": "Activate slideshow mode",
+    "Data is browsable": "Data is browsable",
+    "Delay between two transitions when in play mode": "Delay between two transitions when in play mode",
+    "Set it to false to hide this layer from the slideshow, the data browser, the popup navigation…": "Set it to false to hide this layer from the slideshow, the data browser, the popup navigation…",
+    "{delay} seconds": "{delay} seconds"
 }

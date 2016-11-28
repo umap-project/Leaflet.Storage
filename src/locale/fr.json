@@ -184,9 +184,7 @@
     "Do you want to display the «more» control?": "Voulez-vous afficher le bouton «Plus»?",
     "Auto": "Auto",
     "Default: name": "Par défaut: name",
-    "Delay between elements (in milliseconds)": "Rythme de changement (en millisecondes)",
     "Property to use for sorting features": "Propriété utilisée pour trier les éléments",
-    "Set a value for adding a slideshow": "Entrez une valeur pour activer le mode diaporama",
     "Slideshow": "Diaporama",
     "Start slideshow": "Commencer",
     "Stop slideshow": "Arrêter",
@@ -342,5 +340,10 @@
     "Home": "Accueil",
     "Delete all layers": "Supprimer tous les calques",
     "Full map data": "Données complètes de la carte",
-    "Smart transitions": "Transitions animées"
+    "Smart transitions": "Transitions animées",
+    "Activate slideshow mode": "Activer le mode diaporama",
+    "Data is browsable": "Données naviguables",
+    "Delay between two transitions when in play mode": "Délai entre les transitions en mode lecture",
+    "Set it to false to hide this layer from the slideshow, the data browser, the popup navigation…": "Désactiver pour masquer ce calque du diaporama, du navigateur de données…",
+    "{delay} seconds": "{delay} seconds"
 }

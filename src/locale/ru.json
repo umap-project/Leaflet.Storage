@@ -184,9 +184,7 @@
     "Do you want to display the «more» control?": "Показывать кнопку «Ещё»?",
     "Auto": "Автоматически",
     "Default: name": "По умолчанию: название",
-    "Delay between elements (in milliseconds)": "Задержка между элементами (в миллисекундах)",
     "Property to use for sorting features": "Свойство для сортировки объектов",
-    "Set a value for adding a slideshow": "Установите значение, чтобы создать слайдшоу",
     "Slideshow": "Слайдшоу",
     "Start slideshow": "Начать слайдшоу",
     "Stop slideshow": "Остановить слайдшоу",
@@ -342,5 +340,10 @@
     "Home": "Заглавная",
     "Delete all layers": "Удалить все слои",
     "Full map data": "Все данные карты",
-    "Smart transitions": "Интеллектуальные преобразования"
+    "Smart transitions": "Интеллектуальные преобразования",
+    "Activate slideshow mode": "Activate slideshow mode",
+    "Data is browsable": "Data is browsable",
+    "Delay between two transitions when in play mode": "Delay between two transitions when in play mode",
+    "Set it to false to hide this layer from the slideshow, the data browser, the popup navigation…": "Set it to false to hide this layer from the slideshow, the data browser, the popup navigation…",
+    "{delay} seconds": "{delay} seconds"
 }

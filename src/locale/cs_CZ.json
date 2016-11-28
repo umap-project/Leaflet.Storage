@@ -184,9 +184,7 @@
     "Do you want to display the «more» control?": "Přejete si zobrazovat ovládací prvek «více»?",
     "Auto": "Automatická",
     "Default: name": "Výchozí: name (název objektu)",
-    "Delay between elements (in milliseconds)": "Pauza mezi prvky (v milisekundách)",
     "Property to use for sorting features": "Vlastnost použitá pro řazení objektů",
-    "Set a value for adding a slideshow": "Nastavte pro přidání prezentace",
     "Slideshow": "Prezentace",
     "Start slideshow": "Spustit prezentaci",
     "Stop slideshow": "Zastavit prezentaci",
@@ -342,5 +340,10 @@
     "Home": "Home",
     "Delete all layers": "Delete all layers",
     "Full map data": "Full map data",
-    "Smart transitions": "Smart transitions"
+    "Smart transitions": "Smart transitions",
+    "Activate slideshow mode": "Activate slideshow mode",
+    "Data is browsable": "Data is browsable",
+    "Delay between two transitions when in play mode": "Delay between two transitions when in play mode",
+    "Set it to false to hide this layer from the slideshow, the data browser, the popup navigation…": "Set it to false to hide this layer from the slideshow, the data browser, the popup navigation…",
+    "{delay} seconds": "{delay} seconds"
 }

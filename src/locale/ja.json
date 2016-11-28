@@ -184,9 +184,7 @@
     "Do you want to display the «more» control?": "«more»操作パネルを表示しますか？",
     "Auto": "自動",
     "Default: name": "デフォルト: 名称",
-    "Delay between elements (in milliseconds)": "要素間のディレイ (ミリセカンド単位)",
     "Property to use for sorting features": "地物並び替え時のプロパティ",
-    "Set a value for adding a slideshow": "スライドショー用の値を設定",
     "Slideshow": "スライドショー",
     "Start slideshow": "スライドショーを開始",
     "Stop slideshow": "スライドショーを停止",
@@ -340,7 +338,12 @@
     "Delete layer": "レイヤを削除",
     "Error while fetching {url}": "{url} の取得エラー",
     "Home": "ホーム",
-    "Delete all layers": "Delete all layers",
+    "Delete all layers": "すべてのレイヤを削除",
     "Full map data": "Full map data",
-    "Smart transitions": "Smart transitions"
+    "Smart transitions": "Smart transitions",
+    "Activate slideshow mode": "Activate slideshow mode",
+    "Data is browsable": "Data is browsable",
+    "Delay between two transitions when in play mode": "Delay between two transitions when in play mode",
+    "Set it to false to hide this layer from the slideshow, the data browser, the popup navigation…": "Set it to false to hide this layer from the slideshow, the data browser, the popup navigation…",
+    "{delay} seconds": "{delay} seconds"
 }
