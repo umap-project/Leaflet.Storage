@@ -127,6 +127,9 @@ L.Storage.Map.include({
         this.datalayers_index = [];
         this.dirty_datalayers = [];
 
+        // Retrocompat
+        if (this.options.slideshow && this.options.slideshow.delay && this.options.slideshow.active === undefined) this.options.slideshow.active = true;
+
         this.initControls();
 
         // create datalayers
@@ -257,8 +260,8 @@ L.Storage.Map.include({
     },
 
     renderControls: function () {
-        L.DomUtil.classIf(document.body, 'storage-caption-bar-enabled', this.options.captionBar || (this.options.slideshow && (this.options.slideshow.delay || this.options.slideshow.autoplay)));
-        L.DomUtil.classIf(document.body, 'storage-slideshow-enabled', this.options.slideshow && (this.options.slideshow.delay || this.options.slideshow.autoplay));
+        L.DomUtil.classIf(document.body, 'storage-caption-bar-enabled', this.options.captionBar || (this.options.slideshow && this.options.slideshow.active));
+        L.DomUtil.classIf(document.body, 'storage-slideshow-enabled', this.options.slideshow && this.options.slideshow.active);
         for (var i in this._controls) {
             this.removeControl(this._controls[i]);
         }
@@ -1298,7 +1301,8 @@ L.Storage.Map.include({
 
         var slideshow = L.DomUtil.createFieldset(container, L._('Slideshow'));
         var slideshowFields = [
-            ['options.slideshow.delay', {handler: 'IntInput', placeholder: L._('Set a value for adding a slideshow'), helpText: L._('Delay between elements (in milliseconds)')}],
+            ['options.slideshow.active', {handler: 'Switch', label: L._('Activate slideshow mode')}],
+            ['options.slideshow.delay', {handler: 'SlideshowDelay', helpText: L._('Delay between two transitions when in play mode')}],
             ['options.slideshow.easing', {handler: 'Switch', label: L._('Smart transitions'), inheritable: true}],
             ['options.slideshow.autoplay', {handler: 'Switch', label: L._('Autostart when map is loaded')}]
         ];

@@ -224,6 +224,18 @@ L.FormBuilder.LayerTypeChooser = L.FormBuilder.Select.extend({
 
 });
 
+L.FormBuilder.SlideshowDelay = L.FormBuilder.Select.extend({
+
+    getOptions: function () {
+        var options = [];
+        for (var i = 1; i < 30; i++) {
+            options.push([i * 1000, L._('{delay} seconds', {delay: i})]);
+        }
+        return options;
+    }
+
+});
+
 L.FormBuilder.DataLayerSwitcher = L.FormBuilder.Select.extend({
 
     getOptions: function () {
