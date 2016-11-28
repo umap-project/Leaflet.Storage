@@ -710,7 +710,7 @@ L.Storage.Map.include({
         var appendAll = function () {
             featuresContainer.innerHTML = '';
             filterValue = filter.value;
-            this.eachDataLayerReverse(function (datalayer) {
+            this.eachBrowsableDataLayer(function (datalayer) {
                 append(datalayer);
             });
         };

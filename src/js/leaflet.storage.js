@@ -146,8 +146,10 @@ L.Storage.Map.include({
             }
             delete this.options.displayDataBrowserOnLoad;
         }
-        if (this.options.onLoadPanel === 'databrowser') this.openBrowser();
-        else if (this.options.onLoadPanel === 'caption') this.displayCaption();
+        this.onceDatalayersLoaded(function () {
+            if (this.options.onLoadPanel === 'databrowser') this.openBrowser();
+            else if (this.options.onLoadPanel === 'caption') this.displayCaption();
+        });
 
         this.ui.on('panel:closed', function () {
             this.invalidateSize({pan: false});
@@ -848,7 +850,7 @@ L.Storage.Map.include({
     },
 
     openBrowser: function () {
-        this.whenReady(function () {
+        this.onceDatalayersLoaded(function () {
             this._openBrowser();
         });
     },
@@ -869,7 +871,7 @@ L.Storage.Map.include({
             description.innerHTML = L.Util.toHTML(this.options.description);
         }
         var datalayerContainer = L.DomUtil.create('div', 'datalayer-container', container);
-        this.eachDataLayerReverse(function (datalayer) {
+        this.eachBrowsableDataLayer(function (datalayer) {
             var p = L.DomUtil.create('p', '', datalayerContainer),
                 color = L.DomUtil.create('span', 'datalayer-color', p),
                 headline = L.DomUtil.create('strong', '', p),
@@ -926,9 +928,20 @@ L.Storage.Map.include({
         }
     },
 
-    eachDataLayerReverse: function (method, context) {
+    eachDataLayerReverse: function (method, context, filter) {
         for (var i = this.datalayers_index.length - 1; i >= 0; i--) {
+            if (filter && !filter.call(context, this.datalayers_index[i])) continue;
             method.call(context, this.datalayers_index[i]);
+        }
+    },
+
+    eachBrowsableDataLayer: function (method, context, filter) {
+        this.eachDataLayerReverse(method, context, function (d) { return d.allowBrowse(); });
+    },
+
+    findDataLayer: function (method, context) {
+        for (var i = this.datalayers_index.length - 1; i >= 0; i--) {
+            if (method.call(context, this.datalayers_index[i])) return this.datalayers_index[i];
         }
     },
 
@@ -1111,21 +1124,16 @@ L.Storage.Map.include({
     defaultDataLayer: function () {
         var datalayer, fallback;
         datalayer = this.lastUsedDataLayer;
-        if (datalayer && !datalayer.isRemoteLayer() && datalayer.isBrowsable() && datalayer.isVisible()) {
+        if (datalayer && !datalayer.isRemoteLayer() && datalayer.canBrowse() && datalayer.isVisible()) {
             return datalayer;
         }
-        for (var i in this.datalayers) {
-            if (this.datalayers.hasOwnProperty(i)) {
-                datalayer = this.datalayers[i];
-                if (!datalayer.isRemoteLayer() && datalayer.isBrowsable()) {
-                    if (datalayer.isVisible()) {
-                        return datalayer;
-                    } else {
-                        fallback = datalayer;
-                    }
-                }
+        datalayer = this.findDataLayer(function (datalayer) {
+            if (!datalayer.isRemoteLayer() && datalayer.canBrowse()) {
+                fallback = datalayer;
+                if (datalayer.isVisible()) return true;
             }
-        }
+        });
+        if (datalayer) return datalayer;
         if (fallback) {
             // No datalayer visible, let's force one
             this.addLayer(fallback.layer);
@@ -1135,15 +1143,7 @@ L.Storage.Map.include({
     },
 
     getDataLayerByStorageId: function (storage_id) {
-        var datalayer;
-        for (var i in this.datalayers) {
-            if (this.datalayers.hasOwnProperty(i)) {
-                datalayer = this.datalayers[i];
-                if (datalayer.storage_id == storage_id) {
-                    return datalayer;
-                }
-            }
-        }
+        return this.findDataLayer(function (d) { return d.storage_id == storage_id; });
     },
 
     edit: function () {

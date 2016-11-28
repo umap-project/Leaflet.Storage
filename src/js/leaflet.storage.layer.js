@@ -1,5 +1,5 @@
 L.S.Layer = {
-    isBrowsable: true,
+    canBrowse: true,
 
     getFeatures: function () {
         return this._layers;
@@ -70,7 +70,7 @@ L.S.Layer.Cluster = L.MarkerClusterGroup.extend({
 L.S.Layer.Heat = L.HeatLayer.extend({
     _type: 'Heat',
     includes: [L.S.Layer],
-    isBrowsable: false,
+    canBrowse: false,
 
     initialize: function (datalayer) {
         this.datalayer = datalayer;
@@ -138,7 +138,7 @@ L.Storage.DataLayer = L.Class.extend({
 
     options: {
         displayOnLoad: true,
-        slideshow: true
+        browsable: true
     },
 
     initialize: function (map, data) {
@@ -246,7 +246,7 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     eachFeature: function (method, context) {
-        if (this.layer && this.layer.isBrowsable) {
+        if (this.layer && this.layer.canBrowse) {
             for (var i = 0; i < this._index.length; i++) {
                 method.call(context || this, this._layers[this._index[i]]);
             }
@@ -703,7 +703,7 @@ L.Storage.DataLayer = L.Class.extend({
                 'options.description',
                 ['options.type', {handler: 'LayerTypeChooser', label: L._('Type of layer')}],
                 ['options.displayOnLoad', {label: L._('Display on load'), handler: 'Switch'}],
-                ['options.slideshow', {label: L._('Use in slideshow'), handler: 'Switch'}]
+                ['options.browsable', {label: L._('Data is browsable'), handler: 'Switch', helpEntries: 'browsable'}]
             ];
         var title = L.DomUtil.add('h3', '', container, L._('Layer properties'));
         var builder = new L.S.FormBuilder(this, metadataFields, {
@@ -900,16 +900,16 @@ L.Storage.DataLayer = L.Class.extend({
         if (bounds.isValid()) this.map.fitBounds(bounds);
     },
 
-    useForSlideshow: function () {
-        return !!this.options.slideshow && this.isVisible() && this.isBrowsable() && this._index.length;
+    allowBrowse: function () {
+        return !!this.options.browsable && this.canBrowse() && this.isVisible() && this._index.length;
     },
 
     isVisible: function () {
         return this.map.hasLayer(this.layer);
     },
 
-    isBrowsable: function () {
-        return this.layer && this.layer.isBrowsable;
+    canBrowse: function () {
+        return this.layer && this.layer.canBrowse;
     },
 
     getFeatureByIndex: function (index) {
@@ -921,28 +921,28 @@ L.Storage.DataLayer = L.Class.extend({
     getNextFeature: function (feature) {
         var id = this._index.indexOf(L.stamp(feature)),
             nextId = this._index[id + 1];
-        return nextId? this._layers[nextId]: this.getNextForSlideshow().getFeatureByIndex(0);
+        return nextId? this._layers[nextId]: this.getNextBrowsable().getFeatureByIndex(0);
     },
 
     getPreviousFeature: function (feature) {
         if (this._index <= 1) { return null; }
         var id = this._index.indexOf(L.stamp(feature)),
             previousId = this._index[id - 1];
-        return previousId? this._layers[previousId]: this.getPreviousForSlideshow().getFeatureByIndex(-1);
+        return previousId? this._layers[previousId]: this.getPreviousBrowsable().getFeatureByIndex(-1);
     },
 
-    getNextForSlideshow: function () {
+    getNextBrowsable: function () {
         var id = this.getRank(), next, index = this.map.datalayers_index;
         while(id = index[++id] ? id : 0, next = index[id]) {
-            if (next === this || next.useForSlideshow()) break;
+            if (next === this || next.allowBrowse()) break;
         }
         return next;
     },
 
-    getPreviousForSlideshow: function () {
+    getPreviousBrowsable: function () {
         var id = this.getRank(), prev, index = this.map.datalayers_index;
         while(id = index[--id] ? id : index.length - 1, prev = index[id]) {
-            if (prev === this || prev.useForSlideshow()) break;
+            if (prev === this || prev.allowBrowse()) break;
         }
         return prev;
     },

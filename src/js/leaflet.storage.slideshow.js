@@ -61,13 +61,7 @@ L.S.Slideshow = L.Class.extend({
     },
 
     defaultDatalayer: function () {
-        var datalayer;
-        for (var i in this.map.datalayers) {
-            if (this.map.datalayers.hasOwnProperty(i)) {
-                datalayer = this.map.datalayers[i];
-                if (datalayer.useForSlideshow()) return datalayer;
-            }
-        }
+        return this.map.findDataLayer(function (d) { return d.allowBrowse(); });
     },
 
     timeSpinner: function () {
