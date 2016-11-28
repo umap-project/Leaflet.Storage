@@ -224,7 +224,7 @@ L.FormBuilder.LayerTypeChooser = L.FormBuilder.Select.extend({
 
 });
 
-L.FormBuilder.SlideshowDelay = L.FormBuilder.Select.extend({
+L.FormBuilder.SlideshowDelay = L.FormBuilder.IntSelect.extend({
 
     getOptions: function () {
         var options = [];
