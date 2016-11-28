@@ -340,10 +340,10 @@
     "Home": "Startseite",
     "Delete all layers": "Alle Ebenen löschen",
     "Full map data": "Vollständige Kartendaten",
-    "Smart transitions": "Smart transitions",
-    "Activate slideshow mode": "Activate slideshow mode",
-    "Data is browsable": "Data is browsable",
-    "Delay between two transitions when in play mode": "Delay between two transitions when in play mode",
-    "Set it to false to hide this layer from the slideshow, the data browser, the popup navigation…": "Set it to false to hide this layer from the slideshow, the data browser, the popup navigation…",
-    "{delay} seconds": "{delay} seconds"
+    "Smart transitions": "Weiche Übergänge",
+    "Activate slideshow mode": "Diashowmodus aktivieren",
+    "Data is browsable": "Daten sind durchsuchbar",
+    "Delay between two transitions when in play mode": "Verzögerung zwischen zwei Übergängen im Abspielmodus",
+    "Set it to false to hide this layer from the slideshow, the data browser, the popup navigation…": "Setze es auf Nein, um diese Ebene in der Slideshow, im Datenbrowser, in der Popup-Navigation,... auszublenden.",
+    "{delay} seconds": "{delay} Sekunden"
 }
