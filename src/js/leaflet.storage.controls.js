@@ -503,7 +503,7 @@ L.Storage.DataLayersControl = L.Control.extend({
     },
 
     update: function () {
-        if (this._datalayers_container) {
+        if (this._datalayers_container && this._map) {
             this._datalayers_container.innerHTML = '';
             this._map.eachDataLayerReverse(function (datalayer) {
                 this.addDataLayer(this._datalayers_container, datalayer);
