@@ -931,7 +931,7 @@ L.Storage.DataLayer = L.Class.extend({
         return previousId? this._layers[previousId]: this.getPreviousBrowsable().getFeatureByIndex(-1);
     },
 
-    getNextBrowsable: function () {
+    getPreviousBrowsable: function () {
         var id = this.getRank(), next, index = this.map.datalayers_index;
         while(id = index[++id] ? id : 0, next = index[id]) {
             if (next === this || next.allowBrowse()) break;
@@ -939,7 +939,7 @@ L.Storage.DataLayer = L.Class.extend({
         return next;
     },
 
-    getPreviousBrowsable: function () {
+    getNextBrowsable: function () {
         var id = this.getRank(), prev, index = this.map.datalayers_index;
         while(id = index[--id] ? id : index.length - 1, prev = index[id]) {
             if (prev === this || prev.allowBrowse()) break;
