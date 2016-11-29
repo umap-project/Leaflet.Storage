@@ -341,9 +341,9 @@
     "Delete all layers": "Удалить все слои",
     "Full map data": "Все данные карты",
     "Smart transitions": "Интеллектуальные преобразования",
-    "Activate slideshow mode": "Activate slideshow mode",
-    "Data is browsable": "Data is browsable",
-    "Delay between two transitions when in play mode": "Delay between two transitions when in play mode",
-    "Set it to false to hide this layer from the slideshow, the data browser, the popup navigation…": "Set it to false to hide this layer from the slideshow, the data browser, the popup navigation…",
-    "{delay} seconds": "{delay} seconds"
+    "Activate slideshow mode": "Включить режим слайдшоу",
+    "Data is browsable": "Данные можно просматривать",
+    "Delay between two transitions when in play mode": "Задержка между двумя переходами в режиме проигрывания",
+    "Set it to false to hide this layer from the slideshow, the data browser, the popup navigation…": "Сбросьте, чтобы скрыть слой из слайдшоу, просмотра данных и всплывающей навигации...",
+    "{delay} seconds": "{delay} секунд"
 }
