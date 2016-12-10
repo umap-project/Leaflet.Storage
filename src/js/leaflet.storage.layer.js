@@ -830,7 +830,7 @@ L.Storage.DataLayer = L.Class.extend({
     buildVersionsFieldset: function (container) {
 
         var appendVersion = function (data) {
-            var date = new Date(parseInt(data.at, 10) * 1000);
+            var date = new Date(parseInt(data.at, 10));
             var content = date.toLocaleFormat() + ' (' + parseInt(data.size) / 1000 + 'Kb)';
             var el = L.DomUtil.create('div', 'storage-datalayer-version', versionsContainer);
             var a = L.DomUtil.create('a', '', el);
