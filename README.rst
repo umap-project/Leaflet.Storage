@@ -28,7 +28,7 @@ Known backends:
 Functional tests
 ================
 
-Functional tests are implemented with `mocha <http://visionmedia.github.io/mocha/#asynchronous-code>`_,
+Functional tests are implemented with `mocha <http://mochajs.org/#asynchronous-code>`_,
 `chai <http://chaijs.com/>`_ and `sinon <http://sinonjs.org/>`_.
 
 To launch them::
