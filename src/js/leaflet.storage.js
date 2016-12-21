@@ -251,7 +251,7 @@ L.Storage.Map.include({
             position: 'topleft',
             widgetOptions: {helpText: L._('Open this map extent in a map editor to provide more accurate data to OpenStreetMap')}
         });
-        this._controls.measure = new L.MeasureControl();
+        this._controls.measure = (new L.MeasureControl()).initHandler(this);
         this._controls.more = new L.S.MoreControls();
         this._controls.scale = L.control.scale();
         if (this.options.scrollWheelZoom) this.scrollWheelZoom.enable();
