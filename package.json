@@ -40,7 +40,7 @@
     "csv2geojson": "^5.0.2",
     "georsstogeojson": "^0.0.2",
     "leaflet": "^1.0.2",
-    "leaflet-contextmenu": "^1.1.1",
+    "leaflet-contextmenu": "^1.2.1",
     "leaflet-editable": "1.0.0",
     "leaflet-editinosm": "^0.2.3",
     "leaflet-formbuilder": "^0.2.3",
