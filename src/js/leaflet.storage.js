@@ -752,7 +752,7 @@ L.Storage.Map.include({
                 layer;
             if (type === 'umap') {
                 this.once('postsync', function () {
-                    this.setView(this.options.center, this.options.zoom);
+                    this.setView(this.latLng(this.options.center), this.options.zoom);
                 });
             }
             if (layerId) layer = map.datalayers[layerId];
@@ -819,7 +819,7 @@ L.Storage.Map.include({
             }
         }
 
-        this.options.center = this.latLng(importedData.geometry);
+        if (importedData.geometry) this.options.center = this.latLng(importedData.geometry);
         var self = this;
         importedData.layers.forEach( function (geojson) {
             var dataLayer = self.createDataLayer();
