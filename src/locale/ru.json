@@ -345,5 +345,6 @@
     "Data is browsable": "Данные можно просматривать",
     "Delay between two transitions when in play mode": "Задержка между двумя переходами в режиме проигрывания",
     "Set it to false to hide this layer from the slideshow, the data browser, the popup navigation…": "Сбросьте, чтобы скрыть слой из слайдшоу, просмотра данных и всплывающей навигации...",
-    "{delay} seconds": "{delay} секунд"
+    "{delay} seconds": "{delay} секунд",
+    "Display measure": "Display measure"
 }

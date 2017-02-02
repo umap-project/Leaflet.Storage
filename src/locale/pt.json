@@ -345,5 +345,6 @@
     "Data is browsable": "Os dados são navegáveis",
     "Delay between two transitions when in play mode": "Atraso entre 2 transições ao reproduzir a apresentação",
     "Set it to false to hide this layer from the slideshow, the data browser, the popup navigation…": "Set it to false to hide this layer from the slideshow, the data browser, the popup navigation…",
-    "{delay} seconds": "{delay} segundos"
+    "{delay} seconds": "{delay} segundos",
+    "Display measure": "Display measure"
 }

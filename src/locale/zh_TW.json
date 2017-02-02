@@ -345,5 +345,6 @@
     "Data is browsable": "資料是可檢視的",
     "Delay between two transitions when in play mode": "播放模式下兩個轉換間會延遲",
     "Set it to false to hide this layer from the slideshow, the data browser, the popup navigation…": "設定為假時，在幻燈片時、資料檢視器和彈出式導航中可將此圖層隱藏...",
-    "{delay} seconds": "{delay} 秒"
+    "{delay} seconds": "{delay} 秒",
+    "Display measure": "Display measure"
 }
