@@ -1232,7 +1232,8 @@ L.Storage.Map.include({
             'options.labelInteractive'
         ];
         builder = new L.S.FormBuilder(this, popupFields, {
-            callback: function () {
+            callback: function (e) {
+                if (e.helper.field === 'options.popupTemplate' || e.helper.field === 'options.popupContentTemplate') return;
                 this.eachDataLayer(function (datalayer) {
                     datalayer.redraw();
                 })
