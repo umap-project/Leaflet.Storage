@@ -293,8 +293,8 @@ L.Storage.Map.include({
     initDatalayers: function () {
         var toload = 0, datalayer, seen = 0, self = this;
         var loaded = function () {
-            self.fire('datalayersloaded');
             self.datalayersLoaded = true;
+            self.fire('datalayersloaded');
         };
         var decrementToLoad = function () {
             toload--;
