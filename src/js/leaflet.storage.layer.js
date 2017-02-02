@@ -541,7 +541,7 @@ L.Storage.DataLayer = L.Class.extend({
                 layer = this._polygonToLayer(geojson, latlngs);
                 break;
             case 'GeometryCollection':
-                return this.geojsonToFeatures(geojson.geometries);
+                return this.geojsonToFeatures(geometry.geometries);
 
             default:
                 this.map.ui.alert({content: L._('Skipping unkown geometry.type: {type}', {type: geometry.type}), level: 'error'});
