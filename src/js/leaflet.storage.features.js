@@ -711,6 +711,13 @@ L.Storage.PathMixin = {
 
     getContextMenuItems: function (e) {
         var items = L.S.FeatureMixin.getContextMenuItems.call(this, e);
+        items.push({
+            text: L._('Display measure'),
+            callback: function () {
+                this.map.ui.alert({content: this.getMeasure(), level: 'info'})
+            },
+            context: this
+        })
         if (this.map.editEnabled && !this.isReadOnly() && this.isMulti()) {
             items = items.concat(this.getContextMenuMultiItems(e));
         }
