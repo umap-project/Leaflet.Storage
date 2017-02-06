@@ -987,9 +987,9 @@ L.Storage.DataLayer = L.Class.extend({
                 this.updateOptions(data);
                 this.backupOptions();
                 this.connectToMap();
+                this._loaded = true;
                 this.redraw();  // Needed for reordering features
                 this.isDirty = false;
-                this._loaded = true;
                 this.map.continueSaving();
             },
             context: this,
