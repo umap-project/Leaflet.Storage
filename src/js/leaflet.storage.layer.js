@@ -791,6 +791,35 @@ L.Storage.DataLayer = L.Class.extend({
         builder = new L.S.FormBuilder(this, remoteDataFields);
         remoteDataContainer.appendChild(builder.build());
 
+        var overpassWizardContainer = L.DomUtil.create('form');
+        remoteDataContainer.appendChild(overpassWizardContainer);
+        overpassWizardContainer.innerHTML = "overpass query: <br>";
+        var overpassQueryInput =  L.DomUtil.create('input','text',overpassWizardContainer);
+        overpassWizardContainer.appendChild(L.DomUtil.create('br'));
+        var runWizardButton = L.DomUtil.create('input','button',overpassWizardContainer);
+        runWizardButton.type="button";
+        runWizardButton.value="run overpass wizard";
+        var remoteDataURLField = remoteDataContainer.children[0].children[0].children[1].children[0];
+        var remoteDataFormatField = remoteDataContainer.children[0].children[1].children[1].children[0];
+        var remoteDataDynamicField = remoteDataContainer.children[0].children[4].children[1].children[0].children[0];
+        var refToRemoteData = this.options.remoteData;
+        function runOverpassWizard(e) {
+            var query = overpassQueryInput.value;
+            var re = /\{\{bbox\}\}/g;
+            var isDynamic = re.test(query);
+            query = query.replace(re, '{south},{west},{north},{east}');
+            var url = "https://overpass.osm.ch/api/interpreter?data=" + query;
+            remoteDataURLField.value = url;
+            remoteDataFormatField.value='osm';
+            if (isDynamic) {
+                remoteDataDynamicField.checked=true;
+                refToRemoteData.dynamic = true;
+            }
+            refToRemoteData.url = url;
+            refToRemoteData.format = 'osm';
+        };
+        runWizardButton.onclick = runOverpassWizard;
+
         if (this.map.options.urls.datalayer_versions) this.buildVersionsFieldset(container);
 
         var advancedActions = L.DomUtil.createFieldset(container, L._('Advanced actions'));
