@@ -309,54 +309,26 @@ L.Storage.DataLayer = L.Class.extend({
 
     fetchRemoteData: function () {
         if (!this.isRemoteLayer()) return;
-	    if (this.options.remoteData && this.options.remoteData.url && this.options.remoteData.format)
-        {
-            /* the case of remote data */
-            var from = parseInt(this.options.remoteData.from, 10),
-                to = parseInt(this.options.remoteData.to, 10);
-            if ((!isNaN(from) && this.map.getZoom() < from) ||
-                (!isNaN(to) && this.map.getZoom() > to) ) {
-                this.clear();
-                return;
-            }
-            if (!this.options.remoteData.dynamic && this.hasDataLoaded()) return;
-            if (!this.isVisible()) return;
-            var self = this,
-                url = this.map.localizeUrl(this.options.remoteData.url);
-            if (this.options.remoteData.proxy) url = this.map.proxyUrl(url);
-            this.map.ajax({
-                uri: url,
-                verb: 'GET',
-                callback: function (raw) {
-                    self.clear();
-                    self.rawToGeoJSON(raw, self.options.remoteData.format, function (geojson) {self.fromGeoJSON(geojson);});
-                }
-            });
+        var from = parseInt(this.options.remoteData.from, 10),
+            to = parseInt(this.options.remoteData.to, 10);
+        if ((!isNaN(from) && this.map.getZoom() < from) ||
+            (!isNaN(to) && this.map.getZoom() > to) ) {
+            this.clear();
+            return;
         }
-        else
-        {
-            /* the case of overpass */
-            var from = parseInt(this.options.overpassData.from, 10),
-                to = parseInt(this.options.overpassData.to, 10);
-            if ((!isNaN(from) && this.map.getZoom() < from) ||
-                (!isNaN(to) && this.map.getZoom() > to) ) {
-                this.clear();
-                return;
+        if (!this.options.remoteData.dynamic && this.hasDataLoaded()) return;
+        if (!this.isVisible()) return;
+        var self = this,
+            url = this.map.localizeUrl(this.options.remoteData.url);
+        if (this.options.remoteData.proxy) url = this.map.proxyUrl(url);
+        this.map.ajax({
+            uri: url,
+            verb: 'GET',
+            callback: function (raw) {
+                self.clear();
+                self.rawToGeoJSON(raw, self.options.remoteData.format, function (geojson) {self.fromGeoJSON(geojson);});
             }
-            if (!this.options.overpassData.dynamic && this.hasDataLoaded()) return;
-            if (!this.isVisible()) return;
-            var url = "https://overpass.osm.ch/api/interpreter?data=" + this.options.overpassData.query
-            var self = this,
-                url = this.map.localizeUrl(url);
-            this.map.ajax({
-                uri: url,
-                verb: 'GET',
-                callback: function (raw) {
-                    self.clear();
-                    self.rawToGeoJSON(raw, 'osm', function (geojson) {self.fromGeoJSON(geojson);});
-                }
-            });
-        }
+        });
     },
 
     onceLoaded: function (callback, context) {
@@ -417,8 +389,7 @@ L.Storage.DataLayer = L.Class.extend({
     },
 
     isRemoteLayer: function () {
-        return !!((this.options.remoteData && this.options.remoteData.url && this.options.remoteData.format)
-		|| (this.options.overpassData && this.options.overpassData.query));
+        return !!(this.options.remoteData && this.options.remoteData.url && this.options.remoteData.format);
     },
 
     isClustered: function () {
@@ -820,19 +791,34 @@ L.Storage.DataLayer = L.Class.extend({
         builder = new L.S.FormBuilder(this, remoteDataFields);
         remoteDataContainer.appendChild(builder.build());
 
-        if (!L.Util.isObject(this.options.overpasseData)) {
-            this.options.overpassData = {};
-        }
-        var overpassDataFields = [
-            ['options.overpassData.query', {label: L._('Overpass query')}],
-            ['options.overpassData.from', {label: L._('From zoom'), helpText: L._('Optionnal.')}],
-            ['options.overpassData.to', {label: L._('To zoom'), helpText: L._('Optionnal.')}],
-            ['options.overpassData.dynamic', {handler: 'Switch', label: L._('Dynamic'), helpEntries: 'dynamicRemoteData'}],
-        ];
-	
-        var overpassDataContainer = L.DomUtil.createFieldset(container, L._('Overpass'));
-        builder = new L.S.FormBuilder(this, overpassDataFields);
-        overpassDataContainer.appendChild(builder.build());
+        var overpassWizardContainer = L.DomUtil.create('form');
+        remoteDataContainer.appendChild(overpassWizardContainer);
+        overpassWizardContainer.innerHTML = "overpass query: <br>";
+        var overpassQueryInput =  L.DomUtil.create('input','text',overpassWizardContainer);
+        overpassWizardContainer.appendChild(L.DomUtil.create('br'));
+        var runWizardButton = L.DomUtil.create('input','button',overpassWizardContainer);
+        runWizardButton.type="button";
+        runWizardButton.value="run overpass wizard";
+        var remoteDataURLField = remoteDataContainer.children[0].children[0].children[1].children[0];
+        var remoteDataFormatField = remoteDataContainer.children[0].children[1].children[1].children[0];
+        var remoteDataDynamicField = remoteDataContainer.children[0].children[4].children[1].children[0].children[0];
+        var refToRemoteData = this.options.remoteData;
+        function runOverpassWizard(e) {
+            var query = overpassQueryInput.value;
+            var re = /\{\{bbox\}\}/g;
+            var isDynamic = re.test(query);
+            query = query.replace(re, '{south},{west},{north},{east}');
+            var url = "https://overpass.osm.ch/api/interpreter?data=" + query;
+            remoteDataURLField.value = url;
+            remoteDataFormatField.value='osm';
+            if (isDynamic) {
+                remoteDataDynamicField.checked=true;
+                refToRemoteData.dynamic = true;
+            }
+            refToRemoteData.url = url;
+            refToRemoteData.format = 'osm';
+        };
+        runWizardButton.onclick = runOverpassWizard;
 
         if (this.map.options.urls.datalayer_versions) this.buildVersionsFieldset(container);
 
