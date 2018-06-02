@@ -487,7 +487,7 @@ L.Storage.DataLayer = L.Class.extend({
             } catch (e) {
                 d = toDom(c);
             }
-            callback(osmtogeojson(d, {flatProperties: true}));
+            callback(osmtogeojson(d));
         } else if (type === 'geojson') {
             try {
                 var gj = JSON.parse(c);
