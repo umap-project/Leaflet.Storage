@@ -921,7 +921,7 @@ L.Storage.Polyline = L.Polyline.extend({
     },
 
     isMulti: function () {
-        return !L.Polyline._flat(this._latlngs) && this._latlngs.length > 1;
+        return !L.LineUtil.isFlat(this._latlngs) && this._latlngs.length > 1;
     },
 
     getVertexActions: function (e) {
@@ -974,7 +974,7 @@ L.Storage.Polygon = L.Polygon.extend({
         var items = L.S.PathMixin.getContextMenuEditItems.call(this, e),
             shape = this.shapeAt(e.latlng);
         // No multi and no holes.
-        if (shape && !this.isMulti() && (L.Polyline._flat(shape) || shape.length === 1)) {
+        if (shape && !this.isMulti() && (L.LineUtil.isFlat(shape) || shape.length === 1)) {
             items.push({
                 text: L._('Transform to lines'),
                 callback: this.toPolyline,
@@ -1012,7 +1012,7 @@ L.Storage.Polygon = L.Polygon.extend({
 
     isMulti: function () {
         // Change me when Leaflet#3279 is merged.
-        return !L.Polyline._flat(this._latlngs) && !L.Polyline._flat(this._latlngs[0]) && this._latlngs.length > 1;
+        return !L.LineUtil.isFlat(this._latlngs) && !L.LineUtil.isFlat(this._latlngs[0]) && this._latlngs.length > 1;
     },
 
     getInplaceToolbarActions: function (e) {

@@ -132,7 +132,8 @@ describe('L.Storage.FeatureMixin', function () {
         it('should generate a valid geojson', function () {
             setFeatures(this.datalayer);
             assert.ok(poly);
-            assert.deepEqual(poly.toGeoJSON().geometry, {'type': 'Polygon', 'coordinates': [[[11.25, 53.585983654559804], [10.1513671875, 52.9751081817353], [12.689208984375, 52.16719363541221], [14.084472656249998, 53.199451902831555], [12.63427734375, 53.61857936489517], [11.25, 53.585983654559804], [11.25, 53.585983654559804]]]});
+            console.log(poly.toGeoJSON().geometry);
+            assert.deepEqual(poly.toGeoJSON().geometry, {'type': 'Polygon', 'coordinates': [[[11.25, 53.585984], [10.151367, 52.975108], [12.689209, 52.167194], [14.084473, 53.199452], [12.634277, 53.618579], [11.25, 53.585984], [11.25, 53.585984]]]});
             // Ensure original latlngs has not been modified
             assert.equal(poly.getLatLngs()[0].length, 6);
         });
