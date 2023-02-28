@@ -1,10 +1,10 @@
+Archived: see https://github.com/umap-project/umap
+
 ===============
 Leaflet-Storage
 ===============
 
 Manage map and features with Leaflet and expose them for backend storage with an API.
-
-Demo: http://umap.fluv.io/
 
 -------------------
 Feedback and issues
